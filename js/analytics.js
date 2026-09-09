@@ -60,6 +60,7 @@ class AcademicAnalytics {
             escuelas: new Set(),
             grupos: [],
             modulos: { Set: 0, Oct: 0, Nov: 0, Dic: 0 },
+            cursosMap: {},
             totalGrupos: 0,
             aprobados: 0,
             noAprobados: 0
@@ -69,6 +70,22 @@ class AcademicAnalytics {
         teacherMap[doc].escuelas.add(g.escuela);
         teacherMap[doc].grupos.push(g);
         teacherMap[doc].totalGrupos++;
+
+        if (!teacherMap[doc].cursosMap[g.curso]) {
+          teacherMap[doc].cursosMap[g.curso] = {
+            nombre: g.curso,
+            escuelas: new Set(),
+            ciclos: new Set(),
+            modulos: { Set: 0, Oct: 0, Nov: 0, Dic: 0 },
+            grupos: 0
+          };
+        }
+        teacherMap[doc].cursosMap[g.curso].escuelas.add(g.escuela);
+        if (g.ciclo) teacherMap[doc].cursosMap[g.curso].ciclos.add(g.ciclo);
+        teacherMap[doc].cursosMap[g.curso].grupos++;
+        if (teacherMap[doc].cursosMap[g.curso].modulos[mod] !== undefined) {
+          teacherMap[doc].cursosMap[g.curso].modulos[mod]++;
+        }
 
         if (teacherMap[doc].modulos[mod] !== undefined) {
           teacherMap[doc].modulos[mod]++;
@@ -92,10 +109,29 @@ class AcademicAnalytics {
       const isComplete = activeCount === 4;
       const missingCount = 4 - activeCount;
 
+      const cursosDetalle = Object.values(t.cursosMap).map(cd => {
+        let cdActiveCount = 0;
+        ['Set', 'Oct', 'Nov', 'Dic'].forEach(m => {
+          if (cd.modulos[m] > 0) cdActiveCount++;
+        });
+        return {
+          nombre: cd.nombre,
+          escuelas: Array.from(cd.escuelas).join(', '),
+          ciclos: Array.from(cd.ciclos).sort((a, b) => a - b).join(', '),
+          modulos: cd.modulos,
+          activeModulesCount: cdActiveCount,
+          grupos: cd.grupos
+        };
+      });
+
+      // Ordenar asignaturas con más meses primero
+      cursosDetalle.sort((a, b) => (b.activeModulesCount - a.activeModulesCount) || a.nombre.localeCompare(b.nombre));
+
       return {
         nombre: t.nombre,
         cursos: Array.from(t.cursos).join('; '),
         escuelas: Array.from(t.escuelas).join(', '),
+        cursosDetalle,
         modulos: t.modulos,
         activeModulesCount: activeCount,
         isComplete,

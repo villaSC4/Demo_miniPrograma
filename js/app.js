@@ -442,15 +442,16 @@ function renderMatrixTable() {
     return;
   }
 
-  tbody.innerHTML = list.map((t, idx) => {
-    const formatMod = (val) => {
-      if (val > 0) {
-        return `<span class="badge-status-dot dot-complete" title="${val} curso(s) programado(s)"><i class="bi bi-check2"></i></span>`;
-      } else {
-        return `<span class="badge-status-dot dot-empty" title="Sin carga en este mes"><i class="bi bi-dash"></i></span>`;
-      }
-    };
+  const formatMod = (val) => {
+    if (val > 0) {
+      return `<span class="badge-status-dot dot-complete" title="${val} grupo(s) en este mes"><i class="bi bi-check2"></i></span>`;
+    } else {
+      return `<span class="badge-status-dot dot-empty" title="Sin carga en este mes"><i class="bi bi-dash"></i></span>`;
+    }
+  };
 
+  let rowsHtml = '';
+  list.forEach((t, idx) => {
     const estadoBadge = t.activeModulesCount === 4
       ? `<span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle py-1 px-2.5">Completo (4/4)</span>`
       : `<span class="badge rounded-pill bg-warning-subtle text-warning-emphasis border border-warning-subtle py-1 px-2.5">Incompleto (${t.activeModulesCount}/4)</span>`;
@@ -459,26 +460,72 @@ function renderMatrixTable() {
       ? `<span class="badge rounded-pill bg-success text-white py-1 px-2">Aprobado</span>`
       : `<span class="badge rounded-pill bg-danger text-white py-1 px-2" title="Posee cursos con VBDA/VBDG = NO">Observado</span>`;
 
-    return `
-      <tr>
-        <td class="text-muted small text-center">${idx + 1}</td>
-        <td>
-          <div class="fw-semibold text-dark">${t.nombre}</div>
-          <small class="text-muted" style="font-size: 0.75rem;">${t.escuelas}</small>
+    const cDetalle = (t.cursosDetalle && t.cursosDetalle.length > 0)
+      ? t.cursosDetalle
+      : [{
+          nombre: t.cursos || 'ASIGNATURA ASIGNADA',
+          escuelas: t.escuelas,
+          ciclos: '',
+          modulos: t.modulos,
+          activeModulesCount: t.activeModulesCount,
+          grupos: t.totalGrupos
+        }];
+
+    const numCourses = cDetalle.length;
+
+    cDetalle.forEach((cd, cIdx) => {
+      rowsHtml += `<tr class="${numCourses > 1 && cIdx < numCourses - 1 ? 'border-bottom-0' : ''}">`;
+
+      // Columna Docente e Índice agrupadas con rowspan
+      if (cIdx === 0) {
+        const subtext = numCourses > 1 
+          ? `<span class="badge bg-primary-subtle text-primary border border-primary-subtle py-0.5 px-1.5 fw-semibold" style="font-size: 0.71rem;"><i class="bi bi-collection me-1"></i>${numCourses} asignaturas</span>`
+          : `<small class="text-muted" style="font-size: 0.74rem;">${t.escuelas}</small>`;
+
+        rowsHtml += `
+          <td class="text-muted small text-center align-middle" rowspan="${numCourses}" style="background-color: #FAFCFE; border-right: 1px solid #EEF2F6;">${idx + 1}</td>
+          <td class="align-middle" rowspan="${numCourses}" style="background-color: #FAFCFE; border-right: 1px solid #EEF2F6;">
+            <div class="fw-bold text-dark">${t.nombre}</div>
+            ${subtext}
+          </td>
+        `;
+      }
+
+      // Información específica de la Asignatura
+      const cicloBadge = cd.ciclos ? `<span class="badge bg-light text-secondary border py-0.5 px-1.5 ms-1" style="font-size: 0.7rem;">Ciclo ${cd.ciclos}</span>` : '';
+      const gruposText = cd.grupos ? ` • ${cd.grupos} grupo(s)` : '';
+
+      rowsHtml += `
+        <td class="align-middle py-2">
+          <div class="fw-semibold text-dark" style="font-size: 0.85rem;">
+            ${numCourses > 1 ? '<i class="bi bi-arrow-return-right text-primary me-1.5"></i>' : ''}${cd.nombre}
+            ${cicloBadge}
+          </div>
+          <small class="text-muted" style="font-size: 0.73rem;">${cd.escuelas}${gruposText}</small>
         </td>
-        <td class="small text-secondary" style="max-width: 240px; white-space: normal; line-height: 1.3;">
-          ${t.cursos}
-        </td>
-        <td class="text-center">${formatMod(t.modulos.Set)}</td>
-        <td class="text-center">${formatMod(t.modulos.Oct)}</td>
-        <td class="text-center">${formatMod(t.modulos.Nov)}</td>
-        <td class="text-center">${formatMod(t.modulos.Dic)}</td>
-        <td class="text-center fw-bold fs-6">${t.activeModulesCount} <span class="text-muted" style="font-size: 0.72rem;">/ 4</span></td>
-        <td class="text-center">${estadoBadge}</td>
-        <td class="text-center">${aprobacionBadge}</td>
-      </tr>
-    `;
-  }).join('');
+        <td class="text-center align-middle">${formatMod(cd.modulos.Set)}</td>
+        <td class="text-center align-middle">${formatMod(cd.modulos.Oct)}</td>
+        <td class="text-center align-middle">${formatMod(cd.modulos.Nov)}</td>
+        <td class="text-center align-middle">${formatMod(cd.modulos.Dic)}</td>
+        <td class="text-center align-middle fw-bold fs-6">${cd.activeModulesCount} <span class="text-muted" style="font-size: 0.72rem;">/ 4</span></td>
+      `;
+
+      // Estado y Aprobación consolidados del Docente
+      if (cIdx === 0) {
+        rowsHtml += `
+          <td class="text-center align-middle" rowspan="${numCourses}" style="background-color: #FAFCFE; border-left: 1px solid #EEF2F6;">
+            ${estadoBadge}
+            ${numCourses > 1 ? `<div class="text-muted small mt-1 fw-semibold" style="font-size: 0.72rem;">Carga Total: ${t.activeModulesCount}/4</div>` : ''}
+          </td>
+          <td class="text-center align-middle" rowspan="${numCourses}" style="background-color: #FAFCFE;">${aprobacionBadge}</td>
+        `;
+      }
+
+      rowsHtml += `</tr>`;
+    });
+  });
+
+  tbody.innerHTML = rowsHtml;
 }
 
 /**
@@ -1048,9 +1095,15 @@ function exportMatrixCsv() {
     exportGeneralCsv();
   } else {
     if (!analytics || analytics.teachers.length === 0) return;
-    let csv = "Docente,Cursos Asignados,Escuelas,Set,Oct,Nov,Dic,Total Modulos,Estado,Aprobacion\n";
+    let csv = "Docente,Asignatura,Escuelas,Ciclo,Set,Oct,Nov,Dic,Meses Asignatura,Total Docente,Estado,Aprobacion\n";
     analytics.teachers.forEach(t => {
-      csv += `"${t.nombre}","${t.cursos}","${t.escuelas}",${t.modulos.Set > 0 ? 'SI' : 'NO'},${t.modulos.Oct > 0 ? 'SI' : 'NO'},${t.modulos.Nov > 0 ? 'SI' : 'NO'},${t.modulos.Dic > 0 ? 'SI' : 'NO'},${t.activeModulesCount},"${t.estadoText}","${t.todoAprobado ? 'APROBADO' : 'CON RECHAZOS'}"\n`;
+      if (t.cursosDetalle && t.cursosDetalle.length > 0) {
+        t.cursosDetalle.forEach(cd => {
+          csv += `"${t.nombre}","${cd.nombre}","${cd.escuelas}","${cd.ciclos}",${cd.modulos.Set > 0 ? 'SI' : 'NO'},${cd.modulos.Oct > 0 ? 'SI' : 'NO'},${cd.modulos.Nov > 0 ? 'SI' : 'NO'},${cd.modulos.Dic > 0 ? 'SI' : 'NO'},${cd.activeModulesCount},${t.activeModulesCount},"${t.estadoText}","${t.todoAprobado ? 'APROBADO' : 'OBSERVADO'}"\n`;
+        });
+      } else {
+        csv += `"${t.nombre}","${t.cursos}","${t.escuelas}","",${t.modulos.Set > 0 ? 'SI' : 'NO'},${t.modulos.Oct > 0 ? 'SI' : 'NO'},${t.modulos.Nov > 0 ? 'SI' : 'NO'},${t.modulos.Dic > 0 ? 'SI' : 'NO'},${t.activeModulesCount},${t.activeModulesCount},"${t.estadoText}","${t.todoAprobado ? 'APROBADO' : 'OBSERVADO'}"\n`;
+      }
     });
     downloadBlob(csv, "Reporte_Matriz_Modular_Docentes.csv", "text/csv;charset=utf-8;");
   }
