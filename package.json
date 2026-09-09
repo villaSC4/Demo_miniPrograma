@@ -1,0 +1,12 @@
+{
+  "name": "minisistema-academico-modular",
+  "version": "1.0.0",
+  "description": "Sistema de Gestión Académica y Control Modular de Cargas Docentes",
+  "main": "index.html",
+  "scripts": {
+    "start": "python server.py"
+  },
+  "keywords": ["academico", "modular", "gestion", "docentes"],
+  "author": "",
+  "license": "MIT"
+}

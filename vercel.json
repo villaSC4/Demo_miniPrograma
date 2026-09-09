@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "routes": [
+    {
+      "src": "/api/reset",
+      "dest": "/api/grupos.js"
+    },
+    {
+      "src": "/api/grupos",
+      "dest": "/api/grupos.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ]
+}

@@ -1,0 +1,292 @@
+/**
+ * ==============================================================================
+ * CUSTOM.CSS - Diseño Moderno, Elegante, Centrado y de Alta Legibilidad
+ * Paleta Institucional: Deep Navy (#0A2240) y Red Accent (#BE1E2D)
+ * ==============================================================================
+ */
+
+:root {
+  --app-navy-dark: #071A30;
+  --app-navy: #0B2545;
+  --app-navy-light: #133B6B;
+  --app-red: #BE1E2D;
+  --app-red-hover: #9E1824;
+  --app-red-soft: #FDE8E9;
+  --app-green: #198754;
+  --app-green-soft: #E8F5E9;
+  --app-amber: #B45309;
+  --app-amber-soft: #FEF3C7;
+  --app-border: #E2E8F0;
+  --app-border-subtle: #EDF2F7;
+  --app-bg: #F5F7FB;
+  --app-card-bg: #FFFFFF;
+  --app-text-main: #1E293B;
+  --app-text-muted: #64748B;
+}
+
+/* Tipografía y Escala Natural (Sin zoom artificial) */
+html {
+  font-size: 14px;
+}
+
+body {
+  background-color: var(--app-bg);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  color: var(--app-text-main);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Contenedor Centrado Proporcional (~80-85% del ancho en pantallas grandes) */
+.app-container {
+  max-width: 1360px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 1.25rem 0.5rem 2.5rem;
+}
+
+@media (min-width: 1600px) {
+  .app-container {
+    max-width: 1400px;
+    width: 82%;
+  }
+}
+
+/* Navbar Elegante */
+.app-navbar {
+  background: linear-gradient(135deg, var(--app-navy-dark) 0%, var(--app-navy) 65%, var(--app-navy-light) 100%);
+  border-bottom: 3px solid var(--app-red);
+}
+
+.brand-badge {
+  background: var(--app-red);
+  color: #FFFFFF;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(190, 30, 45, 0.35);
+}
+
+/* Tarjetas KPI Modernas */
+.kpi-card {
+  background: var(--app-card-bg);
+  border: 1px solid var(--app-border);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 2px 10px rgba(11, 37, 69, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(11, 37, 69, 0.08);
+}
+
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3.5px;
+  background: var(--app-navy);
+}
+
+.kpi-card.kpi-success::before { background: var(--app-green); }
+.kpi-card.kpi-warning::before { background: #EAA824; }
+.kpi-card.kpi-danger::before  { background: var(--app-red); }
+
+.kpi-title {
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--app-text-muted);
+}
+
+.kpi-value {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.85rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--app-navy-dark);
+}
+
+.kpi-subtext {
+  font-size: 0.74rem;
+  color: var(--app-text-muted);
+  margin-top: 0.25rem;
+}
+
+/* Tarjetas de Contenido y Tableros */
+.content-card {
+  background: var(--app-card-bg);
+  border: 1px solid var(--app-border);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(11, 37, 69, 0.04);
+}
+
+/* Pestañas Segmentadas Modernas */
+.nav-segmented {
+  background-color: #EEF2F6;
+  padding: 0.35rem;
+  border-radius: 10px;
+  display: inline-flex;
+  gap: 0.3rem;
+  border: none;
+}
+
+.nav-segmented .nav-link {
+  border: none;
+  border-radius: 8px;
+  color: #475569;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.45rem 1rem;
+  transition: all 0.2s ease;
+}
+
+.nav-segmented .nav-link:hover {
+  color: var(--app-navy);
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+.nav-segmented .nav-link.active {
+  background-color: #FFFFFF;
+  color: var(--app-navy-dark);
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(11, 37, 69, 0.08);
+}
+
+.nav-segmented .nav-link.active .badge {
+  background-color: var(--app-navy) !important;
+  color: #FFFFFF !important;
+}
+
+/* Tablas Modernas y Legibles */
+.app-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.app-table thead th {
+  background-color: #F8FAFC;
+  color: var(--app-navy);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.75rem 0.9rem;
+  border-bottom: 2px solid var(--app-border);
+  border-top: none;
+}
+
+.app-table tbody td {
+  padding: 0.7rem 0.9rem;
+  font-size: 0.84rem;
+  border-bottom: 1px solid var(--app-border-subtle);
+  vertical-align: middle;
+}
+
+.app-table tbody tr:hover {
+  background-color: #F8FAFC;
+}
+
+.app-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Indicadores Circulares de Módulos */
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.status-active {
+  background-color: var(--app-green-soft);
+  color: var(--app-green);
+  border: 1px solid rgba(25, 135, 84, 0.2);
+}
+
+.status-inactive {
+  background-color: #F1F5F9;
+  color: #94A3B8;
+  border: 1px solid #E2E8F0;
+}
+
+/* Controles de Formulario */
+.form-select, .form-control {
+  border-radius: 8px;
+  border-color: var(--app-border);
+  font-size: 0.84rem;
+}
+
+.form-select:focus, .form-control:focus {
+  border-color: var(--app-navy-light);
+  box-shadow: 0 0 0 3px rgba(11, 37, 69, 0.08);
+}
+
+/* Botones con estilo elegante */
+.btn-primary-app {
+  background-color: var(--app-red);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-primary-app:hover {
+  background-color: var(--app-red-hover);
+  color: #FFFFFF;
+}
+
+.btn-secondary-app {
+  background-color: var(--app-navy);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.btn-secondary-app:hover {
+  background-color: var(--app-navy-light);
+  color: #FFFFFF;
+}
+
+/* Tarjetas de Auditoría */
+.audit-card-item {
+  border-radius: 10px;
+  border: 1px solid var(--app-border);
+  border-left-width: 4px !important;
+  background-color: #FFFFFF;
+  padding: 1rem 1.15rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+}
+
+.audit-card-item.border-danger {
+  border-left-color: var(--app-red) !important;
+  background: linear-gradient(to right, #FFF8F8, #FFFFFF);
+}
+
+.audit-card-item.border-warning {
+  border-left-color: #EAA824 !important;
+  background: linear-gradient(to right, #FFFCF2, #FFFFFF);
+}
+
+.audit-card-item.border-primary {
+  border-left-color: var(--app-navy) !important;
+  background: linear-gradient(to right, #F8FAFD, #FFFFFF);
+}

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión Académica & Auditoría Modular</title>
+  <meta name="description" content="Plataforma moderna de análisis de programación académica, cobertura docente y vacantes.">
+  
+  <!-- Tipografía Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Bootstrap 5 CSS -->
+  <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+  
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="vendor/icons/bootstrap-icons.min.css">
+  
+  <!-- Estilos Personalizados Modernos -->
+  <link rel="stylesheet" href="css/custom.css">
+</head>
+<body>
+
+  <!-- NAVBAR INSTITUCIONAL ELEGANTE -->
+  <nav class="navbar navbar-dark app-navbar py-2 px-3 shadow-sm sticky-top">
+    <div class="container-fluid" style="max-width: 1360px;">
+      <div class="d-flex align-items-center gap-2.5">
+        <div class="brand-badge">SGA</div>
+        <div>
+          <h1 class="h6 mb-0 text-white fw-bold">Sistema de Gestión Académica</h1>
+          <small class="text-white-50" style="font-size: 0.75rem;">Programación Semestral Modular • Semestre 2026-II</small>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-white text-dark px-2.5 py-1.5 fw-semibold border d-none d-md-inline" id="activeDatasetBadge" style="font-size: 0.78rem;">
+          <i class="bi bi-file-earmark-check text-primary me-1"></i> Programación Oficial
+        </span>
+        <span class="badge bg-success-subtle text-success px-2 py-1.5 fw-semibold border border-success-subtle d-none d-lg-inline" id="storageStatusBadge" style="font-size: 0.76rem;" title="Los cambios se guardan permanentemente en archivo físico">
+          <i class="bi bi-hdd-fill me-1"></i> Archivo Guardado
+        </span>
+        
+        <input type="file" id="excelFileInput" accept=".xlsx, .xls" class="d-none">
+        <button class="btn btn-sm btn-outline-light py-1 px-2.5" onclick="document.getElementById('excelFileInput').click();" title="Subir archivo Excel para actualizar">
+          <i class="bi bi-cloud-arrow-up me-1"></i> Subir Excel
+        </button>
+        <button id="btnDownloadTemplate" class="btn btn-sm btn-outline-light py-1 px-2.5" title="Descargar plantilla Excel vacía con ejemplos para importar datos">
+          <i class="bi bi-file-earmark-spreadsheet me-1"></i> Plantilla Excel
+        </button>
+        <button id="btnLoadDemo" class="btn btn-sm btn-outline-light py-1 px-2" title="Restaurar datos base oficial de 128 grupos">
+          <i class="bi bi-arrow-repeat"></i> Restaurar
+        </button>
+        <button id="btnDownloadExcel" class="btn btn-sm btn-success py-1 px-2.5 fw-semibold shadow-sm" title="Descargar archivo Excel con todas las asignaciones">
+          <i class="bi bi-download me-1"></i> Descargar Excel
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENEDOR PRINCIPAL CENTRADO (PROPORCIONAL ~80%) -->
+  <main class="app-container">
+
+    <!-- FEEDBACK DE ACCIONES (ALERTA) -->
+    <div id="uploadAlert" style="display: none;" class="mb-3"></div>
+
+    <!-- 1. FILA DE INDICADORES CLAVE (KPIS) -->
+    <div class="row g-3 mb-3">
+      <div class="col-xl col-md-4 col-sm-6">
+        <div class="kpi-card">
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="kpi-title">Grupos Totales</span>
+            <i class="bi bi-layers text-primary fs-5"></i>
+          </div>
+          <div class="kpi-value" id="kpiTotalGrupos">128</div>
+          <div class="kpi-subtext">2 Escuelas • 5 Ciclos</div>
+        </div>
+      </div>
+
+      <div class="col-xl col-md-4 col-sm-6">
+        <div class="kpi-card kpi-success">
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="kpi-title text-success">Docentes Completos</span>
+            <i class="bi bi-check2-circle text-success fs-5"></i>
+          </div>
+          <div class="kpi-value text-success" id="kpiDocentesCompletos">9</div>
+          <div class="kpi-subtext">4 meses asignados (4/4)</div>
+        </div>
+      </div>
+
+      <div class="col-xl col-md-4 col-sm-6">
+        <div class="kpi-card kpi-warning">
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="kpi-title text-warning text-dark">Docentes Incompletos</span>
+            <i class="bi bi-clock-history text-warning fs-5"></i>
+          </div>
+          <div class="kpi-value text-warning text-dark" id="kpiDocentesIncompletos">9</div>
+          <div class="kpi-subtext">Con 1 a 3 meses asignados</div>
+        </div>
+      </div>
+
+      <div class="col-xl col-md-4 col-sm-6">
+        <div class="kpi-card kpi-danger">
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="kpi-title text-danger">Grupos Vacantes</span>
+            <i class="bi bi-person-x text-danger fs-5"></i>
+          </div>
+          <div class="kpi-value text-danger" id="kpiGruposVacantes">35</div>
+          <div class="kpi-subtext text-danger fw-semibold" id="kpiAlumnosAfectados">(1,385 alumnos)</div>
+        </div>
+      </div>
+
+      <div class="col-xl col-md-4 col-sm-6">
+        <div class="kpi-card kpi-danger">
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="kpi-title text-danger">Sin Visto Bueno</span>
+            <i class="bi bi-shield-x text-danger fs-5"></i>
+          </div>
+          <div class="kpi-value text-danger" id="kpiSinVistoBueno">44</div>
+          <div class="kpi-subtext">VBDA / VBDG = NO</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. BARRA DE FILTRADO Y BÚSQUEDA -->
+    <div class="content-card p-3 mb-3">
+      <div class="row g-2.5 align-items-center">
+        <div class="col-lg-4 col-md-6">
+          <div class="input-group input-group-sm">
+            <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-search"></i></span>
+            <input type="text" id="filterSearch" class="form-control form-control-sm border-start-0 ps-1" placeholder="Buscar curso, profesor, sección...">
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+          <select id="filterEscuela" class="form-select form-select-sm">
+            <option value="ALL">Todas las Escuelas</option>
+          </select>
+        </div>
+
+        <div class="col-lg-2 col-md-4">
+          <select id="filterModulo" class="form-select form-select-sm">
+            <option value="ALL">Todos los Módulos</option>
+            <option value="Set">Setiembre</option>
+            <option value="Oct">Octubre</option>
+            <option value="Nov">Noviembre</option>
+            <option value="Dic">Diciembre</option>
+          </select>
+        </div>
+
+        <div class="col-lg-3 col-md-8">
+          <div class="d-flex align-items-center gap-2">
+            <select id="filterDocente" class="form-select form-select-sm">
+              <option value="ALL">Todos (Asignados y Vacantes)</option>
+              <option value="CON_DOCENTE">Solo con Docente</option>
+              <option value="VACANTE">Solo Vacantes</option>
+            </select>
+            <button id="btnResetFilters" class="btn btn-outline-secondary btn-sm px-2 py-1" style="font-size: 0.8rem; white-space: nowrap;" title="Restablecer filtros">
+              <i class="bi bi-arrow-counterclockwise"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center pt-2 mt-2 border-top" style="font-size: 0.78rem;">
+        <span class="text-muted" id="filterStatsText">Mostrando 128 de 128 grupos (6,397 alumnos)</span>
+        <span class="text-muted">Filtros transversales activos</span>
+      </div>
+    </div>
+
+    <!-- 3. CONTENEDOR DE TABLAS Y VISTAS -->
+    <div class="content-card p-3">
+      
+      <!-- Selector de Pestañas Segmentado -->
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom">
+        <ul class="nav nav-segmented" id="mainTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="matriz-tab" data-bs-toggle="pill" data-bs-target="#tab-matriz" type="button" role="tab">
+              <i class="bi bi-calendar4-week me-1.5"></i> Matriz Modular Docente
+              <span class="badge bg-secondary-subtle text-secondary ms-1" id="badgeTabMatriz">18</span>
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="vacantes-tab" data-bs-toggle="pill" data-bs-target="#tab-vacantes" type="button" role="tab">
+              <i class="bi bi-briefcase me-1.5 text-danger"></i> Bolsa de Vacantes
+              <span class="badge bg-danger-subtle text-danger ms-1" id="badgeTabVacantes">35</span>
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="general-tab" data-bs-toggle="pill" data-bs-target="#tab-general" type="button" role="tab">
+              <i class="bi bi-card-checklist me-1.5"></i> Todos los Grupos
+              <span class="badge bg-light text-secondary border ms-1" id="badgeTabGeneral">128</span>
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="auditoria-tab" data-bs-toggle="pill" data-bs-target="#tab-auditoria" type="button" role="tab">
+              <i class="bi bi-shield-exclamation me-1.5 text-warning"></i> Observaciones
+              <span class="badge bg-danger ms-1" id="badgeTabAuditoria">6</span>
+            </button>
+          </li>
+        </ul>
+
+        <div class="d-flex align-items-center gap-2">
+          <button id="btnOpenNewGroupModal" class="btn btn-primary-app btn-sm py-1 px-3 fw-semibold" style="font-size: 0.8rem;" title="Añadir nuevo grupo de clase">
+            <i class="bi bi-plus-lg me-1"></i> Añadir Grupo
+          </button>
+          <button id="btnExportMatrixCsv" class="btn btn-outline-secondary btn-sm py-1 px-2.5 fw-semibold" style="font-size: 0.8rem;">
+            <i class="bi bi-file-earmark-arrow-down me-1"></i> Exportar CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- Contenido de Pestañas -->
+      <div class="tab-content" id="mainTabContent">
+
+        <!-- PESTAÑA 1: MATRIZ MODULAR DOCENTE -->
+        <div class="tab-pane fade show active" id="tab-matriz" role="tabpanel">
+          <div class="table-responsive" style="max-height: 560px;">
+            <table class="table table-hover align-middle app-table mb-0">
+              <thead class="sticky-top">
+                <tr>
+                  <th style="width: 45px;" class="text-center">#</th>
+                  <th>Docente</th>
+                  <th>Asignaturas Asignadas</th>
+                  <th class="text-center" style="width: 55px;">Set</th>
+                  <th class="text-center" style="width: 55px;">Oct</th>
+                  <th class="text-center" style="width: 55px;">Nov</th>
+                  <th class="text-center" style="width: 55px;">Dic</th>
+                  <th class="text-center" style="width: 65px;">Total</th>
+                  <th class="text-center" style="width: 110px;">Estado</th>
+                  <th class="text-center" style="width: 115px;">Aprobación</th>
+                </tr>
+              </thead>
+              <tbody id="matrixTableBody">
+                <!-- Rellenado dinámico -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- PESTAÑA 2: BOLSA DE VACANTES -->
+        <div class="tab-pane fade" id="tab-vacantes" role="tabpanel">
+          <div class="table-responsive" style="max-height: 560px;">
+            <table class="table table-hover align-middle app-table mb-0">
+              <thead class="sticky-top">
+                <tr>
+                  <th style="width: 70px;">Módulo</th>
+                  <th>Escuela</th>
+                  <th class="text-center" style="width: 50px;">Ciclo</th>
+                  <th>Asignatura</th>
+                  <th style="width: 65px;">Secc.</th>
+                  <th style="width: 75px;">Tipo</th>
+                  <th class="text-end" style="width: 70px;">Matr.</th>
+                  <th>Periodo</th>
+                  <th>Docentes con Disponibilidad Libre</th>
+                  <th class="text-center" style="width: 90px;">Acción</th>
+                </tr>
+              </thead>
+              <tbody id="vacanciesTableBody">
+                <!-- Rellenado dinámico -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- PESTAÑA 3: TODOS LOS GRUPOS -->
+        <div class="tab-pane fade" id="tab-general" role="tabpanel">
+          <div class="table-responsive" style="max-height: 560px;">
+            <table class="table table-hover align-middle app-table mb-0">
+              <thead class="sticky-top">
+                <tr>
+                  <th style="width: 45px;" class="text-center">#</th>
+                  <th>Escuela</th>
+                  <th class="text-center" style="width: 50px;">Ciclo</th>
+                  <th>Asignatura</th>
+                  <th style="width: 60px;">Secc.</th>
+                  <th style="width: 70px;">Tipo</th>
+                  <th class="text-end" style="width: 65px;">Matr.</th>
+                  <th>Docente Asignado</th>
+                  <th class="text-center" style="width: 60px;">VBDA</th>
+                  <th class="text-center" style="width: 60px;">VBDG</th>
+                  <th class="text-center" style="width: 75px;">Aprobado</th>
+                  <th style="width: 90px;">Inicio</th>
+                  <th class="text-center" style="width: 95px;">Acción</th>
+                </tr>
+              </thead>
+              <tbody id="generalTableBody">
+                <!-- Rellenado dinámico -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- PESTAÑA 4: OBSERVACIONES DE AUDITORÍA -->
+        <div class="tab-pane fade" id="tab-auditoria" role="tabpanel">
+          <div class="row g-3" id="auditCardsContainer">
+            <!-- Rellenado dinámico -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL DE ASIGNACIÓN Y EDICIÓN -->
+  <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 12px;">
+        <div class="modal-header py-2.5 px-3.5 bg-light">
+          <div>
+            <h6 class="modal-title fw-bold text-dark mb-0" id="modalGroupTitle">Asignar Docente</h6>
+            <small class="text-muted" id="modalGroupMeta" style="font-size: 0.75rem;"></small>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body py-3 px-3.5">
+          <input type="hidden" id="modalGroupId">
+
+          <div class="mb-3">
+            <label for="modalTeacherSelect" class="form-label small fw-bold text-dark mb-1">Docente a Asignar</label>
+            <select id="modalTeacherSelect" class="form-select form-select-sm mb-1.5">
+              <option value="">-- Seleccionar Docente de la Nómina --</option>
+            </select>
+            <label for="modalCustomTeacher" class="form-label text-muted small mb-1" style="font-size: 0.73rem;">O ingresar docente nuevo / externo:</label>
+            <input type="text" id="modalCustomTeacher" class="form-control form-control-sm" placeholder="APELLIDOS Y NOMBRES">
+          </div>
+
+          <div class="row g-2">
+            <div class="col-6">
+              <label for="modalSelectVBDA" class="form-label small fw-bold text-dark mb-1">Visto Bueno</label>
+              <select id="modalSelectVBDA" class="form-select form-select-sm">
+                <option value="SI">SI (Conforme)</option>
+                <option value="NO">NO (Observado)</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label for="modalSelectAprobado" class="form-label small fw-bold text-dark mb-1">Estado de Aprobación</label>
+              <select id="modalSelectAprobado" class="form-select form-select-sm">
+                <option value="SI">SI (Aprobado)</option>
+                <option value="NO">NO (Rechazado)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer py-2 px-3.5 bg-light d-flex justify-content-between">
+          <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-3" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" id="btnSaveModalChanges" class="btn btn-primary-app btn-sm py-1 px-3.5">
+            <i class="bi bi-check2 me-1"></i> Guardar Cambios
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE AÑADIR NUEVO GRUPO -->
+  <div class="modal fade" id="newGroupModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 620px;">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 12px;">
+        <div class="modal-header py-2.5 px-3.5 bg-light">
+          <div class="d-flex align-items-center gap-2">
+            <div class="brand-badge" style="width: 26px; height: 26px; font-size: 0.75rem;"><i class="bi bi-plus-lg"></i></div>
+            <div>
+              <h6 class="modal-title fw-bold text-dark mb-0">Añadir Nuevo Grupo Académico</h6>
+              <small class="text-muted" style="font-size: 0.75rem;">Se guardará permanentemente en el archivo físico y en memoria</small>
+            </div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="formNewGroup">
+          <div class="modal-body py-3 px-3.5">
+            <div class="row g-2.5 mb-2.5">
+              <div class="col-md-7">
+                <label for="newGroupEscuela" class="form-label small fw-bold text-dark mb-1">Escuela Profesional <span class="text-danger">*</span></label>
+                <select id="newGroupEscuela" class="form-select form-select-sm" required>
+                  <option value="INGENIERIA DE SISTEMAS">INGENIERIA DE SISTEMAS</option>
+                  <option value="INGENIERIA INDUSTRIAL">INGENIERIA INDUSTRIAL</option>
+                  <option value="OTRA">Otra Escuela...</option>
+                </select>
+                <input type="text" id="newGroupCustomEscuela" class="form-control form-control-sm mt-1 d-none" placeholder="Nombre de otra escuela">
+              </div>
+              <div class="col-md-5">
+                <label for="newGroupCiclo" class="form-label small fw-bold text-dark mb-1">Ciclo <span class="text-danger">*</span></label>
+                <select id="newGroupCiclo" class="form-select form-select-sm" required>
+                  <option value="1">Ciclo 1</option>
+                  <option value="2">Ciclo 2</option>
+                  <option value="3">Ciclo 3</option>
+                  <option value="4">Ciclo 4</option>
+                  <option value="5">Ciclo 5</option>
+                  <option value="6">Ciclo 6</option>
+                  <option value="7">Ciclo 7</option>
+                  <option value="8">Ciclo 8</option>
+                  <option value="9">Ciclo 9</option>
+                  <option value="10">Ciclo 10</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mb-2.5">
+              <label for="newGroupCurso" class="form-label small fw-bold text-dark mb-1">Experiencia Curricular / Asignatura <span class="text-danger">*</span></label>
+              <input type="text" id="newGroupCurso" class="form-control form-control-sm" placeholder="Ej. ARQUITECTURA DE COMPUTADORAS" required>
+            </div>
+
+            <div class="row g-2.5 mb-2.5">
+              <div class="col-md-4">
+                <label for="newGroupSeccion" class="form-label small fw-bold text-dark mb-1">Sección <span class="text-danger">*</span></label>
+                <input type="text" id="newGroupSeccion" class="form-control form-control-sm" placeholder="Ej. B1, B2, A1" required>
+              </div>
+              <div class="col-md-4">
+                <label for="newGroupTipo" class="form-label small fw-bold text-dark mb-1">Tipo de Grupo <span class="text-danger">*</span></label>
+                <select id="newGroupTipo" class="form-select form-select-sm" required>
+                  <option value="TEORIA">TEORIA</option>
+                  <option value="PRACTICA">PRACTICA</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="newGroupMatriculados" class="form-label small fw-bold text-dark mb-1">N° Matriculados <span class="text-danger">*</span></label>
+                <input type="number" id="newGroupMatriculados" class="form-control form-control-sm" value="40" min="1" max="200" required>
+              </div>
+            </div>
+
+            <div class="p-2.5 bg-light rounded-2 border mb-2.5">
+              <div class="row g-2">
+                <div class="col-md-4">
+                  <label for="newGroupModulo" class="form-label small fw-bold text-dark mb-1">Módulo Académico <span class="text-danger">*</span></label>
+                  <select id="newGroupModulo" class="form-select form-select-sm" required>
+                    <option value="Set">Setiembre (Set)</option>
+                    <option value="Oct">Octubre (Oct)</option>
+                    <option value="Nov">Noviembre (Nov)</option>
+                    <option value="Dic">Diciembre (Dic)</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label for="newGroupInicio" class="form-label small fw-bold text-dark mb-1">Fecha Inicio</label>
+                  <input type="text" id="newGroupInicio" class="form-control form-control-sm" value="01-09-2026" required>
+                </div>
+                <div class="col-md-4">
+                  <label for="newGroupTermino" class="form-label small fw-bold text-dark mb-1">Fecha Término</label>
+                  <input type="text" id="newGroupTermino" class="form-control form-control-sm" value="03-10-2026" required>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-2.5">
+              <label for="newGroupDocenteSelect" class="form-label small fw-bold text-dark mb-1">Docente Asignado</label>
+              <select id="newGroupDocenteSelect" class="form-select form-select-sm mb-1.5">
+                <option value="">-- Dejar como Vacante (Sin Docente Asignado) --</option>
+              </select>
+              <input type="text" id="newGroupCustomDocente" class="form-control form-control-sm" placeholder="O escribir nombre de nuevo docente (APELLIDOS Y NOMBRES)">
+            </div>
+
+            <div class="row g-2.5">
+              <div class="col-md-6">
+                <label for="newGroupVBDA" class="form-label small fw-bold text-dark mb-1">Visto Bueno (VBDA / VBDG)</label>
+                <select id="newGroupVBDA" class="form-select form-select-sm">
+                  <option value="SI">SI (Conforme)</option>
+                  <option value="NO">NO (Observado)</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="newGroupAprobado" class="form-label small fw-bold text-dark mb-1">Aprobación Oficial</label>
+                <select id="newGroupAprobado" class="form-select form-select-sm">
+                  <option value="SI">SI (Aprobado)</option>
+                  <option value="NO">NO (Rechazado)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer py-2 px-3.5 bg-light d-flex justify-content-between">
+            <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-3" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" id="btnSaveNewGroup" class="btn btn-primary-app btn-sm py-1 px-3.5">
+              <i class="bi bi-check2-circle me-1"></i> Guardar y Añadir Grupo
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="text-center text-muted py-3 small" style="font-size: 0.75rem;">
+    Sistema de Gestión Académica Modular • Dirección Académica • 2026-II
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="vendor/xlsx/xlsx.full.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/parser.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
