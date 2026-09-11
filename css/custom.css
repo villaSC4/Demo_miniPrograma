@@ -290,3 +290,27 @@ body {
   border-left-color: var(--app-navy) !important;
   background: linear-gradient(to right, #F8FAFD, #FFFFFF);
 }
+
+/* Tarjetas de Selección de Modo de Importación */
+.import-mode-card {
+  border-color: #E2E8F0 !important;
+  transition: all 0.2s ease;
+}
+
+.import-mode-card:hover {
+  border-color: #94A3B8 !important;
+  background-color: #F8FAFC !important;
+}
+
+.import-mode-card.selected {
+  border-color: #0B2545 !important;
+  background-color: #F0F7FF !important;
+  box-shadow: 0 0 0 1.5px #0B2545;
+}
+
+/* Dropzone dragover */
+.drag-active {
+  border-color: #0B2545 !important;
+  background-color: #EBF3FC !important;
+}
+

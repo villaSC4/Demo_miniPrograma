@@ -33,34 +33,75 @@ const ExcelParser = (() => {
       throw new Error('El archivo Excel no contiene hojas de cálculo.');
     }
 
-    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-    const rawRows = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+    let allGroups = [];
+    let detectedType = 'general';
+    let processedSheets = 0;
 
-    if (!rawRows || rawRows.length < 2) {
-      throw new Error('El archivo Excel no contiene suficientes filas de datos.');
-    }
+    for (const sheetName of workbook.SheetNames) {
+      const lower = sheetName.toLowerCase();
+      if (lower.includes('instrucc') || lower.includes('guia') || lower.includes('readme') || lower.includes('valores')) {
+        continue;
+      }
 
-    // Detectar si es Formato Ejecutivo o General de Grupos
-    let isExecutive = false;
-    let headerIndex = -1;
+      const sheet = workbook.Sheets[sheetName];
+      if (!sheet) continue;
+      const rawRows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+      if (!rawRows || rawRows.length < 2) continue;
 
-    for (let r = 0; r < Math.min(6, rawRows.length); r++) {
-      const rowText = (rawRows[r] || []).map(c => String(c || '').toLowerCase()).join(' ');
-      if (rowText.includes('cursos asignados') && (rowText.includes('set') || rowText.includes('total'))) {
-        isExecutive = true;
-        headerIndex = r;
-        break;
-      } else if (rowText.includes('escuela') || rowText.includes('curso') || rowText.includes('experiencia') || rowText.includes('docente')) {
-        headerIndex = r;
-        break;
+      let isExecutive = false;
+      let headerIndex = -1;
+
+      for (let r = 0; r < Math.min(6, rawRows.length); r++) {
+        const rowText = (rawRows[r] || []).map(c => String(c || '').toLowerCase()).join(' ');
+        if (rowText.includes('cursos asignados') && (rowText.includes('set') || rowText.includes('total'))) {
+          isExecutive = true;
+          headerIndex = r;
+          break;
+        } else if (rowText.includes('escuela') || rowText.includes('curso') || rowText.includes('experiencia') || rowText.includes('docente')) {
+          headerIndex = r;
+          break;
+        }
+      }
+
+      if (headerIndex !== -1) {
+        if (isExecutive) {
+          const res = parseExecutiveReport(rawRows, headerIndex, `${fileName} [${sheetName}]`);
+          allGroups = allGroups.concat(res.groups);
+          detectedType = 'executive';
+          processedSheets++;
+        } else {
+          const res = parseGeneralGroupsReport(rawRows, headerIndex, `${fileName} [${sheetName}]`);
+          allGroups = allGroups.concat(res.groups);
+          processedSheets++;
+        }
       }
     }
 
-    if (isExecutive) {
-      return parseExecutiveReport(rawRows, headerIndex >= 0 ? headerIndex : 1, fileName);
-    } else {
-      return parseGeneralGroupsReport(rawRows, headerIndex >= 0 ? headerIndex : 0, fileName);
+    // Si no encontró cabeceras en el bucle anterior, usar la primera hoja por compatibilidad
+    if (allGroups.length === 0) {
+      const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rawRows = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+      if (rawRows && rawRows.length >= 2) {
+        const res = parseGeneralGroupsReport(rawRows, 0, fileName);
+        allGroups = res.groups;
+        processedSheets = 1;
+      }
     }
+
+    if (allGroups.length === 0) {
+      throw new Error(`El archivo ${fileName} no contiene filas de programación académica válidas.`);
+    }
+
+    // Reasignar correlativos
+    allGroups = allGroups.map((g, idx) => ({ ...g, id: idx }));
+
+    return {
+      fileName: fileName,
+      type: detectedType,
+      groups: allGroups,
+      sheetsCount: processedSheets,
+      summary: `${fileName}: ${allGroups.length} grupos cargados (${processedSheets} hoja/s procesada/s).`
+    };
   }
 
   /**

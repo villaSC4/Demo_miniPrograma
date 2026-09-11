@@ -1,0 +1,53 @@
+# ==============================================================================
+# .htaccess - Configuración Apache para Despliegue en cPanel
+# ==============================================================================
+
+# Página de inicio predeterminada
+DirectoryIndex index.html
+
+# Prevenir listado de directorios
+Options -Indexes
+
+# Configuración de Rutas y Reescribitura
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Rutas para la API de persistencia física
+    RewriteRule ^api/grupos/?$ api/grupos.php [L,QSA]
+    RewriteRule ^api/reset/?$ api/reset.php [L,QSA]
+</IfModule>
+
+# Tipos MIME y Codificación UTF-8
+<IfModule mod_mime.c>
+    AddDefaultCharset UTF-8
+    AddType application/json .json
+    AddType text/javascript .js
+    AddType text/css .css
+    AddType application/vnd.openxmlformats-officedocument.spreadsheetml.sheet .xlsx
+    AddType application/vnd.ms-excel .xls
+</IfModule>
+
+# Compresión GZIP / Deflate para carga ultra-rápida
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>
+
+# Caché de archivos estáticos para rendimiento óptimo
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+# Proteger archivos sensibles ocultos
+<FilesMatch "^\.">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>

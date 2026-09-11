@@ -1,0 +1,93 @@
+<?php
+/**
+ * api/grupos.php - Backend de Persistencia Física para cPanel / Apache / PHP
+ * Soporta operaciones GET (leer grupos) y POST (guardar grupos)
+ */
+header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
+$dataFile = __DIR__ . '/../data/grupos.json';
+$baseFile = __DIR__ . '/../data/grupos_base.json';
+
+// GET: Retornar los grupos desde el archivo físico
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if (file_exists($dataFile)) {
+        $content = file_get_contents($dataFile);
+        if ($content !== false && strlen(trim($content)) > 0) {
+            echo $content;
+            exit;
+        }
+    }
+    
+    if (file_exists($baseFile)) {
+        echo file_get_contents($baseFile);
+        exit;
+    }
+
+    echo json_encode([]);
+    exit;
+}
+
+// POST: Guardar los grupos en el archivo físico
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $rawInput = file_get_contents('php://input');
+    $decoded = json_decode($rawInput, true);
+
+    if (!is_array($decoded)) {
+        http_response_code(400);
+        echo json_encode([
+            'status' => 'error',
+            'error' => 'Se esperaba una lista de grupos en formato JSON'
+        ]);
+        exit;
+    }
+
+    // Verificar si es comando especial { action: 'reset' }
+    if (isset($decoded['action']) && $decoded['action'] === 'reset') {
+        if (file_exists($baseFile)) {
+            copy($baseFile, $dataFile);
+            $baseData = json_decode(file_get_contents($dataFile), true);
+            echo json_encode([
+                'status' => 'success',
+                'count' => is_array($baseData) ? count($baseData) : 128,
+                'message' => 'Datos restablecidos a la versión base oficial (128 grupos)'
+            ]);
+            exit;
+        }
+    }
+
+    // Asegurar directorio data con permisos correctos
+    $dataDir = dirname($dataFile);
+    if (!is_dir($dataDir)) {
+        @mkdir($dataDir, 0755, true);
+    }
+
+    // Guardar archivo físico formateado con UTF-8
+    $jsonString = json_encode($decoded, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    $bytesWritten = @file_put_contents($dataFile, $jsonString);
+
+    if ($bytesWritten !== false) {
+        echo json_encode([
+            'status' => 'success',
+            'count' => count($decoded),
+            'message' => 'Datos guardados permanentemente en archivo físico data/grupos.json'
+        ]);
+    } else {
+        http_response_code(500);
+        echo json_encode([
+            'status' => 'error',
+            'error' => 'No se pudo escribir en data/grupos.json. Verifique permisos de escritura en la carpeta data.'
+        ]);
+    }
+    exit;
+}
+
+http_response_code(405);
+echo json_encode(['status' => 'error', 'error' => 'Método no permitido']);

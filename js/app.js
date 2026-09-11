@@ -14,6 +14,8 @@ let filteredGroups = [];
 let analytics = null;
 let editModalInstance = null;
 let newGroupModalInstance = null;
+let importModalInstance = null;
+let pendingImportFilesData = [];
 let isServerConnected = false;
 
 // Inicialización al cargar el DOM
@@ -29,6 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
     newGroupModalInstance = new bootstrap.Modal(newGroupModalEl);
   }
 
+  const importModalEl = document.getElementById('importModal');
+  if (importModalEl && typeof bootstrap !== 'undefined') {
+    importModalInstance = new bootstrap.Modal(importModalEl);
+  }
+
   setupEventListeners();
 
   // Cargar datos iniciales con estrategia de persistencia física
@@ -36,14 +43,45 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
+ * Realiza peticiones adaptativas a la API
+ * Compatible con cPanel (raíz y subdirectorios), Apache mod_rewrite, PHP directo, Vercel y Python server
+ */
+async function callApi(endpoint, options = {}) {
+  const pathname = window.location.pathname;
+  const baseDir = pathname.substring(0, pathname.lastIndexOf('/'));
+  const cleanBase = (baseDir === '/' || baseDir === '') ? '' : baseDir;
+
+  // 1. Intentar ruta estándar limpia: /api/<endpoint>
+  const urlClean = `${cleanBase}/api/${endpoint}`.replace(/\/+/g, '/');
+  try {
+    const res = await fetch(urlClean, options);
+    if (res.ok) return res;
+    // Si da 404 (ej. cPanel sin mod_rewrite), intentar con extensión .php directamente
+    if (res.status === 404) {
+      const urlPhp = `${cleanBase}/api/${endpoint}.php`.replace(/\/+/g, '/');
+      const resPhp = await fetch(urlPhp, options);
+      if (resPhp.ok) return resPhp;
+    }
+    return res;
+  } catch (err) {
+    try {
+      const urlPhp = `${cleanBase}/api/${endpoint}.php`.replace(/\/+/g, '/');
+      return await fetch(urlPhp, options);
+    } catch (e) {
+      throw err;
+    }
+  }
+}
+
+/**
  * Carga de datos iniciales:
- * 1. Intenta leer el archivo físico desde el servidor (/api/grupos)
+ * 1. Intenta leer el archivo físico desde el servidor (callApi('grupos'))
  * 2. Si no hay servidor (modo estático), lee de LocalStorage
  * 3. Si es la primera vez, lee DEMO_GRUPOS_DATA
  */
 async function loadInitialData() {
   try {
-    const res = await fetch('/api/grupos');
+    const res = await callApi('grupos');
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
@@ -93,8 +131,8 @@ function persistGroups(showToast = true, toastMsg = 'Cambios guardados con éxit
     console.warn('Error al guardar en LocalStorage:', e);
   }
 
-  // 2. Guardar en archivo físico en disco mediante la API REST (servidor local o Vercel)
-  fetch('/api/grupos', {
+  // 2. Guardar en archivo físico en disco mediante la API REST (cPanel PHP, Python o Vercel)
+  callApi('grupos', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(allGroups)
@@ -167,36 +205,75 @@ function setupEventListeners() {
   // Botón descargar plantilla Excel de ejemplo / vacía
   document.getElementById('btnDownloadTemplate')?.addEventListener('click', downloadExcelTemplate);
 
-  // Selector de archivo Excel
+  // Selector de archivo Excel (uno o varios simultáneos)
   document.getElementById('excelFileInput')?.addEventListener('change', (e) => {
-    if (e.target.files && e.target.files[0]) {
-      processFile(e.target.files[0]);
+    if (e.target.files && e.target.files.length > 0) {
+      processFiles(Array.from(e.target.files));
+      e.target.value = '';
     }
   });
 
-  // Zona Drag & Drop
-  const dropzone = document.getElementById('dropzone');
-  if (dropzone) {
+  // Zona Drag & Drop dentro del modal de importación
+  const modalDropzone = document.getElementById('modalDropzone');
+  if (modalDropzone) {
+    modalDropzone.addEventListener('click', () => {
+      document.getElementById('excelFileInput')?.click();
+    });
     ['dragenter', 'dragover'].forEach(name => {
-      dropzone.addEventListener(name, (e) => {
+      modalDropzone.addEventListener(name, (e) => {
         e.preventDefault();
-        dropzone.classList.add('dragover');
+        modalDropzone.classList.add('drag-active');
       });
     });
     ['dragleave', 'drop'].forEach(name => {
-      dropzone.addEventListener(name, (e) => {
+      modalDropzone.addEventListener(name, (e) => {
         e.preventDefault();
-        dropzone.classList.remove('dragover');
+        modalDropzone.classList.remove('drag-active');
       });
     });
-    dropzone.addEventListener('drop', (e) => {
+    modalDropzone.addEventListener('drop', (e) => {
       e.preventDefault();
+      modalDropzone.classList.remove('drag-active');
       const files = e.dataTransfer.files;
       if (files && files.length > 0) {
-        processFile(files[0]);
+        processFiles(Array.from(files));
       }
     });
   }
+
+  // Tarjetas interactivas de selección de modo (Combinar o Reemplazar)
+  document.getElementById('cardModeMerge')?.addEventListener('click', () => {
+    const r = document.getElementById('radioModeMerge');
+    if (r) r.checked = true;
+    updateImportModeCards('MERGE');
+  });
+
+  document.getElementById('cardModeReplace')?.addEventListener('click', () => {
+    const r = document.getElementById('radioModeReplace');
+    if (r) r.checked = true;
+    updateImportModeCards('REPLACE');
+  });
+
+  document.getElementById('radioModeMerge')?.addEventListener('change', () => updateImportModeCards('MERGE'));
+  document.getElementById('radioModeReplace')?.addEventListener('change', () => updateImportModeCards('REPLACE'));
+
+  // Botón de confirmación de importación en el modal
+  document.getElementById('btnConfirmImport')?.addEventListener('click', confirmImport);
+
+  // Soporte global de arrastrar y soltar archivos Excel en la ventana
+  window.addEventListener('dragover', (e) => e.preventDefault());
+  window.addEventListener('drop', (e) => {
+    e.preventDefault();
+    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const excelFiles = Array.from(e.dataTransfer.files).filter(f => {
+        const n = f.name.toLowerCase();
+        return n.endsWith('.xlsx') || n.endsWith('.xls');
+      });
+      if (excelFiles.length > 0) {
+        processFiles(excelFiles);
+      }
+    }
+  });
 
   // Filtros Globales Prioritarios
   document.getElementById('filterSearch')?.addEventListener('input', applyFilters);
@@ -233,7 +310,7 @@ async function resetToOfficialBase() {
   showFeedback('Restableciendo base oficial...', 'info');
 
   try {
-    await fetch('/api/reset', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+    await callApi('reset', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
   } catch (e) {
     console.info('Servidor no disponible para reset, limpiando almacenamiento local.');
   }
@@ -249,26 +326,243 @@ async function resetToOfficialBase() {
 }
 
 /**
- * Procesar archivo Excel subido
+ * Procesar uno o varios archivos Excel seleccionados o arrastrados
  */
-function processFile(file) {
-  showFeedback('Leyendo y analizando archivo Excel...', 'info');
+async function processFiles(fileList) {
+  if (!fileList || fileList.length === 0) return;
 
-  const reader = new FileReader();
-  reader.onload = (e) => {
+  const validFiles = Array.from(fileList).filter(f => {
+    const name = f.name.toLowerCase();
+    return name.endsWith('.xlsx') || name.endsWith('.xls');
+  });
+
+  if (validFiles.length === 0) {
+    showFeedback('Por favor selecciona archivos con formato Excel (.xlsx o .xls).', 'warning');
+    return;
+  }
+
+  showFeedback(`Leyendo y analizando ${validFiles.length} archivo(s) Excel...`, 'info');
+
+  const parsedResults = [];
+  const errors = [];
+
+  for (const file of validFiles) {
     try {
-      const buffer = e.target.result;
-      const result = ExcelParser.parseWorkbook(buffer, file.name);
-
-      loadDataset(result.groups, `${file.name} (${result.groups.length} registros)`);
-      persistGroups(true, `Archivo ${file.name} procesado y guardado en archivo físico.`);
-      showFeedback(result.summary, 'success');
+      const buffer = await readFileAsArrayBuffer(file);
+      const res = ExcelParser.parseWorkbook(buffer, file.name);
+      parsedResults.push({
+        fileName: file.name,
+        fileSize: file.size,
+        groups: res.groups,
+        type: res.type,
+        sheetsCount: res.sheetsCount || 1,
+        summary: res.summary
+      });
     } catch (err) {
-      console.error(err);
-      showFeedback('Error al procesar archivo: ' + err.message, 'danger');
+      console.error(`Error procesando ${file.name}:`, err);
+      errors.push(`${file.name}: ${err.message}`);
     }
-  };
-  reader.readAsArrayBuffer(file);
+  }
+
+  if (parsedResults.length === 0) {
+    showFeedback('No se pudo procesar ningún archivo: ' + errors.join('; '), 'danger');
+    return;
+  }
+
+  if (errors.length > 0) {
+    showFeedback(`Advertencia en algunos archivos: ${errors.join('; ')}`, 'warning');
+  }
+
+  // Abrir modal interactivo para previsualizar y elegir modo de importación
+  openImportModal(parsedResults);
+}
+
+function readFileAsArrayBuffer(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => resolve(e.target.result);
+    reader.onerror = () => reject(new Error('Error de lectura en disco.'));
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+/**
+ * Abrir Modal de Confirmación y Previsualización de Importación Multi-archivo
+ */
+function openImportModal(parsedResults) {
+  if (parsedResults && parsedResults.length > 0) {
+    const existingNames = new Set(pendingImportFilesData.map(p => p.fileName));
+    const newOnes = parsedResults.filter(p => !existingNames.has(p.fileName));
+    pendingImportFilesData = pendingImportFilesData.concat(newOnes.length > 0 ? newOnes : parsedResults);
+  }
+
+  const countEl = document.getElementById('importFilesCount');
+  if (countEl) countEl.textContent = pendingImportFilesData.length;
+
+  const totalGroups = pendingImportFilesData.reduce((acc, curr) => acc + curr.groups.length, 0);
+  const badgeEl = document.getElementById('importTotalGroupsBadge');
+  if (badgeEl) badgeEl.textContent = `${totalGroups} grupos en total`;
+
+  const listEl = document.getElementById('importFilesList');
+  if (listEl) {
+    listEl.innerHTML = pendingImportFilesData.map((p, idx) => {
+      const sizeKb = Math.round(p.fileSize / 1024);
+      return `
+        <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-2.5">
+          <div class="d-flex align-items-center gap-2 text-truncate" style="max-width: 75%;">
+            <i class="bi bi-file-earmark-excel text-success fs-5"></i>
+            <div class="text-truncate">
+              <div class="fw-semibold text-dark text-truncate" style="font-size: 0.82rem;" title="${p.fileName}">${p.fileName}</div>
+              <small class="text-muted" style="font-size: 0.72rem;">${sizeKb} KB • ${p.sheetsCount} hoja(s) procesada(s)</small>
+            </div>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-light text-dark border fw-semibold" style="font-size: 0.74rem;">
+              ${p.groups.length} grupos
+            </span>
+            <button type="button" class="btn btn-outline-danger btn-sm p-0 px-1.5 border-0" title="Quitar archivo" onclick="removePendingFile(${idx})">
+              <i class="bi bi-x fs-6"></i>
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  const radioMerge = document.getElementById('radioModeMerge');
+  if (radioMerge) radioMerge.checked = true;
+  updateImportModeCards('MERGE');
+
+  if (importModalInstance) {
+    importModalInstance.show();
+  }
+}
+
+/**
+ * Quitar un archivo de la lista de importación pendiente
+ */
+function removePendingFile(index) {
+  pendingImportFilesData.splice(index, 1);
+  if (pendingImportFilesData.length === 0) {
+    if (importModalInstance) importModalInstance.hide();
+    return;
+  }
+  openImportModal([]);
+}
+
+/**
+ * Actualizar visualmente las tarjetas de selección de modo
+ */
+function updateImportModeCards(mode) {
+  const cardMerge = document.getElementById('cardModeMerge');
+  const cardReplace = document.getElementById('cardModeReplace');
+  if (cardMerge && cardReplace) {
+    cardMerge.classList.toggle('selected', mode === 'MERGE');
+    cardReplace.classList.toggle('selected', mode === 'REPLACE');
+  }
+}
+
+/**
+ * Confirmar Importación y Aplicar Cambios
+ */
+function confirmImport() {
+  if (!pendingImportFilesData || pendingImportFilesData.length === 0) return;
+
+  const mode = document.querySelector('input[name="importModeRadio"]:checked')?.value || 'MERGE';
+  
+  let incomingGroups = [];
+  pendingImportFilesData.forEach(p => {
+    incomingGroups = incomingGroups.concat(p.groups);
+  });
+
+  const filesCount = pendingImportFilesData.length;
+  const filesLabel = filesCount === 1 
+    ? pendingImportFilesData[0].fileName 
+    : `${filesCount} archivos combinados`;
+
+  if (mode === 'REPLACE') {
+    const deduplicated = deduplicateGroups(incomingGroups);
+    loadDataset(deduplicated, `${filesLabel} (${deduplicated.length} registros)`);
+    persistGroups(true, `Programación reemplazada con ${deduplicated.length} grupos de ${filesCount} archivo(s).`);
+  } else {
+    const { merged, addedCount, updatedCount } = mergeWithExistingGroups(allGroups, incomingGroups);
+    loadDataset(merged, `${filesLabel} (+${addedCount} nuevos, ${merged.length} totales)`);
+    persistGroups(true, `Importación combinada: +${addedCount} grupos nuevos, ${updatedCount} actualizados (${merged.length} totales).`);
+  }
+
+  if (importModalInstance) {
+    importModalInstance.hide();
+  }
+  pendingImportFilesData = [];
+}
+
+/**
+ * Firma única para reconocer un grupo académico sin ambigüedad
+ */
+function getGroupSignature(g) {
+  const esc = (g.escuela || '').trim().toUpperCase();
+  const cur = (g.curso || '').trim().toUpperCase();
+  const cic = String(g.ciclo || 0).trim();
+  const sec = (g.seccion || '').trim().toUpperCase();
+  const mod = (g.modulo || '').trim().toUpperCase();
+  const tip = (g.tipo_grupo || '').trim().toUpperCase();
+  return `${esc}|${cur}|${cic}|${sec}|${mod}|${tip}`;
+}
+
+/**
+ * Eliminar duplicados entre grupos
+ */
+function deduplicateGroups(groups) {
+  const map = new Map();
+  groups.forEach(g => {
+    const sig = getGroupSignature(g);
+    if (!map.has(sig)) {
+      map.set(sig, { ...g });
+    } else {
+      const cur = map.get(sig);
+      if (!cur.docente && g.docente) {
+        map.set(sig, { ...cur, ...g });
+      }
+    }
+  });
+  return Array.from(map.values()).map((g, idx) => ({ ...g, id: idx }));
+}
+
+/**
+ * Fusionar con grupos existentes
+ */
+function mergeWithExistingGroups(existing, incoming) {
+  const map = new Map();
+  existing.forEach(g => {
+    map.set(getGroupSignature(g), { ...g });
+  });
+
+  let addedCount = 0;
+  let updatedCount = 0;
+
+  incoming.forEach(ng => {
+    const sig = getGroupSignature(ng);
+    if (map.has(sig)) {
+      const ex = map.get(sig);
+      map.set(sig, {
+        ...ex,
+        matriculados: ng.matriculados || ex.matriculados,
+        docente: ng.docente || ex.docente,
+        vbda: ng.vbda || ex.vbda,
+        vbdg: ng.vbdg || ex.vbdg,
+        aprobado: ng.aprobado || ex.aprobado,
+        inicio: ng.inicio || ex.inicio,
+        termino: ng.termino || ex.termino
+      });
+      updatedCount++;
+    } else {
+      map.set(sig, { ...ng });
+      addedCount++;
+    }
+  });
+
+  const merged = Array.from(map.values()).map((g, idx) => ({ ...g, id: idx }));
+  return { merged, addedCount, updatedCount };
 }
 
 /**

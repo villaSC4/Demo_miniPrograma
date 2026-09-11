@@ -42,8 +42,8 @@
           <i class="bi bi-hdd-fill me-1"></i> Archivo Guardado
         </span>
         
-        <input type="file" id="excelFileInput" accept=".xlsx, .xls" class="d-none">
-        <button class="btn btn-sm btn-outline-light py-1 px-2.5" onclick="document.getElementById('excelFileInput').click();" title="Subir archivo Excel para actualizar">
+        <input type="file" id="excelFileInput" accept=".xlsx, .xls" multiple class="d-none">
+        <button class="btn btn-sm btn-outline-light py-1 px-2.5" onclick="document.getElementById('excelFileInput').click();" title="Subir uno o varios archivos Excel">
           <i class="bi bi-cloud-arrow-up me-1"></i> Subir Excel
         </button>
         <button id="btnDownloadTemplate" class="btn btn-sm btn-outline-light py-1 px-2.5" title="Descargar plantilla Excel vacía con ejemplos para importar datos">
@@ -474,6 +474,85 @@
             </button>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE IMPORTACIÓN MULTI-ARCHIVO EXCEL -->
+  <div class="modal fade" id="importModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 660px;">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 14px;">
+        <div class="modal-header py-3 px-3.5 bg-light border-bottom">
+          <div class="d-flex align-items-center gap-2">
+            <div class="brand-badge" style="width: 30px; height: 30px; font-size: 0.85rem;"><i class="bi bi-file-earmark-spreadsheet"></i></div>
+            <div>
+              <h6 class="modal-title fw-bold text-dark mb-0">Importación de Archivos Excel</h6>
+              <small class="text-muted" style="font-size: 0.75rem;">Puedes subir uno o varios archivos a la vez (.xlsx, .xls)</small>
+            </div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body py-3 px-3.5">
+          <!-- Zona de arrastre dentro del modal -->
+          <div id="modalDropzone" class="p-3 mb-3 border border-2 border-dashed rounded-3 text-center bg-light" style="cursor: pointer; border-color: #CBD5E1 !important;">
+            <i class="bi bi-cloud-arrow-up text-primary fs-3 d-block mb-1"></i>
+            <span class="fw-semibold text-dark small">Arrastra más archivos aquí o haz clic para seleccionar</span>
+            <div class="text-muted" style="font-size: 0.73rem;">Soporta múltiples archivos a la vez (mantén presionado Ctrl o Shift)</div>
+          </div>
+
+          <!-- Resumen de archivos detectados -->
+          <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-1.5">
+              <span class="small fw-bold text-dark">Archivos Detectados (<span id="importFilesCount">0</span>)</span>
+              <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1" id="importTotalGroupsBadge">0 grupos en total</span>
+            </div>
+            <div class="list-group list-group-flush border rounded-3 p-1" id="importFilesList" style="max-height: 150px; overflow-y: auto;">
+              <!-- Rellenado dinámico con los archivos y cantidad de grupos -->
+            </div>
+          </div>
+
+          <!-- Selección del modo de importación -->
+          <div class="mb-2">
+            <label class="form-label small fw-bold text-dark mb-1.5">Selecciona cómo deseas procesar los datos:</label>
+            <div class="row g-2">
+              <div class="col-md-6">
+                <div class="p-2.5 border rounded-3 h-100 bg-white import-mode-card selected" id="cardModeMerge" style="cursor: pointer;">
+                  <div class="form-check mb-1">
+                    <input class="form-check-input" type="radio" name="importModeRadio" id="radioModeMerge" value="MERGE" checked>
+                    <label class="form-check-label fw-bold text-dark small" for="radioModeMerge">
+                      <i class="bi bi-intersect text-primary me-1"></i> Combinar y Unificar
+                    </label>
+                  </div>
+                  <p class="text-muted small mb-0 ps-3" style="font-size: 0.73rem; line-height: 1.35;">
+                    Agrega los grupos de estos archivos a la programación existente. Si un grupo ya existe, lo actualiza sin duplicar filas.
+                  </p>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="p-2.5 border rounded-3 h-100 bg-white import-mode-card" id="cardModeReplace" style="cursor: pointer;">
+                  <div class="form-check mb-1">
+                    <input class="form-check-input" type="radio" name="importModeRadio" id="radioModeReplace" value="REPLACE">
+                    <label class="form-check-label fw-bold text-dark small" for="radioModeReplace">
+                      <i class="bi bi-arrow-repeat text-danger me-1"></i> Reemplazar Todo
+                    </label>
+                  </div>
+                  <p class="text-muted small mb-0 ps-3" style="font-size: 0.73rem; line-height: 1.35;">
+                    Borra toda la programación actual y establece únicamente los grupos contenidos en los archivos subidos.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer py-2 px-3.5 bg-light d-flex justify-content-between">
+          <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-3" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" id="btnConfirmImport" class="btn btn-primary-app btn-sm py-1.5 px-4 fw-semibold">
+            <i class="bi bi-check2-circle me-1.5"></i> Confirmar e Importar
+          </button>
+        </div>
       </div>
     </div>
   </div>
