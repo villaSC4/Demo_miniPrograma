@@ -10,11 +10,14 @@ import json
 import os
 import shutil
 
-PORT = 8080
+PORT = 8000
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
 GRUPOS_FILE = os.path.join(DATA_DIR, 'grupos.json')
 BASE_FILE = os.path.join(DATA_DIR, 'grupos_base.json')
+
+DOCENTES_FILE = os.path.join(DATA_DIR, 'docentes.json')
+SUPERVISIONES_FILE = os.path.join(DATA_DIR, 'supervisiones.json')
 
 class AcademicDataHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
@@ -53,6 +56,26 @@ class AcademicDataHandler(http.server.SimpleHTTPRequestHandler):
             except Exception as e:
                 return self._send_json(500, {"error": str(e)})
 
+        if parsed_path == '/api/docentes':
+            try:
+                if os.path.exists(DOCENTES_FILE):
+                    with open(DOCENTES_FILE, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    return self._send_json(200, data)
+                return self._send_json(200, [])
+            except Exception as e:
+                return self._send_json(500, {"error": str(e)})
+
+        if parsed_path == '/api/supervisiones':
+            try:
+                if os.path.exists(SUPERVISIONES_FILE):
+                    with open(SUPERVISIONES_FILE, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    return self._send_json(200, data)
+                return self._send_json(200, [])
+            except Exception as e:
+                return self._send_json(500, {"error": str(e)})
+
         return super().do_GET()
 
     def do_POST(self):
@@ -78,6 +101,46 @@ class AcademicDataHandler(http.server.SimpleHTTPRequestHandler):
             except Exception as e:
                 return self._send_json(500, {"error": str(e)})
 
+        if parsed_path == '/api/docentes':
+            try:
+                length = int(self.headers.get('Content-Length', 0))
+                body = self.rfile.read(length).decode('utf-8')
+                data = json.loads(body)
+                if not isinstance(data, list):
+                    return self._send_json(400, {"error": "Se esperaba una lista de docentes"})
+
+                os.makedirs(DATA_DIR, exist_ok=True)
+                with open(DOCENTES_FILE, 'w', encoding='utf-8') as f:
+                    json.dump(data, f, indent=2, ensure_ascii=False)
+
+                return self._send_json(200, {
+                    "status": "success",
+                    "count": len(data),
+                    "message": f"Directorio actualizado con {len(data)} docentes"
+                })
+            except Exception as e:
+                return self._send_json(500, {"error": str(e)})
+
+        if parsed_path == '/api/supervisiones':
+            try:
+                length = int(self.headers.get('Content-Length', 0))
+                body = self.rfile.read(length).decode('utf-8')
+                data = json.loads(body)
+                if not isinstance(data, list):
+                    return self._send_json(400, {"error": "Se esperaba una lista de supervisiones"})
+
+                os.makedirs(DATA_DIR, exist_ok=True)
+                with open(SUPERVISIONES_FILE, 'w', encoding='utf-8') as f:
+                    json.dump(data, f, indent=2, ensure_ascii=False)
+
+                return self._send_json(200, {
+                    "status": "success",
+                    "count": len(data),
+                    "message": f"Registro de supervisiones actualizado ({len(data)} evaluaciones)"
+                })
+            except Exception as e:
+                return self._send_json(500, {"error": str(e)})
+
         if parsed_path == '/api/reset':
             try:
                 if os.path.exists(BASE_FILE):
@@ -96,10 +159,26 @@ class AcademicDataHandler(http.server.SimpleHTTPRequestHandler):
 
 class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     daemon_threads = True
+    allow_reuse_address = True
 
 if __name__ == '__main__':
-    with ThreadedTCPServer(("0.0.0.0", PORT), AcademicDataHandler) as httpd:
-        print(f"Servidor Minisistema corriendo en http://localhost:{PORT}", flush=True)
+    ports_to_try = [int(os.environ.get('PORT', PORT)), 8000, 8081, 8082, 3000]
+    httpd = None
+    selected_port = None
+    for p in ports_to_try:
+        try:
+            httpd = ThreadedTCPServer(("0.0.0.0", p), AcademicDataHandler)
+            selected_port = p
+            break
+        except OSError:
+            continue
+
+    if not httpd:
+        print("Error: No se pudo iniciar el servidor en ningún puerto disponible.")
+        exit(1)
+
+    with httpd:
+        print(f"Servidor Minisistema corriendo en http://localhost:{selected_port}", flush=True)
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:

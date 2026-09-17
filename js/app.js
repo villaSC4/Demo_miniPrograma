@@ -11,10 +11,15 @@ y LocalStorage (con compatibilidad nativa para despliegue en Vercel).
 const STORAGE_KEY = 'sga_modular_grupos_v1';
 let allGroups = [];
 let filteredGroups = [];
+let allDocentes = [];
+let allSupervisiones = [];
 let analytics = null;
 let editModalInstance = null;
 let newGroupModalInstance = null;
 let importModalInstance = null;
+let docenteModalInstance = null;
+let supervisionModalInstance = null;
+let supervisionDetailModalInstance = null;
 let pendingImportFilesData = [];
 let isServerConnected = false;
 
@@ -36,10 +41,43 @@ document.addEventListener('DOMContentLoaded', () => {
     importModalInstance = new bootstrap.Modal(importModalEl);
   }
 
+  const docenteModalEl = document.getElementById('modalDocente');
+  if (docenteModalEl && typeof bootstrap !== 'undefined') {
+    docenteModalInstance = new bootstrap.Modal(docenteModalEl);
+  }
+
+  const supervisionModalEl = document.getElementById('modalSupervision');
+  if (supervisionModalEl && typeof bootstrap !== 'undefined') {
+    supervisionModalInstance = new bootstrap.Modal(supervisionModalEl);
+  }
+
+  const supervisionDetailModalEl = document.getElementById('modalSupervisionDetail');
+  if (supervisionDetailModalEl && typeof bootstrap !== 'undefined') {
+    supervisionDetailModalInstance = new bootstrap.Modal(supervisionDetailModalEl);
+  }
+
   setupEventListeners();
+
+  // Display logged-in user name
+  const savedUser = sessionStorage.getItem('sga_user_name');
+  if (savedUser) {
+    const userNameEl = document.getElementById('navbarUserName');
+    if (userNameEl) userNameEl.textContent = savedUser;
+  }
+
+  // Logout button
+  document.getElementById('btnLogout')?.addEventListener('click', () => {
+    if (confirm('¿Desea cerrar sesión?')) {
+      sessionStorage.removeItem('sga_logged_in');
+      sessionStorage.removeItem('sga_user_name');
+      sessionStorage.removeItem('sga_login_time');
+      window.location.href = 'login.html';
+    }
+  });
 
   // Cargar datos iniciales con estrategia de persistencia física
   loadInitialData();
+  loadDocentesAndSupervisiones();
 });
 
 /**
@@ -298,6 +336,43 @@ function setupEventListeners() {
 
   // Guardar cambios en Modal de Asignación Docente
   document.getElementById('btnSaveModalChanges')?.addEventListener('click', saveModalChanges);
+
+  // Eventos Módulo Directorio Docente
+  document.getElementById('filterDirectorioCiclo')?.addEventListener('change', renderDirectorio);
+  document.getElementById('filterDirectorioSearch')?.addEventListener('input', renderDirectorio);
+  document.getElementById('filterDirectorioEscuela')?.addEventListener('change', renderDirectorio);
+  document.getElementById('filterDirectorioCondicion')?.addEventListener('change', renderDirectorio);
+  document.getElementById('btnOpenNewDocenteModal')?.addEventListener('click', openNewDocenteModal);
+  document.getElementById('formDocente')?.addEventListener('submit', handleSaveDocente);
+  document.getElementById('btnExportDocentesExcel')?.addEventListener('click', exportDocentesExcel);
+
+  // Eventos Módulo Análisis de Cursos y Carga Electiva
+  document.getElementById('filterCursosSearch')?.addEventListener('input', renderCursosAnalisis);
+  document.getElementById('filterCursosTipo')?.addEventListener('change', renderCursosAnalisis);
+  document.getElementById('filterCursosCiclo')?.addEventListener('change', renderCursosAnalisis);
+  document.getElementById('btnExportCursosExcel')?.addEventListener('click', exportCursosExcel);
+
+  // Eventos Módulo Supervisión Docente y Evaluación de Desempeño
+  document.getElementById('btnOpenNewSupervisionModal')?.addEventListener('click', () => openNewSupervisionModal());
+  document.getElementById('filterSupervisionSearch')?.addEventListener('input', renderSupervisiones);
+  document.getElementById('filterSupervisionNivel')?.addEventListener('change', renderSupervisiones);
+  document.getElementById('formSupervision')?.addEventListener('submit', handleSaveSupervision);
+  document.getElementById('supDocenteSelect')?.addEventListener('change', handleSupervisionDocenteChange);
+
+  // Botones interactivos de la rúbrica de supervisión
+  document.querySelectorAll('.rubric-score-selector').forEach(sel => {
+    sel.querySelectorAll('.rubric-score-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        sel.querySelectorAll('.rubric-score-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const dim = sel.getAttribute('data-dimension');
+        const score = parseInt(btn.getAttribute('data-score'), 10);
+        const valEl = document.getElementById(`${dim}Value`);
+        if (valEl) valEl.textContent = `${score} / 5 pts`;
+        calculateSupervisionTotal();
+      });
+    });
+  });
 }
 
 /**
@@ -651,6 +726,9 @@ function applyFilters() {
   renderVacanciesTable();
   renderGeneralTable();
   renderAuditCards();
+  renderDirectorio();
+  renderCursosAnalisis();
+  renderSupervisiones();
   updateTabBadges();
 }
 
@@ -684,6 +762,18 @@ function updateTabBadges() {
 
   const badgeAuditoria = document.getElementById('badgeTabAuditoria');
   if (badgeAuditoria) badgeAuditoria.textContent = analytics.audits.length;
+
+  const badgeDirectorio = document.getElementById('badgeTabDirectorio');
+  if (badgeDirectorio) badgeDirectorio.textContent = allDocentes.length;
+
+  const badgeCursos = document.getElementById('badgeTabCursos');
+  if (badgeCursos) {
+    const uniqueCourses = new Set(allGroups.map(g => (g.curso || '').trim().toUpperCase()).filter(Boolean));
+    badgeCursos.textContent = uniqueCourses.size;
+  }
+
+  const badgeSupervision = document.getElementById('badgeTabSupervision');
+  if (badgeSupervision) badgeSupervision.textContent = allSupervisiones.length;
 }
 
 /**
@@ -1438,3 +1528,782 @@ function downloadBlob(content, fileName, mimeType) {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
+
+/* ==============================================================================
+   MÓDULO 1: DIRECTORIO DOCENTE (SEGMENTADO POR CICLO)
+   ============================================================================== */
+
+async function loadDocentesAndSupervisiones() {
+  // Cargar Docentes desde la API
+  try {
+    const res = await callApi('docentes');
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        allDocentes = data;
+      }
+    }
+  } catch (e) {
+    console.warn('API docentes no disponible, sincronizando de grupos:', e);
+  }
+
+  // Si no hay docentes en backend, sincronizar de allGroups
+  if (allDocentes.length === 0 && allGroups.length > 0) {
+    syncDocentesFromGroups();
+  }
+
+  // Cargar Supervisiones desde la API
+  try {
+    const res = await callApi('supervisiones');
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        allSupervisiones = data;
+      }
+    }
+  } catch (e) {
+    console.warn('API supervisiones no disponible:', e);
+  }
+
+  renderDirectorio();
+  renderCursosAnalisis();
+  renderSupervisiones();
+  updateTabBadges();
+}
+
+function syncDocentesFromGroups() {
+  const map = {};
+  allGroups.forEach(g => {
+    const nom = (g.docente || '').trim().toUpperCase();
+    if (!nom || nom === 'VACANTE') return;
+    if (!map[nom]) {
+      const parts = nom.split(' ');
+      const userPart = parts[0].toLowerCase() + (parts[2] ? parts[2][0].toLowerCase() : 'd');
+      map[nom] = {
+        id: Object.keys(map).length + 1,
+        nombre: nom,
+        email: `${userPart}@ucvvirtual.edu.pe`,
+        telefono: '9' + Math.floor(10000000 + Math.random() * 89999999),
+        escuela: g.escuela || 'INGENIERIA DE SISTEMAS',
+        condicion: (Object.keys(map).length % 2 === 0) ? 'CONTRATADO' : 'ORDINARIO',
+        categoria: (Object.keys(map).length % 3 === 0) ? 'ASOCIADO' : 'AUXILIAR',
+        grado: (Object.keys(map).length % 4 === 0) ? 'DOCTOR' : 'MAGÍSTER',
+        ciclos: [g.ciclo].filter(Boolean),
+        cursos: [g.curso].filter(Boolean)
+      };
+    } else {
+      if (g.ciclo && !map[nom].ciclos.includes(g.ciclo)) map[nom].ciclos.push(g.ciclo);
+      if (g.curso && !map[nom].cursos.includes(g.curso)) map[nom].cursos.push(g.curso);
+    }
+  });
+
+  allDocentes = Object.values(map).sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+  // Persistir en backend
+  callApi('docentes', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(allDocentes)
+  }).catch(() => {});
+}
+
+function renderDirectorio() {
+  const grid = document.getElementById('directorioGrid');
+  if (!grid) return;
+
+  const ciclo = document.getElementById('filterDirectorioCiclo')?.value || 'ALL';
+  const search = (document.getElementById('filterDirectorioSearch')?.value || '').toLowerCase().trim();
+  const escuela = document.getElementById('filterDirectorioEscuela')?.value || 'ALL';
+  const condicion = document.getElementById('filterDirectorioCondicion')?.value || 'ALL';
+
+  if (allDocentes.length === 0 && allGroups.length > 0) {
+    syncDocentesFromGroups();
+  }
+
+  const filtered = allDocentes.filter(d => {
+    const teacherGroups = allGroups.filter(g => (g.docente || '').trim().toUpperCase() === d.nombre);
+    const assignedCiclos = Array.from(new Set(teacherGroups.map(g => g.ciclo).concat(d.ciclos || []).filter(Boolean))).sort((a, b) => a - b);
+    const assignedCursos = Array.from(new Set(teacherGroups.map(g => g.curso).concat(d.cursos || []).filter(Boolean)));
+
+    if (ciclo !== 'ALL' && !assignedCiclos.map(String).includes(String(ciclo))) {
+      return false;
+    }
+
+    if (search) {
+      const matchText = `${d.nombre} ${d.email} ${d.telefono} ${d.escuela} ${assignedCursos.join(' ')}`.toLowerCase();
+      if (!matchText.includes(search)) return false;
+    }
+
+    if (escuela !== 'ALL' && d.escuela !== escuela) return false;
+    if (condicion !== 'ALL' && d.condicion !== condicion) return false;
+
+    return true;
+  });
+
+  const statsEl = document.getElementById('directorioStatsText');
+  if (statsEl) {
+    statsEl.textContent = `Mostrando ${filtered.length} de ${allDocentes.length} docentes ${ciclo !== 'ALL' ? `(Ciclo ${ciclo})` : '(Todos los ciclos)'}`;
+  }
+
+  const badgeDirectorio = document.getElementById('badgeTabDirectorio');
+  if (badgeDirectorio) badgeDirectorio.textContent = allDocentes.length;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `
+      <div class="col-12 text-center py-5 bg-light rounded-3 border">
+        <i class="bi bi-people text-muted fs-1 d-block mb-2"></i>
+        <h6 class="fw-bold text-dark">No se encontraron docentes con los filtros aplicados</h6>
+        <p class="text-muted small mb-0">Prueba cambiando el ciclo o el término de búsqueda.</p>
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(d => {
+    const initials = d.nombre.split(' ').slice(0, 2).map(n => n[0] || '').join('');
+    const teacherGroups = allGroups.filter(g => (g.docente || '').trim().toUpperCase() === d.nombre);
+    const assignedCiclos = Array.from(new Set(teacherGroups.map(g => g.ciclo).concat(d.ciclos || []).filter(Boolean))).sort((a, b) => a - b);
+    const assignedCursos = Array.from(new Set(teacherGroups.map(g => g.curso).concat(d.cursos || []).filter(Boolean)));
+
+    const cicloBadges = assignedCiclos.map(c => `<span class="badge-cycle-tag">Ciclo ${c}</span>`).join('') || '<span class="text-muted small">Sin ciclo</span>';
+    const cursosHtml = assignedCursos.slice(0, 2).map(c => `<span class="badge bg-light text-dark border me-1 mb-1 text-truncate d-inline-block" style="max-width: 180px; font-size: 0.72rem;">${c}</span>`).join('');
+    const moreCursos = assignedCursos.length > 2 ? `<span class="badge bg-secondary-subtle text-secondary" style="font-size: 0.7rem;">+${assignedCursos.length - 2} más</span>` : '';
+
+    return `
+      <div class="teacher-card shadow-sm">
+        <div>
+          <div class="teacher-header">
+            <div class="teacher-avatar">${initials}</div>
+            <div class="teacher-info flex-grow-1 text-truncate">
+              <h6 class="text-truncate" title="${d.nombre}">${d.nombre}</h6>
+              <div class="d-flex align-items-center gap-1 flex-wrap mb-1">
+                <span class="badge ${d.condicion === 'ORDINARIO' ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-secondary-subtle text-secondary border'} px-2 py-0.5" style="font-size: 0.68rem;">${d.condicion}</span>
+                <span class="badge bg-info-subtle text-info border border-info-subtle px-2 py-0.5" style="font-size: 0.68rem;">${d.grado || 'MAGÍSTER'}</span>
+                <span class="badge bg-light text-muted border px-1.5 py-0.5" style="font-size: 0.68rem;">${d.categoria || 'ASOCIADO'}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="teacher-detail-item">
+            <i class="bi bi-building"></i>
+            <span class="text-truncate">${d.escuela || 'INGENIERIA DE SISTEMAS'}</span>
+          </div>
+          <div class="teacher-detail-item">
+            <i class="bi bi-envelope"></i>
+            <span class="text-truncate"><a href="mailto:${d.email}" class="text-decoration-none text-muted">${d.email}</a></span>
+          </div>
+          <div class="teacher-detail-item">
+            <i class="bi bi-telephone"></i>
+            <span>${d.telefono || '987654321'}</span>
+          </div>
+
+          <div class="mt-2 pt-2 border-top">
+            <small class="text-muted d-block fw-semibold mb-1" style="font-size: 0.7rem;">CICLOS ASIGNADOS:</small>
+            <div>${cicloBadges}</div>
+          </div>
+
+          <div class="mt-1.5">
+            <small class="text-muted d-block fw-semibold mb-1" style="font-size: 0.7rem;">ASIGNATURAS (${assignedCursos.length}):</small>
+            <div class="d-flex flex-wrap align-items-center">${cursosHtml} ${moreCursos}</div>
+          </div>
+        </div>
+
+        <div class="mt-3 pt-2.5 border-top d-flex gap-2">
+          <button type="button" class="btn btn-outline-primary btn-sm flex-fill py-1 fw-semibold" style="font-size: 0.75rem;" onclick="openEditDocenteModal(${d.id})">
+            <i class="bi bi-pencil-square me-1"></i> Editar Ficha
+          </button>
+          <button type="button" class="btn btn-outline-success btn-sm flex-fill py-1 fw-semibold" style="font-size: 0.75rem;" onclick="openNewSupervisionModal('${d.nombre.replace(/'/g, "\\'")}')">
+            <i class="bi bi-clipboard2-check me-1"></i> Supervisar
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openNewDocenteModal() {
+  document.getElementById('modalDocenteTitle').textContent = 'Registrar Nuevo Docente en Directorio';
+  document.getElementById('docenteEditId').value = '';
+  document.getElementById('formDocente').reset();
+  document.querySelectorAll('.ciclo-chk').forEach(c => c.checked = false);
+  if (docenteModalInstance) docenteModalInstance.show();
+}
+
+function openEditDocenteModal(id) {
+  const d = allDocentes.find(doc => doc.id === id);
+  if (!d) return;
+
+  document.getElementById('modalDocenteTitle').textContent = `Editar Docente: ${d.nombre}`;
+  document.getElementById('docenteEditId').value = d.id;
+  document.getElementById('docenteNombre').value = d.nombre;
+  document.getElementById('docenteDni').value = d.dni || '';
+  document.getElementById('docenteEmail').value = d.email || '';
+  document.getElementById('docenteTelefono').value = d.telefono || '';
+  document.getElementById('docenteEscuela').value = d.escuela || 'INGENIERIA DE SISTEMAS';
+  document.getElementById('docenteGrado').value = d.grado || 'MAGÍSTER';
+  document.getElementById('docenteCondicion').value = d.condicion || 'CONTRATADO';
+  document.getElementById('docenteCategoria').value = d.categoria || 'ASOCIADO';
+
+  const teacherGroups = allGroups.filter(g => (g.docente || '').trim().toUpperCase() === d.nombre);
+  const assignedCiclos = Array.from(new Set(teacherGroups.map(g => g.ciclo).concat(d.ciclos || []).filter(Boolean))).map(String);
+
+  document.querySelectorAll('.ciclo-chk').forEach(chk => {
+    chk.checked = assignedCiclos.includes(chk.value);
+  });
+
+  if (docenteModalInstance) docenteModalInstance.show();
+}
+
+async function handleSaveDocente(e) {
+  e.preventDefault();
+  const editId = document.getElementById('docenteEditId').value;
+  const nombre = document.getElementById('docenteNombre').value.trim().toUpperCase();
+  const email = document.getElementById('docenteEmail').value.trim();
+
+  if (!nombre || !email) {
+    alert('Por favor complete los campos obligatorios.');
+    return;
+  }
+
+  const selectedCiclos = Array.from(document.querySelectorAll('.ciclo-chk:checked')).map(c => parseInt(c.value, 10));
+
+  if (editId) {
+    const idx = allDocentes.findIndex(d => String(d.id) === String(editId));
+    if (idx !== -1) {
+      allDocentes[idx] = {
+        ...allDocentes[idx],
+        nombre,
+        dni: document.getElementById('docenteDni').value.trim(),
+        email,
+        telefono: document.getElementById('docenteTelefono').value.trim(),
+        escuela: document.getElementById('docenteEscuela').value,
+        grado: document.getElementById('docenteGrado').value,
+        condicion: document.getElementById('docenteCondicion').value,
+        categoria: document.getElementById('docenteCategoria').value,
+        ciclos: selectedCiclos
+      };
+    }
+  } else {
+    const newDoc = {
+      id: allDocentes.length > 0 ? Math.max(...allDocentes.map(d => d.id || 0)) + 1 : 1,
+      nombre,
+      dni: document.getElementById('docenteDni').value.trim(),
+      email,
+      telefono: document.getElementById('docenteTelefono').value.trim(),
+      escuela: document.getElementById('docenteEscuela').value,
+      grado: document.getElementById('docenteGrado').value,
+      condicion: document.getElementById('docenteCondicion').value,
+      categoria: document.getElementById('docenteCategoria').value,
+      ciclos: selectedCiclos,
+      cursos: []
+    };
+    allDocentes.unshift(newDoc);
+  }
+
+  try {
+    await callApi('docentes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(allDocentes)
+    });
+  } catch (err) {
+    console.warn('Error guardando en API docentes:', err);
+  }
+
+  if (docenteModalInstance) docenteModalInstance.hide();
+  renderDirectorio();
+  updateTabBadges();
+  showFeedback(`Docente ${nombre} guardado exitosamente en el directorio.`, 'success');
+}
+
+function exportDocentesExcel() {
+  if (allDocentes.length === 0) {
+    alert('No hay docentes para exportar.');
+    return;
+  }
+
+  const ciclo = document.getElementById('filterDirectorioCiclo')?.value || 'ALL';
+  const rows = allDocentes.map(d => {
+    const teacherGroups = allGroups.filter(g => (g.docente || '').trim().toUpperCase() === d.nombre);
+    const assignedCiclos = Array.from(new Set(teacherGroups.map(g => g.ciclo).concat(d.ciclos || []).filter(Boolean))).sort((a,b)=>a-b);
+    const assignedCursos = Array.from(new Set(teacherGroups.map(g => g.curso).concat(d.cursos || []).filter(Boolean)));
+
+    return {
+      'Apellidos y Nombres': d.nombre,
+      'DNI / Código': d.dni || '',
+      'Correo Institucional': d.email,
+      'Teléfono / Celular': d.telefono || '',
+      'Escuela Profesional': d.escuela,
+      'Grado Académico': d.grado,
+      'Condición': d.condicion,
+      'Categoría': d.categoria,
+      'Ciclos en que dicta': assignedCiclos.map(c => `Ciclo ${c}`).join(', '),
+      'Cursos Asignados': assignedCursos.join('; '),
+      'Total Cursos': assignedCursos.length,
+      'Total Grupos': teacherGroups.length
+    };
+  });
+
+  const ws = XLSX.utils.json_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Directorio_Docentes");
+  const fileName = ciclo !== 'ALL' ? `Directorio_Docentes_Ciclo_${ciclo}.xlsx` : `Directorio_Docentes_General_UCV.xlsx`;
+  XLSX.writeFile(wb, fileName);
+  showFeedback(`Directorio de docentes exportado correctamente (${fileName}).`, 'success');
+}
+
+/* ==============================================================================
+   MÓDULO 2: ANÁLISIS DE CURSOS Y CARGA ELECTIVA
+   ============================================================================== */
+
+function isCursoElectivo(cursoName) {
+  const norm = (cursoName || '').toUpperCase();
+  return norm.includes('ELECTIV') || 
+         norm.includes('TALLER') || 
+         norm.includes('PROYECTO INTEGRADOR') || 
+         norm.includes('COMPLEMENTARI') ||
+         norm.includes('ACTIVIDADES');
+}
+
+function renderCursosAnalisis() {
+  const tbody = document.getElementById('cursosTableBody');
+  if (!tbody) return;
+
+  const search = (document.getElementById('filterCursosSearch')?.value || '').toLowerCase().trim();
+  const tipo = document.getElementById('filterCursosTipo')?.value || 'ALL';
+  const ciclo = document.getElementById('filterCursosCiclo')?.value || 'ALL';
+
+  const courseMap = {};
+  allGroups.forEach(g => {
+    const curName = (g.curso || '').trim().toUpperCase();
+    if (!curName) return;
+
+    if (!courseMap[curName]) {
+      courseMap[curName] = {
+        nombre: curName,
+        escuela: g.escuela || 'INGENIERIA DE SISTEMAS',
+        ciclo: g.ciclo || 1,
+        isElectivo: isCursoElectivo(curName),
+        gruposTeoria: 0,
+        gruposPractica: 0,
+        totalGrupos: 0,
+        totalAlumnos: 0,
+        docentes: new Set(),
+        vacantesCount: 0
+      };
+    }
+
+    const c = courseMap[curName];
+    c.totalGrupos++;
+    c.totalAlumnos += (g.matriculados || 0);
+    if ((g.tipo_grupo || '').toUpperCase() === 'TEORIA') c.gruposTeoria++;
+    if ((g.tipo_grupo || '').toUpperCase() === 'PRACTICA') c.gruposPractica++;
+
+    const doc = (g.docente || '').trim().toUpperCase();
+    if (doc && doc !== 'VACANTE') {
+      c.docentes.add(doc);
+    } else {
+      c.vacantesCount++;
+    }
+  });
+
+  const courseList = Object.values(courseMap).sort((a, b) => a.ciclo - b.ciclo || a.nombre.localeCompare(b.nombre));
+
+  const totalCursosEl = document.getElementById('kpiTotalCursos');
+  if (totalCursosEl) totalCursosEl.textContent = courseList.length;
+
+  const electivosCount = courseList.filter(c => c.isElectivo).length;
+  const electivosEl = document.getElementById('kpiCursosElectivos');
+  if (electivosEl) electivosEl.textContent = electivosCount;
+
+  const obligatoriosEl = document.getElementById('kpiCursosObligatorios');
+  if (obligatoriosEl) obligatoriosEl.textContent = courseList.length - electivosCount;
+
+  const vacantesCount = courseList.filter(c => c.vacantesCount > 0).length;
+  const vacantesEl = document.getElementById('kpiCursosVacantes');
+  if (vacantesEl) vacantesEl.textContent = vacantesCount;
+
+  const badgeCursos = document.getElementById('badgeTabCursos');
+  if (badgeCursos) badgeCursos.textContent = courseList.length;
+
+  const filtered = courseList.filter(c => {
+    if (search && !c.nombre.toLowerCase().includes(search) && !c.escuela.toLowerCase().includes(search)) {
+      return false;
+    }
+    if (tipo === 'OBLIGATORIO' && c.isElectivo) return false;
+    if (tipo === 'ELECTIVO' && !c.isElectivo) return false;
+    if (ciclo !== 'ALL' && String(c.ciclo) !== String(ciclo)) return false;
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="9" class="text-center py-4 text-muted small">
+          No se encontraron asignaturas con los filtros seleccionados.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map((c, idx) => {
+    const docentesArray = Array.from(c.docentes);
+    const docentesBadges = docentesArray.length > 0 
+      ? docentesArray.map(d => `<span class="badge bg-light text-dark border me-1 mb-1" style="font-size: 0.72rem;">${d}</span>`).join('')
+      : '<span class="text-danger small fst-italic">Sin docentes asignados</span>';
+
+    const coverageBadge = c.vacantesCount === 0
+      ? '<span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1"><i class="bi bi-check2-all me-1"></i> 100% Cubierto</span>'
+      : `<span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1"><i class="bi bi-exclamation-triangle me-1"></i> ${c.vacantesCount} Vacante(s)</span>`;
+
+    const tipoBadge = c.isElectivo
+      ? '<span class="badge badge-electivo"><i class="bi bi-stars me-1"></i> Carga Electiva</span>'
+      : '<span class="badge badge-obligatorio">Obligatorio</span>';
+
+    return `
+      <tr>
+        <td class="text-center text-muted fw-bold" style="font-size: 0.78rem;">${idx + 1}</td>
+        <td>
+          <div class="fw-bold text-dark text-truncate" style="max-width: 280px;" title="${c.nombre}">${c.nombre}</div>
+          <small class="text-muted" style="font-size: 0.72rem;">${c.totalGrupos} grupos (${c.gruposTeoria} Teoría / ${c.gruposPractica} Práctica)</small>
+        </td>
+        <td><span class="badge bg-light text-secondary border" style="font-size: 0.73rem;">${c.escuela}</span></td>
+        <td class="text-center"><span class="badge bg-primary-subtle text-primary fw-bold" style="font-size: 0.76rem;">Ciclo ${c.ciclo}</span></td>
+        <td class="text-center">${tipoBadge}</td>
+        <td class="text-center"><span class="course-metric-pill">${c.totalGrupos} grp</span></td>
+        <td class="text-center fw-semibold" style="font-size: 0.8rem;">${c.totalAlumnos.toLocaleString()}</td>
+        <td><div style="max-width: 280px;">${docentesBadges}</div></td>
+        <td class="text-center">${coverageBadge}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function exportCursosExcel() {
+  const courseMap = {};
+  allGroups.forEach(g => {
+    const curName = (g.curso || '').trim().toUpperCase();
+    if (!curName) return;
+    if (!courseMap[curName]) {
+      courseMap[curName] = {
+        nombre: curName,
+        escuela: g.escuela,
+        ciclo: g.ciclo,
+        isElectivo: isCursoElectivo(curName),
+        gruposTeoria: 0,
+        gruposPractica: 0,
+        totalGrupos: 0,
+        totalAlumnos: 0,
+        docentes: new Set(),
+        vacantesCount: 0
+      };
+    }
+    const c = courseMap[curName];
+    c.totalGrupos++;
+    c.totalAlumnos += (g.matriculados || 0);
+    if ((g.tipo_grupo || '').toUpperCase() === 'TEORIA') c.gruposTeoria++;
+    if ((g.tipo_grupo || '').toUpperCase() === 'PRACTICA') c.gruposPractica++;
+    const doc = (g.docente || '').trim().toUpperCase();
+    if (doc && doc !== 'VACANTE') c.docentes.add(doc);
+    else c.vacantesCount++;
+  });
+
+  const rows = Object.values(courseMap).map(c => ({
+    'Experiencia Curricular': c.nombre,
+    'Escuela': c.escuela,
+    'Ciclo': c.ciclo,
+    'Tipo de Carga': c.isElectivo ? 'ELECTIVO (Carga Electiva)' : 'OBLIGATORIO',
+    'Grupos Teoría': c.gruposTeoria,
+    'Grupos Práctica': c.gruposPractica,
+    'Total Grupos': c.totalGrupos,
+    'Alumnos Matriculados': c.totalAlumnos,
+    'Docentes Asignados': Array.from(c.docentes).join('; '),
+    'Total Docentes': c.docentes.size,
+    'Grupos Vacantes': c.vacantesCount,
+    'Estado Cobertura': c.vacantesCount === 0 ? '100% CUBIERTO' : 'CON VACANTES'
+  }));
+
+  const ws = XLSX.utils.json_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Analisis_Cursos");
+  XLSX.writeFile(wb, "Reporte_Analisis_Cursos_Carga_Electiva.xlsx");
+  showFeedback('Reporte de Análisis de Cursos y Carga Electiva exportado con éxito.', 'success');
+}
+
+/* ==============================================================================
+   MÓDULO 3: SUPERVISIÓN Y EVALUACIÓN DOCENTE
+   ============================================================================== */
+
+function renderSupervisiones() {
+  const tbody = document.getElementById('supervisionTableBody');
+  if (!tbody) return;
+
+  const search = (document.getElementById('filterSupervisionSearch')?.value || '').toLowerCase().trim();
+  const nivel = document.getElementById('filterSupervisionNivel')?.value || 'ALL';
+
+  const total = allSupervisiones.length;
+  const kpiTotal = document.getElementById('kpiSupervisionTotal');
+  if (kpiTotal) kpiTotal.textContent = total;
+
+  const badgeSup = document.getElementById('badgeTabSupervision');
+  if (badgeSup) badgeSup.textContent = total;
+
+  if (total > 0) {
+    const avg = (allSupervisiones.reduce((sum, s) => sum + (s.puntaje || 0), 0) / total).toFixed(2);
+    const kpiAvg = document.getElementById('kpiSupervisionPromedio');
+    if (kpiAvg) kpiAvg.textContent = `${avg} / 20`;
+
+    const destCount = allSupervisiones.filter(s => (s.puntaje || 0) >= 18).length;
+    const kpiDest = document.getElementById('kpiSupervisionDestacados');
+    if (kpiDest) kpiDest.textContent = destCount;
+
+    const obsCount = allSupervisiones.filter(s => (s.puntaje || 0) < 14).length;
+    const kpiObs = document.getElementById('kpiSupervisionObservados');
+    if (kpiObs) kpiObs.textContent = obsCount;
+  }
+
+  const filtered = allSupervisiones.filter(s => {
+    if (search) {
+      const text = `${s.docente} ${s.curso} ${s.supervisor} ${s.id}`.toLowerCase();
+      if (!text.includes(search)) return false;
+    }
+    if (nivel !== 'ALL' && s.nivel !== nivel) return false;
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="8" class="text-center py-4 text-muted small">
+          No hay fichas de supervisión registradas con los filtros actuales.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(s => {
+    let badgeClass = 'badge-nivel-satisfactorio';
+    if (s.nivel === 'EXCELENTE') badgeClass = 'badge-nivel-excelente';
+    else if (s.nivel === 'EN PROCESO') badgeClass = 'badge-nivel-enproceso';
+    else if (s.nivel === 'CRÍTICO') badgeClass = 'badge-nivel-critico';
+
+    return `
+      <tr>
+        <td><span class="badge bg-light text-dark border fw-bold" style="font-size: 0.75rem;">${s.id}</span></td>
+        <td class="text-muted small">${s.fecha}</td>
+        <td>
+          <div class="fw-bold text-dark">${s.docente}</div>
+        </td>
+        <td>
+          <div class="text-dark small fw-semibold">${s.curso}</div>
+          <small class="text-muted">Sección: ${s.seccion || 'B1'}</small>
+        </td>
+        <td class="text-muted small">${s.supervisor}</td>
+        <td class="text-center fw-bold fs-6 text-dark">${parseFloat(s.puntaje).toFixed(2)}</td>
+        <td class="text-center"><span class="badge ${badgeClass} px-2.5 py-1">${s.nivel}</span></td>
+        <td class="text-center">
+          <button type="button" class="btn btn-outline-primary btn-sm py-0.5 px-2" title="Ver Ficha Completa" onclick="viewSupervisionDetail('${s.id}')">
+            <i class="bi bi-file-earmark-text me-1"></i> Ficha
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function openNewSupervisionModal(preselectedTeacher) {
+  const select = document.getElementById('supDocenteSelect');
+  if (select) {
+    select.innerHTML = '<option value="">-- Seleccione docente --</option>' +
+      allDocentes.map(d => `<option value="${d.nombre}">${d.nombre}</option>`).join('');
+    if (preselectedTeacher) {
+      select.value = preselectedTeacher;
+      handleSupervisionDocenteChange();
+    }
+  }
+
+  const dateInput = document.getElementById('supFechaInput');
+  if (dateInput && !dateInput.value) {
+    dateInput.value = new Date().toISOString().split('T')[0];
+  }
+
+  // Restablecer rúbrica a puntajes por defecto (5, 4, 5, 4)
+  document.querySelectorAll('.rubric-score-selector').forEach(sel => {
+    sel.querySelectorAll('.rubric-score-btn').forEach(b => b.classList.remove('active'));
+    const btn5 = sel.querySelector('[data-score="5"]');
+    if (btn5) btn5.classList.add('active');
+    const dim = sel.getAttribute('data-dimension');
+    const valEl = document.getElementById(`${dim}Value`);
+    if (valEl) valEl.textContent = '5 / 5 pts';
+  });
+
+  calculateSupervisionTotal();
+  if (supervisionModalInstance) supervisionModalInstance.show();
+}
+
+function handleSupervisionDocenteChange() {
+  const teacherName = document.getElementById('supDocenteSelect')?.value;
+  if (!teacherName) return;
+
+  const teacherGroups = allGroups.filter(g => (g.docente || '').trim().toUpperCase() === teacherName);
+  if (teacherGroups.length > 0) {
+    const firstGroup = teacherGroups[0];
+    const cursoInput = document.getElementById('supCursoInput');
+    if (cursoInput) {
+      cursoInput.value = `${firstGroup.curso} (${firstGroup.seccion}) - ${firstGroup.modulo}`;
+    }
+  }
+}
+
+function calculateSupervisionTotal() {
+  let sum = 0;
+  document.querySelectorAll('.rubric-score-selector').forEach(sel => {
+    const active = sel.querySelector('.rubric-score-btn.active');
+    if (active) {
+      sum += parseInt(active.getAttribute('data-score'), 10);
+    }
+  });
+
+  const totalDisplay = document.getElementById('supTotalDisplay');
+  if (totalDisplay) totalDisplay.textContent = `${sum.toFixed(2)} / 20`;
+
+  let nivel = 'SATISFACTORIO';
+  let badgeClass = 'badge-nivel-satisfactorio';
+  let icon = 'bi-check-circle-fill';
+
+  if (sum >= 18) {
+    nivel = 'EXCELENTE';
+    badgeClass = 'badge-nivel-excelente';
+    icon = 'bi-award-fill';
+  } else if (sum >= 14) {
+    nivel = 'SATISFACTORIO';
+    badgeClass = 'badge-nivel-satisfactorio';
+    icon = 'bi-check2-circle';
+  } else if (sum >= 11) {
+    nivel = 'EN PROCESO';
+    badgeClass = 'badge-nivel-enproceso';
+    icon = 'bi-clock-history';
+  } else {
+    nivel = 'CRÍTICO';
+    badgeClass = 'badge-nivel-critico';
+    icon = 'bi-exclamation-octagon-fill';
+  }
+
+  const badgeEl = document.getElementById('supNivelBadge');
+  if (badgeEl) {
+    badgeEl.className = `badge ${badgeClass} px-2.5 py-1.5`;
+    badgeEl.innerHTML = `<i class="bi ${icon} me-1"></i> ${nivel}`;
+  }
+
+  return { sum, nivel };
+}
+
+async function handleSaveSupervision(e) {
+  e.preventDefault();
+
+  const docente = document.getElementById('supDocenteSelect').value;
+  const curso = document.getElementById('supCursoInput').value.trim();
+  const supervisor = document.getElementById('supSupervisorInput').value.trim();
+  const fecha = document.getElementById('supFechaInput').value;
+
+  if (!docente || !curso || !supervisor || !fecha) {
+    alert('Por favor complete todos los datos de la sesión observada.');
+    return;
+  }
+
+  const { sum, nivel } = calculateSupervisionTotal();
+
+  const newId = `SUP-2026-${String(allSupervisiones.length + 1).padStart(3, '0')}`;
+  const record = {
+    id: newId,
+    fecha,
+    docente,
+    curso,
+    seccion: 'B1',
+    supervisor,
+    puntaje: sum,
+    nivel,
+    observaciones: document.getElementById('supObservacionesInput').value.trim() || 'Desarrollo satisfactorio de la sesión académica.',
+    compromisos: document.getElementById('supCompromisosInput').value.trim() || 'Mantener el dinamismo y cumplimiento del cronograma.'
+  };
+
+  allSupervisiones.unshift(record);
+
+  // Persistir en backend
+  try {
+    await callApi('supervisiones', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(allSupervisiones)
+    });
+  } catch (err) {
+    console.warn('Error guardando supervisión en API:', err);
+  }
+
+  if (supervisionModalInstance) supervisionModalInstance.hide();
+  renderSupervisiones();
+  updateTabBadges();
+  showFeedback(`Supervisión ${newId} para el docente ${docente} registrada exitosamente.`, 'success');
+}
+
+function viewSupervisionDetail(id) {
+  const s = allSupervisiones.find(item => item.id === id);
+  if (!s) return;
+
+  const printArea = document.getElementById('supervisionPrintArea');
+  if (!printArea) return;
+
+  printArea.innerHTML = `
+    <div class="border rounded-3 p-3 bg-white shadow-sm">
+      <div class="d-flex justify-content-between align-items-center pb-2.5 mb-3 border-bottom">
+        <div>
+          <h5 class="fw-bold text-dark mb-0">UNIVERSIDAD CÉSAR VALLEJO • UCV VIRTUAL</h5>
+          <small class="text-muted">Dirección Académica — Ficha de Observación y Desempeño Docente</small>
+        </div>
+        <span class="badge bg-primary fs-6 px-3 py-1.5">${s.id}</span>
+      </div>
+
+      <div class="row g-2 mb-3 bg-light p-2.5 rounded-2" style="font-size: 0.82rem;">
+        <div class="col-md-6"><strong>Docente:</strong> ${s.docente}</div>
+        <div class="col-md-6"><strong>Fecha:</strong> ${s.fecha}</div>
+        <div class="col-md-6"><strong>Asignatura:</strong> ${s.curso}</div>
+        <div class="col-md-6"><strong>Supervisor:</strong> ${s.supervisor}</div>
+      </div>
+
+      <div class="p-3 rounded-3 mb-3 d-flex justify-content-between align-items-center" style="background: #F0FDF4; border: 1.5px solid #BBF7D0;">
+        <div>
+          <span class="text-muted small d-block fw-bold">CALIFICACIÓN CONSOLIDADA (ESCALA 0 A 20):</span>
+          <span class="fs-3 fw-bold text-success">${parseFloat(s.puntaje).toFixed(2)} / 20.00</span>
+        </div>
+        <div class="text-end">
+          <span class="text-muted small d-block fw-bold">NIVEL ALCANZADO:</span>
+          <span class="badge bg-success fs-6 px-3 py-1.5">${s.nivel}</span>
+        </div>
+      </div>
+
+      <div class="mb-2.5">
+        <h6 class="fw-bold text-dark mb-1" style="font-size: 0.85rem;"><i class="bi bi-check-circle text-success me-1"></i> Observaciones y Fortalezas Evidenciadas:</h6>
+        <p class="text-muted small p-2 bg-light rounded border mb-0">${s.observaciones || 'Sin observaciones registradas.'}</p>
+      </div>
+
+      <div class="mb-3">
+        <h6 class="fw-bold text-dark mb-1" style="font-size: 0.85rem;"><i class="bi bi-arrow-up-right-circle text-primary me-1"></i> Compromisos y Acuerdos Pedagógicos:</h6>
+        <p class="text-muted small p-2 bg-light rounded border mb-0">${s.compromisos || 'Cumplir los lineamientos institucionales de UCV Virtual.'}</p>
+      </div>
+
+      <div class="pt-4 mt-4 border-top d-flex justify-content-around text-center" style="font-size: 0.78rem;">
+        <div style="width: 200px;">
+          <div style="border-top: 1px solid #333; padding-top: 4px;">Firma del Docente</div>
+        </div>
+        <div style="width: 200px;">
+          <div style="border-top: 1px solid #333; padding-top: 4px;">Firma del Supervisor / Auditor</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  if (supervisionDetailModalInstance) supervisionDetailModalInstance.show();
+}
+

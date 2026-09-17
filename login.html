@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión — SGA • UCV Virtual</title>
+  <meta name="description" content="Acceso al Sistema de Gestión Académica Modular — UCV Virtual">
+
+  <!-- Tipografía Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Favicon UCV Virtual -->
+  <link rel="icon" type="image/png" href="img/logo-ucv-virtual.png">
+
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --login-navy-dark: #071A30;
+      --login-navy: #0B2545;
+      --login-navy-light: #133B6B;
+      --login-red: #BE1E2D;
+      --login-red-hover: #9E1824;
+      --login-red-glow: rgba(190, 30, 45, 0.4);
+      --login-glass-bg: rgba(255, 255, 255, 0.08);
+      --login-glass-border: rgba(255, 255, 255, 0.15);
+      --login-glass-shadow: rgba(0, 0, 0, 0.25);
+    }
+
+    html, body {
+      min-height: 100vh;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      background: linear-gradient(135deg, #020B18 0%, #0B2545 35%, #1A3A6B 60%, #0D1B2E 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 2.5rem 1rem;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    /* ===================== ANIMATED BACKGROUND ===================== */
+    .bg-particles {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .bg-particles .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.35;
+      animation: float-orb 18s ease-in-out infinite alternate;
+    }
+
+    .bg-particles .orb:nth-child(1) {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, var(--login-red) 0%, transparent 70%);
+      top: -10%; left: -10%;
+      animation-duration: 20s;
+    }
+
+    .bg-particles .orb:nth-child(2) {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, #1E40AF 0%, transparent 70%);
+      bottom: -15%; right: -10%;
+      animation-duration: 25s;
+      animation-delay: -5s;
+    }
+
+    .bg-particles .orb:nth-child(3) {
+      width: 350px; height: 350px;
+      background: radial-gradient(circle, #7C3AED 0%, transparent 70%);
+      top: 50%; left: 60%;
+      animation-duration: 22s;
+      animation-delay: -8s;
+    }
+
+    @keyframes float-orb {
+      0%   { transform: translate(0, 0) scale(1); }
+      33%  { transform: translate(40px, -30px) scale(1.1); }
+      66%  { transform: translate(-20px, 50px) scale(0.95); }
+      100% { transform: translate(30px, -20px) scale(1.05); }
+    }
+
+    /* Grid pattern overlay */
+    .bg-grid {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ===================== LOGIN CARD ===================== */
+    .login-wrapper {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 440px;
+      padding: 0 1.25rem;
+    }
+
+    .login-card {
+      background: var(--login-glass-bg);
+      backdrop-filter: blur(24px) saturate(150%);
+      -webkit-backdrop-filter: blur(24px) saturate(150%);
+      border: 1px solid var(--login-glass-border);
+      border-radius: 20px;
+      padding: 2.5rem 2.25rem 2rem;
+      box-shadow:
+        0 20px 60px var(--login-glass-shadow),
+        0 0 0 1px rgba(255,255,255,0.05) inset,
+        0 1px 0 rgba(255,255,255,0.1) inset;
+      animation: card-appear 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes card-appear {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* ===================== LOGO ===================== */
+    .login-logo {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      animation: logo-pulse 0.6s ease 0.3s both;
+    }
+
+    @keyframes logo-pulse {
+      from { opacity: 0; transform: scale(0.85); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .login-logo img {
+      max-width: 250px;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 16px rgba(0,0,0,0.35));
+      transition: transform 0.25s ease;
+    }
+
+    .login-logo img:hover {
+      transform: scale(1.03);
+    }
+
+    .login-logo-divider {
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--login-red), #1E40AF);
+      border-radius: 3px;
+      margin: 1.15rem auto 0;
+    }
+
+    /* Chips Demo */
+    .btn-demo-chip {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: rgba(255, 255, 255, 0.85);
+      border-radius: 20px;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.74rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+
+    .btn-demo-chip:hover {
+      background: rgba(190, 30, 45, 0.3);
+      border-color: rgba(190, 30, 45, 0.7);
+      color: #FFFFFF;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(190, 30, 45, 0.25);
+    }
+
+    /* ===================== HEADER TEXT ===================== */
+    .login-header {
+      text-align: center;
+      margin-bottom: 1.75rem;
+    }
+
+    .login-header h2 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: #FFFFFF;
+      margin-bottom: 0.35rem;
+      letter-spacing: -0.02em;
+    }
+
+    .login-header p {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.84rem;
+      font-weight: 500;
+    }
+
+    /* ===================== FORM ===================== */
+    .login-field {
+      margin-bottom: 1.15rem;
+      position: relative;
+    }
+
+    .login-field label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .login-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .login-input-wrap .input-icon {
+      position: absolute;
+      left: 14px;
+      color: rgba(255,255,255,0.35);
+      font-size: 1.05rem;
+      pointer-events: none;
+      transition: color 0.3s ease;
+    }
+
+    .login-input-wrap input {
+      width: 100%;
+      padding: 0.75rem 0.85rem 0.75rem 2.75rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      color: #FFFFFF;
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 500;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .login-input-wrap input::placeholder {
+      color: rgba(255,255,255,0.3);
+      font-weight: 400;
+    }
+
+    .login-input-wrap input:focus {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(190, 30, 45, 0.6);
+      box-shadow: 0 0 0 3px rgba(190, 30, 45, 0.15), 0 0 20px rgba(190, 30, 45, 0.1);
+    }
+
+    .login-input-wrap input:focus ~ .input-icon {
+      color: var(--login-red);
+    }
+
+    .toggle-pass {
+      position: absolute;
+      right: 14px;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.35);
+      cursor: pointer;
+      font-size: 1.05rem;
+      padding: 4px;
+      transition: color 0.2s ease;
+    }
+
+    .toggle-pass:hover {
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* ===================== OPTIONS ROW ===================== */
+    .login-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      font-size: 0.8rem;
+    }
+
+    .login-options label {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      color: rgba(255,255,255,0.55);
+      cursor: pointer;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .login-options label:hover {
+      color: rgba(255,255,255,0.8);
+    }
+
+    .login-options input[type="checkbox"] {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid rgba(255,255,255,0.25);
+      border-radius: 5px;
+      background: rgba(255,255,255,0.05);
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .login-options input[type="checkbox"]:checked {
+      background: var(--login-red);
+      border-color: var(--login-red);
+    }
+
+    .login-options input[type="checkbox"]:checked::after {
+      content: '✓';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 0.6rem;
+      font-weight: 700;
+    }
+
+    .login-options a {
+      color: rgba(255,255,255,0.45);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .login-options a:hover {
+      color: var(--login-red);
+    }
+
+    /* ===================== BUTTON ===================== */
+    .login-btn {
+      width: 100%;
+      padding: 0.85rem;
+      background: linear-gradient(135deg, var(--login-red) 0%, #C02942 50%, #9E1824 100%);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.03em;
+    }
+
+    .login-btn::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px var(--login-red-glow), 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .login-btn:hover::before {
+      left: 100%;
+    }
+
+    .login-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 15px var(--login-red-glow);
+    }
+
+    .login-btn .btn-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+    }
+
+    .login-btn .spinner {
+      display: none;
+      width: 20px; height: 20px;
+      border: 2.5px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    .login-btn.loading .btn-text { display: none; }
+    .login-btn.loading .spinner { display: inline-block; }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ===================== ERROR MESSAGE ===================== */
+    .login-error {
+      display: none;
+      background: rgba(190, 30, 45, 0.15);
+      border: 1px solid rgba(190, 30, 45, 0.3);
+      border-radius: 10px;
+      padding: 0.65rem 0.85rem;
+      margin-bottom: 1rem;
+      color: #FF8A8A;
+      font-size: 0.8rem;
+      font-weight: 500;
+      align-items: center;
+      gap: 0.5rem;
+      animation: shake 0.4s ease;
+    }
+
+    .login-error.show {
+      display: flex;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+
+    /* ===================== FOOTER ===================== */
+    .login-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      color: rgba(255,255,255,0.3);
+      font-size: 0.73rem;
+      font-weight: 500;
+    }
+
+    .login-footer a {
+      color: rgba(255,255,255,0.45);
+      text-decoration: none;
+    }
+
+    .login-footer a:hover {
+      color: var(--login-red);
+    }
+
+    /* ===================== BOTTOM BRANDING ===================== */
+    .bottom-brand {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      color: rgba(255,255,255,0.2);
+      font-size: 0.72rem;
+      font-weight: 500;
+      text-align: center;
+      letter-spacing: 0.03em;
+    }
+
+    /* ===================== RESPONSIVE ===================== */
+    @media (max-width: 480px) {
+      .login-card {
+        padding: 2rem 1.5rem 1.5rem;
+        border-radius: 16px;
+      }
+
+      .login-logo img {
+        height: 55px;
+      }
+
+      .login-header h2 {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ANIMATED BACKGROUND -->
+  <div class="bg-particles">
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+  </div>
+  <div class="bg-grid"></div>
+
+  <!-- LOGIN CARD -->
+  <div class="login-wrapper">
+    <div class="login-card">
+
+      <!-- Logo -->
+      <div class="login-logo">
+        <img src="img/logo-ucv-virtual.png" alt="UCV Virtual" id="loginLogoImg">
+        <div class="login-logo-divider"></div>
+      </div>
+
+      <!-- Header -->
+      <div class="login-header">
+        <h2>Bienvenido al SGA</h2>
+        <p>Sistema de Gestión Académica Modular</p>
+      </div>
+
+      <!-- Error message -->
+      <div class="login-error" id="loginError">
+        <i class="bi bi-exclamation-circle"></i>
+        <span id="loginErrorText">Credenciales incorrectas. Intente nuevamente.</span>
+      </div>
+
+      <!-- Form -->
+      <form id="loginForm" autocomplete="off">
+        <div class="login-field">
+          <label for="loginUser">Usuario o Correo</label>
+          <div class="login-input-wrap">
+            <input type="text" id="loginUser" placeholder="ejemplo@ucvvirtual.edu.pe" autocomplete="username" required>
+            <i class="bi bi-person input-icon"></i>
+          </div>
+        </div>
+
+        <div class="login-field">
+          <label for="loginPass">Contraseña</label>
+          <div class="login-input-wrap">
+            <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" required>
+            <i class="bi bi-lock input-icon"></i>
+            <button type="button" class="toggle-pass" id="togglePass" title="Mostrar contraseña">
+              <i class="bi bi-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="login-options">
+          <label>
+            <input type="checkbox" id="rememberMe" checked>
+            Recordar sesión
+          </label>
+          <a href="#" onclick="return false;">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <button type="submit" class="login-btn" id="loginBtn">
+          <span class="btn-content">
+            <span class="btn-text"><i class="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión</span>
+            <span class="spinner"></span>
+          </span>
+        </button>
+
+        <!-- Accesos directos Demo para pruebas inmediatas -->
+        <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
+          <div style="font-size: 0.72rem; color: rgba(255,255,255,0.45); margin-bottom: 0.5rem; font-weight: 500;">
+            <i class="bi bi-lightning-charge-fill" style="color: #F59E0B; margin-right: 3px;"></i> Acceso rápido de prueba (1-clic):
+          </div>
+          <div style="display: flex; gap: 0.45rem; justify-content: center; flex-wrap: wrap;">
+            <button type="button" class="btn-demo-chip" data-user="coordinador@ucvvirtual.edu.pe" data-role="Coordinador">Coordinador</button>
+            <button type="button" class="btn-demo-chip" data-user="director@ucvvirtual.edu.pe" data-role="Director">Director</button>
+            <button type="button" class="btn-demo-chip" data-user="auditor@ucvvirtual.edu.pe" data-role="Auditor SGA">Auditor</button>
+          </div>
+        </div>
+      </form>
+
+      <div class="login-footer">
+        <p>Dirección Académica — Semestre 2026-II</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM BRANDING -->
+  <div class="bottom-brand">
+    © 2026 UCV Virtual • Universidad César Vallejo
+  </div>
+
+  <script>
+    // ==================== FRONTEND-ONLY LOGIN ====================
+    // Sin backend de autenticación — control puramente visual y de interfaz con sessionStorage
+
+    // Si ya tiene sesión activa, redirige directamente al sistema
+    if (sessionStorage.getItem('sga_logged_in') === 'true') {
+      window.location.replace('index.html');
+    }
+
+    // Alternar visibilidad de la contraseña
+    const toggleBtn = document.getElementById('togglePass');
+    const passInput = document.getElementById('loginPass');
+    toggleBtn.addEventListener('click', () => {
+      const isPassword = passInput.type === 'password';
+      passInput.type = isPassword ? 'text' : 'password';
+      toggleBtn.querySelector('i').className = isPassword ? 'bi bi-eye-slash' : 'bi bi-eye';
+    });
+
+    // Función auxiliar para ejecutar el login simulado
+    function executeLogin(username) {
+      const btn = document.getElementById('loginBtn');
+      btn.classList.add('loading');
+      btn.disabled = true;
+
+      setTimeout(() => {
+        const cleanName = (username || 'ADMIN').split('@')[0].toUpperCase();
+        sessionStorage.setItem('sga_logged_in', 'true');
+        sessionStorage.setItem('sga_user_name', cleanName);
+        sessionStorage.setItem('sga_login_time', new Date().toLocaleTimeString('es-PE'));
+        window.location.href = 'index.html';
+      }, 900);
+    }
+
+    // Formulario regular
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const user = document.getElementById('loginUser').value.trim();
+      const pass = document.getElementById('loginPass').value.trim();
+      const errorEl = document.getElementById('loginError');
+
+      errorEl.classList.remove('show');
+
+      if (!user || !pass) {
+        document.getElementById('loginErrorText').textContent = 'Por favor complete todos los campos.';
+        errorEl.classList.add('show');
+        return;
+      }
+
+      executeLogin(user);
+    });
+
+    // Accesos rápidos Demo (1-clic)
+    document.querySelectorAll('.btn-demo-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const email = chip.getAttribute('data-user');
+        document.getElementById('loginUser').value = email;
+        document.getElementById('loginPass').value = 'demo2026';
+        executeLogin(email);
+      });
+    });
+
+    // Foco inicial
+    setTimeout(() => {
+      const userField = document.getElementById('loginUser');
+      if (userField) userField.focus();
+    }, 600);
+  </script>
+</body>
+</html>

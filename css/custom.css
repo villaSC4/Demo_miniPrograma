@@ -67,6 +67,18 @@ ul.nav li { list-style: none !important; }
   border-bottom: 3px solid var(--app-red);
 }
 
+.navbar-logo {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+  transition: transform 0.2s ease;
+}
+
+.navbar-logo:hover {
+  transform: scale(1.04);
+}
+
 .brand-badge {
   background: var(--app-red);
   color: #FFFFFF;
@@ -322,4 +334,247 @@ ul.nav li { list-style: none !important; }
   border-color: #0B2545 !important;
   background-color: #EBF3FC !important;
 }
+
+/* ==============================================================================
+   MÓDULO 1: DIRECTORIO DOCENTE
+   ============================================================================== */
+.teacher-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1rem;
+}
+
+.teacher-card {
+  background: var(--app-card-bg);
+  border: 1px solid var(--app-border);
+  border-radius: 12px;
+  padding: 1.15rem;
+  transition: all 0.25s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.teacher-card:hover {
+  transform: translateY(-3px);
+  border-color: #CBD5E1;
+  box-shadow: 0 8px 24px rgba(11, 37, 69, 0.08);
+}
+
+.teacher-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  margin-bottom: 0.85rem;
+}
+
+.teacher-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--app-navy-dark) 0%, var(--app-navy-light) 100%);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(11, 37, 69, 0.2);
+}
+
+.teacher-info h6 {
+  margin-bottom: 0.2rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--app-navy-dark);
+  line-height: 1.25;
+}
+
+.teacher-detail-item {
+  font-size: 0.77rem;
+  color: var(--app-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.3rem;
+}
+
+.teacher-detail-item i {
+  color: var(--app-navy-light);
+  font-size: 0.85rem;
+}
+
+.badge-cycle-tag {
+  background: #EEF2F6;
+  color: var(--app-navy);
+  border: 1px solid #D8E2EC;
+  border-radius: 6px;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  display: inline-block;
+  margin-right: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+/* ==============================================================================
+   MÓDULO 2: ANÁLISIS DE CURSOS Y CARGA ELECTIVA
+   ============================================================================== */
+.badge-electivo {
+  background: linear-gradient(135deg, #7C3AED 0%, #9333EA 100%);
+  color: #FFFFFF !important;
+  font-weight: 600;
+  font-size: 0.72rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25);
+}
+
+.badge-obligatorio {
+  background: #EBF3FC;
+  color: var(--app-navy);
+  border: 1px solid #CCE0F5;
+  font-weight: 600;
+  font-size: 0.72rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 20px;
+}
+
+.course-metric-pill {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  background: #F1F5F9;
+  color: var(--app-text-main);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* ==============================================================================
+   MÓDULO 3: SUPERVISIÓN Y EVALUACIÓN DOCENTE
+   ============================================================================== */
+.supervision-stats-card {
+  background: #FFFFFF;
+  border: 1px solid var(--app-border);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+.rubric-card {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.rubric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--app-navy-dark);
+}
+
+.rubric-score-selector {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.rubric-score-btn {
+  flex: 1;
+  padding: 0.45rem 0.2rem;
+  border: 1px solid #CBD5E1;
+  background: #FFFFFF;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.rubric-score-btn:hover {
+  border-color: var(--app-navy);
+  background: #F1F5F9;
+}
+
+.rubric-score-btn.active {
+  background: var(--app-navy);
+  color: #FFFFFF;
+  border-color: var(--app-navy);
+  box-shadow: 0 2px 8px rgba(11, 37, 69, 0.25);
+}
+
+.badge-nivel-excelente {
+  background: #DCFCE7;
+  color: #15803D;
+  border: 1px solid #BBF7D0;
+  font-weight: 700;
+  font-size: 0.74rem;
+}
+
+.badge-nivel-satisfactorio {
+  background: #E0F2FE;
+  color: #0369A1;
+  border: 1px solid #BAE6FD;
+  font-weight: 700;
+  font-size: 0.74rem;
+}
+
+.badge-nivel-enproceso {
+  background: #FEF3C7;
+  color: #B45309;
+  border: 1px solid #FDE68A;
+  font-weight: 700;
+  font-size: 0.74rem;
+}
+
+.badge-nivel-critico {
+  background: #FEE2E2;
+  color: #B91C1C;
+  border: 1px solid #FECACA;
+  font-weight: 700;
+  font-size: 0.74rem;
+}
+
+/* Nav segmented scroll on mobile */
+.nav-segmented {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  background: #F1F5F9;
+  padding: 0.35rem;
+  border-radius: 10px;
+}
+
+.nav-segmented .nav-link {
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--app-text-muted);
+  padding: 0.45rem 0.85rem;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.nav-segmented .nav-link:hover {
+  color: var(--app-navy-dark);
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.nav-segmented .nav-link.active {
+  background: #FFFFFF;
+  color: var(--app-navy-dark);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
 
