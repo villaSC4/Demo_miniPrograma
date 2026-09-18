@@ -34,7 +34,7 @@
       --login-red-glow: rgba(190, 30, 45, 0.45);
       --login-blue: #0D6EFD;
       --login-blue-glow: rgba(13, 110, 253, 0.35);
-      --login-glass-bg: rgba(10, 28, 54, 0.78);
+      --login-glass-bg: rgba(10, 28, 54, 0.82);
       --login-glass-border: rgba(255, 255, 255, 0.15);
       --login-text: #FFFFFF;
       --login-text-muted: rgba(255, 255, 255, 0.65);
@@ -57,7 +57,7 @@
       min-height: 100vh;
       width: 100%;
       display: flex;
-      background: radial-gradient(circle at 85% 25%, #0B2545 0%, #051426 50%, #020812 100%);
+      background: radial-gradient(circle at 80% 25%, #0B2545 0%, #051426 50%, #020812 100%);
       overflow: hidden;
     }
 
@@ -65,13 +65,12 @@
        HERO SIDE WRAPPER (UCV CAMPUS WITH PRECISE DIAGONAL CUT)
        ========================================================================== */
     .hero-wrapper {
-      position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      width: 56%;
+      position: relative;
+      flex: 0 0 46%;
+      width: 46%;
+      min-height: 100vh;
       z-index: 2;
-      filter: drop-shadow(10px 0 35px rgba(0, 0, 0, 0.8)) drop-shadow(4px 0 15px rgba(190, 30, 45, 0.4));
+      filter: drop-shadow(10px 0 35px rgba(0, 0, 0, 0.85)) drop-shadow(4px 0 15px rgba(190, 30, 45, 0.4));
     }
 
     .hero-side {
@@ -81,9 +80,9 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 3rem 4.5rem 3rem 3.5rem;
-      /* Precise diagonal cut: top-right stays at 100%, bottom-right moves inward by 120px */
-      clip-path: polygon(0 0, 100% 0, calc(100% - 120px) 100%, 0 100%);
+      padding: 3rem 3.5rem 3rem 3rem;
+      /* Precise diagonal cut: top-right stays at 100%, bottom-right moves inward by 100px */
+      clip-path: polygon(0 0, 100% 0, calc(100% - 100px) 100%, 0 100%);
       overflow: hidden;
     }
 
@@ -110,9 +109,9 @@
       inset: 0;
       background: linear-gradient(
         135deg,
-        rgba(3, 10, 20, 0.76) 0%,
-        rgba(7, 25, 48, 0.50) 40%,
-        rgba(190, 30, 45, 0.40) 80%,
+        rgba(3, 10, 20, 0.74) 0%,
+        rgba(7, 25, 48, 0.48) 40%,
+        rgba(190, 30, 45, 0.38) 80%,
         rgba(3, 10, 20, 0.88) 100%
       );
       backdrop-filter: blur(1.5px);
@@ -124,7 +123,7 @@
       position: absolute;
       top: 0;
       right: 0;
-      width: 120px;
+      width: 100px;
       height: 100%;
       z-index: 5;
       pointer-events: none;
@@ -137,7 +136,7 @@
       z-index: 2;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-start;
       gap: 1.5rem;
     }
 
@@ -145,7 +144,7 @@
       display: flex;
       align-items: center;
       gap: 1rem;
-      background: rgba(3, 10, 20, 0.68);
+      background: rgba(3, 10, 20, 0.7);
       backdrop-filter: blur(14px);
       border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 16px;
@@ -160,64 +159,16 @@
       filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4));
     }
 
-    .hero-badge-live {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(34, 197, 94, 0.16);
-      border: 1px solid rgba(34, 197, 94, 0.45);
-      color: #86EFAC;
-      border-radius: 999px;
-      padding: 0.38rem 0.95rem;
-      font-size: 0.76rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      box-shadow: 0 4px 14px rgba(34, 197, 94, 0.2);
-    }
-
-    .hero-badge-live .pulse-dot {
-      width: 8px;
-      height: 8px;
-      background-color: #22C55E;
-      border-radius: 50%;
-      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
-      animation: pulse-green 2s infinite;
-    }
-
-    @keyframes pulse-green {
-      0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-      70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
-    }
-
     .hero-center {
       position: relative;
       z-index: 2;
-      max-width: 560px;
+      max-width: 540px;
       margin: 2.5rem 0;
-    }
-
-    .hero-pill-category {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(190, 30, 45, 0.3);
-      border: 1px solid rgba(255, 90, 105, 0.6);
-      color: #FFD2D6;
-      padding: 0.45rem 1.1rem;
-      border-radius: 30px;
-      font-size: 0.84rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      margin-bottom: 1.25rem;
-      box-shadow: 0 4px 20px rgba(190, 30, 45, 0.35);
     }
 
     .hero-center h1 {
       font-family: 'Outfit', sans-serif;
-      font-size: clamp(2rem, 3.1vw, 3.2rem);
+      font-size: clamp(2rem, 3vw, 3.1rem);
       font-weight: 800;
       line-height: 1.15;
       color: #FFFFFF;
@@ -283,7 +234,7 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 1rem;
-      background: rgba(3, 10, 20, 0.7);
+      background: rgba(3, 10, 20, 0.72);
       backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.14);
       border-radius: 18px;
@@ -333,16 +284,17 @@
     }
 
     /* ==========================================================================
-       LOGIN SIDE (RIGHT HALF WITH DIAGONAL FLOW)
+       LOGIN SIDE (POSITIONED MORE TO THE LEFT, NEAR THE DIAGONAL)
        ========================================================================== */
     .login-side {
       position: relative;
-      width: 100%;
+      flex: 1;
       min-height: 100vh;
       display: flex;
       align-items: center;
-      justify-content: flex-end;
-      padding-right: clamp(2.5rem, 7vw, 7rem);
+      justify-content: flex-start;
+      padding-left: clamp(2rem, 5vw, 6rem);
+      padding-right: 2rem;
       padding-top: 2rem;
       padding-bottom: 2rem;
       z-index: 1;
@@ -377,7 +329,7 @@
     .ambient-glow-2 {
       position: absolute;
       bottom: -10%;
-      left: 45%;
+      left: 30%;
       width: 540px;
       height: 540px;
       border-radius: 50%;
@@ -401,7 +353,7 @@
       position: relative;
       z-index: 3;
       width: 100%;
-      max-width: 460px;
+      max-width: 450px;
       animation: card-enter 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
@@ -422,7 +374,7 @@
       -webkit-backdrop-filter: blur(28px) saturate(160%);
       border: 1px solid var(--login-glass-border);
       border-radius: 24px;
-      padding: 2.5rem 2.25rem 2.25rem;
+      padding: 2.4rem 2.2rem 2.2rem;
       box-shadow:
         0 24px 60px rgba(0, 0, 0, 0.55),
         0 0 0 1px rgba(255, 255, 255, 0.08) inset,
@@ -808,21 +760,22 @@
        ========================================================================== */
     @media (max-width: 1200px) {
       .hero-wrapper {
-        width: 52%;
+        flex: 0 0 44%;
+        width: 44%;
       }
       .hero-side {
-        padding: 2.5rem 3rem 2.5rem 2.5rem;
-        clip-path: polygon(0 0, 100% 0, calc(100% - 90px) 100%, 0 100%);
+        padding: 2.5rem 2.5rem 2.5rem 2rem;
+        clip-path: polygon(0 0, 100% 0, calc(100% - 80px) 100%, 0 100%);
       }
       .diagonal-laser-svg {
-        width: 90px;
+        width: 80px;
       }
       .hero-stats-card {
         grid-template-columns: 1fr;
         gap: 0.65rem;
       }
       .login-side {
-        padding-right: clamp(1.5rem, 4vw, 4rem);
+        padding-left: clamp(1.5rem, 3.5vw, 3.5rem);
       }
     }
 
@@ -835,13 +788,14 @@
       .hero-wrapper {
         position: relative;
         width: 100%;
-        min-height: 400px;
+        flex: none;
+        min-height: 380px;
         filter: none;
       }
 
       .hero-side {
         height: auto;
-        min-height: 400px;
+        min-height: 380px;
         padding: 2.2rem 1.5rem 3.5rem;
         clip-path: polygon(0 0, 100% 0, 100% 88%, 0 100%);
       }
@@ -895,7 +849,7 @@
       }
 
       .hero-side {
-        min-height: 320px;
+        min-height: 300px;
         padding: 1.5rem 1rem 2.8rem;
       }
 
@@ -931,7 +885,7 @@
         <div class="hero-overlay"></div>
 
         <!-- Laser diagonal SVG strip -->
-        <svg class="diagonal-laser-svg" viewBox="0 0 120 1000" preserveAspectRatio="none" aria-hidden="true">
+        <svg class="diagonal-laser-svg" viewBox="0 0 100 1000" preserveAspectRatio="none" aria-hidden="true">
           <defs>
             <linearGradient id="edgeLaser" x1="100%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stop-color="#BE1E2D" stop-opacity="1" />
@@ -947,39 +901,32 @@
               </feMerge>
             </filter>
           </defs>
-          <line x1="120" y1="0" x2="0" y2="1000" stroke="url(#edgeLaser)" stroke-width="4.5" filter="url(#laserGlow)" />
+          <line x1="100" y1="0" x2="0" y2="1000" stroke="url(#edgeLaser)" stroke-width="4.5" filter="url(#laserGlow)" />
         </svg>
 
-        <!-- Top Header -->
+        <!-- Top Header: Solo Logo Institucional UCV Virtual -->
         <div class="hero-header">
           <div class="hero-logo-box">
             <img src="img/logo-ucv-virtual.png" alt="Universidad César Vallejo - UCV Virtual">
-          </div>
-          <div class="hero-badge-live">
-            <span class="pulse-dot"></span>
-            <span>Semestre 2026-II</span>
           </div>
         </div>
 
         <!-- Center Hero Content -->
         <div class="hero-center">
-          <div class="hero-pill-category">
-            <i class="bi bi-mortarboard-fill"></i> Modalidad a Distancia • SUBE
-          </div>
           <h1>
             Campus Universitario & <br>
             <span class="gradient-highlight">Entorno Académico Virtual</span>
           </h1>
           <p>
-            Bienvenido al Sistema de Gestión Académica Modular (SGA) de la Universidad César Vallejo. Evaluación del Desempeño Docente 2026-II, seguimiento curricular e indicadores de excelencia para directores, coordinadores y docentes.
+            Bienvenido al Sistema de Gestión Académica Modular (SGA) de la Universidad César Vallejo. Seguimiento curricular e indicadores de excelencia académica para directores, coordinadores y docentes.
           </p>
 
           <div class="hero-feature-tags">
             <div class="hero-tag">
-              <i class="bi bi-clipboard2-check-fill"></i> EDD 2026-II (F03, F02, F17, F06)
+              <i class="bi bi-mortarboard-fill"></i> Gestión Académica Integral
             </div>
             <div class="hero-tag">
-              <i class="bi bi-diagram-3-fill"></i> Consolidado 360°
+              <i class="bi bi-diagram-3-fill"></i> Consolidado Modular
             </div>
             <div class="hero-tag">
               <i class="bi bi-shield-lock-fill"></i> Acreditación SGC ISO 9001
@@ -1017,7 +964,7 @@
     </div>
 
     <!-- ====================================================================
-         LADO B: PANEL DE LOGIN EN DIAGONAL
+         LADO B: PANEL DE LOGIN (POSICIONADO MÁS A LA IZQUIERDA, JUNTO AL CORTE)
          ==================================================================== -->
     <main class="login-side" aria-label="Formulario de Inicio de Sesión">
       <div class="login-grid-bg"></div>
