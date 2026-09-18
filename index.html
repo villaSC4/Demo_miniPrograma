@@ -93,61 +93,114 @@
     <!-- FEEDBACK DE ACCIONES (ALERTA) -->
     <div id="uploadAlert" style="display: none;" class="mb-3"></div>
 
-    <!-- 1. FILA DE INDICADORES CLAVE (KPIS) -->
-    <div class="row g-3 mb-3">
+    <!-- 1. BOTONES DE ACCESO DIRECTO A ÁREAS CLAVE -->
+    <div class="row g-2.5 mb-3" id="areaButtonsRow">
+      
+      <!-- Área 1: Directorio Docente -->
       <div class="col-xl col-md-4 col-sm-6">
-        <div class="kpi-card">
-          <div class="d-flex justify-content-between align-items-center">
-            <span class="kpi-title">Grupos Totales</span>
-            <i class="bi bi-layers text-primary fs-5"></i>
+        <button type="button" class="area-action-card w-100 text-start border-0 area-card-directorio" onclick="navigateToArea('directorio-tab')" title="Acceder al Directorio Docente por Ciclos">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="area-card-icon bg-primary-subtle text-primary">
+              <i class="bi bi-person-lines-fill"></i>
+            </div>
+            <span class="badge bg-primary-subtle text-primary fw-bold" style="font-size: 0.72rem;" id="badgeAreaDirectorio">
+              <span id="kpiDocentesCompletos">18</span> Docentes
+            </span>
           </div>
-          <div class="kpi-value" id="kpiTotalGrupos">128</div>
-          <div class="kpi-subtext">2 Escuelas • 5 Ciclos</div>
-        </div>
+          <div class="area-card-title">Directorio Docente</div>
+          <div class="area-card-desc">Gestión por Ciclos I al X y apertura</div>
+          <div class="area-card-footer mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
+            <span class="small fw-semibold text-primary" style="font-size: 0.74rem;">Abrir Directorio</span>
+            <i class="bi bi-arrow-right-short text-primary fs-5"></i>
+          </div>
+        </button>
       </div>
 
+      <!-- Área 2: Análisis de Cursos -->
       <div class="col-xl col-md-4 col-sm-6">
-        <div class="kpi-card kpi-success">
-          <div class="d-flex justify-content-between align-items-center">
-            <span class="kpi-title text-success">Docentes Completos</span>
-            <i class="bi bi-check2-circle text-success fs-5"></i>
+        <button type="button" class="area-action-card w-100 text-start border-0 area-card-cursos" onclick="navigateToArea('cursos-tab')" title="Acceder al Análisis de Cursos y Carga Electiva">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="area-card-icon" style="background: #F3E8FF; color: #7C3AED;">
+              <i class="bi bi-diagram-3"></i>
+            </div>
+            <span class="badge fw-bold" style="background: #F3E8FF; color: #7C3AED; font-size: 0.72rem;" id="badgeAreaCursos">
+              24 Cursos
+            </span>
           </div>
-          <div class="kpi-value text-success" id="kpiDocentesCompletos">9</div>
-          <div class="kpi-subtext">4 meses asignados (4/4)</div>
-        </div>
+          <div class="area-card-title">Análisis de Cursos</div>
+          <div class="area-card-desc">Carga electiva, vacantes y cobertura</div>
+          <div class="area-card-footer mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
+            <span class="small fw-semibold" style="color: #7C3AED; font-size: 0.74rem;">Ver Cursos</span>
+            <i class="bi bi-arrow-right-short fs-5" style="color: #7C3AED;"></i>
+          </div>
+        </button>
       </div>
 
+      <!-- Área 3: Supervisión de Carpetas -->
       <div class="col-xl col-md-4 col-sm-6">
-        <div class="kpi-card kpi-warning">
-          <div class="d-flex justify-content-between align-items-center">
-            <span class="kpi-title text-warning text-dark">Docentes Incompletos</span>
-            <i class="bi bi-clock-history text-warning fs-5"></i>
+        <button type="button" class="area-action-card w-100 text-start border-0 area-card-supervision" onclick="navigateToArea('supervision-tab')" title="Supervisión de Carpetas Docentes y Desempeño">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="area-card-icon bg-success-subtle text-success">
+              <i class="bi bi-folder-check"></i>
+            </div>
+            <span class="badge bg-success-subtle text-success fw-bold" style="font-size: 0.72rem;" id="badgeAreaSupervision">
+              Auditoría UCV
+            </span>
           </div>
-          <div class="kpi-value text-warning text-dark" id="kpiDocentesIncompletos">9</div>
-          <div class="kpi-subtext">Con 1 a 3 meses asignados</div>
-        </div>
+          <div class="area-card-title">Supervisión Carpetas</div>
+          <div class="area-card-desc">Portafolio pedagógico (7 componentes)</div>
+          <div class="area-card-footer mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
+            <span class="small fw-semibold text-success" style="font-size: 0.74rem;">Auditar Carpetas</span>
+            <i class="bi bi-arrow-right-short text-success fs-5"></i>
+          </div>
+        </button>
       </div>
 
+      <!-- Área 4: Matriz de Programación -->
       <div class="col-xl col-md-4 col-sm-6">
-        <div class="kpi-card kpi-danger">
-          <div class="d-flex justify-content-between align-items-center">
-            <span class="kpi-title text-danger">Grupos Vacantes</span>
-            <i class="bi bi-person-x text-danger fs-5"></i>
+        <button type="button" class="area-action-card w-100 text-start border-0 area-card-matriz" onclick="navigateToArea('matriz-tab')" title="Matriz Modular Docente y Programación">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="area-card-icon bg-info-subtle text-info">
+              <i class="bi bi-calendar4-week"></i>
+            </div>
+            <span class="badge bg-info-subtle text-info fw-bold" style="font-size: 0.72rem;" id="badgeAreaMatriz">
+              <span id="kpiTotalGrupos">128</span> Grupos
+            </span>
           </div>
-          <div class="kpi-value text-danger" id="kpiGruposVacantes">35</div>
-          <div class="kpi-subtext text-danger fw-semibold" id="kpiAlumnosAfectados">(1,385 alumnos)</div>
-        </div>
+          <div class="area-card-title">Matriz Modular</div>
+          <div class="area-card-desc">Programación mensual (Set-Dic 2026)</div>
+          <div class="area-card-footer mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
+            <span class="small fw-semibold text-info" style="font-size: 0.74rem;">Ver Matriz</span>
+            <i class="bi bi-arrow-right-short text-info fs-5"></i>
+          </div>
+        </button>
       </div>
 
+      <!-- Área 5: Bolsa de Vacantes -->
       <div class="col-xl col-md-4 col-sm-6">
-        <div class="kpi-card kpi-danger">
-          <div class="d-flex justify-content-between align-items-center">
-            <span class="kpi-title text-danger">Sin Visto Bueno</span>
-            <i class="bi bi-shield-x text-danger fs-5"></i>
+        <button type="button" class="area-action-card w-100 text-start border-0 area-card-vacantes" onclick="navigateToArea('vacantes-tab')" title="Bolsa de Vacantes y Asignación Docente">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="area-card-icon bg-danger-subtle text-danger">
+              <i class="bi bi-briefcase"></i>
+            </div>
+            <span class="badge bg-danger-subtle text-danger fw-bold" style="font-size: 0.72rem;" id="badgeAreaVacantes">
+              <span id="kpiGruposVacantes">35</span> Vacantes
+            </span>
           </div>
-          <div class="kpi-value text-danger" id="kpiSinVistoBueno">44</div>
-          <div class="kpi-subtext">VBDA / VBDG = NO</div>
-        </div>
+          <div class="area-card-title">Bolsa de Vacantes</div>
+          <div class="area-card-desc">Plazas por cubrir y asignación rápida</div>
+          <div class="area-card-footer mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
+            <span class="small fw-semibold text-danger" style="font-size: 0.74rem;">Resolver Vacantes</span>
+            <i class="bi bi-arrow-right-short text-danger fs-5"></i>
+          </div>
+        </button>
+      </div>
+
+      <!-- Elementos métricos auxiliares ocultos para compatibilidad -->
+      <div class="d-none">
+        <span id="kpiDocentesIncompletos"></span>
+        <span id="kpiSinVistoBueno"></span>
+        <span id="kpiAlumnosAfectados"></span>
       </div>
     </div>
 

@@ -413,6 +413,41 @@ function setupEventListeners() {
       });
     });
   });
+
+  // Sincronización de tarjeta de área activa al cambiar pestañas
+  document.getElementById('mainTab')?.addEventListener('shown.bs.tab', (e) => {
+    syncActiveAreaCard(e.target.id);
+  });
+}
+
+// Navegación directa desde los botones de área principales
+window.navigateToArea = function(tabId) {
+  const tabBtn = document.getElementById(tabId);
+  if (tabBtn) {
+    if (typeof bootstrap !== 'undefined' && bootstrap.Tab) {
+      const tabTrigger = bootstrap.Tab.getOrCreateInstance(tabBtn);
+      tabTrigger.show();
+    } else {
+      tabBtn.click();
+    }
+    syncActiveAreaCard(tabId);
+    document.getElementById('mainTab')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+};
+
+function syncActiveAreaCard(activeTabId) {
+  document.querySelectorAll('.area-action-card').forEach(c => c.classList.remove('active'));
+  const map = {
+    'directorio-tab': '.area-card-directorio',
+    'cursos-tab': '.area-card-cursos',
+    'supervision-tab': '.area-card-supervision',
+    'matriz-tab': '.area-card-matriz',
+    'vacantes-tab': '.area-card-vacantes'
+  };
+  const selector = map[activeTabId];
+  if (selector) {
+    document.querySelector(selector)?.classList.add('active');
+  }
 }
 
 /**
@@ -813,7 +848,26 @@ function updateTabBadges() {
   }
 
   const badgeSupervision = document.getElementById('badgeTabSupervision');
-  if (badgeSupervision) badgeSupervision.textContent = allSupervisiones.length;
+  if (badgeSupervision) badgeSupervision.textContent = allCarpetas.length + allSupervisiones.length;
+
+  // Actualizar también los badges de los botones de áreas superiores
+  const bAreaDir = document.getElementById('badgeAreaDirectorio');
+  if (bAreaDir) bAreaDir.textContent = `${allDocentes.length} Docentes`;
+
+  const bAreaCur = document.getElementById('badgeAreaCursos');
+  if (bAreaCur) {
+    const uniqueCourses = new Set(allGroups.map(g => (g.curso || '').trim().toUpperCase()).filter(Boolean));
+    bAreaCur.textContent = `${uniqueCourses.size} Cursos`;
+  }
+
+  const bAreaSup = document.getElementById('badgeAreaSupervision');
+  if (bAreaSup) bAreaSup.textContent = `${allCarpetas.length} Carpetas`;
+
+  const bAreaMat = document.getElementById('badgeAreaMatriz');
+  if (bAreaMat) bAreaMat.textContent = `${allGroups.length} Grupos`;
+
+  const bAreaVac = document.getElementById('badgeAreaVacantes');
+  if (bAreaVac) bAreaVac.textContent = `${analytics.vacancies.length} Vacantes`;
 }
 
 /**
@@ -827,16 +881,16 @@ function renderKPIs() {
   if (elTotal) elTotal.textContent = kpis.totalGrupos;
 
   const elCompletos = document.getElementById('kpiDocentesCompletos');
-  if (elCompletos) elCompletos.textContent = `${kpis.docentesCompletos} / ${kpis.totalDocentes}`;
+  if (elCompletos) elCompletos.textContent = allDocentes.length || kpis.totalDocentes;
 
   const elIncompletos = document.getElementById('kpiDocentesIncompletos');
   if (elIncompletos) elIncompletos.textContent = `${kpis.docentesIncompletos} docentes`;
 
-  const elVacantes = document.getElementById('kpiVacantes');
-  if (elVacantes) elVacantes.textContent = `${kpis.vacantes} grupos`;
+  const elVacantes = document.getElementById('kpiGruposVacantes') || document.getElementById('kpiVacantes');
+  if (elVacantes) elVacantes.textContent = kpis.vacantes;
 
   const elAfectados = document.getElementById('kpiAlumnosAfectados');
-  if (elAfectados) elAfectados.textContent = `${kpis.alumnosAfectados.toLocaleString()} alumnos`;
+  if (elAfectados) elAfectados.textContent = `(${kpis.alumnosAfectados.toLocaleString()} alumnos)`;
 }
 
 /**

@@ -678,5 +678,117 @@ ul.nav li { list-style: none !important; }
   }
 }
 
+/* ===================== AREA ACTION BUTTONS (TOP ROW) ===================== */
+.area-action-card {
+  background: #FFFFFF;
+  border-radius: 12px;
+  padding: 0.95rem 1rem 0.75rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  border: 1.5px solid #E2E8F0 !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  display: block;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+}
+
+.area-action-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: transparent;
+  transition: background 0.2s;
+}
+
+.area-action-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+  border-color: #CBD5E1 !important;
+}
+
+.area-action-card:active {
+  transform: translateY(-1px);
+}
+
+.area-card-directorio:hover::before,
+.area-card-directorio.active::before {
+  background: #2563EB;
+}
+.area-card-directorio:hover {
+  border-color: #BFDBFE !important;
+}
+
+.area-card-cursos:hover::before,
+.area-card-cursos.active::before {
+  background: #7C3AED;
+}
+.area-card-cursos:hover {
+  border-color: #DDD6FE !important;
+}
+
+.area-card-supervision:hover::before,
+.area-card-supervision.active::before {
+  background: #16A34A;
+}
+.area-card-supervision:hover {
+  border-color: #BBF7D0 !important;
+}
+
+.area-card-matriz:hover::before,
+.area-card-matriz.active::before {
+  background: #0284C7;
+}
+.area-card-matriz:hover {
+  border-color: #BAE6FD !important;
+}
+
+.area-card-vacantes:hover::before,
+.area-card-vacantes.active::before {
+  background: #BE1E2D;
+}
+.area-card-vacantes:hover {
+  border-color: #FECACA !important;
+}
+
+.area-card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+}
+
+.area-card-title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #0F172A;
+  margin-bottom: 0.2rem;
+  letter-spacing: -0.01em;
+}
+
+.area-card-desc {
+  font-size: 0.73rem;
+  color: #64748B;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.area-card-footer {
+  transition: all 0.2s;
+}
+
+.area-action-card:hover .area-card-footer i {
+  transform: translateX(3px);
+  transition: transform 0.2s;
+}
+
 
 
