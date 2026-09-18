@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Iniciar Sesión — SGA • UCV Virtual</title>
-  <meta name="description" content="Acceso al Sistema de Gestión Académica Modular — UCV Virtual">
+  <meta name="description" content="Acceso al Sistema de Gestión Académica Modular — Universidad César Vallejo (UCV Virtual)">
 
   <!-- Tipografía Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -25,118 +25,387 @@
     }
 
     :root {
-      --login-navy-dark: #071A30;
-      --login-navy: #0B2545;
-      --login-navy-light: #133B6B;
+      --login-navy-dark: #030A14;
+      --login-navy: #071930;
+      --login-navy-surface: #0E2545;
+      --login-navy-light: #163B6B;
       --login-red: #BE1E2D;
-      --login-red-hover: #9E1824;
-      --login-red-glow: rgba(190, 30, 45, 0.4);
-      --login-glass-bg: rgba(255, 255, 255, 0.08);
+      --login-red-bright: #E52336;
+      --login-red-glow: rgba(190, 30, 45, 0.45);
+      --login-blue: #0D6EFD;
+      --login-blue-glow: rgba(13, 110, 253, 0.35);
+      --login-glass-bg: rgba(10, 28, 54, 0.78);
       --login-glass-border: rgba(255, 255, 255, 0.15);
-      --login-glass-shadow: rgba(0, 0, 0, 0.25);
+      --login-text: #FFFFFF;
+      --login-text-muted: rgba(255, 255, 255, 0.65);
     }
 
     html, body {
       min-height: 100vh;
+      width: 100%;
+      background-color: var(--login-navy-dark);
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      color: var(--login-text);
+      overflow-x: hidden;
     }
 
-    body {
-      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-      background: linear-gradient(135deg, #020B18 0%, #0B2545 35%, #1A3A6B 60%, #0D1B2E 100%);
+    /* ==========================================================================
+       MAIN CONTAINER
+       ========================================================================== */
+    .login-container {
+      position: relative;
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      background: radial-gradient(circle at 85% 25%, #0B2545 0%, #051426 50%, #020812 100%);
+      overflow: hidden;
+    }
+
+    /* ==========================================================================
+       HERO SIDE WRAPPER (UCV CAMPUS WITH PRECISE DIAGONAL CUT)
+       ========================================================================== */
+    .hero-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 56%;
+      z-index: 2;
+      filter: drop-shadow(10px 0 35px rgba(0, 0, 0, 0.8)) drop-shadow(4px 0 15px rgba(190, 30, 45, 0.4));
+    }
+
+    .hero-side {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 3rem 4.5rem 3rem 3.5rem;
+      /* Precise diagonal cut: top-right stays at 100%, bottom-right moves inward by 120px */
+      clip-path: polygon(0 0, 100% 0, calc(100% - 120px) 100%, 0 100%);
+      overflow: hidden;
+    }
+
+    /* Campus background photo */
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('img/UCV.jpg');
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      transform: scale(1.02);
+      transition: transform 10s cubic-bezier(0.25, 1, 0.5, 1);
+      z-index: 0;
+    }
+
+    .hero-wrapper:hover .hero-bg {
+      transform: scale(1.07);
+    }
+
+    /* Institutional clear gradient overlay so campus is vibrant and text is readable */
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(3, 10, 20, 0.76) 0%,
+        rgba(7, 25, 48, 0.50) 40%,
+        rgba(190, 30, 45, 0.40) 80%,
+        rgba(3, 10, 20, 0.88) 100%
+      );
+      backdrop-filter: blur(1.5px);
+      z-index: 1;
+    }
+
+    /* Glowing laser line along the diagonal edge */
+    .diagonal-laser-svg {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 120px;
+      height: 100%;
+      z-index: 5;
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    /* Hero Elements */
+    .hero-header {
+      position: relative;
+      z-index: 2;
       display: flex;
       align-items: center;
-      justify-content: center;
-      position: relative;
-      padding: 2.5rem 1rem;
-      overflow-x: hidden;
-      overflow-y: auto;
+      justify-content: space-between;
+      gap: 1.5rem;
     }
 
-    /* ===================== ANIMATED BACKGROUND ===================== */
-    .bg-particles {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 0;
+    .hero-logo-box {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(3, 10, 20, 0.68);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 16px;
+      padding: 0.65rem 1.25rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     }
 
-    .bg-particles .orb {
-      position: absolute;
+    .hero-logo-box img {
+      height: 46px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4));
+    }
+
+    .hero-badge-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(34, 197, 94, 0.16);
+      border: 1px solid rgba(34, 197, 94, 0.45);
+      color: #86EFAC;
+      border-radius: 999px;
+      padding: 0.38rem 0.95rem;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      box-shadow: 0 4px 14px rgba(34, 197, 94, 0.2);
+    }
+
+    .hero-badge-live .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #22C55E;
       border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.35;
-      animation: float-orb 18s ease-in-out infinite alternate;
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+      animation: pulse-green 2s infinite;
     }
 
-    .bg-particles .orb:nth-child(1) {
-      width: 500px; height: 500px;
-      background: radial-gradient(circle, var(--login-red) 0%, transparent 70%);
-      top: -10%; left: -10%;
-      animation-duration: 20s;
+    @keyframes pulse-green {
+      0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+      70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
     }
 
-    .bg-particles .orb:nth-child(2) {
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, #1E40AF 0%, transparent 70%);
-      bottom: -15%; right: -10%;
-      animation-duration: 25s;
-      animation-delay: -5s;
+    .hero-center {
+      position: relative;
+      z-index: 2;
+      max-width: 560px;
+      margin: 2.5rem 0;
     }
 
-    .bg-particles .orb:nth-child(3) {
-      width: 350px; height: 350px;
-      background: radial-gradient(circle, #7C3AED 0%, transparent 70%);
-      top: 50%; left: 60%;
-      animation-duration: 22s;
-      animation-delay: -8s;
+    .hero-pill-category {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(190, 30, 45, 0.3);
+      border: 1px solid rgba(255, 90, 105, 0.6);
+      color: #FFD2D6;
+      padding: 0.45rem 1.1rem;
+      border-radius: 30px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 4px 20px rgba(190, 30, 45, 0.35);
     }
 
-    @keyframes float-orb {
-      0%   { transform: translate(0, 0) scale(1); }
-      33%  { transform: translate(40px, -30px) scale(1.1); }
-      66%  { transform: translate(-20px, 50px) scale(0.95); }
-      100% { transform: translate(30px, -20px) scale(1.05); }
+    .hero-center h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2rem, 3.1vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.15;
+      color: #FFFFFF;
+      margin-bottom: 1.15rem;
+      letter-spacing: -0.025em;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.6);
     }
 
-    /* Grid pattern overlay */
-    .bg-grid {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+    .hero-center h1 span.gradient-highlight {
+      background: linear-gradient(135deg, #FFFFFF 15%, #93C5FD 60%, #FCA5A5 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-center p {
+      font-size: 1.02rem;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 400;
+      margin-bottom: 1.85rem;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    .hero-feature-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.95rem;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #FFFFFF;
+      transition: all 0.25s ease;
+    }
+
+    .hero-tag:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .hero-tag i {
+      color: #FFD166;
+      font-size: 0.95rem;
+    }
+
+    /* Hero Footer Stats */
+    .hero-footer {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-stats-card {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      background: rgba(3, 10, 20, 0.7);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 18px;
+      padding: 1.1rem 1.4rem;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .stat-item i {
+      font-size: 1.55rem;
+      color: #60A5FA;
+      background: rgba(96, 165, 250, 0.14);
+      padding: 0.55rem;
+      border-radius: 12px;
+      border: 1px solid rgba(96, 165, 250, 0.28);
+    }
+
+    .stat-item:nth-child(2) i {
+      color: #F87171;
+      background: rgba(248, 113, 113, 0.14);
+      border-color: rgba(248, 113, 113, 0.28);
+    }
+
+    .stat-item:nth-child(3) i {
+      color: #34D399;
+      background: rgba(52, 211, 153, 0.14);
+      border-color: rgba(52, 211, 153, 0.28);
+    }
+
+    .stat-info .stat-val {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.2;
+    }
+
+    .stat-info .stat-lbl {
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.65);
+      font-weight: 500;
+    }
+
+    /* ==========================================================================
+       LOGIN SIDE (RIGHT HALF WITH DIAGONAL FLOW)
+       ========================================================================== */
+    .login-side {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: clamp(2.5rem, 7vw, 7rem);
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+      z-index: 1;
+    }
+
+    /* Ambient particles & cyber grid */
+    .login-grid-bg {
+      position: absolute;
+      inset: 0;
       background-image:
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 60px 60px;
+        linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      background-size: 50px 50px;
       pointer-events: none;
       z-index: 0;
     }
 
-    /* ===================== LOGIN CARD ===================== */
-    .login-wrapper {
+    .ambient-glow-1 {
+      position: absolute;
+      top: -10%;
+      right: -10%;
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(190, 30, 45, 0.32) 0%, transparent 70%);
+      filter: blur(90px);
+      pointer-events: none;
+      z-index: 0;
+      animation: float-glow 18s ease-in-out infinite alternate;
+    }
+
+    .ambient-glow-2 {
+      position: absolute;
+      bottom: -10%;
+      left: 45%;
+      width: 540px;
+      height: 540px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(13, 110, 253, 0.28) 0%, transparent 70%);
+      filter: blur(100px);
+      pointer-events: none;
+      z-index: 0;
+      animation: float-glow 22s ease-in-out infinite alternate-reverse;
+    }
+
+    @keyframes float-glow {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(30px, -35px) scale(1.08); }
+      100% { transform: translate(-35px, 25px) scale(0.95); }
+    }
+
+    /* ==========================================================================
+       LOGIN CARD
+       ========================================================================== */
+    .login-card-container {
       position: relative;
-      z-index: 10;
+      z-index: 3;
       width: 100%;
-      max-width: 440px;
-      padding: 0 1.25rem;
+      max-width: 460px;
+      animation: card-enter 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
-    .login-card {
-      background: var(--login-glass-bg);
-      backdrop-filter: blur(24px) saturate(150%);
-      -webkit-backdrop-filter: blur(24px) saturate(150%);
-      border: 1px solid var(--login-glass-border);
-      border-radius: 20px;
-      padding: 2.5rem 2.25rem 2rem;
-      box-shadow:
-        0 20px 60px var(--login-glass-shadow),
-        0 0 0 1px rgba(255,255,255,0.05) inset,
-        0 1px 0 rgba(255,255,255,0.1) inset;
-      animation: card-appear 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-
-    @keyframes card-appear {
+    @keyframes card-enter {
       from {
         opacity: 0;
         transform: translateY(30px) scale(0.96);
@@ -147,188 +416,219 @@
       }
     }
 
-    /* ===================== LOGO ===================== */
-    .login-logo {
+    .login-card {
+      background: var(--login-glass-bg);
+      backdrop-filter: blur(28px) saturate(160%);
+      -webkit-backdrop-filter: blur(28px) saturate(160%);
+      border: 1px solid var(--login-glass-border);
+      border-radius: 24px;
+      padding: 2.5rem 2.25rem 2.25rem;
+      box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.55),
+        0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+        0 1px 0 rgba(255, 255, 255, 0.15) inset;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Top accent gradient bar */
+    .login-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #BE1E2D 0%, #FF4655 40%, #0D6EFD 80%, #38BDF8 100%);
+    }
+
+    /* Card Top Branding */
+    .login-brand-top {
       text-align: center;
-      margin-bottom: 1.5rem;
-      animation: logo-pulse 0.6s ease 0.3s both;
+      margin-bottom: 1.4rem;
     }
 
-    @keyframes logo-pulse {
-      from { opacity: 0; transform: scale(0.85); }
-      to   { opacity: 1; transform: scale(1); }
-    }
-
-    .login-logo img {
-      max-width: 250px;
+    .login-brand-top img {
+      max-width: 220px;
       width: 100%;
       height: auto;
       object-fit: contain;
-      filter: drop-shadow(0 6px 16px rgba(0,0,0,0.35));
+      filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.35));
       transition: transform 0.25s ease;
     }
 
-    .login-logo img:hover {
+    .login-brand-top img:hover {
       transform: scale(1.03);
     }
 
-    .login-logo-divider {
-      width: 50px;
-      height: 3px;
-      background: linear-gradient(90deg, var(--login-red), #1E40AF);
-      border-radius: 3px;
-      margin: 1.15rem auto 0;
-    }
-
-    /* Chips Demo */
-    .btn-demo-chip {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      color: rgba(255, 255, 255, 0.85);
-      border-radius: 20px;
-      padding: 0.3rem 0.75rem;
-      font-size: 0.74rem;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: inherit;
-      transition: all 0.2s ease;
-    }
-
-    .btn-demo-chip:hover {
-      background: rgba(190, 30, 45, 0.3);
-      border-color: rgba(190, 30, 45, 0.7);
-      color: #FFFFFF;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(190, 30, 45, 0.25);
-    }
-
-    /* ===================== HEADER TEXT ===================== */
-    .login-header {
+    .login-title-box {
       text-align: center;
-      margin-bottom: 1.75rem;
+      margin-bottom: 1.5rem;
     }
 
-    .login-header h2 {
+    .login-title-box h2 {
       font-family: 'Outfit', sans-serif;
+      font-size: 1.65rem;
       font-weight: 700;
-      font-size: 1.5rem;
       color: #FFFFFF;
-      margin-bottom: 0.35rem;
       letter-spacing: -0.02em;
+      margin-bottom: 0.3rem;
     }
 
-    .login-header p {
-      color: rgba(255,255,255,0.5);
-      font-size: 0.84rem;
+    .login-title-box p {
+      font-size: 0.86rem;
+      color: var(--login-text-muted);
       font-weight: 500;
     }
 
-    /* ===================== FORM ===================== */
-    .login-field {
-      margin-bottom: 1.15rem;
-      position: relative;
+    .faculty-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 0.65rem;
+      padding: 0.28rem 0.85rem;
+      background: rgba(190, 30, 45, 0.22);
+      border: 1px solid rgba(190, 30, 45, 0.45);
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #FFB3BA;
+      letter-spacing: 0.02em;
     }
 
-    .login-field label {
+    /* Error feedback */
+    .login-error {
+      display: none;
+      background: rgba(190, 30, 45, 0.2);
+      border: 1px solid rgba(190, 30, 45, 0.5);
+      border-radius: 12px;
+      padding: 0.75rem 0.95rem;
+      margin-bottom: 1.25rem;
+      color: #FFA2A2;
+      font-size: 0.82rem;
+      font-weight: 600;
+      align-items: center;
+      gap: 0.6rem;
+      animation: shake 0.4s ease;
+    }
+
+    .login-error.show {
+      display: flex;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 1.15rem;
+    }
+
+    .form-group label {
       display: block;
       font-size: 0.78rem;
-      font-weight: 600;
-      color: rgba(255,255,255,0.7);
-      margin-bottom: 0.4rem;
-      letter-spacing: 0.03em;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.82);
+      margin-bottom: 0.45rem;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
     }
 
-    .login-input-wrap {
+    .input-wrapper {
       position: relative;
       display: flex;
       align-items: center;
     }
 
-    .login-input-wrap .input-icon {
+    .input-wrapper .input-icon {
       position: absolute;
-      left: 14px;
-      color: rgba(255,255,255,0.35);
-      font-size: 1.05rem;
+      left: 15px;
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.4);
       pointer-events: none;
-      transition: color 0.3s ease;
+      transition: color 0.25s ease;
     }
 
-    .login-input-wrap input {
+    .input-wrapper input {
       width: 100%;
-      padding: 0.75rem 0.85rem 0.75rem 2.75rem;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 12px;
+      padding: 0.82rem 1rem 0.82rem 2.85rem;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 13px;
       color: #FFFFFF;
       font-family: inherit;
       font-size: 0.92rem;
       font-weight: 500;
       outline: none;
-      transition: all 0.3s ease;
+      transition: all 0.25s ease;
     }
 
-    .login-input-wrap input::placeholder {
-      color: rgba(255,255,255,0.3);
+    .input-wrapper input::placeholder {
+      color: rgba(255, 255, 255, 0.35);
       font-weight: 400;
     }
 
-    .login-input-wrap input:focus {
-      background: rgba(255,255,255,0.1);
-      border-color: rgba(190, 30, 45, 0.6);
-      box-shadow: 0 0 0 3px rgba(190, 30, 45, 0.15), 0 0 20px rgba(190, 30, 45, 0.1);
+    .input-wrapper input:focus {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: #FF4655;
+      box-shadow: 0 0 0 3px rgba(255, 70, 85, 0.2), 0 0 20px rgba(190, 30, 45, 0.25);
     }
 
-    .login-input-wrap input:focus ~ .input-icon {
-      color: var(--login-red);
+    .input-wrapper input:focus ~ .input-icon {
+      color: #FF4655;
     }
 
-    .toggle-pass {
+    .toggle-pass-btn {
       position: absolute;
       right: 14px;
       background: none;
       border: none;
-      color: rgba(255,255,255,0.35);
+      color: rgba(255, 255, 255, 0.4);
       cursor: pointer;
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       padding: 4px;
       transition: color 0.2s ease;
     }
 
-    .toggle-pass:hover {
-      color: rgba(255,255,255,0.7);
+    .toggle-pass-btn:hover {
+      color: #FFFFFF;
     }
 
-    /* ===================== OPTIONS ROW ===================== */
+    /* Options row */
     .login-options {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
-      font-size: 0.8rem;
+      margin-bottom: 1.45rem;
+      font-size: 0.82rem;
     }
 
     .login-options label {
       display: flex;
       align-items: center;
-      gap: 0.45rem;
-      color: rgba(255,255,255,0.55);
+      gap: 0.5rem;
+      color: var(--login-text-muted);
       cursor: pointer;
       font-weight: 500;
       transition: color 0.2s;
     }
 
     .login-options label:hover {
-      color: rgba(255,255,255,0.8);
+      color: #FFFFFF;
     }
 
     .login-options input[type="checkbox"] {
       appearance: none;
-      width: 16px;
-      height: 16px;
-      border: 1.5px solid rgba(255,255,255,0.25);
+      width: 17px;
+      height: 17px;
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
       border-radius: 5px;
-      background: rgba(255,255,255,0.05);
+      background: rgba(255, 255, 255, 0.06);
       cursor: pointer;
       position: relative;
       transition: all 0.2s ease;
@@ -345,280 +645,529 @@
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       color: white;
-      font-size: 0.6rem;
-      font-weight: 700;
+      font-size: 0.65rem;
+      font-weight: 800;
     }
 
     .login-options a {
-      color: rgba(255,255,255,0.45);
+      color: rgba(255, 255, 255, 0.55);
       text-decoration: none;
       font-weight: 500;
       transition: color 0.2s;
     }
 
     .login-options a:hover {
-      color: var(--login-red);
+      color: #FF6B7A;
+      text-decoration: underline;
     }
 
-    /* ===================== BUTTON ===================== */
-    .login-btn {
+    /* Submit Button */
+    .btn-login-submit {
       width: 100%;
-      padding: 0.85rem;
-      background: linear-gradient(135deg, var(--login-red) 0%, #C02942 50%, #9E1824 100%);
+      padding: 0.9rem;
+      background: linear-gradient(135deg, #BE1E2D 0%, #D42436 45%, #9E1824 100%);
       color: #FFFFFF;
       border: none;
-      border-radius: 12px;
+      border-radius: 13px;
       font-family: 'Outfit', sans-serif;
-      font-size: 1rem;
+      font-size: 1.05rem;
       font-weight: 700;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
       overflow: hidden;
       letter-spacing: 0.03em;
+      box-shadow: 0 8px 24px rgba(190, 30, 45, 0.4);
     }
 
-    .login-btn::before {
+    .btn-login-submit::before {
       content: '';
       position: absolute;
       top: 0; left: -100%;
       width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
       transition: left 0.6s ease;
     }
 
-    .login-btn:hover {
+    .btn-login-submit:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 30px var(--login-red-glow), 0 2px 8px rgba(0,0,0,0.3);
+      box-shadow: 0 12px 32px rgba(190, 30, 45, 0.55), 0 0 25px rgba(255, 70, 85, 0.3);
     }
 
-    .login-btn:hover::before {
+    .btn-login-submit:hover::before {
       left: 100%;
     }
 
-    .login-btn:active {
+    .btn-login-submit:active {
       transform: translateY(0);
-      box-shadow: 0 4px 15px var(--login-red-glow);
+      box-shadow: 0 4px 16px rgba(190, 30, 45, 0.4);
     }
 
-    .login-btn .btn-content {
+    .btn-login-submit .btn-content {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 0.6rem;
     }
 
-    .login-btn .spinner {
+    .btn-login-submit .spinner {
       display: none;
-      width: 20px; height: 20px;
-      border: 2.5px solid rgba(255,255,255,0.3);
+      width: 22px; height: 22px;
+      border: 2.5px solid rgba(255, 255, 255, 0.3);
       border-top-color: #fff;
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
     }
 
-    .login-btn.loading .btn-text { display: none; }
-    .login-btn.loading .spinner { display: inline-block; }
+    .btn-login-submit.loading .btn-text { display: none; }
+    .btn-login-submit.loading .spinner { display: inline-block; }
 
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
 
-    /* ===================== ERROR MESSAGE ===================== */
-    .login-error {
-      display: none;
-      background: rgba(190, 30, 45, 0.15);
-      border: 1px solid rgba(190, 30, 45, 0.3);
-      border-radius: 10px;
-      padding: 0.65rem 0.85rem;
-      margin-bottom: 1rem;
-      color: #FF8A8A;
-      font-size: 0.8rem;
-      font-weight: 500;
-      align-items: center;
-      gap: 0.5rem;
-      animation: shake 0.4s ease;
+    /* Fast Access Demo Chips */
+    .fast-demo-box {
+      margin-top: 1.35rem;
+      padding-top: 1.15rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      text-align: center;
     }
 
-    .login-error.show {
+    .fast-demo-title {
+      font-size: 0.74rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 0.6rem;
+      font-weight: 600;
       display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
     }
 
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20% { transform: translateX(-6px); }
-      40% { transform: translateX(6px); }
-      60% { transform: translateX(-4px); }
-      80% { transform: translateX(4px); }
+    .fast-chips-row {
+      display: flex;
+      gap: 0.45rem;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
-    /* ===================== FOOTER ===================== */
-    .login-footer {
+    .btn-demo-chip {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: rgba(255, 255, 255, 0.88);
+      border-radius: 20px;
+      padding: 0.35rem 0.85rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .btn-demo-chip:hover {
+      background: rgba(190, 30, 45, 0.35);
+      border-color: rgba(255, 80, 95, 0.7);
+      color: #FFFFFF;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(190, 30, 45, 0.35);
+    }
+
+    /* Card Footer & Security Notes */
+    .card-meta-footer {
       text-align: center;
-      margin-top: 1.5rem;
-      color: rgba(255,255,255,0.3);
+      margin-top: 1.4rem;
       font-size: 0.73rem;
-      font-weight: 500;
+      color: rgba(255, 255, 255, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
 
-    .login-footer a {
-      color: rgba(255,255,255,0.45);
-      text-decoration: none;
+    .card-meta-footer i {
+      color: #22C55E;
     }
 
-    .login-footer a:hover {
-      color: var(--login-red);
-    }
-
-    /* ===================== BOTTOM BRANDING ===================== */
-    .bottom-brand {
-      position: fixed;
-      bottom: 1.5rem;
-      left: 50%;
-      transform: translateX(-50%);
+    /* Bottom Copyright */
+    .page-footer-copy {
+      position: absolute;
+      bottom: 1.25rem;
+      right: 2.5rem;
       z-index: 5;
-      color: rgba(255,255,255,0.2);
       font-size: 0.72rem;
-      font-weight: 500;
-      text-align: center;
+      color: rgba(255, 255, 255, 0.35);
       letter-spacing: 0.03em;
     }
 
-    /* ===================== RESPONSIVE ===================== */
+    /* ==========================================================================
+       RESPONSIVE DESIGN
+       ========================================================================== */
+    @media (max-width: 1200px) {
+      .hero-wrapper {
+        width: 52%;
+      }
+      .hero-side {
+        padding: 2.5rem 3rem 2.5rem 2.5rem;
+        clip-path: polygon(0 0, 100% 0, calc(100% - 90px) 100%, 0 100%);
+      }
+      .diagonal-laser-svg {
+        width: 90px;
+      }
+      .hero-stats-card {
+        grid-template-columns: 1fr;
+        gap: 0.65rem;
+      }
+      .login-side {
+        padding-right: clamp(1.5rem, 4vw, 4rem);
+      }
+    }
+
+    @media (max-width: 991px) {
+      .login-container {
+        flex-direction: column;
+        overflow-y: auto;
+      }
+
+      .hero-wrapper {
+        position: relative;
+        width: 100%;
+        min-height: 400px;
+        filter: none;
+      }
+
+      .hero-side {
+        height: auto;
+        min-height: 400px;
+        padding: 2.2rem 1.5rem 3.5rem;
+        clip-path: polygon(0 0, 100% 0, 100% 88%, 0 100%);
+      }
+
+      .diagonal-laser-svg {
+        display: none;
+      }
+
+      /* Horizontal diagonal beam on mobile */
+      .hero-side::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #BE1E2D, #FF4655, #0D6EFD);
+        z-index: 5;
+      }
+
+      .hero-center {
+        margin: 1.5rem 0;
+      }
+
+      .hero-center h1 {
+        font-size: 1.85rem;
+      }
+
+      .hero-stats-card {
+        display: none;
+      }
+
+      .login-side {
+        width: 100%;
+        min-height: auto;
+        justify-content: center;
+        padding: 2.5rem 1.25rem 4rem;
+      }
+
+      .page-footer-copy {
+        position: static;
+        text-align: center;
+        margin-top: 2rem;
+      }
+    }
+
     @media (max-width: 480px) {
       .login-card {
-        padding: 2rem 1.5rem 1.5rem;
-        border-radius: 16px;
+        padding: 2rem 1.25rem 1.75rem;
+        border-radius: 20px;
       }
 
-      .login-logo img {
-        height: 55px;
+      .hero-side {
+        min-height: 320px;
+        padding: 1.5rem 1rem 2.8rem;
       }
 
-      .login-header h2 {
-        font-size: 1.3rem;
+      .hero-logo-box {
+        padding: 0.5rem 0.85rem;
+      }
+
+      .hero-logo-box img {
+        height: 38px;
+      }
+
+      .hero-center h1 {
+        font-size: 1.55rem;
+      }
+
+      .hero-feature-tags {
+        display: none;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- ANIMATED BACKGROUND -->
-  <div class="bg-particles">
-    <div class="orb"></div>
-    <div class="orb"></div>
-    <div class="orb"></div>
-  </div>
-  <div class="bg-grid"></div>
+  <!-- MAIN CONTAINER -->
+  <div class="login-container">
 
-  <!-- LOGIN CARD -->
-  <div class="login-wrapper">
-    <div class="login-card">
+    <!-- ====================================================================
+         LADO A: FOTO DE CAMPUS UCV CON BRANDING INSTITUCIONAL Y CORTE DIAGONAL
+         ==================================================================== -->
+    <div class="hero-wrapper">
+      <section class="hero-side" aria-label="Campus Universitario UCV">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
 
-      <!-- Logo -->
-      <div class="login-logo">
-        <img src="img/logo-ucv-virtual.png" alt="UCV Virtual" id="loginLogoImg">
-        <div class="login-logo-divider"></div>
-      </div>
+        <!-- Laser diagonal SVG strip -->
+        <svg class="diagonal-laser-svg" viewBox="0 0 120 1000" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="edgeLaser" x1="100%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#BE1E2D" stop-opacity="1" />
+              <stop offset="40%" stop-color="#FF4655" stop-opacity="0.95" />
+              <stop offset="70%" stop-color="#0D6EFD" stop-opacity="0.9" />
+              <stop offset="100%" stop-color="#38BDF8" stop-opacity="0.8" />
+            </linearGradient>
+            <filter id="laserGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          <line x1="120" y1="0" x2="0" y2="1000" stroke="url(#edgeLaser)" stroke-width="4.5" filter="url(#laserGlow)" />
+        </svg>
 
-      <!-- Header -->
-      <div class="login-header">
-        <h2>Bienvenido al SGA</h2>
-        <p style="margin-bottom: 0.35rem;">Sistema de Gestión Académica Modular</p>
-        <div style="display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.25rem 0.65rem; background: rgba(190, 30, 45, 0.2); border: 1px solid rgba(190, 30, 45, 0.4); border-radius: 20px; font-size: 0.74rem; color: #FFA8B0; font-weight: 600; margin-top: 0.25rem;">
-          <i class="bi bi-gear-wide-connected" style="color: #FFD166;"></i> Facultad de Ingeniería Industrial
-        </div>
-      </div>
-
-      <!-- Error message -->
-      <div class="login-error" id="loginError">
-        <i class="bi bi-exclamation-circle"></i>
-        <span id="loginErrorText">Credenciales incorrectas. Intente nuevamente.</span>
-      </div>
-
-      <!-- Form -->
-      <form id="loginForm" autocomplete="off">
-        <div class="login-field">
-          <label for="loginUser">Usuario o Correo</label>
-          <div class="login-input-wrap">
-            <input type="text" id="loginUser" placeholder="ejemplo@ucvvirtual.edu.pe" autocomplete="username" required>
-            <i class="bi bi-person input-icon"></i>
+        <!-- Top Header -->
+        <div class="hero-header">
+          <div class="hero-logo-box">
+            <img src="img/logo-ucv-virtual.png" alt="Universidad César Vallejo - UCV Virtual">
+          </div>
+          <div class="hero-badge-live">
+            <span class="pulse-dot"></span>
+            <span>Semestre 2026-II</span>
           </div>
         </div>
 
-        <div class="login-field">
-          <label for="loginPass">Contraseña</label>
-          <div class="login-input-wrap">
-            <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" required>
-            <i class="bi bi-lock input-icon"></i>
-            <button type="button" class="toggle-pass" id="togglePass" title="Mostrar contraseña">
-              <i class="bi bi-eye"></i>
-            </button>
+        <!-- Center Hero Content -->
+        <div class="hero-center">
+          <div class="hero-pill-category">
+            <i class="bi bi-mortarboard-fill"></i> Modalidad a Distancia • SUBE
+          </div>
+          <h1>
+            Campus Universitario & <br>
+            <span class="gradient-highlight">Entorno Académico Virtual</span>
+          </h1>
+          <p>
+            Bienvenido al Sistema de Gestión Académica Modular (SGA) de la Universidad César Vallejo. Evaluación del Desempeño Docente 2026-II, seguimiento curricular e indicadores de excelencia para directores, coordinadores y docentes.
+          </p>
+
+          <div class="hero-feature-tags">
+            <div class="hero-tag">
+              <i class="bi bi-clipboard2-check-fill"></i> EDD 2026-II (F03, F02, F17, F06)
+            </div>
+            <div class="hero-tag">
+              <i class="bi bi-diagram-3-fill"></i> Consolidado 360°
+            </div>
+            <div class="hero-tag">
+              <i class="bi bi-shield-lock-fill"></i> Acreditación SGC ISO 9001
+            </div>
           </div>
         </div>
 
-        <div class="login-options">
-          <label>
-            <input type="checkbox" id="rememberMe" checked>
-            Recordar sesión
-          </label>
-          <a href="#" onclick="return false;">¿Olvidaste tu contraseña?</a>
-        </div>
-
-        <button type="submit" class="login-btn" id="loginBtn">
-          <span class="btn-content">
-            <span class="btn-text"><i class="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión</span>
-            <span class="spinner"></span>
-          </span>
-        </button>
-
-        <!-- Accesos directos Demo para pruebas inmediatas -->
-        <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
-          <div style="font-size: 0.72rem; color: rgba(255,255,255,0.45); margin-bottom: 0.5rem; font-weight: 500;">
-            <i class="bi bi-lightning-charge-fill" style="color: #F59E0B; margin-right: 3px;"></i> Acceso rápido de prueba (1-clic):
+        <!-- Bottom Institutional Metrics Card -->
+        <div class="hero-footer">
+          <div class="hero-stats-card">
+            <div class="stat-item">
+              <i class="bi bi-buildings"></i>
+              <div class="stat-info">
+                <div class="stat-val">Campus UCV</div>
+                <div class="stat-lbl">Infraestructura de vanguardia</div>
+              </div>
+            </div>
+            <div class="stat-item">
+              <i class="bi bi-person-video3"></i>
+              <div class="stat-info">
+                <div class="stat-val">SUBE Virtual</div>
+                <div class="stat-lbl">Modalidad a distancia</div>
+              </div>
+            </div>
+            <div class="stat-item">
+              <i class="bi bi-award-fill"></i>
+              <div class="stat-info">
+                <div class="stat-val">Ing. Industrial</div>
+                <div class="stat-lbl">Calidad y acreditación</div>
+              </div>
+            </div>
           </div>
-          <div style="display: flex; gap: 0.45rem; justify-content: center; flex-wrap: wrap;">
-            <button type="button" class="btn-demo-chip" data-user="coordinador@ucvvirtual.edu.pe" data-role="Coordinador">Coordinador</button>
-            <button type="button" class="btn-demo-chip" data-user="director@ucvvirtual.edu.pe" data-role="Director">Director</button>
-            <button type="button" class="btn-demo-chip" data-user="auditor@ucvvirtual.edu.pe" data-role="Auditor SGA">Auditor</button>
-          </div>
         </div>
-      </form>
-
-      <div class="login-footer">
-        <p>Dirección Académica — Semestre 2026-II</p>
-      </div>
+      </section>
     </div>
+
+    <!-- ====================================================================
+         LADO B: PANEL DE LOGIN EN DIAGONAL
+         ==================================================================== -->
+    <main class="login-side" aria-label="Formulario de Inicio de Sesión">
+      <div class="login-grid-bg"></div>
+      <div class="ambient-glow-1"></div>
+      <div class="ambient-glow-2"></div>
+
+      <div class="login-card-container">
+        <div class="login-card">
+
+          <!-- Brand / Logo Header -->
+          <div class="login-brand-top">
+            <img src="img/logo-ucv-virtual.png" alt="UCV Virtual Logo" id="loginLogoImg">
+          </div>
+
+          <div class="login-title-box">
+            <h2>Acceso al SGA</h2>
+            <p>Sistema de Gestión Académica Modular</p>
+            <div class="faculty-badge">
+              <i class="bi bi-gear-wide-connected" style="color: #FFD166;"></i>
+              <span>Facultad de Ingeniería Industrial</span>
+            </div>
+          </div>
+
+          <!-- Error Alert Message -->
+          <div class="login-error" id="loginError" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span id="loginErrorText">Credenciales no válidas. Verifique su usuario y contraseña.</span>
+          </div>
+
+          <!-- Login Form -->
+          <form id="loginForm" autocomplete="off">
+            <!-- Username field -->
+            <div class="form-group">
+              <label for="loginUser">Usuario o Correo Institucional</label>
+              <div class="input-wrapper">
+                <input
+                  type="text"
+                  id="loginUser"
+                  placeholder="ejemplo@ucvvirtual.edu.pe"
+                  autocomplete="username"
+                  required
+                >
+                <i class="bi bi-person-badge input-icon"></i>
+              </div>
+            </div>
+
+            <!-- Password field -->
+            <div class="form-group">
+              <label for="loginPass">Contraseña</label>
+              <div class="input-wrapper">
+                <input
+                  type="password"
+                  id="loginPass"
+                  placeholder="••••••••"
+                  autocomplete="current-password"
+                  required
+                >
+                <i class="bi bi-shield-lock input-icon"></i>
+                <button type="button" class="toggle-pass-btn" id="togglePass" title="Mostrar u ocultar contraseña">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Options Row -->
+            <div class="login-options">
+              <label>
+                <input type="checkbox" id="rememberMe" checked>
+                <span>Recordar sesión</span>
+              </label>
+              <a href="#" onclick="alert('Para restablecer su contraseña institucional, por favor comuníquese con el soporte TI de UCV Virtual.'); return false;">
+                ¿Olvidaste tu contraseña?
+              </a>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-login-submit" id="loginBtn">
+              <span class="btn-content">
+                <span class="btn-text">
+                  <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión
+                </span>
+                <span class="spinner"></span>
+              </span>
+            </button>
+
+            <!-- Acceso Rápido Demo (1-Clic) -->
+            <div class="fast-demo-box">
+              <div class="fast-demo-title">
+                <i class="bi bi-lightning-charge-fill" style="color: #F59E0B;"></i>
+                <span>Acceso rápido de prueba institucional:</span>
+              </div>
+              <div class="fast-chips-row">
+                <button type="button" class="btn-demo-chip" data-user="admin" data-pass="admin123" data-role="Administrador SGA">
+                  <i class="bi bi-shield-check"></i> Admin
+                </button>
+                <button type="button" class="btn-demo-chip" data-user="coordinador@ucvvirtual.edu.pe" data-pass="demo2026" data-role="Coordinador">
+                  <i class="bi bi-person-check"></i> Coordinador
+                </button>
+                <button type="button" class="btn-demo-chip" data-user="director@ucvvirtual.edu.pe" data-pass="demo2026" data-role="Director">
+                  <i class="bi bi-briefcase"></i> Director
+                </button>
+                <button type="button" class="btn-demo-chip" data-user="auditor@ucvvirtual.edu.pe" data-pass="demo2026" data-role="Auditor SGA">
+                  <i class="bi bi-search"></i> Auditor
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <!-- Security note & Accreditation -->
+          <div class="card-meta-footer">
+            <i class="bi bi-shield-fill-check"></i>
+            <span>Conexión segura SSL • SGA v3.2 Modular</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Copy -->
+      <div class="page-footer-copy">
+        © 2026 UCV Virtual • Universidad César Vallejo — Todos los derechos reservados
+      </div>
+    </main>
   </div>
 
-  <!-- BOTTOM BRANDING -->
-  <div class="bottom-brand">
-    © 2026 UCV Virtual • Universidad César Vallejo
-  </div>
-
+  <!-- ====================================================================
+       AUTHENTICATION LOGIC (FRONTEND SESSION STORAGE)
+       ==================================================================== -->
   <script>
-    // ==================== FRONTEND-ONLY LOGIN ====================
-    // Sin backend de autenticación — control puramente visual y de interfaz con sessionStorage
-
-    // Si ya tiene sesión activa, redirige directamente al sistema
+    // Si ya tiene sesión activa en sessionStorage, redirigir a index.html
     if (sessionStorage.getItem('sga_logged_in') === 'true') {
       window.location.replace('index.html');
     }
 
-    // Alternar visibilidad de la contraseña
+    // Toggle para ver/ocultar contraseña
     const toggleBtn = document.getElementById('togglePass');
     const passInput = document.getElementById('loginPass');
-    toggleBtn.addEventListener('click', () => {
-      const isPassword = passInput.type === 'password';
-      passInput.type = isPassword ? 'text' : 'password';
-      toggleBtn.querySelector('i').className = isPassword ? 'bi bi-eye-slash' : 'bi bi-eye';
-    });
+    if (toggleBtn && passInput) {
+      toggleBtn.addEventListener('click', () => {
+        const isPass = passInput.type === 'password';
+        passInput.type = isPass ? 'text' : 'password';
+        toggleBtn.querySelector('i').className = isPass ? 'bi bi-eye-slash' : 'bi bi-eye';
+      });
+    }
 
-    // Función auxiliar para ejecutar el login simulado
+    // Función de login con animación de carga
     function executeLogin(username) {
       const btn = document.getElementById('loginBtn');
-      btn.classList.add('loading');
-      btn.disabled = true;
+      if (btn) {
+        btn.classList.add('loading');
+        btn.disabled = true;
+      }
 
       setTimeout(() => {
         const cleanName = (username || 'ADMIN').split('@')[0].toUpperCase();
@@ -626,43 +1175,50 @@
         sessionStorage.setItem('sga_user_name', cleanName);
         sessionStorage.setItem('sga_login_time', new Date().toLocaleTimeString('es-PE'));
         window.location.href = 'index.html';
-      }, 900);
+      }, 850);
     }
 
-    // Formulario regular
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-      e.preventDefault();
+    // Envío del formulario
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+      loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
 
-      const user = document.getElementById('loginUser').value.trim();
-      const pass = document.getElementById('loginPass').value.trim();
-      const errorEl = document.getElementById('loginError');
+        const user = document.getElementById('loginUser').value.trim();
+        const pass = document.getElementById('loginPass').value.trim();
+        const errorEl = document.getElementById('loginError');
 
-      errorEl.classList.remove('show');
+        if (errorEl) errorEl.classList.remove('show');
 
-      if (!user || !pass) {
-        document.getElementById('loginErrorText').textContent = 'Por favor complete todos los campos.';
-        errorEl.classList.add('show');
-        return;
-      }
+        if (!user || !pass) {
+          const errText = document.getElementById('loginErrorText');
+          if (errText) errText.textContent = 'Por favor complete todos los campos requeridos.';
+          if (errorEl) errorEl.classList.add('show');
+          return;
+        }
 
-      executeLogin(user);
-    });
+        executeLogin(user);
+      });
+    }
 
-    // Accesos rápidos Demo (1-clic)
+    // Botones de acceso rápido Demo
     document.querySelectorAll('.btn-demo-chip').forEach(chip => {
       chip.addEventListener('click', () => {
         const email = chip.getAttribute('data-user');
+        const pass = chip.getAttribute('data-pass') || 'admin123';
         document.getElementById('loginUser').value = email;
-        document.getElementById('loginPass').value = 'demo2026';
+        document.getElementById('loginPass').value = pass;
         executeLogin(email);
       });
     });
 
-    // Foco inicial
-    setTimeout(() => {
-      const userField = document.getElementById('loginUser');
-      if (userField) userField.focus();
-    }, 600);
+    // Foco automático en el campo de usuario
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        const userField = document.getElementById('loginUser');
+        if (userField) userField.focus();
+      }, 400);
+    });
   </script>
 </body>
 </html>
