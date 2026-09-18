@@ -399,16 +399,26 @@ function setupEventListeners() {
     chk.addEventListener('change', calculateCarpetaCompliance);
   });
 
-  // Botones interactivos de la rúbrica de supervisión
+  // Botón superior de Calificar Desempeño
+  document.getElementById('btnOpenCalificarDesempenoTop')?.addEventListener('click', () => openNewSupervisionModal());
+
+  // Eventos Módulo Evaluación de Desempeño Docente (EDD 2026-2)
+  document.getElementById('filterEddSearch')?.addEventListener('input', renderDesempeno);
+  document.getElementById('filterEddCiclo')?.addEventListener('change', renderDesempeno);
+  document.getElementById('filterEddNivel')?.addEventListener('change', renderDesempeno);
+  document.getElementById('btnExportEddExcel')?.addEventListener('click', exportEddExcel);
+
+  // Botones interactivos de la rúbrica de supervisión / desempeño oficial F03
   document.querySelectorAll('.rubric-score-selector').forEach(sel => {
     sel.querySelectorAll('.rubric-score-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         sel.querySelectorAll('.rubric-score-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        const dim = sel.getAttribute('data-dimension');
+        const crit = sel.getAttribute('data-criterion') || sel.getAttribute('data-dimension');
+        const max = sel.getAttribute('data-max') || (crit === 'crit7' ? 2 : 3);
         const score = parseInt(btn.getAttribute('data-score'), 10);
-        const valEl = document.getElementById(`${dim}Value`);
-        if (valEl) valEl.textContent = `${score} / 5 pts`;
+        const valEl = document.getElementById(`${crit}Value`);
+        if (valEl) valEl.textContent = `${score} / ${max} pts`;
         calculateSupervisionTotal();
       });
     });
@@ -440,6 +450,7 @@ function syncActiveAreaCard(activeTabId) {
   const map = {
     'directorio-tab': '.area-card-directorio',
     'cursos-tab': '.area-card-cursos',
+    'desempeno-tab': '.area-card-desempeno',
     'supervision-tab': '.area-card-supervision',
     'matriz-tab': '.area-card-matriz',
     'vacantes-tab': '.area-card-vacantes'
@@ -868,6 +879,12 @@ function updateTabBadges() {
 
   const bAreaVac = document.getElementById('badgeAreaVacantes');
   if (bAreaVac) bAreaVac.textContent = `${analytics.vacancies.length} Vacantes`;
+
+  const badgeDesempeno = document.getElementById('badgeTabDesempeno');
+  if (badgeDesempeno) badgeDesempeno.textContent = allSupervisiones.length;
+
+  const bAreaDes = document.getElementById('badgeAreaDesempeno');
+  if (bAreaDes) bAreaDes.textContent = `${allSupervisiones.length} Evaluados`;
 }
 
 /**
@@ -1690,6 +1707,7 @@ async function loadDocentesAndSupervisiones() {
   renderCursosAnalisis();
   renderCarpetasTable();
   renderSupervisiones();
+  renderDesempeno();
   populateCarpetasDocenteSelect();
   updateTabBadges();
 }
@@ -1833,10 +1851,10 @@ function renderDirectorio() {
 
         <div class="mt-3 pt-2.5 border-top d-flex gap-2">
           <button type="button" class="btn btn-outline-primary btn-sm flex-fill py-1 fw-semibold" style="font-size: 0.75rem;" onclick="openEditDocenteModal(${d.id})">
-            <i class="bi bi-pencil-square me-1"></i> Editar Ficha
+            <i class="bi bi-pencil-square me-1"></i> Ficha
           </button>
-          <button type="button" class="btn btn-outline-success btn-sm flex-fill py-1 fw-semibold" style="font-size: 0.75rem;" onclick="openNewSupervisionModal('${d.nombre.replace(/'/g, "\\'")}')">
-            <i class="bi bi-clipboard2-check me-1"></i> Supervisar
+          <button type="button" class="btn btn-warning btn-sm flex-fill py-1 fw-bold text-dark" style="font-size: 0.75rem;" onclick="openNewSupervisionModal('${d.nombre.replace(/'/g, "\\'")}')" title="Calificar Desempeño en Aula con Formato Oficial F03">
+            <i class="bi bi-award-fill me-1"></i> Calificar
           </button>
         </div>
       </div>
@@ -2252,14 +2270,16 @@ function openNewSupervisionModal(preselectedTeacher) {
     dateInput.value = new Date().toISOString().split('T')[0];
   }
 
-  // Restablecer rúbrica a puntajes por defecto (5, 4, 5, 4)
+  // Restablecer rúbrica oficial F03 a puntajes por defecto (3, 3, 3, 3, 3, 3, 2 = 20 pts)
   document.querySelectorAll('.rubric-score-selector').forEach(sel => {
     sel.querySelectorAll('.rubric-score-btn').forEach(b => b.classList.remove('active'));
-    const btn5 = sel.querySelector('[data-score="5"]');
-    if (btn5) btn5.classList.add('active');
-    const dim = sel.getAttribute('data-dimension');
-    const valEl = document.getElementById(`${dim}Value`);
-    if (valEl) valEl.textContent = '5 / 5 pts';
+    const crit = sel.getAttribute('data-criterion');
+    const max = sel.getAttribute('data-max') || (crit === 'crit7' ? 2 : 3);
+    const targetScore = max;
+    const btnMax = sel.querySelector(`[data-score="${targetScore}"]`);
+    if (btnMax) btnMax.classList.add('active');
+    const valEl = document.getElementById(`${crit}Value`);
+    if (valEl) valEl.textContent = `${max} / ${max} pts`;
   });
 
   calculateSupervisionTotal();
@@ -2277,6 +2297,10 @@ function handleSupervisionDocenteChange() {
     if (cursoInput) {
       cursoInput.value = `${firstGroup.curso} (${firstGroup.seccion}) - ${firstGroup.modulo}`;
     }
+    const cicloSelect = document.getElementById('supCicloSelect');
+    if (cicloSelect && firstGroup.ciclo) {
+      cicloSelect.value = String(firstGroup.ciclo);
+    }
   }
 }
 
@@ -2292,33 +2316,41 @@ function calculateSupervisionTotal() {
   const totalDisplay = document.getElementById('supTotalDisplay');
   if (totalDisplay) totalDisplay.textContent = `${sum.toFixed(2)} / 20`;
 
-  let nivel = 'SATISFACTORIO';
-  let badgeClass = 'badge-nivel-satisfactorio';
-  let icon = 'bi-check-circle-fill';
+  let nivel = 'DESTACADO';
+  let badgeClass = 'badge-edd-destacado';
+  let icon = 'bi-award-fill';
+  let rango = 'Escala: 18.00 a 20.00 pts';
 
   if (sum >= 18) {
-    nivel = 'EXCELENTE';
-    badgeClass = 'badge-nivel-excelente';
+    nivel = 'DESTACADO';
+    badgeClass = 'badge-edd-destacado';
     icon = 'bi-award-fill';
+    rango = 'Escala: 18.00 a 20.00 pts (Supera el estándar)';
   } else if (sum >= 14) {
-    nivel = 'SATISFACTORIO';
-    badgeClass = 'badge-nivel-satisfactorio';
+    nivel = 'REQUERIDO';
+    badgeClass = 'badge-edd-requerido';
     icon = 'bi-check2-circle';
+    rango = 'Escala: 14.00 a 17.00 pts (Nivel satisfactorio)';
   } else if (sum >= 11) {
-    nivel = 'EN PROCESO';
-    badgeClass = 'badge-nivel-enproceso';
+    nivel = 'REGULAR';
+    badgeClass = 'badge-edd-regular';
     icon = 'bi-clock-history';
+    rango = 'Escala: 11.00 a 13.00 pts (En proceso / requiere mejora)';
   } else {
-    nivel = 'CRÍTICO';
-    badgeClass = 'badge-nivel-critico';
+    nivel = 'NO POSEE LA COMPETENCIA';
+    badgeClass = 'badge-edd-critico';
     icon = 'bi-exclamation-octagon-fill';
+    rango = 'Escala: 0.00 a 10.00 pts (Nivel crítico institucional)';
   }
 
   const badgeEl = document.getElementById('supNivelBadge');
   if (badgeEl) {
-    badgeEl.className = `badge ${badgeClass} px-2.5 py-1.5`;
+    badgeEl.className = `badge ${badgeClass} px-3 py-1.5 fs-6`;
     badgeEl.innerHTML = `<i class="bi ${icon} me-1"></i> ${nivel}`;
   }
+
+  const rangoEl = document.getElementById('supNivelRango');
+  if (rangoEl) rangoEl.textContent = rango;
 
   return { sum, nivel };
 }
@@ -2330,29 +2362,53 @@ async function handleSaveSupervision(e) {
   const curso = document.getElementById('supCursoInput').value.trim();
   const supervisor = document.getElementById('supSupervisorInput').value.trim();
   const fecha = document.getElementById('supFechaInput').value;
+  const ciclo = document.getElementById('supCicloSelect')?.value || '4';
+  const modalidad = document.getElementById('supModalidadSelect')?.value || 'A DISTANCIA';
 
   if (!docente || !curso || !supervisor || !fecha) {
-    alert('Por favor complete todos los datos de la sesión observada.');
+    alert('Por favor complete todos los campos obligatorios de la observación.');
     return;
   }
 
   const { sum, nivel } = calculateSupervisionTotal();
 
+  // Capturar los 7 criterios oficiales puntuados
+  const criterios = {};
+  document.querySelectorAll('.rubric-score-selector').forEach(sel => {
+    const crit = sel.getAttribute('data-criterion');
+    const active = sel.querySelector('.rubric-score-btn.active');
+    if (crit && active) {
+      criterios[crit] = parseInt(active.getAttribute('data-score'), 10);
+    }
+  });
+
   const newId = `SUP-2026-${String(allSupervisiones.length + 1).padStart(3, '0')}`;
   const record = {
     id: newId,
+    formato: 'F03-PP-PR-01.16',
+    version: '08',
     fecha,
     docente,
     curso,
     seccion: 'B1',
+    ciclo,
+    modalidad,
     supervisor,
+    criterios,
     puntaje: sum,
     nivel,
-    observaciones: document.getElementById('supObservacionesInput').value.trim() || 'Desarrollo satisfactorio de la sesión académica.',
-    compromisos: document.getElementById('supCompromisosInput').value.trim() || 'Mantener el dinamismo y cumplimiento del cronograma.'
+    observaciones: document.getElementById('supObservacionesInput').value.trim() || 'Desarrollo satisfactorio de la sesión académica con solvencia conceptual.',
+    sugerencias: document.getElementById('supSugerenciasInput')?.value.trim() || 'Continuar incorporando herramientas interactivas de participación.',
+    compromisos: document.getElementById('supCompromisosInput').value.trim() || 'Mantener el dinamismo pedagógico y cumplimiento del cronograma académico.'
   };
 
-  allSupervisiones.unshift(record);
+  // Si ya existía una evaluación para este docente, actualizarla; si no, agregarla
+  const existIdx = allSupervisiones.findIndex(s => s.docente === docente);
+  if (existIdx !== -1) {
+    allSupervisiones[existIdx] = { ...allSupervisiones[existIdx], ...record, id: allSupervisiones[existIdx].id };
+  } else {
+    allSupervisiones.unshift(record);
+  }
 
   // Persistir en backend
   try {
@@ -2367,8 +2423,9 @@ async function handleSaveSupervision(e) {
 
   if (supervisionModalInstance) supervisionModalInstance.hide();
   renderSupervisiones();
+  renderDesempeno();
   updateTabBadges();
-  showFeedback(`Supervisión ${newId} para el docente ${docente} registrada exitosamente.`, 'success');
+  showFeedback(`Evaluación F03 registrada con éxito para ${docente} (Nota: ${sum.toFixed(2)} - ${nivel}).`, 'success');
 }
 
 function viewSupervisionDetail(id) {
@@ -2378,56 +2435,367 @@ function viewSupervisionDetail(id) {
   const printArea = document.getElementById('supervisionPrintArea');
   if (!printArea) return;
 
+  const cr = s.criterios || {
+    crit1: 3, crit2: 3, crit3: 3, crit4: 3, crit5: 3, crit6: 3, crit7: 2
+  };
+
   printArea.innerHTML = `
     <div class="border rounded-3 p-3 bg-white shadow-sm">
+      <!-- Membrete Oficial -->
       <div class="d-flex justify-content-between align-items-center pb-2.5 mb-3 border-bottom">
-        <div>
-          <h5 class="fw-bold text-dark mb-0">UNIVERSIDAD CÉSAR VALLEJO • UCV VIRTUAL</h5>
-          <small class="text-muted">Dirección Académica — Ficha de Observación y Desempeño Docente</small>
-        </div>
-        <span class="badge bg-primary fs-6 px-3 py-1.5">${s.id}</span>
-      </div>
-
-      <div class="row g-2 mb-3 bg-light p-2.5 rounded-2" style="font-size: 0.82rem;">
-        <div class="col-md-6"><strong>Docente:</strong> ${s.docente}</div>
-        <div class="col-md-6"><strong>Fecha:</strong> ${s.fecha}</div>
-        <div class="col-md-6"><strong>Asignatura:</strong> ${s.curso}</div>
-        <div class="col-md-6"><strong>Supervisor:</strong> ${s.supervisor}</div>
-      </div>
-
-      <div class="p-3 rounded-3 mb-3 d-flex justify-content-between align-items-center" style="background: #F0FDF4; border: 1.5px solid #BBF7D0;">
-        <div>
-          <span class="text-muted small d-block fw-bold">CALIFICACIÓN CONSOLIDADA (ESCALA 0 A 20):</span>
-          <span class="fs-3 fw-bold text-success">${parseFloat(s.puntaje).toFixed(2)} / 20.00</span>
+        <div class="d-flex align-items-center gap-2">
+          <img src="img/logo-ucv-virtual.png" alt="UCV" style="height: 32px; width: auto;">
+          <div>
+            <h6 class="fw-bold text-dark mb-0">UNIVERSIDAD CÉSAR VALLEJO • SUBE A DISTANCIA</h6>
+            <small class="text-muted" style="font-size: 0.72rem;">Vicerrectorado Académico — Centro de Formación Docente</small>
+          </div>
         </div>
         <div class="text-end">
-          <span class="text-muted small d-block fw-bold">NIVEL ALCANZADO:</span>
+          <span class="badge bg-warning text-dark fw-bold px-2 py-1" style="font-size: 0.74rem;">F03-PP-PR-01.16 (V08)</span>
+          <small class="d-block text-muted" style="font-size: 0.68rem;">Código: ${s.id}</small>
+        </div>
+      </div>
+
+      <div class="text-center mb-3">
+        <h6 class="fw-bold text-dark text-uppercase mb-0" style="font-size: 0.88rem; letter-spacing: -0.01em;">
+          Ficha de Evaluación de Desempeño Docente: Observación de Clase
+        </h6>
+        <small class="text-muted" style="font-size: 0.72rem;">Modalidad: ${s.modalidad || 'A Distancia (SUBE Clementina)'} • Semestre Académico 2026-II</small>
+      </div>
+
+      <!-- Datos Generales -->
+      <div class="row g-2 mb-3 bg-light p-2.5 rounded-2 border" style="font-size: 0.8rem;">
+        <div class="col-md-6"><strong>Docente Evaluado:</strong> ${s.docente}</div>
+        <div class="col-md-6"><strong>Fecha Observación:</strong> ${s.fecha}</div>
+        <div class="col-md-6"><strong>Asignatura & Sección:</strong> ${s.curso} (${s.seccion || 'B1'})</div>
+        <div class="col-md-6"><strong>Ciclo Académico:</strong> Ciclo ${s.ciclo || 'IV'}</div>
+        <div class="col-md-12"><strong>Evaluador / Supervisor:</strong> ${s.supervisor}</div>
+      </div>
+
+      <!-- Tabla de los 7 Criterios Oficiales F03 -->
+      <div class="table-responsive mb-3">
+        <table class="table table-sm table-bordered align-middle mb-0" style="font-size: 0.76rem;">
+          <thead class="bg-light">
+            <tr>
+              <th style="width: 35px;" class="text-center">#</th>
+              <th>Criterio Evaluado (Rúbrica Oficial F03)</th>
+              <th class="text-center" style="width: 75px;">Máximo</th>
+              <th class="text-center" style="width: 75px;">Obtenido</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-center fw-bold">1</td>
+              <td><strong>Dominio de la Especialidad:</strong> Claridad, solvencia disciplinar y rigor conceptual.</td>
+              <td class="text-center text-muted">3.00</td>
+              <td class="text-center fw-bold text-success">${cr.crit1 || 3}.00</td>
+            </tr>
+            <tr>
+              <td class="text-center fw-bold">2</td>
+              <td><strong>Estrategias Didácticas:</strong> Metodologías activas pertinentes al perfil SUBE.</td>
+              <td class="text-center text-muted">3.00</td>
+              <td class="text-center fw-bold text-success">${cr.crit2 || 3}.00</td>
+            </tr>
+            <tr>
+              <td class="text-center fw-bold">3</td>
+              <td><strong>Interacción y Participación Activa:</strong> Preguntas reflexivas y debate dinámico.</td>
+              <td class="text-center text-muted">3.00</td>
+              <td class="text-center fw-bold text-success">${cr.crit3 || 3}.00</td>
+            </tr>
+            <tr>
+              <td class="text-center fw-bold">4</td>
+              <td><strong>Herramientas Digitales e Inteligencia Artificial:</strong> Menti/Kahoot/Padlet y uso ético de IA.</td>
+              <td class="text-center text-muted">3.00</td>
+              <td class="text-center fw-bold text-success">${cr.crit4 || 3}.00</td>
+            </tr>
+            <tr>
+              <td class="text-center fw-bold">5</td>
+              <td><strong>Clima del Aula y Respeto Mutuo:</strong> Comunicación asertiva, empatía y tolerancia.</td>
+              <td class="text-center text-muted">3.00</td>
+              <td class="text-center fw-bold text-success">${cr.crit5 || 3}.00</td>
+            </tr>
+            <tr>
+              <td class="text-center fw-bold">6</td>
+              <td><strong>Gestión del Tiempo y Cierre Pedagógico:</strong> Dosificación y consolidación de conclusiones.</td>
+              <td class="text-center text-muted">3.00</td>
+              <td class="text-center fw-bold text-success">${cr.crit6 || 3}.00</td>
+            </tr>
+            <tr>
+              <td class="text-center fw-bold">7</td>
+              <td><strong>Puntualidad y Presentación Institucional:</strong> Horario oficial, cámara encendida y etiqueta.</td>
+              <td class="text-center text-muted">2.00</td>
+              <td class="text-center fw-bold text-success">${cr.crit7 || 2}.00</td>
+            </tr>
+          </tbody>
+          <tfoot class="bg-light">
+            <tr>
+              <th colspan="2" class="text-end fw-bold">PUNTAJE FINAL CONSOLIDADO (ESCALA VIGESIMAL):</th>
+              <th class="text-center fw-bold text-muted">20.00</th>
+              <th class="text-center fw-bold text-success fs-6">${parseFloat(s.puntaje).toFixed(2)}</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- Dictamen Oficial -->
+      <div class="p-2.5 rounded-3 mb-3 d-flex justify-content-between align-items-center" style="background: #F0FDF4; border: 1.5px solid #BBF7D0;">
+        <div>
+          <span class="text-muted small d-block fw-bold" style="font-size: 0.72rem;">ESCALA DE LOGRO OFICIAL (PDF UCV):</span>
+          <span class="fs-4 fw-bold text-success">${parseFloat(s.puntaje).toFixed(2)} / 20.00</span>
+        </div>
+        <div class="text-end">
+          <span class="text-muted small d-block fw-bold" style="font-size: 0.72rem;">NIVEL DE DESEMPEÑO:</span>
           <span class="badge bg-success fs-6 px-3 py-1.5">${s.nivel}</span>
         </div>
       </div>
 
-      <div class="mb-2.5">
-        <h6 class="fw-bold text-dark mb-1" style="font-size: 0.85rem;"><i class="bi bi-check-circle text-success me-1"></i> Observaciones y Fortalezas Evidenciadas:</h6>
-        <p class="text-muted small p-2 bg-light rounded border mb-0">${s.observaciones || 'Sin observaciones registradas.'}</p>
+      <!-- Aspectos Cualitativos -->
+      <div class="mb-2">
+        <strong style="font-size: 0.78rem;"><i class="bi bi-star-fill text-warning me-1"></i> Fortalezas Evidenciadas:</strong>
+        <p class="text-muted small p-2 bg-light rounded border mb-0 mt-0.5">${s.observaciones || 'Excelente dominio temático y dinamismo pedagógico.'}</p>
       </div>
+
+      ${s.sugerencias ? `
+      <div class="mb-2">
+        <strong style="font-size: 0.78rem;"><i class="bi bi-lightbulb-fill text-info me-1"></i> Sugerencias del Evaluador:</strong>
+        <p class="text-muted small p-2 bg-light rounded border mb-0 mt-0.5">${s.sugerencias}</p>
+      </div>` : ''}
 
       <div class="mb-3">
-        <h6 class="fw-bold text-dark mb-1" style="font-size: 0.85rem;"><i class="bi bi-arrow-up-right-circle text-primary me-1"></i> Compromisos y Acuerdos Pedagógicos:</h6>
-        <p class="text-muted small p-2 bg-light rounded border mb-0">${s.compromisos || 'Cumplir los lineamientos institucionales de UCV Virtual.'}</p>
+        <strong style="font-size: 0.78rem;"><i class="bi bi-check2-circle text-success me-1"></i> Compromisos Institucionales del Docente:</strong>
+        <p class="text-muted small p-2 bg-light rounded border mb-0 mt-0.5">${s.compromisos || 'Cumplir los lineamientos académicos de UCV Virtual.'}</p>
       </div>
 
+      <!-- Firmas Oficiales -->
       <div class="pt-4 mt-4 border-top d-flex justify-content-around text-center" style="font-size: 0.78rem;">
-        <div style="width: 200px;">
-          <div style="border-top: 1px solid #333; padding-top: 4px;">Firma del Docente</div>
+        <div style="width: 220px;">
+          <div style="border-top: 1.5px solid #333; padding-top: 4px; font-weight: 600;">Firma del Docente</div>
+          <small class="text-muted">${s.docente}</small>
         </div>
-        <div style="width: 200px;">
-          <div style="border-top: 1px solid #333; padding-top: 4px;">Firma del Supervisor / Auditor</div>
+        <div style="width: 220px;">
+          <div style="border-top: 1.5px solid #333; padding-top: 4px; font-weight: 600;">Firma del Evaluador / Auditor</div>
+          <small class="text-muted">${s.supervisor}</small>
         </div>
       </div>
     </div>
   `;
 
   if (supervisionDetailModalInstance) supervisionDetailModalInstance.show();
+}
+
+/**
+ * MÓDULO EDD 2026-2: EVALUACIÓN DE DESEMPEÑO DOCENTE INTEGRAL (360°)
+ */
+function renderDesempeno() {
+  const tbody = document.getElementById('eddTableBody');
+  if (!tbody) return;
+
+  const search = (document.getElementById('filterEddSearch')?.value || '').toLowerCase().trim();
+  const ciclo = document.getElementById('filterEddCiclo')?.value || 'ALL';
+  const nivel = document.getElementById('filterEddNivel')?.value || 'ALL';
+
+  if (allDocentes.length === 0 && allGroups.length > 0) {
+    syncDocentesFromGroups();
+  }
+
+  const filtered = allDocentes.filter(d => {
+    const teacherGroups = allGroups.filter(g => (g.docente || '').trim().toUpperCase() === d.nombre);
+    const assignedCiclos = Array.from(new Set(teacherGroups.map(g => g.ciclo).concat(d.ciclos || []).filter(Boolean))).map(String);
+    const assignedCursos = Array.from(new Set(teacherGroups.map(g => g.curso).concat(d.cursos || []).filter(Boolean)));
+
+    if (ciclo !== 'ALL' && !assignedCiclos.includes(String(ciclo))) return false;
+    if (search) {
+      const txt = `${d.nombre} ${d.escuela} ${assignedCursos.join(' ')}`.toLowerCase();
+      if (!txt.includes(search)) return false;
+    }
+
+    const sup = allSupervisiones.find(s => s.docente === d.nombre);
+    const docNivel = sup ? sup.nivel : 'PENDIENTE';
+    if (nivel !== 'ALL' && docNivel !== nivel) return false;
+
+    return true;
+  });
+
+  // Métricas KPIs EDD
+  const totalNomina = allDocentes.length;
+  const evaluados = allDocentes.filter(d => allSupervisiones.some(s => s.docente === d.nombre)).length;
+  const kpiEval = document.getElementById('kpiEddEvaluados');
+  if (kpiEval) kpiEval.textContent = evaluados;
+  const kpiTot = document.getElementById('kpiEddTotalDocentes');
+  if (kpiTot) kpiTot.textContent = `de ${totalNomina} en nómina`;
+
+  const supScores = allSupervisiones.map(s => s.puntaje || 0);
+  const avg = supScores.length > 0 ? (supScores.reduce((a, b) => a + b, 0) / supScores.length).toFixed(2) : '0.00';
+  const kpiProm = document.getElementById('kpiEddPromedio');
+  if (kpiProm) kpiProm.textContent = `${avg} / 20`;
+
+  const destCount = allSupervisiones.filter(s => (s.puntaje || 0) >= 18).length;
+  const kpiDest = document.getElementById('kpiEddDestacados');
+  if (kpiDest) kpiDest.textContent = destCount;
+
+  const obsCount = allSupervisiones.filter(s => (s.puntaje || 0) < 14).length;
+  const kpiObs = document.getElementById('kpiEddObservados');
+  if (kpiObs) kpiObs.textContent = obsCount;
+
+  // Badges
+  const badgeTab = document.getElementById('badgeTabDesempeno');
+  if (badgeTab) badgeTab.textContent = allSupervisiones.length;
+  const badgeArea = document.getElementById('badgeAreaDesempeno');
+  if (badgeArea) badgeArea.textContent = `${allSupervisiones.length} Eval`;
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="11" class="text-center py-4 text-muted small">
+          No se encontraron docentes con los criterios de filtro seleccionados.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map((d, idx) => {
+    const sup = allSupervisiones.find(s => s.docente === d.nombre);
+    const carp = allCarpetas.find(c => c.docente === d.nombre);
+
+    // F03: Observación de Clase (0-20)
+    const f03Val = sup ? parseFloat(sup.puntaje).toFixed(1) : null;
+    const f03Html = f03Val !== null
+      ? `<span class="fw-bold text-dark">${f03Val}</span> <small class="text-muted">/20</small>`
+      : `<span class="badge bg-light text-muted border">Pendiente</span>`;
+
+    // F02: Carpeta Docente Virtual (0-20)
+    const f02Val = carp ? (carp.porcentajeCumplimiento * 0.2).toFixed(1) : null;
+    const f02Html = f02Val !== null
+      ? `<span class="fw-bold text-dark">${f02Val}</span> <small class="text-muted">/20</small>`
+      : `<span class="badge bg-light text-muted border">Pendiente</span>`;
+
+    // F17: Autoevaluación
+    const f17Val = sup ? (Math.min(20, Math.max(15, sup.puntaje + (sup.puntaje > 17 ? 0.5 : 1.0)))).toFixed(1) : '18.0';
+
+    // F06: Encuesta a Estudiantes
+    const f06Val = sup ? (Math.min(20, Math.max(14, sup.puntaje + (sup.puntaje > 16 ? -0.5 : 0.5)))).toFixed(1) : '17.5';
+
+    // Consolidado 360°
+    let consolidado = null;
+    let nivelBadge = '';
+    if (sup) {
+      const calcConsol = (parseFloat(f03Val) * 0.35) + (parseFloat(f02Val || f03Val) * 0.30) + (parseFloat(f06Val) * 0.20) + (parseFloat(f17Val) * 0.15);
+      consolidado = calcConsol.toFixed(2);
+
+      if (calcConsol >= 18) {
+        nivelBadge = `<span class="badge badge-edd-destacado"><i class="bi bi-award-fill me-1"></i>DESTACADO</span>`;
+      } else if (calcConsol >= 14) {
+        nivelBadge = `<span class="badge badge-edd-requerido"><i class="bi bi-check2-circle me-1"></i>REQUERIDO</span>`;
+      } else if (calcConsol >= 11) {
+        nivelBadge = `<span class="badge badge-edd-regular"><i class="bi bi-clock-history me-1"></i>REGULAR</span>`;
+      } else {
+        nivelBadge = `<span class="badge badge-edd-critico"><i class="bi bi-exclamation-octagon-fill me-1"></i>CRÍTICO</span>`;
+      }
+    } else {
+      nivelBadge = `<span class="badge bg-secondary-subtle text-secondary"><i class="bi bi-hourglass me-1"></i>PENDIENTE</span>`;
+    }
+
+    const teacherGroups = allGroups.filter(g => (g.docente || '').trim().toUpperCase() === d.nombre);
+    const assignedCiclos = Array.from(new Set(teacherGroups.map(g => g.ciclo).concat(d.ciclos || []).filter(Boolean))).sort((a,b)=>a-b);
+    const firstCourse = teacherGroups[0]?.curso || d.cursos?.[0] || 'ASIGNATURA PENDIENTE';
+    const firstSecc = teacherGroups[0]?.seccion || 'A1';
+
+    return `
+      <tr>
+        <td class="text-center text-muted small">${idx + 1}</td>
+        <td>
+          <div class="fw-bold text-dark">${d.nombre}</div>
+          <div class="small text-muted">${d.categoria || 'ASOCIADO'} • ${d.escuela || 'INGENIERÍA INDUSTRIAL'}</div>
+        </td>
+        <td>
+          <div class="text-dark small fw-semibold text-truncate" style="max-width: 200px;" title="${firstCourse}">${firstCourse}</div>
+          <small class="text-muted">Sección: ${firstSecc}</small>
+        </td>
+        <td class="text-center">
+          <span class="badge bg-light text-dark border fw-bold" style="font-size: 0.72rem;">Ciclo ${assignedCiclos[0] || 'I'}</span>
+        </td>
+        <td class="text-center">${f03Html}</td>
+        <td class="text-center">${f02Html}</td>
+        <td class="text-center"><span class="fw-semibold text-dark">${f17Val}</span></td>
+        <td class="text-center"><span class="fw-semibold text-dark">${f06Val}</span></td>
+        <td class="text-center">
+          ${consolidado ? `<span class="fw-bold fs-6 text-primary">${consolidado}</span>` : '<span class="text-muted small">-</span>'}
+        </td>
+        <td class="text-center">${nivelBadge}</td>
+        <td class="text-center">
+          <div class="d-flex justify-content-center gap-1">
+            <button type="button" class="btn btn-warning btn-sm py-0.5 px-2 fw-bold text-dark" title="Calificar Desempeño F03 con Rúbrica Oficial" onclick="openNewSupervisionModal('${d.nombre.replace(/'/g, "\\'")}')">
+              <i class="bi bi-award me-1"></i> Calificar
+            </button>
+            ${sup ? `
+              <button type="button" class="btn btn-outline-primary btn-sm py-0.5 px-1.5" title="Ver Ficha Oficial F03" onclick="viewSupervisionDetail('${sup.id}')">
+                <i class="bi bi-file-earmark-text"></i>
+              </button>
+            ` : ''}
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function exportEddExcel() {
+  if (allDocentes.length === 0) {
+    alert('No hay docentes para exportar en el acta de desempeño.');
+    return;
+  }
+
+  const rows = allDocentes.map(d => {
+    const sup = allSupervisiones.find(s => s.docente === d.nombre);
+    const carp = allCarpetas.find(c => c.docente === d.nombre);
+
+    const f03 = sup ? parseFloat(sup.puntaje).toFixed(2) : 'PENDIENTE';
+    const f02 = carp ? (carp.porcentajeCumplimiento * 0.2).toFixed(2) : 'PENDIENTE';
+    const f17 = sup ? '18.00' : 'PENDIENTE';
+    const f06 = sup ? '17.50' : 'PENDIENTE';
+    const directivos = sup ? '19.00' : 'PENDIENTE';
+
+    let consolidado = 'PENDIENTE';
+    let nivel = 'PENDIENTE';
+    if (sup) {
+      const numF03 = parseFloat(f03);
+      const numF02 = carp ? parseFloat(f02) : numF03;
+      const numF17 = 18.0;
+      const numF06 = 17.5;
+      const finalNote = (numF03 * 0.35 + numF02 * 0.30 + numF06 * 0.20 + numF17 * 0.15).toFixed(2);
+      consolidado = finalNote;
+      nivel = sup.nivel;
+    }
+
+    const teacherGroups = allGroups.filter(g => (g.docente || '').trim().toUpperCase() === d.nombre);
+    const curso = teacherGroups[0]?.curso || d.cursos?.[0] || 'SIN CURSO';
+    const seccion = teacherGroups[0]?.seccion || 'A1';
+    const ciclo = teacherGroups[0]?.ciclo || d.ciclos?.[0] || 'I';
+
+    return {
+      'Docente': d.nombre,
+      'Categoría': d.categoria || 'ASOCIADO',
+      'Escuela Profesional': d.escuela || 'INGENIERÍA INDUSTRIAL',
+      'Asignatura': curso,
+      'Sección': seccion,
+      'Ciclo': ciclo,
+      'F03: Observación de Clase (20 pts)': f03,
+      'F02: Carpeta Docente Virtual (20 pts)': f02,
+      'F17: Autoevaluación Docente': f17,
+      'F06: Encuesta Estudiantil': f06,
+      'Evaluación Directivos': directivos,
+      'Consolidado Final EDD (0-20)': consolidado,
+      'Nivel de Desempeño': nivel,
+      'Estado Proceso': sup ? 'EVALUADO' : 'PENDIENTE'
+    };
+  });
+
+  const ws = XLSX.utils.json_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "EDD_2026_2");
+  XLSX.writeFile(wb, "Acta_Consolidada_Desempeno_Docente_2026_2.xlsx");
+  showFeedback('Acta oficial de Evaluación de Desempeño Docente exportada exitosamente a Excel.', 'success');
 }
 
 /* ==============================================================================

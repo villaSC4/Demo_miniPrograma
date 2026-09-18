@@ -136,7 +136,27 @@
         </button>
       </div>
 
-      <!-- Área 3: Supervisión de Carpetas -->
+      <!-- Área 3: Calificar Desempeño (EDD 2026-2) -->
+      <div class="col-xl col-md-4 col-sm-6">
+        <button type="button" class="area-action-card w-100 text-start border-0 area-card-desempeno" onclick="navigateToArea('desempeno-tab')" title="Evaluación del Desempeño Docente según Rúbrica Oficial (PDF F03 / 0-20 pts)">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="area-card-icon" style="background: #FEF3C7; color: #D97706;">
+              <i class="bi bi-award-fill"></i>
+            </div>
+            <span class="badge fw-bold" style="background: #FEF3C7; color: #B45309; font-size: 0.72rem;" id="badgeAreaDesempeno">
+              EDD 2026-2
+            </span>
+          </div>
+          <div class="area-card-title">Calificar Desempeño</div>
+          <div class="area-card-desc">F03 Observación de clase (0-20 pts)</div>
+          <div class="area-card-footer mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
+            <span class="small fw-semibold" style="color: #D97706; font-size: 0.74rem;">Calificar Ahora</span>
+            <i class="bi bi-arrow-right-short fs-5" style="color: #D97706;"></i>
+          </div>
+        </button>
+      </div>
+
+      <!-- Área 4: Supervisión de Carpetas -->
       <div class="col-xl col-md-4 col-sm-6">
         <button type="button" class="area-action-card w-100 text-start border-0 area-card-supervision" onclick="navigateToArea('supervision-tab')" title="Supervisión de Carpetas Docentes y Desempeño">
           <div class="d-flex align-items-center justify-content-between mb-2">
@@ -287,6 +307,12 @@
             </button>
           </li>
           <li class="nav-item" role="presentation">
+            <button class="nav-link" id="desempeno-tab" data-bs-toggle="pill" data-bs-target="#tab-desempeno" type="button" role="tab">
+              <i class="bi bi-award-fill me-1" style="color: #D97706;"></i> Calificar Desempeño (EDD)
+              <span class="badge ms-1" style="background: #FEF3C7; color: #B45309;" id="badgeTabDesempeno">2</span>
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
             <button class="nav-link" id="supervision-tab" data-bs-toggle="pill" data-bs-target="#tab-supervision" type="button" role="tab">
               <i class="bi bi-folder-check me-1 text-success"></i> Supervisión & Carpetas
               <span class="badge bg-success-subtle text-success ms-1" id="badgeTabSupervision">4</span>
@@ -301,6 +327,9 @@
         </ul>
 
         <div class="d-flex align-items-center gap-2">
+          <button id="btnOpenCalificarDesempenoTop" class="btn btn-warning btn-sm py-1 px-3 fw-bold text-dark shadow-sm" style="font-size: 0.8rem;" title="Abrir instrumento oficial F03 para calificar desempeño docente en aula">
+            <i class="bi bi-award-fill me-1"></i> Calificar Desempeño
+          </button>
           <button id="btnOpenNewGroupModal" class="btn btn-primary-app btn-sm py-1 px-3 fw-semibold" style="font-size: 0.8rem;" title="Añadir nuevo grupo de clase">
             <i class="bi bi-plus-lg me-1"></i> Añadir Grupo
           </button>
@@ -594,6 +623,170 @@
               </tbody>
             </table>
           </div>
+        </div>
+
+        <!-- PESTAÑA: CALIFICAR DESEMPEÑO DOCENTE (EDD 2026-2) - INSTRUMENTOS OFICIALES SUBE -->
+        <div class="tab-pane fade" id="tab-desempeno" role="tabpanel">
+          
+          <!-- Hero Banner Normativo Oficial EDD 2026-2 -->
+          <div class="edd-hero-banner mb-3 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+              <div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <span class="badge bg-warning text-dark fw-bold px-2 py-1" style="font-size: 0.75rem;">
+                    <i class="bi bi-shield-check me-1"></i> PROCEDIMIENTO OFICIAL
+                  </span>
+                  <span class="badge bg-white text-dark border fw-bold px-2 py-1" style="font-size: 0.74rem;">
+                    SUBE A DISTANCIA • SEMESTRE 2026-II
+                  </span>
+                  <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1" style="font-size: 0.74rem;">
+                    <i class="bi bi-laptop me-1"></i> Plataforma Clementina
+                  </span>
+                </div>
+                <h5 class="fw-bold text-dark mb-1" style="font-family: 'Outfit', sans-serif;">
+                  Evaluación del Desempeño Docente 2026-2 (EDD)
+                </h5>
+                <p class="text-muted small mb-2" style="max-width: 860px; font-size: 0.8rem; line-height: 1.4;">
+                  Valoración integral del desempeño docente en aspectos pedagógicos, didácticos y de gestión académica para asegurar la calidad de la enseñanza y la acreditación institucional.
+                </p>
+                <div class="d-flex flex-wrap gap-2 pt-1">
+                  <span class="badge bg-white text-dark border px-2 py-1" style="font-size: 0.72rem;" title="Reflexión interna del docente (11 indicadores)">
+                    <i class="bi bi-person-check text-primary me-1"></i> 1. Autoevaluación (F17)
+                  </span>
+                  <span class="badge bg-white text-dark border px-2 py-1" style="font-size: 0.72rem;" title="Evaluación en aula sincrónica (7 indicadores / 20 pts)">
+                    <i class="bi bi-camera-video text-success me-1"></i> 2. Observación de Clase (F03 - 20 pts)
+                  </span>
+                  <span class="badge bg-white text-dark border px-2 py-1" style="font-size: 0.72rem;" title="Revisión de plataforma Clementina (8 indicadores / 20 pts)">
+                    <i class="bi bi-folder-check text-info me-1"></i> 3. Carpeta Docente Virtual (F02 - 20 pts)
+                  </span>
+                  <span class="badge bg-white text-dark border px-2 py-1" style="font-size: 0.72rem;" title="Evaluación por la Dirección y Coordinación">
+                    <i class="bi bi-building text-secondary me-1"></i> 4. Directivos
+                  </span>
+                  <span class="badge bg-white text-dark border px-2 py-1" style="font-size: 0.72rem;" title="Encuesta de satisfacción estudiantil (12 preguntas / 20 pts)">
+                    <i class="bi bi-people text-danger me-1"></i> 5. Encuesta Estudiantes (F06)
+                  </span>
+                </div>
+              </div>
+
+              <div class="d-flex flex-column gap-1.5 align-items-end mt-2 mt-md-0">
+                <button type="button" class="btn btn-warning btn-sm py-1.5 px-3 fw-bold text-dark shadow-sm" onclick="openNewSupervisionModal()" title="Calificar observación de clase con la rúbrica oficial F03 del PDF (7 criterios)">
+                  <i class="bi bi-award-fill me-1"></i> + Calificar Desempeño en Aula (F03)
+                </button>
+                <button type="button" class="btn btn-outline-success btn-sm py-1 px-3 fw-semibold bg-white" onclick="openNuevaCarpetaModal()" title="Auditar carpeta virtual con la rúbrica oficial F02 en Clementina">
+                  <i class="bi bi-folder-check me-1"></i> + Auditar Carpeta Virtual (F02)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Métricas KPIs EDD 2026-2 -->
+          <div class="row g-2.5 mb-3">
+            <div class="col-md-3 col-sm-6">
+              <div class="supervision-stats-card d-flex align-items-center justify-content-between">
+                <div>
+                  <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">Docentes Evaluados (F03)</small>
+                  <span class="fs-5 fw-bold text-dark" id="kpiEddEvaluados">2</span>
+                  <small class="text-muted d-block" style="font-size: 0.7rem;" id="kpiEddTotalDocentes">de 18 en nómina</small>
+                </div>
+                <i class="bi bi-person-check-fill text-primary fs-3"></i>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+              <div class="supervision-stats-card d-flex align-items-center justify-content-between">
+                <div>
+                  <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">Promedio Desempeño Aula</small>
+                  <span class="fs-5 fw-bold text-primary" id="kpiEddPromedio">17.25 / 20</span>
+                  <small class="text-success fw-bold d-block" style="font-size: 0.7rem;">Escala Vigesimal Oficial</small>
+                </div>
+                <i class="bi bi-graph-up-arrow text-primary fs-3"></i>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+              <div class="supervision-stats-card d-flex align-items-center justify-content-between">
+                <div>
+                  <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">Nivel Destacado (18-20)</small>
+                  <span class="fs-5 fw-bold text-success" id="kpiEddDestacados">1</span>
+                  <small class="text-muted d-block" style="font-size: 0.7rem;">Superan estándar UCV</small>
+                </div>
+                <i class="bi bi-award-fill text-success fs-3"></i>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+              <div class="supervision-stats-card d-flex align-items-center justify-content-between">
+                <div>
+                  <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">En Plan de Mejora (&lt;14)</small>
+                  <span class="fs-5 fw-bold text-warning" id="kpiEddObservados">0</span>
+                  <small class="text-muted d-block" style="font-size: 0.7rem;">Requieren acompañamiento</small>
+                </div>
+                <i class="bi bi-exclamation-triangle-fill text-warning fs-3"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filtros y Acciones de la Tabla EDD -->
+          <div class="p-2.5 bg-light rounded-3 border mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <div class="input-group input-group-sm" style="max-width: 250px;">
+                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                <input type="text" id="filterEddSearch" class="form-control form-control-sm" placeholder="Buscar por docente...">
+              </div>
+              <select id="filterEddCiclo" class="form-select form-select-sm" style="width: auto;">
+                <option value="ALL">Todos los Ciclos</option>
+                <option value="1">Ciclo I</option>
+                <option value="2">Ciclo II</option>
+                <option value="3">Ciclo III</option>
+                <option value="4">Ciclo IV</option>
+                <option value="5">Ciclo V</option>
+                <option value="6">Ciclo VI</option>
+                <option value="7">Ciclo VII</option>
+                <option value="8">Ciclo VIII</option>
+                <option value="9">Ciclo IX</option>
+                <option value="10">Ciclo X</option>
+              </select>
+              <select id="filterEddNivel" class="form-select form-select-sm" style="width: auto;">
+                <option value="ALL">Todos los Niveles</option>
+                <option value="DESTACADO">Destacado (18-20)</option>
+                <option value="REQUERIDO">Requerido (14-17)</option>
+                <option value="REGULAR">Regular (11-13)</option>
+                <option value="CRÍTICO">No posee competencia (0-10)</option>
+                <option value="PENDIENTE">Pendiente de Evaluación</option>
+              </select>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" id="btnExportEddExcel" class="btn btn-outline-secondary btn-sm py-1.5 px-2.5 fw-semibold" title="Exportar consolidado de evaluación a Excel">
+                <i class="bi bi-file-earmark-excel me-1 text-success"></i> Exportar Acta EDD
+              </button>
+              <button type="button" class="btn btn-warning btn-sm py-1.5 px-3 fw-bold text-dark shadow-sm" onclick="openNewSupervisionModal()">
+                <i class="bi bi-award me-1"></i> Calificar Docente
+              </button>
+            </div>
+          </div>
+
+          <!-- Tabla Consolidada 360° de Evaluación de Desempeño Docente -->
+          <div class="table-responsive" style="max-height: 540px;">
+            <table class="table table-hover align-middle app-table mb-0">
+              <thead class="sticky-top">
+                <tr>
+                  <th style="width: 45px;" class="text-center">#</th>
+                  <th>Docente (Nómina SUBE)</th>
+                  <th>Asignatura & Sección</th>
+                  <th class="text-center" style="width: 70px;">Ciclo</th>
+                  <th class="text-center" style="width: 105px;" title="Formato F03 Observación de Clase (0 a 20 pts)">F03: Clase</th>
+                  <th class="text-center" style="width: 105px;" title="Formato F02 Carpeta Docente Virtual Clementina (0 a 20 pts)">F02: CDV</th>
+                  <th class="text-center" style="width: 105px;" title="Formato F17 Autoevaluación Docente (0 a 20 pts)">F17: Auto</th>
+                  <th class="text-center" style="width: 105px;" title="Formato F06 Encuesta a Estudiantes (0 a 20 pts)">F06: Alumnos</th>
+                  <th class="text-center" style="width: 110px;">Consolidado</th>
+                  <th class="text-center" style="width: 130px;">Nivel EDD</th>
+                  <th class="text-center" style="width: 140px;">Acción Rápida</th>
+                </tr>
+              </thead>
+              <tbody id="eddTableBody">
+                <!-- Rellenado dinámico -->
+              </tbody>
+            </table>
+          </div>
+
         </div>
 
         <!-- PESTAÑA 7: SUPERVISIÓN & CALIDAD ACADÉMICA (CARPETAS DOCENTES + DESEMPEÑO) -->
@@ -1184,16 +1377,19 @@
     </div>
   </div>
 
-  <!-- MODAL DE SUPERVISIÓN Y EVALUACIÓN DOCENTE CON RÚBRICA -->
+  <!-- MODAL DE SUPERVISIÓN Y EVALUACIÓN DOCENTE CON RÚBRICA OFICIAL F03 (PDF) -->
   <div class="modal fade" id="modalSupervision" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 720px;">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 780px;">
       <div class="modal-content border-0 shadow-lg" style="border-radius: 14px;">
         <div class="modal-header py-3 px-3.5 bg-light border-bottom">
           <div class="d-flex align-items-center gap-2">
-            <div class="brand-badge bg-success" style="width: 32px; height: 32px; font-size: 0.85rem;"><i class="bi bi-clipboard2-check"></i></div>
+            <div class="brand-badge" style="background: #FEF3C7; color: #D97706; width: 34px; height: 34px; font-size: 1rem;"><i class="bi bi-award-fill"></i></div>
             <div>
-              <h6 class="modal-title fw-bold text-dark mb-0">Instrumento de Supervisión & Desempeño Docente</h6>
-              <small class="text-muted" style="font-size: 0.74rem;">Ficha oficial de acompañamiento y auditoría pedagógica en aula</small>
+              <div class="d-flex align-items-center gap-2">
+                <h6 class="modal-title fw-bold text-dark mb-0">Evaluación de Desempeño: Observación de Clase</h6>
+                <span class="badge bg-warning text-dark fw-bold" style="font-size: 0.7rem;">F03-PP-PR-01.16 (V08)</span>
+              </div>
+              <small class="text-muted" style="font-size: 0.74rem;">Instrumento oficial normado • SUBE A Distancia (Clementina) • Escala 0 a 20 puntos</small>
             </div>
           </div>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -1205,123 +1401,218 @@
             <div class="p-2.5 bg-light rounded-3 border mb-3">
               <div class="row g-2">
                 <div class="col-md-6">
-                  <label for="supDocenteSelect" class="form-label small fw-bold text-dark mb-1">Docente a Supervisar <span class="text-danger">*</span></label>
+                  <label for="supDocenteSelect" class="form-label small fw-bold text-dark mb-1">Docente a Evaluar <span class="text-danger">*</span></label>
                   <select id="supDocenteSelect" class="form-select form-select-sm" required>
                     <option value="">-- Seleccione docente --</option>
                   </select>
                 </div>
                 <div class="col-md-6">
                   <label for="supCursoInput" class="form-label small fw-bold text-dark mb-1">Asignatura / Sesión Observada <span class="text-danger">*</span></label>
-                  <input type="text" id="supCursoInput" class="form-control form-control-sm" placeholder="Nombre de curso y sección (ej: ALGORITMOS B1)" required>
+                  <input type="text" id="supCursoInput" class="form-control form-control-sm" placeholder="Nombre de curso y sección (ej: FÍSICA GENERAL B1)" required>
                 </div>
-                <div class="col-md-6">
-                  <label for="supSupervisorInput" class="form-label small fw-bold text-dark mb-1">Supervisor / Evaluador <span class="text-danger">*</span></label>
-                  <input type="text" id="supSupervisorInput" class="form-control form-control-sm" value="DIRECCIÓN ACADÉMICA" required>
+                <div class="col-md-3 col-6">
+                  <label for="supCicloSelect" class="form-label small fw-bold text-dark mb-1">Ciclo</label>
+                  <select id="supCicloSelect" class="form-select form-select-sm">
+                    <option value="1">Ciclo I</option>
+                    <option value="2">Ciclo II</option>
+                    <option value="3">Ciclo III</option>
+                    <option value="4" selected>Ciclo IV</option>
+                    <option value="5">Ciclo V</option>
+                    <option value="6">Ciclo VI</option>
+                    <option value="7">Ciclo VII</option>
+                    <option value="8">Ciclo VIII</option>
+                    <option value="9">Ciclo IX</option>
+                    <option value="10">Ciclo X</option>
+                  </select>
                 </div>
-                <div class="col-md-6">
-                  <label for="supFechaInput" class="form-label small fw-bold text-dark mb-1">Fecha de Supervisión <span class="text-danger">*</span></label>
+                <div class="col-md-3 col-6">
+                  <label for="supModalidadSelect" class="form-label small fw-bold text-dark mb-1">Modalidad</label>
+                  <select id="supModalidadSelect" class="form-select form-select-sm">
+                    <option value="A DISTANCIA" selected>A Distancia (SUBE)</option>
+                    <option value="SEMIPRESENCIAL">Semipresencial</option>
+                    <option value="PRESENCIAL">Presencial</option>
+                  </select>
+                </div>
+                <div class="col-md-3 col-6">
+                  <label for="supSupervisorInput" class="form-label small fw-bold text-dark mb-1">Evaluador / Supervisor <span class="text-danger">*</span></label>
+                  <input type="text" id="supSupervisorInput" class="form-control form-control-sm" value="COORDINACIÓN DE ESCUELA" required>
+                </div>
+                <div class="col-md-3 col-6">
+                  <label for="supFechaInput" class="form-label small fw-bold text-dark mb-1">Fecha de Observación <span class="text-danger">*</span></label>
                   <input type="date" id="supFechaInput" class="form-control form-control-sm" required>
                 </div>
               </div>
             </div>
 
-            <!-- Rúbrica Pedagógica por Dimensiones (0-5 pts cada una = Total 20 pts) -->
+            <!-- Rúbrica Oficial F03 (7 Criterios Ponderados - Total 20 pts) -->
             <div class="mb-3">
               <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="small fw-bold text-dark text-uppercase"><i class="bi bi-list-check me-1 text-primary"></i> Dimensiones de Evaluación (Rúbrica Oficial)</span>
-                <span class="badge bg-light text-muted border">Escala 0 a 5 por instrumento</span>
+                <span class="small fw-bold text-dark text-uppercase">
+                  <i class="bi bi-list-check me-1 text-warning"></i> Criterios de Evaluación F03 (Ponderación Oficial: 20 pts)
+                </span>
+                <span class="badge bg-light text-muted border">Rúbrica Vigente Vicerrectorado UCV</span>
               </div>
 
-              <!-- Dimensión 1 -->
+              <!-- Criterio 1: Dominio de la Especialidad (3 pts) -->
               <div class="rubric-card">
                 <div class="rubric-header">
-                  <span>1. Planificación Didáctica y Materiales</span>
-                  <span class="text-primary fw-bold" id="dim1Value">5 / 5 pts</span>
+                  <span>1. Dominio de la Especialidad</span>
+                  <span class="text-primary fw-bold" id="crit1Value">3 / 3 pts</span>
                 </div>
-                <small class="text-muted d-block mb-2" style="font-size: 0.74rem;">Puntualidad, presentación de agenda y disponibilidad previa de materiales en campus virtual.</small>
-                <div class="rubric-score-selector" data-dimension="dim1">
-                  <button type="button" class="rubric-score-btn" data-score="2">2 - Regular</button>
-                  <button type="button" class="rubric-score-btn" data-score="3">3 - Bueno</button>
-                  <button type="button" class="rubric-score-btn" data-score="4">4 - Muy Bueno</button>
-                  <button type="button" class="rubric-score-btn active" data-score="5">5 - Excelente</button>
-                </div>
-              </div>
-
-              <!-- Dimensión 2 -->
-              <div class="rubric-card">
-                <div class="rubric-header">
-                  <span>2. Estrategias Metodológicas e Interacción</span>
-                  <span class="text-primary fw-bold" id="dim2Value">4 / 5 pts</span>
-                </div>
-                <small class="text-muted d-block mb-2" style="font-size: 0.74rem;">Fomento de participación activa, dinamismo pedagógico y uso de herramientas interactivas TIC.</small>
-                <div class="rubric-score-selector" data-dimension="dim2">
-                  <button type="button" class="rubric-score-btn" data-score="2">2 - Regular</button>
-                  <button type="button" class="rubric-score-btn" data-score="3">3 - Bueno</button>
-                  <button type="button" class="rubric-score-btn active" data-score="4">4 - Muy Bueno</button>
-                  <button type="button" class="rubric-score-btn" data-score="5">5 - Excelente</button>
+                <small class="text-muted d-block mb-2" style="font-size: 0.74rem;">
+                  Demuestra solvencia científica y claridad conceptual en el desarrollo temático; explica con rigor disciplinar y resuelve consultas de los estudiantes con solvencia académica.
+                </small>
+                <div class="rubric-score-selector" data-criterion="crit1" data-max="3">
+                  <button type="button" class="rubric-score-btn btn-score-0" data-score="0">0 - No cumple</button>
+                  <button type="button" class="rubric-score-btn btn-score-1" data-score="1">1 - En inicio</button>
+                  <button type="button" class="rubric-score-btn btn-score-2" data-score="2">2 - En proceso</button>
+                  <button type="button" class="rubric-score-btn btn-score-3 active" data-score="3">3 - Logrado (Destacado)</button>
                 </div>
               </div>
 
-              <!-- Dimensión 3 -->
+              <!-- Criterio 2: Estrategias Didácticas (3 pts) -->
               <div class="rubric-card">
                 <div class="rubric-header">
-                  <span>3. Dominio Temático y Claridad Expositiva</span>
-                  <span class="text-primary fw-bold" id="dim3Value">5 / 5 pts</span>
+                  <span>2. Estrategias Didácticas</span>
+                  <span class="text-primary fw-bold" id="crit2Value">3 / 3 pts</span>
                 </div>
-                <small class="text-muted d-block mb-2" style="font-size: 0.74rem;">Rigor disciplinar, resolución clara y fundamentada de consultas de los estudiantes.</small>
-                <div class="rubric-score-selector" data-dimension="dim3">
-                  <button type="button" class="rubric-score-btn" data-score="2">2 - Regular</button>
-                  <button type="button" class="rubric-score-btn" data-score="3">3 - Bueno</button>
-                  <button type="button" class="rubric-score-btn" data-score="4">4 - Muy Bueno</button>
-                  <button type="button" class="rubric-score-btn active" data-score="5">5 - Excelente</button>
+                <small class="text-muted d-block mb-2" style="font-size: 0.74rem;">
+                  Aplica estrategias didácticas activas orientadas al desarrollo de competencias, propiciando el aprendizaje colaborativo, el estudio de casos y la resolución de problemas en el perfil SUBE.
+                </small>
+                <div class="rubric-score-selector" data-criterion="crit2" data-max="3">
+                  <button type="button" class="rubric-score-btn btn-score-0" data-score="0">0 - No cumple</button>
+                  <button type="button" class="rubric-score-btn btn-score-1" data-score="1">1 - En inicio</button>
+                  <button type="button" class="rubric-score-btn btn-score-2" data-score="2">2 - En proceso</button>
+                  <button type="button" class="rubric-score-btn btn-score-3 active" data-score="3">3 - Logrado (Destacado)</button>
                 </div>
               </div>
 
-              <!-- Dimensión 4 -->
+              <!-- Criterio 3: Interacción y Participación Activa (3 pts) -->
               <div class="rubric-card">
                 <div class="rubric-header">
-                  <span>4. Evaluación de Aprendizajes y Retroalimentación</span>
-                  <span class="text-primary fw-bold" id="dim4Value">4 / 5 pts</span>
+                  <span>3. Interacción y Participación Activa</span>
+                  <span class="text-primary fw-bold" id="crit3Value">3 / 3 pts</span>
                 </div>
-                <small class="text-muted d-block mb-2" style="font-size: 0.74rem;">Verificación continua del aprendizaje, retroalimentación oportuna y orientación a la mejora.</small>
-                <div class="rubric-score-selector" data-dimension="dim4">
-                  <button type="button" class="rubric-score-btn" data-score="2">2 - Regular</button>
-                  <button type="button" class="rubric-score-btn" data-score="3">3 - Bueno</button>
-                  <button type="button" class="rubric-score-btn active" data-score="4">4 - Muy Bueno</button>
-                  <button type="button" class="rubric-score-btn" data-score="5">5 - Excelente</button>
+                <small class="text-muted d-block mb-2" style="font-size: 0.74rem;">
+                  Fomenta el diálogo constante, formula preguntas reflexivas, promueve la participación activa de los alumnos adultos y estimula el pensamiento crítico durante la sesión en línea.
+                </small>
+                <div class="rubric-score-selector" data-criterion="crit3" data-max="3">
+                  <button type="button" class="rubric-score-btn btn-score-0" data-score="0">0 - No cumple</button>
+                  <button type="button" class="rubric-score-btn btn-score-1" data-score="1">1 - En inicio</button>
+                  <button type="button" class="rubric-score-btn btn-score-2" data-score="2">2 - En proceso</button>
+                  <button type="button" class="rubric-score-btn btn-score-3 active" data-score="3">3 - Logrado (Destacado)</button>
+                </div>
+              </div>
+
+              <!-- Criterio 4: Herramientas Digitales e Inteligencia Artificial (3 pts) -->
+              <div class="rubric-card">
+                <div class="rubric-header">
+                  <span>4. Herramientas Digitales e Inteligencia Artificial</span>
+                  <span class="text-primary fw-bold" id="crit4Value">3 / 3 pts</span>
+                </div>
+                <small class="text-muted d-block mb-2" style="font-size: 0.74rem;">
+                  Utiliza pertinentemente recursos tecnológicos, plataformas interactivas (Mentimeter, Kahoot, Padlet, pizarras virtuales) y/o orienta el uso ético, reflexivo y productivo de la Inteligencia Artificial.
+                </small>
+                <div class="rubric-score-selector" data-criterion="crit4" data-max="3">
+                  <button type="button" class="rubric-score-btn btn-score-0" data-score="0">0 - No cumple</button>
+                  <button type="button" class="rubric-score-btn btn-score-1" data-score="1">1 - En inicio</button>
+                  <button type="button" class="rubric-score-btn btn-score-2" data-score="2">2 - En proceso</button>
+                  <button type="button" class="rubric-score-btn btn-score-3 active" data-score="3">3 - Logrado (Destacado)</button>
+                </div>
+              </div>
+
+              <!-- Criterio 5: Clima del Aula y Respeto Mutuo (3 pts) -->
+              <div class="rubric-card">
+                <div class="rubric-header">
+                  <span>5. Clima del Aula y Respeto Mutuo</span>
+                  <span class="text-primary fw-bold" id="crit5Value">3 / 3 pts</span>
+                </div>
+                <small class="text-muted d-block mb-2" style="font-size: 0.74rem;">
+                  Mantiene una comunicación asertiva, cálida y empática; fomenta el respeto, la tolerancia y un entorno virtual seguro que estimula la motivación y el compromiso de los estudiantes.
+                </small>
+                <div class="rubric-score-selector" data-criterion="crit5" data-max="3">
+                  <button type="button" class="rubric-score-btn btn-score-0" data-score="0">0 - No cumple</button>
+                  <button type="button" class="rubric-score-btn btn-score-1" data-score="1">1 - En inicio</button>
+                  <button type="button" class="rubric-score-btn btn-score-2" data-score="2">2 - En proceso</button>
+                  <button type="button" class="rubric-score-btn btn-score-3 active" data-score="3">3 - Logrado (Destacado)</button>
+                </div>
+              </div>
+
+              <!-- Criterio 6: Gestión del Tiempo y Cierre Pedagógico (3 pts) -->
+              <div class="rubric-card">
+                <div class="rubric-header">
+                  <span>6. Gestión del Tiempo y Cierre Pedagógico</span>
+                  <span class="text-primary fw-bold" id="crit6Value">3 / 3 pts</span>
+                </div>
+                <small class="text-muted d-block mb-2" style="font-size: 0.74rem;">
+                  Distribuye adecuadamente el tiempo entre inicio, desarrollo y cierre; sintetiza los aprendizajes logrados y consolida las conclusiones principales de la sesión de clase.
+                </small>
+                <div class="rubric-score-selector" data-criterion="crit6" data-max="3">
+                  <button type="button" class="rubric-score-btn btn-score-0" data-score="0">0 - No cumple</button>
+                  <button type="button" class="rubric-score-btn btn-score-1" data-score="1">1 - En inicio</button>
+                  <button type="button" class="rubric-score-btn btn-score-2" data-score="2">2 - En proceso</button>
+                  <button type="button" class="rubric-score-btn btn-score-3 active" data-score="3">3 - Logrado (Destacado)</button>
+                </div>
+              </div>
+
+              <!-- Criterio 7: Puntualidad y Presentación Institucional (2 pts) -->
+              <div class="rubric-card">
+                <div class="rubric-header">
+                  <span>7. Puntualidad y Presentación Institucional</span>
+                  <span class="text-primary fw-bold" id="crit7Value">2 / 2 pts</span>
+                </div>
+                <small class="text-muted d-block mb-2" style="font-size: 0.74rem;">
+                  Inicia y finaliza la sesión conforme al horario oficial establecido; mantiene la cámara web encendida, adecuada iluminación y presentación formal según la política institucional UCV.
+                </small>
+                <div class="rubric-score-selector" data-criterion="crit7" data-max="2">
+                  <button type="button" class="rubric-score-btn btn-score-0" data-score="0">0 - No cumple</button>
+                  <button type="button" class="rubric-score-btn btn-score-1" data-score="1">1 - En proceso</button>
+                  <button type="button" class="rubric-score-btn btn-score-2 active" data-score="2">2 - Logrado (Destacado)</button>
                 </div>
               </div>
             </div>
 
-            <!-- Caja de Cálculo en Tiempo Real -->
-            <div class="p-3 bg-white rounded-3 border mb-3 d-flex justify-content-between align-items-center shadow-sm" style="border-left: 4px solid #15803D !important;">
+            <!-- Caja de Cálculo en Tiempo Real y Escala Oficial del PDF -->
+            <div class="p-3 bg-white rounded-3 border mb-3 d-flex justify-content-between align-items-center shadow-sm" style="border-left: 4px solid #16A34A !important;">
               <div>
-                <span class="small fw-bold text-muted d-block">Puntaje Final Consolidado:</span>
-                <span class="fs-4 fw-bold text-dark" id="supTotalDisplay">18.00 / 20</span>
+                <span class="small fw-bold text-muted d-block">Puntaje Total Vigesimal (F03):</span>
+                <span class="fs-4 fw-bold text-dark" id="supTotalDisplay">20.00 / 20</span>
+                <small class="text-muted d-block" style="font-size: 0.72rem;">Suma ponderada de los 7 criterios oficiales</small>
               </div>
               <div class="text-end">
-                <span class="small fw-bold text-muted d-block">Nivel de Desempeño:</span>
-                <span class="badge badge-nivel-excelente px-2.5 py-1.5" id="supNivelBadge">
-                  <i class="bi bi-award-fill me-1"></i> EXCELENTE
+                <span class="small fw-bold text-muted d-block">Nivel de Desempeño Oficial:</span>
+                <span class="badge badge-edd-destacado px-3 py-1.5 fs-6" id="supNivelBadge">
+                  <i class="bi bi-award-fill me-1"></i> DESTACADO
                 </span>
+                <small class="text-muted d-block mt-0.5" style="font-size: 0.7rem;" id="supNivelRango">Escala: 18.00 a 20.00 pts</small>
               </div>
             </div>
 
-            <!-- Observaciones y Compromisos -->
-            <div class="mb-2">
-              <label for="supObservacionesInput" class="form-label small fw-bold text-dark mb-1">Observaciones y Fortalezas Evidenciadas:</label>
-              <textarea id="supObservacionesInput" class="form-control form-control-sm mb-2" rows="2" placeholder="Describa aspectos positivos y hallazgos observados en el aula..."></textarea>
+            <!-- Observaciones y Sugerencias Oficiales del PDF -->
+            <div class="mb-2.5">
+              <label for="supObservacionesInput" class="form-label small fw-bold text-dark mb-1">
+                <i class="bi bi-star-fill text-warning me-1"></i> Fortalezas Evidenciadas en la Sesión:
+              </label>
+              <textarea id="supObservacionesInput" class="form-control form-control-sm" rows="2" placeholder="Describa el dominio temático, dinamismo y buenas prácticas pedagógicas observadas..."></textarea>
+            </div>
+            <div class="mb-2.5">
+              <label for="supSugerenciasInput" class="form-label small fw-bold text-dark mb-1">
+                <i class="bi bi-lightbulb-fill text-info me-1"></i> Sugerencias y Oportunidades de Mejora (Evaluador):
+              </label>
+              <textarea id="supSugerenciasInput" class="form-control form-control-sm" rows="2" placeholder="Recomendaciones para potenciar la interacción, uso de herramientas digitales o retroalimentación..."></textarea>
             </div>
             <div>
-              <label for="supCompromisosInput" class="form-label small fw-bold text-dark mb-1">Compromisos y Recomendaciones de Mejora:</label>
-              <textarea id="supCompromisosInput" class="form-control form-control-sm" rows="2" placeholder="Acuerdos pedagógicos para la siguiente sesión..."></textarea>
+              <label for="supCompromisosInput" class="form-label small fw-bold text-dark mb-1">
+                <i class="bi bi-check2-circle text-success me-1"></i> Compromisos Institucionales del Docente:
+              </label>
+              <textarea id="supCompromisosInput" class="form-control form-control-sm" rows="2" placeholder="Compromisos y acuerdos asumidos por el docente para las siguientes sesiones..."></textarea>
             </div>
 
           </div>
           <div class="modal-footer py-2 px-3.5 bg-light d-flex justify-content-between">
             <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-3" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-success btn-sm py-1.5 px-4 fw-semibold">
-              <i class="bi bi-check2-circle me-1"></i> Registrar Supervisión
+            <button type="submit" class="btn btn-warning btn-sm py-1.5 px-4 fw-bold text-dark shadow-sm">
+              <i class="bi bi-check2-circle me-1"></i> Guardar Evaluación F03
             </button>
           </div>
         </form>

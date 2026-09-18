@@ -753,6 +753,128 @@ ul.nav li { list-style: none !important; }
   border-color: #FECACA !important;
 }
 
+.area-card-desempeno:hover::before,
+.area-card-desempeno.active::before {
+  background: #D97706;
+}
+.area-card-desempeno:hover {
+  border-color: #FDE68A !important;
+}
+
+.badge-edd-oficial {
+  background: #FEF3C7;
+  color: #B45309;
+  border: 1px solid #FDE68A;
+  font-weight: 700;
+  font-size: 0.72rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.badge-edd-destacado {
+  background: #DCFCE7;
+  color: #15803D;
+  border: 1px solid #86EFAC;
+  font-weight: 700;
+  font-size: 0.72rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.badge-edd-requerido {
+  background: #E0F2FE;
+  color: #0369A1;
+  border: 1px solid #BAE6FD;
+  font-weight: 700;
+  font-size: 0.72rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.badge-edd-regular {
+  background: #FEF3C7;
+  color: #B45309;
+  border: 1px solid #FDE68A;
+  font-weight: 700;
+  font-size: 0.72rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.badge-edd-critico {
+  background: #FEE2E2;
+  color: #B91C1C;
+  border: 1px solid #FECACA;
+  font-weight: 700;
+  font-size: 0.72rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.edd-hero-banner {
+  background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 50%, #FDE68A 100%);
+  border: 1.5px solid #FCD34D;
+  border-radius: 12px;
+  padding: 1.15rem 1.35rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.edd-hero-banner::after {
+  content: '';
+  position: absolute;
+  right: -20px;
+  bottom: -20px;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle, rgba(217, 119, 6, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.rubric-score-btn.btn-score-0 {
+  background: #FFF;
+  color: #64748B;
+}
+.rubric-score-btn.btn-score-0.active {
+  background: #EF4444 !important;
+  border-color: #DC2626 !important;
+  color: #FFF !important;
+}
+
+.rubric-score-btn.btn-score-1.active {
+  background: #F59E0B !important;
+  border-color: #D97706 !important;
+  color: #FFF !important;
+}
+
+.rubric-score-btn.btn-score-2.active {
+  background: #0284C7 !important;
+  border-color: #0369A1 !important;
+  color: #FFF !important;
+}
+
+.rubric-score-btn.btn-score-3.active {
+  background: #16A34A !important;
+  border-color: #15803D !important;
+  color: #FFF !important;
+}
+
 .area-card-icon {
   width: 36px;
   height: 36px;
