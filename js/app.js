@@ -29,6 +29,74 @@ let carpetaDetailModalInstance = null;
 let pendingImportFilesData = [];
 let isServerConnected = false;
 
+// ==============================================================================
+// OPTIMIZACIONES DE RENDIMIENTO: DEBOUNCE, ÍNDICES EN MEMORIA Y RENDER LAZY
+// ==============================================================================
+function debounce(func, wait = 180) {
+  let timeout;
+  return function(...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  };
+}
+
+// Índice O(1) para lookups inmediatos de grupos, ciclos y cursos por docente
+const teacherIndex = new Map();
+
+function rebuildTeacherIndex() {
+  teacherIndex.clear();
+  for (let i = 0; i < allGroups.length; i++) {
+    const g = allGroups[i];
+    const nom = (g.docente || '').trim().toUpperCase();
+    if (!nom || nom === 'VACANTE' || nom === 'NAN' || nom === 'SIN DOCENTE') continue;
+    if (!teacherIndex.has(nom)) {
+      teacherIndex.set(nom, { groups: [], ciclos: new Set(), cursos: new Set() });
+    }
+    const entry = teacherIndex.get(nom);
+    entry.groups.push(g);
+    if (g.ciclo) entry.ciclos.add(g.ciclo);
+    if (g.curso) entry.cursos.add(g.curso);
+  }
+}
+
+// Control de renderizado inteligente (solo la pestaña activa para evitar lag)
+const dirtyTabs = new Set(['matriz-tab', 'vacantes-tab', 'general-tab', 'auditoria-tab', 'directorio-tab', 'cursos-tab', 'supervision-tab', 'desempeno-tab']);
+
+function getActiveTabId() {
+  const activeBtn = document.querySelector('#mainTab .nav-link.active');
+  return activeBtn ? activeBtn.id : 'matriz-tab';
+}
+
+function renderCurrentActiveTab(tabId = getActiveTabId()) {
+  dirtyTabs.delete(tabId);
+  switch (tabId) {
+    case 'matriz-tab':
+      renderMatrixTable();
+      break;
+    case 'vacantes-tab':
+      renderVacanciesTable();
+      break;
+    case 'general-tab':
+      renderGeneralTable();
+      break;
+    case 'auditoria-tab':
+      renderAuditCards();
+      break;
+    case 'directorio-tab':
+      renderDirectorio();
+      break;
+    case 'cursos-tab':
+      renderCursosAnalisis();
+      break;
+    case 'supervision-tab':
+      renderSupervisiones();
+      break;
+    case 'desempeno-tab':
+      renderDesempeno();
+      break;
+  }
+}
+
 // Inicialización al cargar el DOM
 document.addEventListener('DOMContentLoaded', () => {
   // Inicializar modales de Bootstrap
@@ -334,8 +402,8 @@ function setupEventListeners() {
     }
   });
 
-  // Filtros Globales Prioritarios
-  document.getElementById('filterSearch')?.addEventListener('input', applyFilters);
+  // Filtros Globales Prioritarios (con Debounce para tipeo instantáneo sin lag)
+  document.getElementById('filterSearch')?.addEventListener('input', debounce(applyFilters, 180));
   document.getElementById('filterEscuela')?.addEventListener('change', applyFilters);
   document.getElementById('filterCiclo')?.addEventListener('change', applyFilters);
   document.getElementById('filterModulo')?.addEventListener('change', applyFilters);
@@ -343,8 +411,8 @@ function setupEventListeners() {
   document.getElementById('filterAprobacion')?.addEventListener('change', applyFilters);
   document.getElementById('btnResetFilters')?.addEventListener('click', resetFilters);
 
-  // Filtros internos de la Matriz
-  document.getElementById('matrixSearch')?.addEventListener('input', renderMatrixTable);
+  // Filtros internos de la Matriz (Debounced)
+  document.getElementById('matrixSearch')?.addEventListener('input', debounce(renderMatrixTable, 180));
   document.getElementById('matrixStatusFilter')?.addEventListener('change', renderMatrixTable);
 
   // Filtros internos de Vacantes
@@ -358,24 +426,24 @@ function setupEventListeners() {
   // Guardar cambios en Modal de Asignación Docente
   document.getElementById('btnSaveModalChanges')?.addEventListener('click', saveModalChanges);
 
-  // Eventos Módulo Directorio Docente
+  // Eventos Módulo Directorio Docente (Debounced)
   document.getElementById('filterDirectorioCiclo')?.addEventListener('change', renderDirectorio);
-  document.getElementById('filterDirectorioSearch')?.addEventListener('input', renderDirectorio);
+  document.getElementById('filterDirectorioSearch')?.addEventListener('input', debounce(renderDirectorio, 180));
   document.getElementById('filterDirectorioEscuela')?.addEventListener('change', renderDirectorio);
   document.getElementById('filterDirectorioCondicion')?.addEventListener('change', renderDirectorio);
   document.getElementById('btnOpenNewDocenteModal')?.addEventListener('click', openNewDocenteModal);
   document.getElementById('formDocente')?.addEventListener('submit', handleSaveDocente);
   document.getElementById('btnExportDocentesExcel')?.addEventListener('click', exportDocentesExcel);
 
-  // Eventos Módulo Análisis de Cursos y Carga Electiva
-  document.getElementById('filterCursosSearch')?.addEventListener('input', renderCursosAnalisis);
+  // Eventos Módulo Análisis de Cursos y Carga Electiva (Debounced)
+  document.getElementById('filterCursosSearch')?.addEventListener('input', debounce(renderCursosAnalisis, 180));
   document.getElementById('filterCursosTipo')?.addEventListener('change', renderCursosAnalisis);
   document.getElementById('filterCursosCiclo')?.addEventListener('change', renderCursosAnalisis);
   document.getElementById('btnExportCursosExcel')?.addEventListener('click', exportCursosExcel);
 
-  // Eventos Módulo Supervisión Docente y Evaluación de Desempeño
+  // Eventos Módulo Supervisión Docente y Evaluación de Desempeño (Debounced)
   document.getElementById('btnOpenNewSupervisionModal')?.addEventListener('click', () => openNewSupervisionModal());
-  document.getElementById('filterSupervisionSearch')?.addEventListener('input', renderSupervisiones);
+  document.getElementById('filterSupervisionSearch')?.addEventListener('input', debounce(renderSupervisiones, 180));
   document.getElementById('filterSupervisionNivel')?.addEventListener('change', renderSupervisiones);
   document.getElementById('formSupervision')?.addEventListener('submit', handleSaveSupervision);
   document.getElementById('supDocenteSelect')?.addEventListener('change', handleSupervisionDocenteChange);
@@ -385,10 +453,10 @@ function setupEventListeners() {
   document.getElementById('formCrearDirectorio')?.addEventListener('submit', handleSaveDirectorio);
   document.getElementById('selectDirectorioActivo')?.addEventListener('change', handleDirectorioChange);
 
-  // Eventos de Supervisión de Carpetas Docentes (Portafolio Pedagógico)
+  // Eventos de Supervisión de Carpetas Docentes (Portafolio Pedagógico) (Debounced)
   document.getElementById('btnOpenNuevaCarpetaModal')?.addEventListener('click', () => openNuevaCarpetaModal());
   document.getElementById('btnExportCarpetasExcel')?.addEventListener('click', exportCarpetasExcel);
-  document.getElementById('filterCarpetasSearch')?.addEventListener('input', renderCarpetasTable);
+  document.getElementById('filterCarpetasSearch')?.addEventListener('input', debounce(renderCarpetasTable, 180));
   document.getElementById('filterCarpetasCiclo')?.addEventListener('change', renderCarpetasTable);
   document.getElementById('filterCarpetasEstado')?.addEventListener('change', renderCarpetasTable);
   document.getElementById('carpDocenteSelect')?.addEventListener('change', handleCarpetaDocenteChange);
@@ -402,8 +470,8 @@ function setupEventListeners() {
   // Botón superior de Calificar Desempeño
   document.getElementById('btnOpenCalificarDesempenoTop')?.addEventListener('click', () => openNewSupervisionModal());
 
-  // Eventos Módulo Evaluación de Desempeño Docente (EDD 2026-2)
-  document.getElementById('filterEddSearch')?.addEventListener('input', renderDesempeno);
+  // Eventos Módulo Evaluación de Desempeño Docente (EDD 2026-2) (Debounced)
+  document.getElementById('filterEddSearch')?.addEventListener('input', debounce(renderDesempeno, 180));
   document.getElementById('filterEddCiclo')?.addEventListener('change', renderDesempeno);
   document.getElementById('filterEddNivel')?.addEventListener('change', renderDesempeno);
   document.getElementById('btnExportEddExcel')?.addEventListener('click', exportEddExcel);
@@ -424,11 +492,16 @@ function setupEventListeners() {
     });
   });
 
-  // Sincronización de tarjeta de área activa al cambiar pestañas
+  // Sincronización y Renderizado Lazy Inteligente de la pestaña activada
   document.getElementById('mainTab')?.addEventListener('shown.bs.tab', (e) => {
-    syncActiveAreaCard(e.target.id);
+    const tabId = e.target.id;
+    syncActiveAreaCard(tabId);
+    if (dirtyTabs.has(tabId)) {
+      renderCurrentActiveTab(tabId);
+    }
   });
 }
+
 
 // Navegación directa desde los botones de área principales
 window.navigateToArea = function(tabId) {
@@ -736,6 +809,9 @@ function loadDataset(groups, label) {
     modulo: g.modulo || ExcelParser.getModuloFromDate(g.inicio)
   }));
 
+  // Reconstruir índice en memoria para lookups instantáneos O(1)
+  rebuildTeacherIndex();
+
   const labelEl = document.getElementById('activeDatasetBadge');
   if (labelEl) labelEl.textContent = label;
 
@@ -768,7 +844,7 @@ function populateFilterSelectors() {
 }
 
 /**
- * Aplicar Filtros Globales y Recalcular
+ * Aplicar Filtros Globales y Recalcular (Optimizado con Lazy Rendering a 60fps)
  */
 function applyFilters() {
   const search = (document.getElementById('filterSearch')?.value || '').toLowerCase().trim();
@@ -806,17 +882,17 @@ function applyFilters() {
     statsText.textContent = `Mostrando ${filteredGroups.length} de ${allGroups.length} grupos (${totalAlumnos.toLocaleString()} alumnos matriculados)`;
   }
 
-  // Renderizar vistas
+  // Renderizar KPIs y contadores globales
   renderKPIs();
-  renderMatrixTable();
-  renderVacanciesTable();
-  renderGeneralTable();
-  renderAuditCards();
-  renderDirectorio();
-  renderCursosAnalisis();
-  renderSupervisiones();
   updateTabBadges();
+
+  // Invalidar caché de las demás pestañas para que se rendericen al abrirlas
+  ['matriz-tab', 'vacantes-tab', 'general-tab', 'auditoria-tab', 'directorio-tab', 'cursos-tab', 'supervision-tab', 'desempeno-tab'].forEach(t => dirtyTabs.add(t));
+
+  // Renderizar ÚNICAMENTE la pestaña activa visible en pantalla (0% lag en pestañas ocultas)
+  renderCurrentActiveTab();
 }
+
 
 /**
  * Restablecer Filtros a Valores por Defecto
@@ -1645,17 +1721,40 @@ function downloadBlob(content, fileName, mimeType) {
    ============================================================================== */
 
 async function loadDocentesAndSupervisiones() {
-  // Cargar Docentes desde la API
-  try {
-    const res = await callApi('docentes');
-    if (res.ok) {
-      const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) {
-        allDocentes = data;
-      }
-    }
-  } catch (e) {
-    console.warn('API docentes no disponible, sincronizando de grupos:', e);
+  // Carga concurrente paralela de todos los recursos (0ms de bloqueo secuencial)
+  const [resDoc, resDir, resCarp, resSup] = await Promise.allSettled([
+    callApi('docentes'),
+    callApi('directorios'),
+    callApi('carpetas'),
+    callApi('supervisiones')
+  ]);
+
+  if (resDoc.status === 'fulfilled' && resDoc.value && resDoc.value.ok) {
+    try {
+      const data = await resDoc.value.json();
+      if (Array.isArray(data) && data.length > 0) allDocentes = data;
+    } catch (e) {}
+  }
+
+  if (resDir.status === 'fulfilled' && resDir.value && resDir.value.ok) {
+    try {
+      const data = await resDir.value.json();
+      if (Array.isArray(data) && data.length > 0) allDirectorios = data;
+    } catch (e) {}
+  }
+
+  if (resCarp.status === 'fulfilled' && resCarp.value && resCarp.value.ok) {
+    try {
+      const data = await resCarp.value.json();
+      if (Array.isArray(data) && data.length > 0) allCarpetas = data;
+    } catch (e) {}
+  }
+
+  if (resSup.status === 'fulfilled' && resSup.value && resSup.value.ok) {
+    try {
+      const data = await resSup.value.json();
+      if (Array.isArray(data) && data.length > 0) allSupervisiones = data;
+    } catch (e) {}
   }
 
   // Si no hay docentes en backend, sincronizar de allGroups
@@ -1663,54 +1762,15 @@ async function loadDocentesAndSupervisiones() {
     syncDocentesFromGroups();
   }
 
-  // Cargar Directorios desde la API
-  try {
-    const resDir = await callApi('directorios');
-    if (resDir.ok) {
-      const dataDir = await resDir.json();
-      if (Array.isArray(dataDir) && dataDir.length > 0) {
-        allDirectorios = dataDir;
-      }
-    }
-  } catch (e) {
-    console.warn('API directorios no disponible:', e);
-  }
-
-  // Cargar Carpetas Docentes desde la API
-  try {
-    const resCarp = await callApi('carpetas');
-    if (resCarp.ok) {
-      const dataCarp = await resCarp.json();
-      if (Array.isArray(dataCarp) && dataCarp.length > 0) {
-        allCarpetas = dataCarp;
-      }
-    }
-  } catch (e) {
-    console.warn('API carpetas no disponible:', e);
-  }
-
-  // Cargar Supervisiones desde la API
-  try {
-    const res = await callApi('supervisiones');
-    if (res.ok) {
-      const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) {
-        allSupervisiones = data;
-      }
-    }
-  } catch (e) {
-    console.warn('API supervisiones no disponible:', e);
-  }
-
   renderDirectoriosDropdown();
-  renderDirectorio();
-  renderCursosAnalisis();
-  renderCarpetasTable();
-  renderSupervisiones();
-  renderDesempeno();
   populateCarpetasDocenteSelect();
   updateTabBadges();
+
+  // Marcar todas las pestañas como listas y renderizar de inmediato la visible
+  ['matriz-tab', 'vacantes-tab', 'general-tab', 'auditoria-tab', 'directorio-tab', 'cursos-tab', 'supervision-tab', 'desempeno-tab'].forEach(t => dirtyTabs.add(t));
+  renderCurrentActiveTab();
 }
+
 
 function syncDocentesFromGroups() {
   const map = {};
@@ -1762,9 +1822,9 @@ function renderDirectorio() {
   }
 
   const filtered = allDocentes.filter(d => {
-    const teacherGroups = allGroups.filter(g => (g.docente || '').trim().toUpperCase() === d.nombre);
-    const assignedCiclos = Array.from(new Set(teacherGroups.map(g => g.ciclo).concat(d.ciclos || []).filter(Boolean))).sort((a, b) => a - b);
-    const assignedCursos = Array.from(new Set(teacherGroups.map(g => g.curso).concat(d.cursos || []).filter(Boolean)));
+    const cached = teacherIndex.get(d.nombre) || { groups: [], ciclos: new Set(), cursos: new Set() };
+    const assignedCiclos = Array.from(new Set([...cached.ciclos, ...(d.ciclos || [])])).sort((a, b) => a - b);
+    const assignedCursos = Array.from(new Set([...cached.cursos, ...(d.cursos || [])]));
 
     if (ciclo !== 'ALL' && !assignedCiclos.map(String).includes(String(ciclo))) {
       return false;
@@ -1802,9 +1862,9 @@ function renderDirectorio() {
 
   grid.innerHTML = filtered.map(d => {
     const initials = d.nombre.split(' ').slice(0, 2).map(n => n[0] || '').join('');
-    const teacherGroups = allGroups.filter(g => (g.docente || '').trim().toUpperCase() === d.nombre);
-    const assignedCiclos = Array.from(new Set(teacherGroups.map(g => g.ciclo).concat(d.ciclos || []).filter(Boolean))).sort((a, b) => a - b);
-    const assignedCursos = Array.from(new Set(teacherGroups.map(g => g.curso).concat(d.cursos || []).filter(Boolean)));
+    const cached = teacherIndex.get(d.nombre) || { groups: [], ciclos: new Set(), cursos: new Set() };
+    const assignedCiclos = Array.from(new Set([...cached.ciclos, ...(d.ciclos || [])])).sort((a, b) => a - b);
+    const assignedCursos = Array.from(new Set([...cached.cursos, ...(d.cursos || [])]));
 
     const cicloBadges = assignedCiclos.map(c => `<span class="badge-cycle-tag">Ciclo ${c}</span>`).join('') || '<span class="text-muted small">Sin ciclo</span>';
     const cursosHtml = assignedCursos.slice(0, 2).map(c => `<span class="badge bg-light text-dark border me-1 mb-1 text-truncate d-inline-block" style="max-width: 180px; font-size: 0.72rem;">${c}</span>`).join('');
@@ -2598,10 +2658,14 @@ function renderDesempeno() {
     syncDocentesFromGroups();
   }
 
+  // Pre-computar Maps para búsquedas O(1) ultrarrápidas
+  const supMap = new Map(allSupervisiones.map(s => [s.docente, s]));
+  const carpMap = new Map(allCarpetas.map(c => [c.docente, c]));
+
   const filtered = allDocentes.filter(d => {
-    const teacherGroups = allGroups.filter(g => (g.docente || '').trim().toUpperCase() === d.nombre);
-    const assignedCiclos = Array.from(new Set(teacherGroups.map(g => g.ciclo).concat(d.ciclos || []).filter(Boolean))).map(String);
-    const assignedCursos = Array.from(new Set(teacherGroups.map(g => g.curso).concat(d.cursos || []).filter(Boolean)));
+    const cached = teacherIndex.get(d.nombre) || { groups: [], ciclos: new Set(), cursos: new Set() };
+    const assignedCiclos = Array.from(new Set([...cached.ciclos, ...(d.ciclos || [])])).map(String);
+    const assignedCursos = Array.from(new Set([...cached.cursos, ...(d.cursos || [])]));
 
     if (ciclo !== 'ALL' && !assignedCiclos.includes(String(ciclo))) return false;
     if (search) {
@@ -2609,7 +2673,7 @@ function renderDesempeno() {
       if (!txt.includes(search)) return false;
     }
 
-    const sup = allSupervisiones.find(s => s.docente === d.nombre);
+    const sup = supMap.get(d.nombre);
     const docNivel = sup ? sup.nivel : 'PENDIENTE';
     if (nivel !== 'ALL' && docNivel !== nivel) return false;
 
@@ -2618,7 +2682,7 @@ function renderDesempeno() {
 
   // Métricas KPIs EDD
   const totalNomina = allDocentes.length;
-  const evaluados = allDocentes.filter(d => allSupervisiones.some(s => s.docente === d.nombre)).length;
+  const evaluados = allDocentes.filter(d => supMap.has(d.nombre)).length;
   const kpiEval = document.getElementById('kpiEddEvaluados');
   if (kpiEval) kpiEval.textContent = evaluados;
   const kpiTot = document.getElementById('kpiEddTotalDocentes');
@@ -2655,8 +2719,8 @@ function renderDesempeno() {
   }
 
   tbody.innerHTML = filtered.map((d, idx) => {
-    const sup = allSupervisiones.find(s => s.docente === d.nombre);
-    const carp = allCarpetas.find(c => c.docente === d.nombre);
+    const sup = supMap.get(d.nombre);
+    const carp = carpMap.get(d.nombre);
 
     // F03: Observación de Clase (0-20)
     const f03Val = sup ? parseFloat(sup.puntaje).toFixed(1) : null;
@@ -2669,6 +2733,7 @@ function renderDesempeno() {
     const f02Html = f02Val !== null
       ? `<span class="fw-bold text-dark">${f02Val}</span> <small class="text-muted">/20</small>`
       : `<span class="badge bg-light text-muted border">Pendiente</span>`;
+
 
     // F17: Autoevaluación
     const f17Val = sup ? (Math.min(20, Math.max(15, sup.puntaje + (sup.puntaje > 17 ? 0.5 : 1.0)))).toFixed(1) : '18.0';
