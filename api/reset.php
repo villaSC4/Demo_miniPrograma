@@ -12,21 +12,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-$dataFile = __DIR__ . '/../data/grupos.json';
-$baseFile = __DIR__ . '/../data/grupos_base.json';
+$filesToReset = [
+    'grupos' => ['data' => __DIR__ . '/../data/grupos.json', 'base' => __DIR__ . '/../data/grupos_base.json'],
+    'docentes' => ['data' => __DIR__ . '/../data/docentes.json', 'base' => __DIR__ . '/../data/docentes_base.json'],
+    'directorios' => ['data' => __DIR__ . '/../data/directorios.json', 'base' => __DIR__ . '/../data/directorios_base.json'],
+    'carpetas' => ['data' => __DIR__ . '/../data/carpetas.json', 'base' => __DIR__ . '/../data/carpetas_base.json'],
+    'supervisiones' => ['data' => __DIR__ . '/../data/supervisiones.json', 'base' => __DIR__ . '/../data/supervisiones_base.json']
+];
 
-if (file_exists($baseFile)) {
-    @copy($baseFile, $dataFile);
-    $data = json_decode(@file_get_contents($dataFile), true);
+$resetCount = 0;
+foreach ($filesToReset as $item) {
+    if (file_exists($item['base'])) {
+        @copy($item['base'], $item['data']);
+        $resetCount++;
+    }
+}
+
+if (file_exists($filesToReset['grupos']['data'])) {
+    $data = json_decode(@file_get_contents($filesToReset['grupos']['data']), true);
     echo json_encode([
         'status' => 'success',
         'count' => is_array($data) ? count($data) : 128,
-        'message' => 'Datos restablecidos a la versión base oficial (128 grupos)'
+        'resetFiles' => $resetCount,
+        'message' => 'Datos restablecidos a la versión base oficial (128 grupos, nómina y registros)'
     ]);
 } else {
     http_response_code(500);
     echo json_encode([
         'status' => 'error',
-        'error' => 'Archivo base data/grupos_base.json no encontrado'
+        'error' => 'No se pudo restablecer la base de datos'
     ]);
 }

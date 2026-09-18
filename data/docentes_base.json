@@ -1,0 +1,298 @@
+[
+  {
+    "id": 6,
+    "nombre": "AGREDA PALOMINO RICARDO NOE",
+    "email": "agredar@ucvvirtual.edu.pe",
+    "telefono": "945262882",
+    "escuela": "INGENIERIA DE SISTEMAS",
+    "condicion": "ORDINARIO",
+    "categoria": "AUXILIAR",
+    "grado": "MAGÍSTER",
+    "ciclos": [
+      4
+    ],
+    "cursos": [
+      "FÍSICA GENERAL"
+    ]
+  },
+  {
+    "id": 1,
+    "nombre": "AMACHE SANCHEZ MILTON FREDDY",
+    "email": "amachem@ucvvirtual.edu.pe",
+    "telefono": "931313992",
+    "escuela": "INGENIERIA DE SISTEMAS",
+    "condicion": "CONTRATADO",
+    "categoria": "ASOCIADO",
+    "grado": "DOCTOR",
+    "ciclos": [
+      2
+    ],
+    "cursos": [
+      "ALGORITMOS Y PROGRAMACIÓN",
+      "EXPRESIÓN GRÁFICA"
+    ]
+  },
+  {
+    "id": 5,
+    "nombre": "ANTEZANA ELORRIETA ANGEL ESTUARD",
+    "email": "antezanaa@ucvvirtual.edu.pe",
+    "telefono": "971259018",
+    "escuela": "INGENIERIA DE SISTEMAS",
+    "condicion": "CONTRATADO",
+    "categoria": "AUXILIAR",
+    "grado": "DOCTOR",
+    "ciclos": [
+      3
+    ],
+    "cursos": [
+      "MATEMÁTICA PARA LA INGENIERÍA "
+    ]
+  },
+  {
+    "id": 7,
+    "nombre": "ARCE VILLANUEVA CHRISTIAN ANTHONY",
+    "email": "arcec@ucvvirtual.edu.pe",
+    "telefono": "935361072",
+    "escuela": "INGENIERIA INDUSTRIAL",
+    "condicion": "CONTRATADO",
+    "categoria": "ASOCIADO",
+    "grado": "MAGÍSTER",
+    "ciclos": [
+      2,
+      5
+    ],
+    "cursos": [
+      "EXPRESIÓN GRÁFICA",
+      "INVESTIGACIÓN DE OPERACIONES"
+    ]
+  },
+  {
+    "id": 8,
+    "nombre": "AYALA RIVERA JUAN CARLOS",
+    "email": "ayalaj@ucvvirtual.edu.pe",
+    "telefono": "959011493",
+    "escuela": "INGENIERIA INDUSTRIAL",
+    "condicion": "ORDINARIO",
+    "categoria": "AUXILIAR",
+    "grado": "MAGÍSTER",
+    "ciclos": [
+      2
+    ],
+    "cursos": [
+      "QUÍMICA GENERAL"
+    ]
+  },
+  {
+    "id": 14,
+    "nombre": "BRINGAS QUESQUEN PAULO CESAR",
+    "email": "bringasp@ucvvirtual.edu.pe",
+    "telefono": "938636187",
+    "escuela": "INGENIERIA INDUSTRIAL",
+    "condicion": "ORDINARIO",
+    "categoria": "AUXILIAR",
+    "grado": "MAGÍSTER",
+    "ciclos": [
+      4
+    ],
+    "cursos": [
+      "CÁLCULO INTEGRAL Y ECUACIONES DIFERENCIALES ",
+      "FÍSICA GENERAL"
+    ]
+  },
+  {
+    "id": 10,
+    "nombre": "CASTILLO CHALCO ISAAC DUHAMEL",
+    "email": "castilloi@ucvvirtual.edu.pe",
+    "telefono": "922569500",
+    "escuela": "INGENIERIA INDUSTRIAL",
+    "condicion": "ORDINARIO",
+    "categoria": "ASOCIADO",
+    "grado": "MAGÍSTER",
+    "ciclos": [
+      3
+    ],
+    "cursos": [
+      "CREATIVIDAD E INNOVACIÓN"
+    ]
+  },
+  {
+    "id": 3,
+    "nombre": "GUTIERREZ MENDOZA ALICIA YANETT",
+    "email": "gutierreza@ucvvirtual.edu.pe",
+    "telefono": "949638823",
+    "escuela": "INGENIERIA DE SISTEMAS",
+    "condicion": "CONTRATADO",
+    "categoria": "AUXILIAR",
+    "grado": "MAGÍSTER",
+    "ciclos": [
+      3
+    ],
+    "cursos": [
+      "CREATIVIDAD E INNOVACIÓN"
+    ]
+  },
+  {
+    "id": 17,
+    "nombre": "HERMOZA MEDINA RENZO ALEXANDER",
+    "email": "hermozar@ucvvirtual.edu.pe",
+    "telefono": "968818688",
+    "escuela": "INGENIERIA INDUSTRIAL",
+    "condicion": "CONTRATADO",
+    "categoria": "AUXILIAR",
+    "grado": "DOCTOR",
+    "ciclos": [
+      6
+    ],
+    "cursos": [
+      "ERGONOMÍA, SEGURIDAD Y SALUD OCUPACIONAL"
+    ]
+  },
+  {
+    "id": 13,
+    "nombre": "LEEN CUEVA CHRISTIAN NICOLAS",
+    "email": "leenc@ucvvirtual.edu.pe",
+    "telefono": "958765223",
+    "escuela": "INGENIERIA INDUSTRIAL",
+    "condicion": "CONTRATADO",
+    "categoria": "ASOCIADO",
+    "grado": "DOCTOR",
+    "ciclos": [
+      4
+    ],
+    "cursos": [
+      "CÁLCULO INTEGRAL Y ECUACIONES DIFERENCIALES "
+    ]
+  },
+  {
+    "id": 12,
+    "nombre": "LEWIS DIAZ ARTURO FEDERICO",
+    "email": "lewisa@ucvvirtual.edu.pe",
+    "telefono": "959941410",
+    "escuela": "INGENIERIA INDUSTRIAL",
+    "condicion": "ORDINARIO",
+    "categoria": "AUXILIAR",
+    "grado": "MAGÍSTER",
+    "ciclos": [
+      3
+    ],
+    "cursos": [
+      "MATEMÁTICA PARA LA INGENIERÍA "
+    ]
+  },
+  {
+    "id": 15,
+    "nombre": "MARIN LOZANO RICHAR ALEXANDER",
+    "email": "marinr@ucvvirtual.edu.pe",
+    "telefono": "914932954",
+    "escuela": "INGENIERIA INDUSTRIAL",
+    "condicion": "CONTRATADO",
+    "categoria": "AUXILIAR",
+    "grado": "MAGÍSTER",
+    "ciclos": [
+      4
+    ],
+    "cursos": [
+      "CONTABILIDAD GERENCIAL Y COSTOS"
+    ]
+  },
+  {
+    "id": 9,
+    "nombre": "MARTINEZ JIMENEZ SANDOR LENIN",
+    "email": "martinezs@ucvvirtual.edu.pe",
+    "telefono": "913361942",
+    "escuela": "INGENIERIA INDUSTRIAL",
+    "condicion": "CONTRATADO",
+    "categoria": "AUXILIAR",
+    "grado": "DOCTOR",
+    "ciclos": [
+      3
+    ],
+    "cursos": [
+      "CREATIVIDAD E INNOVACIÓN"
+    ]
+  },
+  {
+    "id": 2,
+    "nombre": "MURO NUÑEZ EFRAIN ALEJANDRO",
+    "email": "muroe@ucvvirtual.edu.pe",
+    "telefono": "979862857",
+    "escuela": "INGENIERIA DE SISTEMAS",
+    "condicion": "ORDINARIO",
+    "categoria": "AUXILIAR",
+    "grado": "MAGÍSTER",
+    "ciclos": [
+      2
+    ],
+    "cursos": [
+      "EXPRESIÓN GRÁFICA"
+    ]
+  },
+  {
+    "id": 4,
+    "nombre": "OLMOS SALDIVAR DAVID",
+    "email": "olmosd@ucvvirtual.edu.pe",
+    "telefono": "949777417",
+    "escuela": "INGENIERIA DE SISTEMAS",
+    "condicion": "ORDINARIO",
+    "categoria": "ASOCIADO",
+    "grado": "MAGÍSTER",
+    "ciclos": [
+      3,
+      5
+    ],
+    "cursos": [
+      "FUNDAMENTOS DE MODELADO Y ANIMACIÓN",
+      "ESTUDIO DEL TRABAJO"
+    ]
+  },
+  {
+    "id": 18,
+    "nombre": "RIVERA RAMIREZ YDANIA VANESSA",
+    "email": "riveray@ucvvirtual.edu.pe",
+    "telefono": "974034116",
+    "escuela": "INGENIERIA INDUSTRIAL",
+    "condicion": "ORDINARIO",
+    "categoria": "AUXILIAR",
+    "grado": "MAGÍSTER",
+    "ciclos": [
+      6
+    ],
+    "cursos": [
+      "SIMULACIÓN E INTELIGENCIA DE DATOS",
+      "TECNOLOGÍA Y SISTEMAS DE PRODUCCIÓN"
+    ]
+  },
+  {
+    "id": 11,
+    "nombre": "ROJAS HURTADO JENNIFER IRAIDA",
+    "email": "rojasj@ucvvirtual.edu.pe",
+    "telefono": "939173355",
+    "escuela": "INGENIERIA INDUSTRIAL",
+    "condicion": "CONTRATADO",
+    "categoria": "AUXILIAR",
+    "grado": "MAGÍSTER",
+    "ciclos": [
+      3
+    ],
+    "cursos": [
+      "ECONOMÍA Y FINANZAS "
+    ]
+  },
+  {
+    "id": 16,
+    "nombre": "VIGO ALVA KATTY VANESA",
+    "email": "vigok@ucvvirtual.edu.pe",
+    "telefono": "950060534",
+    "escuela": "INGENIERIA INDUSTRIAL",
+    "condicion": "ORDINARIO",
+    "categoria": "ASOCIADO",
+    "grado": "MAGÍSTER",
+    "ciclos": [
+      5
+    ],
+    "cursos": [
+      "ACCESIBILIDAD Y DISEÑO UNIVERSAL",
+      "INVESTIGACIÓN DE OPERACIONES"
+    ]
+  }
+]

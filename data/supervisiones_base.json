@@ -1,0 +1,38 @@
+[
+  {
+    "id": "SUP-2026-001",
+    "fecha": "2026-09-10",
+    "docente": "AGREDA PALOMINO RICARDO NOE",
+    "curso": "FÍSICA GENERAL",
+    "seccion": "B1",
+    "supervisor": "DR. CARLOS AUDITOR",
+    "dimensiones": {
+      "planificacion": 19,
+      "estrategias": 18,
+      "dominio": 19,
+      "evaluacion": 18
+    },
+    "puntaje": 18.5,
+    "nivel": "EXCELENTE",
+    "observaciones": "Excelente manejo de la plataforma virtual y dinamismo pedagógico en clase sincrónica.",
+    "compromisos": "Continuar compartiendo grabaciones en los plazos fijados."
+  },
+  {
+    "id": "SUP-2026-002",
+    "fecha": "2026-09-12",
+    "docente": "AMACHE SANCHEZ MILTON FREDDY",
+    "curso": "ALGORITMOS Y PROGRAMACIÓN",
+    "seccion": "A1",
+    "supervisor": "MG. MARIA COORDINADORA",
+    "dimensiones": {
+      "planificacion": 16,
+      "estrategias": 15,
+      "dominio": 17,
+      "evaluacion": 16
+    },
+    "puntaje": 16.0,
+    "nivel": "SATISFACTORIO",
+    "observaciones": "Cumple con el contenido silábico. Fomentar mayor participación activa de los alumnos.",
+    "compromisos": "Implementar herramientas interactivas como Mentimeter o Kahoot."
+  }
+]

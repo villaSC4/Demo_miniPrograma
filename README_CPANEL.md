@@ -1,53 +1,81 @@
 # Guía de Despliegue en cPanel (Hosting Apache / PHP)
 
-Este proyecto está 100% optimizado y listo para ser desplegado en cualquier hosting con **cPanel** en menos de 2 minutos.
+Este proyecto está 100% empaquetado, probado y listo para ser desplegado en cualquier hosting con **cPanel** en menos de 2 minutos.
 
 ---
 
-## 📦 Archivo para subir
-Utiliza el archivo generado:
-📁 **`cpanel_deploy_minisistema.zip`**
+## 📦 Archivo de Despliegue
+Todo el sistema está listo en un único archivo comprimido en la raíz del proyecto:
+📁 **`cpanel_deploy_minisistema.zip`** *(517 KB)*
 
 ---
 
-## 🚀 Pasos de Instalación en cPanel
+## 🔑 Credenciales de Acceso al Sistema
+* **URL de Ingreso:** `https://tudominio.com/login.html` (o `index.html` que redirige automáticamente).
+* **Usuario:** `admin`
+* **Contraseña:** `admin123`
 
-### Paso 1: Ingresar a cPanel
-1. Inicia sesión en tu panel de control **cPanel**.
-2. En la sección **Archivos**, haz clic en **Administrador de archivos** (*File Manager*).
+*(También puedes cambiar las credenciales o dar acceso a otros usuarios desde `login.html`).*
 
-### Paso 2: Ubicar el Directorio de Destino
-* **Si es tu dominio principal:** Entra en la carpeta `public_html`.
-* **Si es un subdominio o subcarpeta:** Entra en la carpeta correspondiente (por ejemplo: `public_html/sistema/` o `subdominio.tudominio.com`).
+---
 
-> **Tip:** Si la carpeta ya contiene archivos antiguos que no necesitas, puedes borrarlos o moverlos a una carpeta de respaldo.
+## 🚀 Pasos de Instalación Rápida en cPanel
 
-### Paso 3: Cargar el Archivo ZIP
-1. En la barra superior de cPanel, haz clic en el botón **Cargar** (*Upload*).
-2. Selecciona o arrastra el archivo **`cpanel_deploy_minisistema.zip`**.
-3. Espera a que la barra de progreso llegue al 100% (se pondrá en color verde).
-4. Vuelve al Administrador de Archivos.
+### Paso 1: Ingresar a tu cPanel
+1. Accede a tu panel de control **cPanel** (ejemplo: `https://tudominio.com:2083`).
+2. En la categoría **Archivos**, abre el **Administrador de archivos** (*File Manager*).
+
+### Paso 2: Ir a la Carpeta de Destino
+* **Para que funcione en tu dominio principal (`tudominio.com`):**
+  - Entra a la carpeta **`public_html`**.
+* **Para que funcione en un subdirectorio (`tudominio.com/sistema`):**
+  - Crea una carpeta dentro de `public_html` llamada `sistema` (o el nombre que prefieras) y entra en ella.
+* **Para un subdominio (`sistema.tudominio.com`):**
+  - Entra a la carpeta raíz asignada a ese subdominio.
+
+> **Nota:** Si la carpeta contiene archivos temporales antiguos, puedes eliminarlos antes de subir el ZIP.
+
+### Paso 3: Subir el Archivo ZIP
+1. En la barra superior de herramientas de cPanel, haz clic en **Cargar** (*Upload*).
+2. Arrastra y suelta el archivo **`cpanel_deploy_minisistema.zip`**.
+3. Espera a que la barra de carga llegue al 100% en color verde.
+4. Haz clic en *"Volver a /public_html"*.
 
 ### Paso 4: Extraer los Archivos
-1. Haz clic derecho sobre el archivo `cpanel_deploy_minisistema.zip` que acabas de subir.
-2. Selecciona la opción **Extract** (*Extraer*).
-3. Confirma la ruta de extracción y pulsa **Extract File(s)**.
-4. (Opcional) Puedes eliminar el archivo `.zip` tras la extracción para ahorrar espacio.
+1. Selecciona el archivo **`cpanel_deploy_minisistema.zip`** que acabas de subir.
+2. En el menú superior o haciendo clic derecho, elige **Extract** (*Extraer*).
+3. Confirma la ruta de extracción y haz clic en **Extract File(s)**.
+4. *(Opcional)* Puedes borrar el archivo `.zip` después de extraerlo.
 
-### Paso 5: Permisos de Escritura (Persistencia Física)
-El sistema guarda físicamente las adiciones y modificaciones en el archivo `data/grupos.json`:
-1. Ubica la carpeta `data/` dentro del Administrador de Archivos.
-2. Verifica que tenga permisos **`755`** (o `775`). En cPanel esto viene configurado así por defecto, por lo que suele funcionar de inmediato sin tocar nada.
+### Paso 5: Permisos de Escritura de la Carpeta `data/`
+El sistema almacena físicamente todas las modificaciones, nóminas y evaluaciones en archivos JSON dentro de `data/`:
+1. Verifica que la carpeta **`data/`** tenga permisos **`755`** (estándar en cPanel).
+2. Como cPanel ejecuta PHP bajo el mismo usuario de la cuenta (FastCGI / suPHP / PHP-FPM), la persistencia física funcionará de inmediato sin necesidad de configuraciones adicionales.
 
 ---
 
-## 🌐 Comprobación en el Navegador
-Abre en tu navegador la URL donde lo instalaste:
-* `https://tudominio.com/` (si lo subiste a `public_html`)
-* `https://tudominio.com/sistema/` (si lo subiste en una subcarpeta)
+## 🛠️ Endpoints API en PHP Integrados (Carpeta `api/`)
+El sistema cuenta con endpoints PHP optimizados con cabeceras CORS y JSON UTF-8:
+* `api/grupos.php` — Lectura y guardado de programación modular académica (128 grupos).
+* `api/docentes.php` — Directorio docente por ciclos y especialidades.
+* `api/directorios.php` — Catálogo y apertura de nuevos periodos de gestión académica.
+* `api/carpetas.php` — Supervisión y auditoría de Carpetas Docentes Virtuales (CDV - Clementina).
+* `api/supervisiones.php` — Evaluación de Desempeño en Aula con Rúbrica Oficial F03 (0 a 20 pts).
+* `api/reset.php` — Restablecimiento seguro a la versión base oficial con un clic.
 
-### Verificaciones inmediatas:
+---
+
+## 🌐 Verificación en el Navegador
+Abre en tu navegador la URL donde lo instalaste:
+* `https://tudominio.com/`
+* Inicia sesión con **`admin` / `admin123`**.
 * Verás el indicador verde **"Archivo Guardado"** en la barra superior.
-* La **Matriz Modular Docente** mostrará las materias separadas de forma independiente por docente (`Set`, `Oct`, `Nov`, `Dic`).
-* El botón **"Subir Excel"** permite seleccionar uno o varios archivos simultáneamente con opción de Combinar o Reemplazar.
-* Puedes descargar la **Plantilla Excel** oficial con un clic.
+* Tendrás acceso a todos los módulos:
+  1. **Directorio Docente** (Ciclos I al X)
+  2. **Análisis de Cursos** (Carga electiva y vacantes)
+  3. **Calificar Desempeño** (EDD 2026-2 / Rúbrica oficial F03)
+  4. **Supervisión de Carpetas Docentes** (Clementina)
+  5. **Matriz Modular** (Set-Dic 2026)
+  6. **Bolsa de Vacantes** (Asignación rápida)
+  7. **Descarga y Carga Masiva en Excel** con plantilla oficial.
+
