@@ -43,10 +43,10 @@
           <img src="img/logo-ucv-virtual.png" alt="UCV Virtual" class="navbar-logo" style="height: 38px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));">
         </a>
         <div class="d-none d-md-block" style="width: 1px; height: 28px; background: rgba(255,255,255,0.2); margin: 0 0.35rem;"></div>
-        <div>
-          <h1 class="h6 mb-0 text-white fw-bold" style="font-size: 0.92rem; letter-spacing: -0.01em;">Sistema de Gestión Académica</h1>
-          <small class="text-white-50" style="font-size: 0.74rem;">Programación Semestral Modular • Semestre 2026-II</small>
-        </div>
+          <div>
+            <h1 class="h6 mb-0 text-white fw-bold" style="font-size: 0.92rem; letter-spacing: -0.01em;">Sistema de Gestión Académica</h1>
+            <small class="text-white-50" style="font-size: 0.74rem;"><span class="text-warning fw-semibold"><i class="bi bi-gear-wide-connected me-1"></i>Facultad de Ingeniería Industrial</span> • Semestre 2026-II</small>
+          </div>
       </div>
 
       <div class="d-flex align-items-center gap-2">
@@ -235,8 +235,8 @@
           </li>
           <li class="nav-item" role="presentation">
             <button class="nav-link" id="supervision-tab" data-bs-toggle="pill" data-bs-target="#tab-supervision" type="button" role="tab">
-              <i class="bi bi-clipboard2-check me-1 text-success"></i> Supervisión & Calidad
-              <span class="badge bg-success-subtle text-success ms-1" id="badgeTabSupervision">2</span>
+              <i class="bi bi-folder-check me-1 text-success"></i> Supervisión & Carpetas
+              <span class="badge bg-success-subtle text-success ms-1" id="badgeTabSupervision">4</span>
             </button>
           </li>
           <li class="nav-item" role="presentation">
@@ -347,6 +347,29 @@
 
         <!-- PESTAÑA 5: DIRECTORIO DOCENTE (SEGMENTADO POR CICLO) -->
         <div class="tab-pane fade" id="tab-directorio" role="tabpanel">
+          <!-- Barra de Gestión de Directorios (Apertura de Periodos para Continuidad de Gestión) -->
+          <div class="p-2.5 bg-white rounded-3 border mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2 shadow-sm">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2.5 py-1.5 fw-bold" style="font-size: 0.8rem;">
+                <i class="bi bi-folder2-open me-1"></i> Directorio Activo:
+              </span>
+              <select id="selectDirectorioActivo" class="form-select form-select-sm fw-bold text-dark border-primary" style="width: auto; min-width: 250px;">
+                <!-- Dinámico -->
+              </select>
+              <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1" style="font-size: 0.74rem;" id="directorioEstadoBadge">
+                <i class="bi bi-check-circle-fill me-1"></i> Vigente
+              </span>
+              <span class="badge bg-light text-muted border px-2 py-1" style="font-size: 0.74rem;" id="directorioPeriodoBadge">
+                Periodo: 2026-II
+              </span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" id="btnOpenCrearDirectorioModal" class="btn btn-primary-app btn-sm py-1.5 px-3 fw-semibold shadow-sm" title="Crear un nuevo directorio para la continuidad de la gestión">
+                <i class="bi bi-folder-plus me-1"></i> Crear Directorio
+              </button>
+            </div>
+          </div>
+
           <!-- Barra de Filtros del Directorio -->
           <div class="p-3 bg-light rounded-3 border mb-3">
             <div class="row g-2.5 align-items-center">
@@ -520,88 +543,223 @@
           </div>
         </div>
 
-        <!-- PESTAÑA 7: SUPERVISIÓN Y EVALUACIÓN DEL DESEMPEÑO DOCENTE -->
+        <!-- PESTAÑA 7: SUPERVISIÓN & CALIDAD ACADÉMICA (CARPETAS DOCENTES + DESEMPEÑO) -->
         <div class="tab-pane fade" id="tab-supervision" role="tabpanel">
-          <!-- Métricas de Supervisión -->
-          <div class="row g-2.5 mb-3">
-            <div class="col-md-3 col-sm-6">
-              <div class="supervision-stats-card d-flex align-items-center justify-content-between">
-                <div>
-                  <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">Supervisiones Registradas</small>
-                  <span class="fs-5 fw-bold text-dark" id="kpiSupervisionTotal">2</span>
-                </div>
-                <i class="bi bi-clipboard2-check-fill text-success fs-3"></i>
-              </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-              <div class="supervision-stats-card d-flex align-items-center justify-content-between">
-                <div>
-                  <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">Promedio General</small>
-                  <span class="fs-5 fw-bold text-primary" id="kpiSupervisionPromedio">17.25 / 20</span>
-                </div>
-                <i class="bi bi-graph-up-arrow text-primary fs-3"></i>
-              </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-              <div class="supervision-stats-card d-flex align-items-center justify-content-between">
-                <div>
-                  <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">Nivel Excelente (18-20)</small>
-                  <span class="fs-5 fw-bold text-success" id="kpiSupervisionDestacados">1</span>
-                </div>
-                <i class="bi bi-award-fill text-success fs-3"></i>
-              </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-              <div class="supervision-stats-card d-flex align-items-center justify-content-between">
-                <div>
-                  <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">En Seguimiento (&lt;14)</small>
-                  <span class="fs-5 fw-bold text-warning" id="kpiSupervisionObservados">0</span>
-                </div>
-                <i class="bi bi-shield-alert text-warning fs-3"></i>
-              </div>
+          
+          <!-- Selector Sub-pestañas: Carpetas vs Desempeño Aula -->
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom">
+            <ul class="nav nav-pills custom-pills" id="supervisionSubNav" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active fw-bold py-1.5 px-3" id="subtab-carpetas-btn" data-bs-toggle="pill" data-bs-target="#subtab-carpetas" type="button" role="tab">
+                  <i class="bi bi-folder-check me-1 text-success"></i> Supervisión de Carpetas Docentes
+                  <span class="badge bg-success-subtle text-success ms-1" id="badgeCountCarpetas">2</span>
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link fw-bold py-1.5 px-3" id="subtab-desempeno-btn" data-bs-toggle="pill" data-bs-target="#subtab-desempeno" type="button" role="tab">
+                  <i class="bi bi-clipboard2-check me-1 text-primary"></i> Evaluación de Desempeño (Aula)
+                  <span class="badge bg-primary-subtle text-primary ms-1" id="badgeCountDesempeno">2</span>
+                </button>
+              </li>
+            </ul>
+
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2.5 py-1.5 fw-semibold" style="font-size: 0.76rem;">
+                <i class="bi bi-gear-wide-connected me-1"></i> Facultad de Ingeniería Industrial
+              </span>
             </div>
           </div>
 
-          <!-- Barra de Acciones y Filtros de Supervisión -->
-          <div class="p-2.5 bg-light rounded-3 border mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-              <div class="input-group input-group-sm" style="max-width: 260px;">
-                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                <input type="text" id="filterSupervisionSearch" class="form-control form-control-sm" placeholder="Buscar por docente o curso...">
+          <div class="tab-content" id="supervisionSubContent">
+            
+            <!-- SUB-PESTAÑA A: SUPERVISIÓN DE CARPETAS DOCENTES (PORTAFOLIO PEDAGÓGICO) -->
+            <div class="tab-pane fade show active" id="subtab-carpetas" role="tabpanel">
+              <!-- Métricas de Carpetas Docentes -->
+              <div class="row g-2.5 mb-3">
+                <div class="col-md-3 col-sm-6">
+                  <div class="supervision-stats-card d-flex align-items-center justify-content-between">
+                    <div>
+                      <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">Carpetas Auditadas</small>
+                      <span class="fs-5 fw-bold text-dark" id="kpiCarpetasTotal">2</span>
+                    </div>
+                    <i class="bi bi-folder2-open text-primary fs-3"></i>
+                  </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                  <div class="supervision-stats-card d-flex align-items-center justify-content-between">
+                    <div>
+                      <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">Cumplimiento Promedio</small>
+                      <span class="fs-5 fw-bold text-success" id="kpiCarpetasPromedio">93%</span>
+                    </div>
+                    <i class="bi bi-pie-chart-fill text-success fs-3"></i>
+                  </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                  <div class="supervision-stats-card d-flex align-items-center justify-content-between">
+                    <div>
+                      <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">Carpetas Conformes</small>
+                      <span class="fs-5 fw-bold text-success" id="kpiCarpetasConformes">1</span>
+                    </div>
+                    <i class="bi bi-check-circle-fill text-success fs-3"></i>
+                  </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                  <div class="supervision-stats-card d-flex align-items-center justify-content-between">
+                    <div>
+                      <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">Observadas / Incompletas</small>
+                      <span class="fs-5 fw-bold text-warning" id="kpiCarpetasObservadas">1</span>
+                    </div>
+                    <i class="bi bi-exclamation-circle-fill text-warning fs-3"></i>
+                  </div>
+                </div>
               </div>
-              <select id="filterSupervisionNivel" class="form-select form-select-sm" style="width: auto;">
-                <option value="ALL">Todos los Niveles</option>
-                <option value="EXCELENTE">Excelente (18-20)</option>
-                <option value="SATISFACTORIO">Satisfactorio (14-17)</option>
-                <option value="EN PROCESO">En Proceso (11-13)</option>
-                <option value="CRÍTICO">Crítico (0-10)</option>
-              </select>
+
+              <!-- Filtros y Acciones de Carpetas -->
+              <div class="p-2.5 bg-light rounded-3 border mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                  <div class="input-group input-group-sm" style="max-width: 250px;">
+                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                    <input type="text" id="filterCarpetasSearch" class="form-control form-control-sm" placeholder="Docente o curso...">
+                  </div>
+                  <select id="filterCarpetasCiclo" class="form-select form-select-sm" style="width: auto;">
+                    <option value="ALL">Todos los Ciclos</option>
+                    <option value="1">Ciclo I</option>
+                    <option value="2">Ciclo II</option>
+                    <option value="3">Ciclo III</option>
+                    <option value="4">Ciclo IV</option>
+                    <option value="5">Ciclo V</option>
+                    <option value="6">Ciclo VI</option>
+                    <option value="7">Ciclo VII</option>
+                    <option value="8">Ciclo VIII</option>
+                    <option value="9">Ciclo IX</option>
+                    <option value="10">Ciclo X</option>
+                  </select>
+                  <select id="filterCarpetasEstado" class="form-select form-select-sm" style="width: auto;">
+                    <option value="ALL">Todos los Estados</option>
+                    <option value="CONFORME">Conforme (100%)</option>
+                    <option value="OBSERVADO">Observado (Subsanación)</option>
+                    <option value="INCOMPLETO">Incompleto</option>
+                  </select>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                  <button type="button" id="btnExportCarpetasExcel" class="btn btn-outline-success btn-sm py-1.5 px-2.5 fw-semibold" title="Exportar reporte de carpetas a Excel">
+                    <i class="bi bi-file-earmark-excel me-1"></i> Exportar (Excel)
+                  </button>
+                  <button type="button" id="btnOpenNuevaCarpetaModal" class="btn btn-success btn-sm py-1.5 px-3 fw-semibold shadow-sm">
+                    <i class="bi bi-folder-check me-1"></i> + Auditar Carpeta Docente
+                  </button>
+                </div>
+              </div>
+
+              <!-- Tabla de Carpetas Docentes Auditadas -->
+              <div class="table-responsive" style="max-height: 520px;">
+                <table class="table table-hover align-middle app-table mb-0">
+                  <thead class="sticky-top">
+                    <tr>
+                      <th style="width: 90px;">Código</th>
+                      <th>Docente / Especialidad</th>
+                      <th>Asignatura & Sección</th>
+                      <th class="text-center" style="width: 65px;">Ciclo</th>
+                      <th style="width: 140px;">Semana Revisión</th>
+                      <th>Componentes Evaluados (7)</th>
+                      <th class="text-center" style="width: 110px;">Cumplimiento</th>
+                      <th class="text-center" style="width: 110px;">Estado</th>
+                      <th class="text-center" style="width: 100px;">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="carpetasTableBody">
+                    <!-- Dinámico -->
+                  </tbody>
+                </table>
+              </div>
             </div>
 
-            <button type="button" id="btnOpenNewSupervisionModal" class="btn btn-success btn-sm py-1.5 px-3 fw-semibold shadow-sm">
-              <i class="bi bi-clipboard-plus me-1"></i> + Nueva Ficha de Supervisión en Clase
-            </button>
-          </div>
+            <!-- SUB-PESTAÑA B: EVALUACIÓN DE DESEMPEÑO EN AULA (OBSERVACIÓN DE CLASE) -->
+            <div class="tab-pane fade" id="subtab-desempeno" role="tabpanel">
+              <!-- Métricas de Desempeño (Aula) -->
+              <div class="row g-2.5 mb-3">
+                <div class="col-md-3 col-sm-6">
+                  <div class="supervision-stats-card d-flex align-items-center justify-content-between">
+                    <div>
+                      <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">Supervisiones Registradas</small>
+                      <span class="fs-5 fw-bold text-dark" id="kpiSupervisionTotal">2</span>
+                    </div>
+                    <i class="bi bi-clipboard2-check-fill text-success fs-3"></i>
+                  </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                  <div class="supervision-stats-card d-flex align-items-center justify-content-between">
+                    <div>
+                      <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">Promedio General</small>
+                      <span class="fs-5 fw-bold text-primary" id="kpiSupervisionPromedio">17.25 / 20</span>
+                    </div>
+                    <i class="bi bi-graph-up-arrow text-primary fs-3"></i>
+                  </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                  <div class="supervision-stats-card d-flex align-items-center justify-content-between">
+                    <div>
+                      <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">Nivel Excelente (18-20)</small>
+                      <span class="fs-5 fw-bold text-success" id="kpiSupervisionDestacados">1</span>
+                    </div>
+                    <i class="bi bi-award-fill text-success fs-3"></i>
+                  </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                  <div class="supervision-stats-card d-flex align-items-center justify-content-between">
+                    <div>
+                      <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">En Seguimiento (&lt;14)</small>
+                      <span class="fs-5 fw-bold text-warning" id="kpiSupervisionObservados">0</span>
+                    </div>
+                    <i class="bi bi-shield-alert text-warning fs-3"></i>
+                  </div>
+                </div>
+              </div>
 
-          <!-- Tabla de Historial de Supervisiones -->
-          <div class="table-responsive" style="max-height: 520px;">
-            <table class="table table-hover align-middle app-table mb-0">
-              <thead class="sticky-top">
-                <tr>
-                  <th style="width: 100px;">Código</th>
-                  <th style="width: 95px;">Fecha</th>
-                  <th>Docente Supervisado</th>
-                  <th>Asignatura & Sección</th>
-                  <th>Supervisor / Auditor</th>
-                  <th class="text-center" style="width: 80px;">Puntaje</th>
-                  <th class="text-center" style="width: 130px;">Nivel Desempeño</th>
-                  <th class="text-center" style="width: 110px;">Acciones</th>
-                </tr>
-              </thead>
-              <tbody id="supervisionTableBody">
-                <!-- Rellenado dinámico -->
-              </tbody>
-            </table>
+              <!-- Barra de Acciones y Filtros de Supervisión en Clase -->
+              <div class="p-2.5 bg-light rounded-3 border mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                  <div class="input-group input-group-sm" style="max-width: 260px;">
+                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                    <input type="text" id="filterSupervisionSearch" class="form-control form-control-sm" placeholder="Buscar por docente o curso...">
+                  </div>
+                  <select id="filterSupervisionNivel" class="form-select form-select-sm" style="width: auto;">
+                    <option value="ALL">Todos los Niveles</option>
+                    <option value="EXCELENTE">Excelente (18-20)</option>
+                    <option value="SATISFACTORIO">Satisfactorio (14-17)</option>
+                    <option value="EN PROCESO">En Proceso (11-13)</option>
+                    <option value="CRÍTICO">Crítico (0-10)</option>
+                  </select>
+                </div>
+
+                <button type="button" id="btnOpenNewSupervisionModal" class="btn btn-primary-app btn-sm py-1.5 px-3 fw-semibold shadow-sm">
+                  <i class="bi bi-clipboard-plus me-1"></i> + Nueva Ficha de Desempeño en Aula
+                </button>
+              </div>
+
+              <!-- Tabla de Historial de Supervisiones en Clase -->
+              <div class="table-responsive" style="max-height: 520px;">
+                <table class="table table-hover align-middle app-table mb-0">
+                  <thead class="sticky-top">
+                    <tr>
+                      <th style="width: 100px;">Código</th>
+                      <th style="width: 95px;">Fecha</th>
+                      <th>Docente Supervisado</th>
+                      <th>Asignatura & Sección</th>
+                      <th>Supervisor / Evaluador</th>
+                      <th class="text-center" style="width: 80px;">Puntaje</th>
+                      <th class="text-center" style="width: 130px;">Nivel Desempeño</th>
+                      <th class="text-center" style="width: 110px;">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="supervisionTableBody">
+                    <!-- Rellenado dinámico -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -1131,6 +1289,287 @@
         </div>
         <div class="modal-body py-3 px-4" id="supervisionPrintArea">
           <!-- Rellenado dinámico con la ficha completa del docente -->
+        </div>
+        <div class="modal-footer py-2 px-3.5 bg-light d-flex justify-content-between">
+          <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-3" data-bs-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-primary-app btn-sm py-1 px-3" onclick="window.print()">
+            <i class="bi bi-printer me-1"></i> Imprimir / Guardar PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CREAR DIRECTORIO ACADÉMICO -->
+  <div class="modal fade" id="modalCrearDirectorio" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 500px;">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 14px;">
+        <div class="modal-header py-3 px-3.5 bg-light border-bottom">
+          <div class="d-flex align-items-center gap-2">
+            <div class="brand-badge bg-primary" style="width: 32px; height: 32px; font-size: 0.85rem;"><i class="bi bi-folder-plus"></i></div>
+            <div>
+              <h6 class="modal-title fw-bold text-dark mb-0">Crear Directorio Académico</h6>
+              <small class="text-muted" style="font-size: 0.74rem;">Apertura de nuevo periodo o ciclo de gestión</small>
+            </div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="formCrearDirectorio">
+          <div class="modal-body py-3 px-3.5">
+            <div class="mb-2.5">
+              <label for="dirNombreInput" class="form-label small fw-bold text-dark mb-1">Nombre del Directorio <span class="text-danger">*</span></label>
+              <input type="text" id="dirNombreInput" class="form-control form-control-sm" placeholder="Ej: Directorio Industrial 2027-I" required>
+            </div>
+            <div class="row g-2 mb-2.5">
+              <div class="col-6">
+                <label for="dirPeriodoInput" class="form-label small fw-bold text-dark mb-1">Periodo / Semestre <span class="text-danger">*</span></label>
+                <input type="text" id="dirPeriodoInput" class="form-control form-control-sm" placeholder="Ej: 2027-I" required>
+              </div>
+              <div class="col-6">
+                <label for="dirCiclosInput" class="form-label small fw-bold text-dark mb-1">Ciclos Comprendidos</label>
+                <input type="text" id="dirCiclosInput" class="form-control form-control-sm" value="I al X">
+              </div>
+            </div>
+            <div class="mb-2.5">
+              <label for="dirFacultadInput" class="form-label small fw-bold text-dark mb-1">Facultad / Escuela</label>
+              <select id="dirFacultadInput" class="form-select form-select-sm">
+                <option value="INGENIERÍA INDUSTRIAL" selected>Facultad de Ingeniería Industrial</option>
+                <option value="INGENIERIA DE SISTEMAS">Ingeniería de Sistemas</option>
+                <option value="GENERAL">General Multidisciplinar</option>
+              </select>
+            </div>
+            <div class="mb-2.5">
+              <label for="dirResponsableInput" class="form-label small fw-bold text-dark mb-1">Coordinador / Responsable</label>
+              <input type="text" id="dirResponsableInput" class="form-control form-control-sm" value="COORDINACIÓN ACADÉMICA INDUSTRIAL">
+            </div>
+            <div class="mb-2">
+              <label for="dirDescripcionInput" class="form-label small fw-bold text-dark mb-1">Descripción / Notas</label>
+              <textarea id="dirDescripcionInput" class="form-control form-control-sm" rows="2" placeholder="Detalles de la gestión académica..."></textarea>
+            </div>
+          </div>
+          <div class="modal-footer py-2 px-3.5 bg-light d-flex justify-content-between">
+            <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-3" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary-app btn-sm py-1.5 px-3 fw-semibold">
+              <i class="bi bi-check2-circle me-1"></i> Guardar Directorio
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: AUDITORÍA & SUPERVISIÓN DE CARPETA DOCENTE -->
+  <div class="modal fade" id="modalSupervisionCarpeta" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 760px;">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 14px;">
+        <div class="modal-header py-3 px-3.5 bg-light border-bottom">
+          <div class="d-flex align-items-center gap-2">
+            <div class="brand-badge bg-success" style="width: 32px; height: 32px; font-size: 0.85rem;"><i class="bi bi-folder-check"></i></div>
+            <div>
+              <h6 class="modal-title fw-bold text-dark mb-0">Ficha de Supervisión de Carpeta Docente</h6>
+              <small class="text-muted" style="font-size: 0.74rem;">Auditoría de Portafolio Pedagógico • Facultad de Ingeniería Industrial</small>
+            </div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="formSupervisionCarpeta">
+          <div class="modal-body py-3 px-3.5" style="max-height: 75vh; overflow-y: auto;">
+            
+            <!-- Datos Informativos -->
+            <div class="p-2.5 bg-light rounded-3 border mb-3">
+              <div class="row g-2">
+                <div class="col-md-6">
+                  <label for="carpDocenteSelect" class="form-label small fw-bold text-dark mb-1">Docente <span class="text-danger">*</span></label>
+                  <select id="carpDocenteSelect" class="form-select form-select-sm" required>
+                    <option value="">-- Seleccione Docente --</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="carpCursoInput" class="form-label small fw-bold text-dark mb-1">Asignatura / Experiencia Curricular <span class="text-danger">*</span></label>
+                  <input type="text" id="carpCursoInput" class="form-control form-control-sm" placeholder="Ej: FÍSICA GENERAL" required>
+                </div>
+                <div class="col-md-3 col-6">
+                  <label for="carpCicloInput" class="form-label small fw-bold text-dark mb-1">Ciclo</label>
+                  <select id="carpCicloInput" class="form-select form-select-sm">
+                    <option value="1">Ciclo I</option>
+                    <option value="2">Ciclo II</option>
+                    <option value="3">Ciclo III</option>
+                    <option value="4" selected>Ciclo IV</option>
+                    <option value="5">Ciclo V</option>
+                    <option value="6">Ciclo VI</option>
+                    <option value="7">Ciclo VII</option>
+                    <option value="8">Ciclo VIII</option>
+                    <option value="9">Ciclo IX</option>
+                    <option value="10">Ciclo X</option>
+                  </select>
+                </div>
+                <div class="col-md-3 col-6">
+                  <label for="carpSeccionInput" class="form-label small fw-bold text-dark mb-1">Sección</label>
+                  <input type="text" id="carpSeccionInput" class="form-control form-control-sm" value="A1" required>
+                </div>
+                <div class="col-md-3 col-6">
+                  <label for="carpSemanaSelect" class="form-label small fw-bold text-dark mb-1">Semana Auditoría</label>
+                  <select id="carpSemanaSelect" class="form-select form-select-sm">
+                    <option value="Semana 4 (Revisión Inicial)">Semana 4 (Inicial)</option>
+                    <option value="Semana 8 (Parcial)">Semana 8 (Parcial)</option>
+                    <option value="Semana 12 (Seguimiento)">Semana 12 (Seguimiento)</option>
+                    <option value="Semana 16 (Cierre Final)">Semana 16 (Final)</option>
+                  </select>
+                </div>
+                <div class="col-md-3 col-6">
+                  <label for="carpAuditorInput" class="form-label small fw-bold text-dark mb-1">Auditor / Responsable</label>
+                  <input type="text" id="carpAuditorInput" class="form-control form-control-sm" value="COORDINACIÓN DE INDUSTRIAL" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- Lista de Verificación de 7 Componentes -->
+            <div class="mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="small fw-bold text-dark text-uppercase"><i class="bi bi-check2-square me-1 text-success"></i> Instrumento de Verificación de Carpeta (7 Componentes)</span>
+                <span class="badge bg-light text-muted border">Marcar los que cumplen conforme</span>
+              </div>
+
+              <!-- Item 1: Sílabo -->
+              <div class="carpeta-item-row">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <div class="form-check form-switch mb-0">
+                    <input class="form-check-input carp-check" type="checkbox" id="chkSilabo" checked>
+                    <label class="form-check-label fw-bold text-dark small" for="chkSilabo">1. Sílabo Oficial del Curso</label>
+                  </div>
+                  <span class="badge bg-light text-muted border" style="font-size: 0.72rem;">Visado y publicado a tiempo</span>
+                </div>
+                <input type="text" class="form-control form-control-sm" id="obsSilabo" placeholder="Observaciones sobre el sílabo (opcional)" value="Visado y publicado a tiempo">
+              </div>
+
+              <!-- Item 2: Sesiones -->
+              <div class="carpeta-item-row">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <div class="form-check form-switch mb-0">
+                    <input class="form-check-input carp-check" type="checkbox" id="chkSesiones" checked>
+                    <label class="form-check-label fw-bold text-dark small" for="chkSesiones">2. Programación de Sesiones y Guías Prácticas</label>
+                  </div>
+                  <span class="badge bg-light text-muted border" style="font-size: 0.72rem;">Dosificación semanal</span>
+                </div>
+                <input type="text" class="form-control form-control-sm" id="obsSesiones" placeholder="Observaciones sobre sesiones..." value="Guías prácticas completas en campus">
+              </div>
+
+              <!-- Item 3: Materiales -->
+              <div class="carpeta-item-row">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <div class="form-check form-switch mb-0">
+                    <input class="form-check-input carp-check" type="checkbox" id="chkMateriales" checked>
+                    <label class="form-check-label fw-bold text-dark small" for="chkMateriales">3. Materiales Didácticos y Recursos Digitales</label>
+                  </div>
+                  <span class="badge bg-light text-muted border" style="font-size: 0.72rem;">PPTs y lecturas</span>
+                </div>
+                <input type="text" class="form-control form-control-sm" id="obsMateriales" placeholder="Observaciones sobre materiales..." value="Presentaciones y lecturas disponibles">
+              </div>
+
+              <!-- Item 4: Asistencia -->
+              <div class="carpeta-item-row">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <div class="form-check form-switch mb-0">
+                    <input class="form-check-input carp-check" type="checkbox" id="chkAsistencia" checked>
+                    <label class="form-check-label fw-bold text-dark small" for="chkAsistencia">4. Registro de Asistencia y Evaluación Continua</label>
+                  </div>
+                  <span class="badge bg-light text-muted border" style="font-size: 0.72rem;">Actualizado al día</span>
+                </div>
+                <input type="text" class="form-control form-control-sm" id="obsAsistencia" placeholder="Observaciones de asistencia..." value="Registro diario al día en sistema">
+              </div>
+
+              <!-- Item 5: Rúbricas -->
+              <div class="carpeta-item-row">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <div class="form-check form-switch mb-0">
+                    <input class="form-check-input carp-check" type="checkbox" id="chkRubricas" checked>
+                    <label class="form-check-label fw-bold text-dark small" for="chkRubricas">5. Instrumentos de Evaluación y Rúbricas</label>
+                  </div>
+                  <span class="badge bg-light text-muted border" style="font-size: 0.72rem;">Criterios claros</span>
+                </div>
+                <input type="text" class="form-control form-control-sm" id="obsRubricas" placeholder="Observaciones sobre rúbricas..." value="Rúbricas de evaluación adjuntas">
+              </div>
+
+              <!-- Item 6: Evidencias -->
+              <div class="carpeta-item-row">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <div class="form-check form-switch mb-0">
+                    <input class="form-check-input carp-check" type="checkbox" id="chkEvidencias">
+                    <label class="form-check-label fw-bold text-dark small" for="chkEvidencias">6. Evidencias de Aprendizaje de Estudiantes</label>
+                  </div>
+                  <span class="badge bg-light text-muted border" style="font-size: 0.72rem;">Muestras alto, medio y bajo</span>
+                </div>
+                <input type="text" class="form-control form-control-sm" id="obsEvidencias" placeholder="Observaciones sobre evidencias..." value="Pendiente adjuntar muestra de bajo rendimiento">
+              </div>
+
+              <!-- Item 7: Tutoría -->
+              <div class="carpeta-item-row">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <div class="form-check form-switch mb-0">
+                    <input class="form-check-input carp-check" type="checkbox" id="chkTutoria" checked>
+                    <label class="form-check-label fw-bold text-dark small" for="chkTutoria">7. Registro de Tutoría y Acompañamiento Académico</label>
+                  </div>
+                  <span class="badge bg-light text-muted border" style="font-size: 0.72rem;">Atención a alumnos</span>
+                </div>
+                <input type="text" class="form-control form-control-sm" id="obsTutoria" placeholder="Observaciones de tutoría..." value="Sesiones de acompañamiento registradas">
+              </div>
+            </div>
+
+            <!-- Resumen y Cálculo de Cumplimiento -->
+            <div class="p-3 bg-white rounded-3 border mb-3 d-flex justify-content-between align-items-center shadow-sm" style="border-left: 4px solid #16A34A !important;">
+              <div>
+                <span class="small fw-bold text-muted d-block">Porcentaje de Cumplimiento:</span>
+                <span class="fs-4 fw-bold text-dark" id="carpCumplimientoDisplay">86% (6 / 7)</span>
+              </div>
+              <div class="text-end">
+                <span class="small fw-bold text-muted d-block">Dictamen de Carpeta:</span>
+                <span class="badge badge-carpeta-observado px-2.5 py-1.5" id="carpEstadoBadge">
+                  <i class="bi bi-exclamation-circle-fill me-1"></i> OBSERVADO
+                </span>
+              </div>
+            </div>
+
+            <!-- Subsanación y Recomendaciones -->
+            <div class="row g-2 mb-2">
+              <div class="col-md-6">
+                <label for="carpPlazoInput" class="form-label small fw-bold text-dark mb-1">Fecha Límite de Subsanación (si aplica):</label>
+                <input type="date" id="carpPlazoInput" class="form-control form-control-sm">
+              </div>
+              <div class="col-md-6">
+                <label for="carpFechaInput" class="form-label small fw-bold text-dark mb-1">Fecha de Auditoría:</label>
+                <input type="date" id="carpFechaInput" class="form-control form-control-sm" required>
+              </div>
+            </div>
+            <div>
+              <label for="carpObservacionesGenerales" class="form-label small fw-bold text-dark mb-1">Observaciones y Recomendaciones Generales:</label>
+              <textarea id="carpObservacionesGenerales" class="form-control form-control-sm" rows="2" placeholder="Indicaciones para el docente..."></textarea>
+            </div>
+
+          </div>
+          <div class="modal-footer py-2 px-3.5 bg-light d-flex justify-content-between">
+            <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-3" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-success btn-sm py-1.5 px-4 fw-semibold">
+              <i class="bi bi-check2-circle me-1"></i> Guardar Auditoría de Carpeta
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: FICHA OFICIAL IMPRIMIBLE DE SUPERVISIÓN DE CARPETA DOCENTE -->
+  <div class="modal fade" id="modalCarpetaDetail" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 720px;">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 14px;">
+        <div class="modal-header py-3 px-3.5 bg-light border-bottom">
+          <div class="d-flex align-items-center gap-2">
+            <img src="img/logo-ucv-virtual.png" alt="UCV Virtual" style="height: 28px; width: auto;">
+            <h6 class="modal-title fw-bold text-dark mb-0">Ficha de Supervisión y Auditoría de Carpeta Docente</h6>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body py-3 px-4" id="carpetaPrintArea">
+          <!-- Rellenado dinámico -->
         </div>
         <div class="modal-footer py-2 px-3.5 bg-light d-flex justify-content-between">
           <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-3" data-bs-dismiss="modal">Cerrar</button>

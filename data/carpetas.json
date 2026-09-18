@@ -1,0 +1,50 @@
+[
+  {
+    "id": "CARP-2026-001",
+    "fecha": "2026-09-15",
+    "semana": "Semana 4 (Revisión Inicial)",
+    "docente": "AGREDA PALOMINO RICARDO NOE",
+    "curso": "FÍSICA GENERAL",
+    "escuela": "INGENIERÍA INDUSTRIAL",
+    "ciclo": 4,
+    "seccion": "B1",
+    "auditor": "COORDINACIÓN DE INDUSTRIAL",
+    "items": {
+      "silabo": { "cumple": true, "obs": "Visado y publicado a tiempo" },
+      "sesiones": { "cumple": true, "obs": "Guías de sesión 1 a 4 completas" },
+      "materiales": { "cumple": true, "obs": "PPTs y lecturas subidas a plataforma" },
+      "asistencia": { "cumple": true, "obs": "Registro diario al día" },
+      "rubricas": { "cumple": true, "obs": "Rúbrica de laboratorio y tareas adjunta" },
+      "evidencias": { "cumple": false, "obs": "Falta subir muestra de trabajo de bajo rendimiento" },
+      "tutoria": { "cumple": true, "obs": "2 sesiones de acompañamiento registradas" }
+    },
+    "porcentajeCumplimiento": 86,
+    "estado": "OBSERVADO",
+    "plazoSubsanacion": "2026-09-22",
+    "observacionesGenerales": "Carpeta en muy buen avance. Subsanar carga de evidencias de aprendizaje antes de la fecha límite."
+  },
+  {
+    "id": "CARP-2026-002",
+    "fecha": "2026-09-14",
+    "semana": "Semana 4 (Revisión Inicial)",
+    "docente": "AMACHE SANCHEZ MILTON FREDDY",
+    "curso": "ALGORITMOS Y PROGRAMACIÓN",
+    "escuela": "INGENIERÍA INDUSTRIAL",
+    "ciclo": 2,
+    "seccion": "A1",
+    "auditor": "COORDINACIÓN DE INDUSTRIAL",
+    "items": {
+      "silabo": { "cumple": true, "obs": "Conforme con formato oficial" },
+      "sesiones": { "cumple": true, "obs": "100% de guías prácticas publicadas" },
+      "materiales": { "cumple": true, "obs": "Materiales multimedia disponibles" },
+      "asistencia": { "cumple": true, "obs": "Asistencia y notas al 100%" },
+      "rubricas": { "cumple": true, "obs": "Rúbricas cargadas en Trilce" },
+      "evidencias": { "cumple": true, "obs": "Muestras completas (alto, medio y bajo)" },
+      "tutoria": { "cumple": true, "obs": "Plan de refuerzo académico registrado" }
+    },
+    "porcentajeCumplimiento": 100,
+    "estado": "CONFORME",
+    "plazoSubsanacion": "-",
+    "observacionesGenerales": "Carpeta pedagógica 100% conforme. Cumplimiento ejemplar con la Escuela de Industrial."
+  }
+]

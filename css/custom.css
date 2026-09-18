@@ -577,4 +577,106 @@ ul.nav li { list-style: none !important; }
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
+/* ===================== CARPETAS DOCENTES ===================== */
+.badge-carpeta-conforme {
+  background: #DCFCE7;
+  color: #15803D;
+  border: 1px solid #86EFAC;
+  font-weight: 700;
+  font-size: 0.74rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.badge-carpeta-observado {
+  background: #FEF3C7;
+  color: #B45309;
+  border: 1px solid #FDE68A;
+  font-weight: 700;
+  font-size: 0.74rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.badge-carpeta-incompleto {
+  background: #FEE2E2;
+  color: #B91C1C;
+  border: 1px solid #FECACA;
+  font-weight: 700;
+  font-size: 0.74rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.carpeta-item-row {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  margin-bottom: 0.5rem;
+  transition: border-color 0.2s;
+}
+
+.carpeta-item-row:hover {
+  border-color: #CBD5E1;
+}
+
+.carpeta-component-pill {
+  font-size: 0.68rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-weight: 600;
+  display: inline-block;
+  margin: 0.1rem;
+}
+
+.carpeta-component-pill.ok {
+  background: #DCFCE7;
+  color: #166534;
+  border: 1px solid #BBF7D0;
+}
+
+.carpeta-component-pill.fail {
+  background: #FEE2E2;
+  color: #991B1B;
+  border: 1px solid #FECACA;
+}
+
+/* ===================== PRINT OPTIMIZATIONS ===================== */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #supervisionPrintArea, #supervisionPrintArea *,
+  #carpetaPrintArea, #carpetaPrintArea * {
+    visibility: visible;
+  }
+  #modalSupervisionDetail .modal-dialog,
+  #modalCarpetaDetail .modal-dialog {
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+  #supervisionPrintArea, #carpetaPrintArea {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 1.5cm;
+    background: #FFF !important;
+  }
+  .modal-footer, .btn-close, .app-navbar {
+    display: none !important;
+  }
+}
+
+
 

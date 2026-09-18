@@ -17,6 +17,8 @@ GRUPOS_FILE = os.path.join(DATA_DIR, 'grupos.json')
 BASE_FILE = os.path.join(DATA_DIR, 'grupos_base.json')
 
 DOCENTES_FILE = os.path.join(DATA_DIR, 'docentes.json')
+DIRECTORIOS_FILE = os.path.join(DATA_DIR, 'directorios.json')
+CARPETAS_FILE = os.path.join(DATA_DIR, 'carpetas.json')
 SUPERVISIONES_FILE = os.path.join(DATA_DIR, 'supervisiones.json')
 
 class AcademicDataHandler(http.server.SimpleHTTPRequestHandler):
@@ -60,6 +62,26 @@ class AcademicDataHandler(http.server.SimpleHTTPRequestHandler):
             try:
                 if os.path.exists(DOCENTES_FILE):
                     with open(DOCENTES_FILE, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    return self._send_json(200, data)
+                return self._send_json(200, [])
+            except Exception as e:
+                return self._send_json(500, {"error": str(e)})
+
+        if parsed_path == '/api/directorios':
+            try:
+                if os.path.exists(DIRECTORIOS_FILE):
+                    with open(DIRECTORIOS_FILE, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    return self._send_json(200, data)
+                return self._send_json(200, [])
+            except Exception as e:
+                return self._send_json(500, {"error": str(e)})
+
+        if parsed_path == '/api/carpetas':
+            try:
+                if os.path.exists(CARPETAS_FILE):
+                    with open(CARPETAS_FILE, 'r', encoding='utf-8') as f:
                         data = json.load(f)
                     return self._send_json(200, data)
                 return self._send_json(200, [])
@@ -117,6 +139,46 @@ class AcademicDataHandler(http.server.SimpleHTTPRequestHandler):
                     "status": "success",
                     "count": len(data),
                     "message": f"Directorio actualizado con {len(data)} docentes"
+                })
+            except Exception as e:
+                return self._send_json(500, {"error": str(e)})
+
+        if parsed_path == '/api/directorios':
+            try:
+                length = int(self.headers.get('Content-Length', 0))
+                body = self.rfile.read(length).decode('utf-8')
+                data = json.loads(body)
+                if not isinstance(data, list):
+                    return self._send_json(400, {"error": "Se esperaba una lista de directorios"})
+
+                os.makedirs(DATA_DIR, exist_ok=True)
+                with open(DIRECTORIOS_FILE, 'w', encoding='utf-8') as f:
+                    json.dump(data, f, indent=2, ensure_ascii=False)
+
+                return self._send_json(200, {
+                    "status": "success",
+                    "count": len(data),
+                    "message": f"Catálogo de directorios guardado ({len(data)} directorios)"
+                })
+            except Exception as e:
+                return self._send_json(500, {"error": str(e)})
+
+        if parsed_path == '/api/carpetas':
+            try:
+                length = int(self.headers.get('Content-Length', 0))
+                body = self.rfile.read(length).decode('utf-8')
+                data = json.loads(body)
+                if not isinstance(data, list):
+                    return self._send_json(400, {"error": "Se esperaba una lista de carpetas"})
+
+                os.makedirs(DATA_DIR, exist_ok=True)
+                with open(CARPETAS_FILE, 'w', encoding='utf-8') as f:
+                    json.dump(data, f, indent=2, ensure_ascii=False)
+
+                return self._send_json(200, {
+                    "status": "success",
+                    "count": len(data),
+                    "message": f"Supervisión de carpetas docentes actualizada ({len(data)} carpetas)"
                 })
             except Exception as e:
                 return self._send_json(500, {"error": str(e)})

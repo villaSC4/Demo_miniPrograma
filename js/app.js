@@ -13,6 +13,9 @@ let allGroups = [];
 let filteredGroups = [];
 let allDocentes = [];
 let allSupervisiones = [];
+let allDirectorios = [];
+let allCarpetas = [];
+let activeDirectorioId = 'DIR-2026-02-IND';
 let analytics = null;
 let editModalInstance = null;
 let newGroupModalInstance = null;
@@ -20,6 +23,9 @@ let importModalInstance = null;
 let docenteModalInstance = null;
 let supervisionModalInstance = null;
 let supervisionDetailModalInstance = null;
+let crearDirectorioModalInstance = null;
+let supervisionCarpetaModalInstance = null;
+let carpetaDetailModalInstance = null;
 let pendingImportFilesData = [];
 let isServerConnected = false;
 
@@ -54,6 +60,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const supervisionDetailModalEl = document.getElementById('modalSupervisionDetail');
   if (supervisionDetailModalEl && typeof bootstrap !== 'undefined') {
     supervisionDetailModalInstance = new bootstrap.Modal(supervisionDetailModalEl);
+  }
+
+  const crearDirEl = document.getElementById('modalCrearDirectorio');
+  if (crearDirEl && typeof bootstrap !== 'undefined') {
+    crearDirectorioModalInstance = new bootstrap.Modal(crearDirEl);
+  }
+
+  const supCarpEl = document.getElementById('modalSupervisionCarpeta');
+  if (supCarpEl && typeof bootstrap !== 'undefined') {
+    supervisionCarpetaModalInstance = new bootstrap.Modal(supCarpEl);
+  }
+
+  const carpDetailEl = document.getElementById('modalCarpetaDetail');
+  if (carpDetailEl && typeof bootstrap !== 'undefined') {
+    carpetaDetailModalInstance = new bootstrap.Modal(carpDetailEl);
   }
 
   setupEventListeners();
@@ -358,6 +379,25 @@ function setupEventListeners() {
   document.getElementById('filterSupervisionNivel')?.addEventListener('change', renderSupervisiones);
   document.getElementById('formSupervision')?.addEventListener('submit', handleSaveSupervision);
   document.getElementById('supDocenteSelect')?.addEventListener('change', handleSupervisionDocenteChange);
+
+  // Eventos de Gestión de Directorios (Apertura de Periodos / Ciclos)
+  document.getElementById('btnOpenCrearDirectorioModal')?.addEventListener('click', openCrearDirectorioModal);
+  document.getElementById('formCrearDirectorio')?.addEventListener('submit', handleSaveDirectorio);
+  document.getElementById('selectDirectorioActivo')?.addEventListener('change', handleDirectorioChange);
+
+  // Eventos de Supervisión de Carpetas Docentes (Portafolio Pedagógico)
+  document.getElementById('btnOpenNuevaCarpetaModal')?.addEventListener('click', () => openNuevaCarpetaModal());
+  document.getElementById('btnExportCarpetasExcel')?.addEventListener('click', exportCarpetasExcel);
+  document.getElementById('filterCarpetasSearch')?.addEventListener('input', renderCarpetasTable);
+  document.getElementById('filterCarpetasCiclo')?.addEventListener('change', renderCarpetasTable);
+  document.getElementById('filterCarpetasEstado')?.addEventListener('change', renderCarpetasTable);
+  document.getElementById('carpDocenteSelect')?.addEventListener('change', handleCarpetaDocenteChange);
+  document.getElementById('formSupervisionCarpeta')?.addEventListener('submit', handleSaveCarpeta);
+
+  // Cálculo interactivo de cumplimiento al marcar/desmarcar items de la carpeta
+  document.querySelectorAll('.carp-check').forEach(chk => {
+    chk.addEventListener('change', calculateCarpetaCompliance);
+  });
 
   // Botones interactivos de la rúbrica de supervisión
   document.querySelectorAll('.rubric-score-selector').forEach(sel => {
@@ -1552,6 +1592,32 @@ async function loadDocentesAndSupervisiones() {
     syncDocentesFromGroups();
   }
 
+  // Cargar Directorios desde la API
+  try {
+    const resDir = await callApi('directorios');
+    if (resDir.ok) {
+      const dataDir = await resDir.json();
+      if (Array.isArray(dataDir) && dataDir.length > 0) {
+        allDirectorios = dataDir;
+      }
+    }
+  } catch (e) {
+    console.warn('API directorios no disponible:', e);
+  }
+
+  // Cargar Carpetas Docentes desde la API
+  try {
+    const resCarp = await callApi('carpetas');
+    if (resCarp.ok) {
+      const dataCarp = await resCarp.json();
+      if (Array.isArray(dataCarp) && dataCarp.length > 0) {
+        allCarpetas = dataCarp;
+      }
+    }
+  } catch (e) {
+    console.warn('API carpetas no disponible:', e);
+  }
+
   // Cargar Supervisiones desde la API
   try {
     const res = await callApi('supervisiones');
@@ -1565,9 +1631,12 @@ async function loadDocentesAndSupervisiones() {
     console.warn('API supervisiones no disponible:', e);
   }
 
+  renderDirectoriosDropdown();
   renderDirectorio();
   renderCursosAnalisis();
+  renderCarpetasTable();
   renderSupervisiones();
+  populateCarpetasDocenteSelect();
   updateTabBadges();
 }
 
@@ -2306,4 +2375,559 @@ function viewSupervisionDetail(id) {
 
   if (supervisionDetailModalInstance) supervisionDetailModalInstance.show();
 }
+
+/* ==============================================================================
+   MÓDULO 4: GESTIÓN DE DIRECTORIOS ACADÉMICOS (APERTURA SEGÚN CICLO/PERIODO)
+   ============================================================================== */
+
+function openCrearDirectorioModal() {
+  document.getElementById('dirNombreInput').value = '';
+  document.getElementById('dirPeriodoInput').value = '2027-I';
+  document.getElementById('dirCiclosInput').value = 'I al X';
+  document.getElementById('dirFacultadInput').value = 'INGENIERÍA INDUSTRIAL';
+  document.getElementById('dirResponsableInput').value = 'COORDINACIÓN ACADÉMICA INDUSTRIAL';
+  document.getElementById('dirDescripcionInput').value = '';
+
+  if (crearDirectorioModalInstance) crearDirectorioModalInstance.show();
+}
+
+async function handleSaveDirectorio(e) {
+  e.preventDefault();
+
+  const nombre = document.getElementById('dirNombreInput').value.trim();
+  const periodo = document.getElementById('dirPeriodoInput').value.trim();
+  const ciclos = document.getElementById('dirCiclosInput').value.trim() || 'I al X';
+  const facultad = document.getElementById('dirFacultadInput').value;
+  const responsable = document.getElementById('dirResponsableInput').value.trim();
+  const descripcion = document.getElementById('dirDescripcionInput').value.trim();
+
+  if (!nombre || !periodo) {
+    alert('Por favor complete el nombre y periodo del directorio.');
+    return;
+  }
+
+  const newId = `DIR-${periodo.replace(/[^a-zA-Z0-9]/g, '')}-${Date.now().toString().slice(-4)}`;
+  const newDir = {
+    id: newId,
+    nombre,
+    facultad,
+    periodo,
+    ciclos,
+    responsable,
+    fechaCreacion: new Date().toISOString().split('T')[0],
+    estado: 'ACTIVO',
+    descripcion
+  };
+
+  allDirectorios.unshift(newDir);
+  activeDirectorioId = newId;
+
+  try {
+    await callApi('directorios', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(allDirectorios)
+    });
+  } catch (err) {
+    console.warn('Error guardando directorio en API:', err);
+  }
+
+  if (crearDirectorioModalInstance) crearDirectorioModalInstance.hide();
+  renderDirectoriosDropdown();
+  showFeedback(`Directorio "${nombre}" (${periodo}) creado y activado correctamente.`, 'success');
+}
+
+function renderDirectoriosDropdown() {
+  const select = document.getElementById('selectDirectorioActivo');
+  if (!select) return;
+
+  if (allDirectorios.length === 0) {
+    allDirectorios = [
+      {
+        id: 'DIR-2026-02-IND',
+        nombre: 'Directorio Industrial 2026-II',
+        facultad: 'INGENIERÍA INDUSTRIAL',
+        periodo: '2026-II',
+        ciclos: 'I al X',
+        responsable: 'COORDINACIÓN ACADÉMICA INDUSTRIAL',
+        fechaCreacion: '2026-09-01',
+        estado: 'ACTIVO',
+        descripcion: 'Directorio oficial de docentes y asignaturas - Semestre 2026-II'
+      }
+    ];
+  }
+
+  select.innerHTML = allDirectorios.map(d => {
+    const isSel = d.id === activeDirectorioId ? 'selected' : '';
+    return `<option value="${d.id}" ${isSel}>${d.nombre} (${d.periodo}) - ${d.estado}</option>`;
+  }).join('');
+
+  const active = allDirectorios.find(d => d.id === activeDirectorioId) || allDirectorios[0];
+  if (active) {
+    activeDirectorioId = active.id;
+    const badgePer = document.getElementById('directorioPeriodoBadge');
+    if (badgePer) badgePer.textContent = `Periodo: ${active.periodo}`;
+
+    const badgeEst = document.getElementById('directorioEstadoBadge');
+    if (badgeEst) {
+      badgeEst.className = active.estado === 'ACTIVO' ? 'badge bg-success-subtle text-success border border-success-subtle px-2 py-1' : 'badge bg-secondary-subtle text-secondary border px-2 py-1';
+      badgeEst.innerHTML = `<i class="bi bi-${active.estado === 'ACTIVO' ? 'check-circle-fill' : 'archive'} me-1"></i> ${active.estado}`;
+    }
+  }
+}
+
+function handleDirectorioChange(e) {
+  activeDirectorioId = e.target.value;
+  renderDirectoriosDropdown();
+  renderDirectorio();
+  const dir = allDirectorios.find(d => d.id === activeDirectorioId);
+  if (dir) {
+    showFeedback(`Cambiado a directorio: "${dir.nombre}" (${dir.periodo}).`, 'info');
+  }
+}
+
+/* ==============================================================================
+   MÓDULO 5: SUPERVISIÓN DE CARPETAS DOCENTES (PORTAFOLIO PEDAGÓGICO)
+   ============================================================================== */
+
+function populateCarpetasDocenteSelect() {
+  const sel = document.getElementById('carpDocenteSelect');
+  if (!sel) return;
+
+  const currentVal = sel.value;
+  sel.innerHTML = '<option value="">-- Seleccione Docente --</option>' +
+    allDocentes.map(d => `<option value="${d.nombre}" ${d.nombre === currentVal ? 'selected' : ''}>${d.nombre} (${d.escuela || 'INDUSTRIAL'})</option>`).join('');
+}
+
+function handleCarpetaDocenteChange() {
+  const docName = document.getElementById('carpDocenteSelect')?.value;
+  if (!docName) return;
+
+  const doc = allDocentes.find(d => d.nombre === docName);
+  const teacherGroups = allGroups.filter(g => (g.docente || '').trim().toUpperCase() === docName);
+
+  if (teacherGroups.length > 0) {
+    document.getElementById('carpCursoInput').value = teacherGroups[0].curso;
+    document.getElementById('carpSeccionInput').value = teacherGroups[0].seccion || 'A1';
+    if (teacherGroups[0].ciclo) {
+      document.getElementById('carpCicloInput').value = String(teacherGroups[0].ciclo);
+    }
+  } else if (doc && doc.cursos && doc.cursos.length > 0) {
+    document.getElementById('carpCursoInput').value = doc.cursos[0];
+    if (doc.ciclos && doc.ciclos.length > 0) {
+      document.getElementById('carpCicloInput').value = String(doc.ciclos[0]);
+    }
+  }
+}
+
+function calculateCarpetaCompliance() {
+  const checkboxes = document.querySelectorAll('#modalSupervisionCarpeta .carp-check');
+  const total = checkboxes.length || 7;
+  let checked = 0;
+  checkboxes.forEach(c => {
+    if (c.checked) checked++;
+  });
+
+  const pct = Math.round((checked / total) * 100);
+  const disp = document.getElementById('carpCumplimientoDisplay');
+  if (disp) disp.textContent = `${pct}% (${checked} / ${total})`;
+
+  let estado = 'CONFORME';
+  let badgeClass = 'badge-carpeta-conforme';
+  let icon = 'bi-check-circle-fill';
+
+  if (pct < 70) {
+    estado = 'INCOMPLETO';
+    badgeClass = 'badge-carpeta-incompleto';
+    icon = 'bi-x-circle-fill';
+  } else if (pct < 100) {
+    estado = 'OBSERVADO';
+    badgeClass = 'badge-carpeta-observado';
+    icon = 'bi-exclamation-circle-fill';
+  }
+
+  const badge = document.getElementById('carpEstadoBadge');
+  if (badge) {
+    badge.className = `${badgeClass} px-2.5 py-1.5`;
+    badge.innerHTML = `<i class="bi ${icon} me-1"></i> ${estado}`;
+  }
+
+  return { pct, estado, checked, total };
+}
+
+function openNuevaCarpetaModal(docenteName = '') {
+  populateCarpetasDocenteSelect();
+
+  if (docenteName) {
+    const sel = document.getElementById('carpDocenteSelect');
+    if (sel) {
+      sel.value = docenteName;
+      handleCarpetaDocenteChange();
+    }
+  }
+
+  document.getElementById('carpFechaInput').value = new Date().toISOString().split('T')[0];
+  document.getElementById('carpPlazoInput').value = '';
+  document.getElementById('carpObservacionesGenerales').value = '';
+
+  // Restablecer checks por defecto
+  document.getElementById('chkSilabo').checked = true;
+  document.getElementById('chkSesiones').checked = true;
+  document.getElementById('chkMateriales').checked = true;
+  document.getElementById('chkAsistencia').checked = true;
+  document.getElementById('chkRubricas').checked = true;
+  document.getElementById('chkEvidencias').checked = true;
+  document.getElementById('chkTutoria').checked = true;
+
+  calculateCarpetaCompliance();
+
+  if (supervisionCarpetaModalInstance) supervisionCarpetaModalInstance.show();
+}
+
+async function handleSaveCarpeta(e) {
+  e.preventDefault();
+
+  const docente = document.getElementById('carpDocenteSelect').value;
+  const curso = document.getElementById('carpCursoInput').value.trim();
+  const ciclo = parseInt(document.getElementById('carpCicloInput').value, 10);
+  const seccion = document.getElementById('carpSeccionInput').value.trim();
+  const semana = document.getElementById('carpSemanaSelect').value;
+  const auditor = document.getElementById('carpAuditorInput').value.trim();
+  const fecha = document.getElementById('carpFechaInput').value;
+  const plazo = document.getElementById('carpPlazoInput').value || '-';
+  const obsGenerales = document.getElementById('carpObservacionesGenerales').value.trim();
+
+  if (!docente || !curso || !seccion || !fecha) {
+    alert('Por favor complete todos los datos requeridos de la carpeta.');
+    return;
+  }
+
+  const { pct, estado } = calculateCarpetaCompliance();
+
+  const items = {
+    silabo: { cumple: document.getElementById('chkSilabo').checked, obs: document.getElementById('obsSilabo').value.trim() },
+    sesiones: { cumple: document.getElementById('chkSesiones').checked, obs: document.getElementById('obsSesiones').value.trim() },
+    materiales: { cumple: document.getElementById('chkMateriales').checked, obs: document.getElementById('obsMateriales').value.trim() },
+    asistencia: { cumple: document.getElementById('chkAsistencia').checked, obs: document.getElementById('obsAsistencia').value.trim() },
+    rubricas: { cumple: document.getElementById('chkRubricas').checked, obs: document.getElementById('obsRubricas').value.trim() },
+    evidencias: { cumple: document.getElementById('chkEvidencias').checked, obs: document.getElementById('obsEvidencias').value.trim() },
+    tutoria: { cumple: document.getElementById('chkTutoria').checked, obs: document.getElementById('obsTutoria').value.trim() }
+  };
+
+  const newId = `CARP-2026-${String(allCarpetas.length + 1).padStart(3, '0')}`;
+  const record = {
+    id: newId,
+    fecha,
+    semana,
+    docente,
+    curso,
+    escuela: 'INGENIERÍA INDUSTRIAL',
+    ciclo,
+    seccion,
+    auditor,
+    items,
+    porcentajeCumplimiento: pct,
+    estado,
+    plazoSubsanacion: plazo,
+    observacionesGenerales: obsGenerales || (estado === 'CONFORME' ? 'Carpeta pedagógica conforme y completa.' : 'Se recomienda subsanar los ítems pendientes.')
+  };
+
+  allCarpetas.unshift(record);
+
+  try {
+    await callApi('carpetas', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(allCarpetas)
+    });
+  } catch (err) {
+    console.warn('Error guardando carpeta en API:', err);
+  }
+
+  if (supervisionCarpetaModalInstance) supervisionCarpetaModalInstance.hide();
+  renderCarpetasTable();
+  updateTabBadges();
+  showFeedback(`Auditoría de Carpeta ${newId} (${docente}) guardada exitosamente.`, 'success');
+}
+
+function renderCarpetasTable() {
+  const tbody = document.getElementById('carpetasTableBody');
+  if (!tbody) return;
+
+  const search = (document.getElementById('filterCarpetasSearch')?.value || '').toLowerCase().trim();
+  const cicloFilter = document.getElementById('filterCarpetasCiclo')?.value || 'ALL';
+  const estadoFilter = document.getElementById('filterCarpetasEstado')?.value || 'ALL';
+
+  const total = allCarpetas.length;
+  const kpiTotal = document.getElementById('kpiCarpetasTotal');
+  if (kpiTotal) kpiTotal.textContent = total;
+
+  const badgeCarp = document.getElementById('badgeCountCarpetas');
+  if (badgeCarp) badgeCarp.textContent = total;
+
+  const badgeSupTab = document.getElementById('badgeTabSupervision');
+  if (badgeSupTab) badgeSupTab.textContent = total + allSupervisiones.length;
+
+  if (total > 0) {
+    const avg = Math.round(allCarpetas.reduce((acc, c) => acc + (c.porcentajeCumplimiento || 0), 0) / total);
+    const kpiAvg = document.getElementById('kpiCarpetasPromedio');
+    if (kpiAvg) kpiAvg.textContent = `${avg}%`;
+
+    const confCount = allCarpetas.filter(c => c.estado === 'CONFORME').length;
+    const kpiConf = document.getElementById('kpiCarpetasConformes');
+    if (kpiConf) kpiConf.textContent = confCount;
+
+    const obsCount = allCarpetas.filter(c => c.estado !== 'CONFORME').length;
+    const kpiObs = document.getElementById('kpiCarpetasObservadas');
+    if (kpiObs) kpiObs.textContent = obsCount;
+  }
+
+  const filtered = allCarpetas.filter(c => {
+    if (search) {
+      const match = `${c.id} ${c.docente} ${c.curso} ${c.auditor}`.toLowerCase();
+      if (!match.includes(search)) return false;
+    }
+    if (cicloFilter !== 'ALL' && String(c.ciclo) !== String(cicloFilter)) return false;
+    if (estadoFilter !== 'ALL' && c.estado !== estadoFilter) return false;
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="9" class="text-center py-4 text-muted small">
+          No hay carpetas docentes auditadas con los filtros seleccionados.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(c => {
+    let badgeClass = 'badge-carpeta-conforme';
+    let icon = 'bi-check-circle-fill';
+    if (c.estado === 'OBSERVADO') {
+      badgeClass = 'badge-carpeta-observado';
+      icon = 'bi-exclamation-circle-fill';
+    } else if (c.estado === 'INCOMPLETO') {
+      badgeClass = 'badge-carpeta-incompleto';
+      icon = 'bi-x-circle-fill';
+    }
+
+    const items = c.items || {};
+    const pills = [
+      { key: 'silabo', label: 'Sílabo' },
+      { key: 'sesiones', label: 'Sesiones' },
+      { key: 'materiales', label: 'Materiales' },
+      { key: 'asistencia', label: 'Asistencia' },
+      { key: 'rubricas', label: 'Rúbricas' },
+      { key: 'evidencias', label: 'Evidencias' },
+      { key: 'tutoria', label: 'Tutoría' }
+    ].map(it => {
+      const ok = items[it.key]?.cumple;
+      return `<span class="carpeta-component-pill ${ok ? 'ok' : 'fail'}" title="${it.label}: ${ok ? 'Cumple' : 'No cumple'}">${ok ? '✓' : '✗'} ${it.label}</span>`;
+    }).join(' ');
+
+    const pct = c.porcentajeCumplimiento || 0;
+    const progressColor = pct === 100 ? '#16A34A' : (pct >= 70 ? '#D97706' : '#DC2626');
+
+    return `
+      <tr>
+        <td><span class="badge bg-light text-dark border fw-bold">${c.id}</span></td>
+        <td>
+          <div class="fw-bold text-dark text-truncate" style="max-width: 200px;">${c.docente}</div>
+          <small class="text-muted" style="font-size: 0.72rem;">${c.escuela || 'INGENIERÍA INDUSTRIAL'}</small>
+        </td>
+        <td>
+          <div class="fw-semibold text-dark text-truncate" style="max-width: 180px;">${c.curso}</div>
+          <span class="badge bg-light text-secondary border" style="font-size: 0.7rem;">Sección ${c.seccion || 'A1'}</span>
+        </td>
+        <td class="text-center"><span class="badge bg-primary-subtle text-primary fw-bold">Ciclo ${c.ciclo}</span></td>
+        <td><small class="text-muted fw-semibold" style="font-size: 0.75rem;">${c.semana}</small></td>
+        <td><div style="max-width: 250px;">${pills}</div></td>
+        <td class="text-center">
+          <div class="d-flex align-items-center justify-content-center gap-1.5">
+            <div class="progress flex-grow-1" style="height: 6px; max-width: 60px;">
+              <div class="progress-bar" role="progressbar" style="width: ${pct}%; background-color: ${progressColor};"></div>
+            </div>
+            <span class="fw-bold small" style="font-size: 0.78rem;">${pct}%</span>
+          </div>
+        </td>
+        <td class="text-center">
+          <span class="${badgeClass}">
+            <i class="bi ${icon}"></i> ${c.estado}
+          </span>
+        </td>
+        <td class="text-center">
+          <button type="button" class="btn btn-xs btn-outline-primary py-1 px-2 fw-semibold" style="font-size: 0.75rem;" onclick="viewCarpetaDetail('${c.id}')" title="Ver ficha oficial e imprimir">
+            <i class="bi bi-file-earmark-text me-1"></i> Ficha
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function viewCarpetaDetail(id) {
+  const c = allCarpetas.find(item => item.id === id);
+  if (!c) return;
+
+  const printArea = document.getElementById('carpetaPrintArea');
+  if (!printArea) return;
+
+  const items = c.items || {};
+  const componentsList = [
+    { num: 1, name: 'Sílabo Oficial del Curso', desc: 'Visado por Dirección y publicado oportunamente en plataforma', data: items.silabo },
+    { num: 2, name: 'Programación de Sesiones y Guías Prácticas', desc: 'Dosificación y guías de práctica completas cargadas', data: items.sesiones },
+    { num: 3, name: 'Materiales Didácticos y Recursos Multimedia', desc: 'Presentaciones, lecturas y recursos digitales disponibles', data: items.materiales },
+    { num: 4, name: 'Registro de Asistencia y Evaluación Continua', desc: 'Control de asistencia y notas al día en sistema', data: items.asistencia },
+    { num: 5, name: 'Instrumentos de Evaluación y Rúbricas', desc: 'Rúbricas analíticas, exámenes y pautas de calificación', data: items.rubricas },
+    { num: 6, name: 'Evidencias de Aprendizaje de Estudiantes', desc: 'Muestras de trabajos estudiantiles (niveles alto, medio y bajo)', data: items.evidencias },
+    { num: 7, name: 'Registro de Tutoría y Acompañamiento Académico', desc: 'Atención a alumnos con riesgo académico y plan de mejora', data: items.tutoria }
+  ];
+
+  const rowsHtml = componentsList.map(item => {
+    const ok = item.data?.cumple;
+    const obs = item.data?.obs || '-';
+    return `
+      <tr>
+        <td class="text-center fw-bold" style="width: 35px;">${item.num}</td>
+        <td>
+          <strong>${item.name}</strong>
+          <small class="text-muted d-block" style="font-size: 0.72rem;">${item.desc}</small>
+        </td>
+        <td class="text-center fw-bold" style="width: 90px;">
+          ${ok ? '<span class="text-success fs-6">✓ CUMPLE</span>' : '<span class="text-danger fs-6">✗ NO CUMPLE</span>'}
+        </td>
+        <td style="font-size: 0.78rem; color: #475569;">${obs}</td>
+      </tr>
+    `;
+  }).join('');
+
+  printArea.innerHTML = `
+    <div class="border rounded-3 p-4 bg-white shadow-sm">
+      <!-- Encabezado Institucional Oficial -->
+      <div class="d-flex justify-content-between align-items-center pb-3 mb-3 border-bottom">
+        <div class="d-flex align-items-center gap-3">
+          <img src="img/logo-ucv-virtual.png" alt="UCV Virtual" style="height: 42px; width: auto;">
+          <div>
+            <h5 class="fw-bold text-dark mb-0" style="letter-spacing: -0.01em;">UNIVERSIDAD CÉSAR VALLEJO</h5>
+            <div class="fw-bold text-danger" style="font-size: 0.88rem;">FACULTAD DE INGENIERÍA INDUSTRIAL</div>
+            <small class="text-muted" style="font-size: 0.75rem;">Ficha Oficial de Supervisión y Auditoría de Carpeta Docente</small>
+          </div>
+        </div>
+        <div class="text-end">
+          <span class="badge bg-primary fs-6 px-3 py-1.5 mb-1 d-inline-block">${c.id}</span>
+          <small class="text-muted d-block" style="font-size: 0.75rem;">Fecha: ${c.fecha}</small>
+        </div>
+      </div>
+
+      <!-- Cuadro de Datos Generales -->
+      <div class="row g-2 mb-3 bg-light p-3 rounded-2 border" style="font-size: 0.82rem;">
+        <div class="col-md-6"><strong>Docente:</strong> ${c.docente}</div>
+        <div class="col-md-6"><strong>Escuela:</strong> ${c.escuela || 'INGENIERÍA INDUSTRIAL'}</div>
+        <div class="col-md-6"><strong>Asignatura:</strong> ${c.curso}</div>
+        <div class="col-md-3"><strong>Ciclo:</strong> Ciclo ${c.ciclo}</div>
+        <div class="col-md-3"><strong>Sección:</strong> ${c.seccion || 'A1'}</div>
+        <div class="col-md-6"><strong>Semana Auditoría:</strong> ${c.semana}</div>
+        <div class="col-md-6"><strong>Auditor / Responsable:</strong> ${c.auditor}</div>
+      </div>
+
+      <!-- Tabla de Verificación de 7 Componentes -->
+      <div class="table-responsive mb-3">
+        <table class="table table-bordered table-sm align-middle mb-0" style="font-size: 0.8rem;">
+          <thead class="table-light">
+            <tr>
+              <th class="text-center">#</th>
+              <th>Componente del Portafolio Pedagógico</th>
+              <th class="text-center">Estado</th>
+              <th>Observación / Evidencia</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Resultado y Dictamen -->
+      <div class="p-3 rounded-3 mb-3 d-flex justify-content-between align-items-center" style="background: #F8FAFC; border: 1.5px solid #CBD5E1;">
+        <div>
+          <span class="text-muted small d-block fw-bold">PORCENTAJE DE CUMPLIMIENTO:</span>
+          <span class="fs-3 fw-bold ${c.porcentajeCumplimiento === 100 ? 'text-success' : 'text-primary'}">${c.porcentajeCumplimiento}%</span>
+        </div>
+        <div class="text-end">
+          <span class="text-muted small d-block fw-bold">DICTAMEN OFICIAL:</span>
+          <span class="badge ${c.estado === 'CONFORME' ? 'bg-success' : (c.estado === 'OBSERVADO' ? 'bg-warning text-dark' : 'bg-danger')} fs-6 px-3 py-1.5">${c.estado}</span>
+        </div>
+      </div>
+
+      <!-- Observaciones y Plazo -->
+      <div class="row g-2 mb-3" style="font-size: 0.82rem;">
+        <div class="col-md-8">
+          <strong>Observaciones y Recomendaciones Generales:</strong>
+          <p class="text-muted p-2 bg-light rounded border mb-0 mt-1">${c.observacionesGenerales || 'Sin observaciones adicionales.'}</p>
+        </div>
+        <div class="col-md-4">
+          <strong>Fecha Límite de Subsanación:</strong>
+          <p class="text-dark fw-bold p-2 bg-light rounded border mb-0 mt-1">${c.plazoSubsanacion || 'No aplica'}</p>
+        </div>
+      </div>
+
+      <!-- Firmas Oficiales -->
+      <div class="pt-4 mt-4 border-top d-flex justify-content-around text-center" style="font-size: 0.78rem;">
+        <div style="width: 220px;">
+          <div style="border-top: 1.5px solid #333; padding-top: 5px; font-weight: 600;">Firma del Docente</div>
+          <small class="text-muted">${c.docente}</small>
+        </div>
+        <div style="width: 220px;">
+          <div style="border-top: 1.5px solid #333; padding-top: 5px; font-weight: 600;">Firma y Sello de Auditor</div>
+          <small class="text-muted">Dirección de Escuela de Industrial</small>
+        </div>
+      </div>
+    </div>
+  `;
+
+  if (carpetaDetailModalInstance) carpetaDetailModalInstance.show();
+}
+
+function exportCarpetasExcel() {
+  if (allCarpetas.length === 0) {
+    alert('No hay registros de supervisión de carpetas para exportar.');
+    return;
+  }
+
+  const rows = allCarpetas.map(c => {
+    const it = c.items || {};
+    return {
+      'Código Ficha': c.id,
+      'Fecha Auditoría': c.fecha,
+      'Semana Revisión': c.semana,
+      'Docente': c.docente,
+      'Escuela Profesional': c.escuela || 'INGENIERÍA INDUSTRIAL',
+      'Asignatura': c.curso,
+      'Ciclo': c.ciclo,
+      'Sección': c.seccion || 'A1',
+      'Auditor / Responsable': c.auditor,
+      '1. Sílabo': it.silabo?.cumple ? 'CUMPLE' : 'NO CUMPLE',
+      '2. Sesiones': it.sesiones?.cumple ? 'CUMPLE' : 'NO CUMPLE',
+      '3. Materiales': it.materiales?.cumple ? 'CUMPLE' : 'NO CUMPLE',
+      '4. Asistencia': it.asistencia?.cumple ? 'CUMPLE' : 'NO CUMPLE',
+      '5. Rúbricas': it.rubricas?.cumple ? 'CUMPLE' : 'NO CUMPLE',
+      '6. Evidencias': it.evidencias?.cumple ? 'CUMPLE' : 'NO CUMPLE',
+      '7. Tutoría': it.tutoria?.cumple ? 'CUMPLE' : 'NO CUMPLE',
+      '% Cumplimiento': `${c.porcentajeCumplimiento}%`,
+      'Dictamen Estado': c.estado,
+      'Plazo Subsanación': c.plazoSubsanacion || '-',
+      'Observaciones Generales': c.observacionesGenerales || ''
+    };
+  });
+
+  const ws = XLSX.utils.json_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Supervision_Carpetas");
+  XLSX.writeFile(wb, "Reporte_Supervision_Carpetas_Docentes_Industrial.xlsx");
+  showFeedback('Reporte de Supervisión de Carpetas Docentes exportado a Excel exitosamente.', 'success');
+}
+
 
