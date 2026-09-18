@@ -62,12 +62,12 @@
     }
 
     /* ==========================================================================
-       HERO SIDE WRAPPER (UCV CAMPUS WITH PRECISE DIAGONAL CUT)
+       HERO SIDE WRAPPER (EL LADO IZQUIERDO PREDOMINA: 57% DEL ANCHO)
        ========================================================================== */
     .hero-wrapper {
       position: relative;
-      flex: 0 0 46%;
-      width: 46%;
+      flex: 0 0 57%;
+      width: 57%;
       min-height: 100vh;
       z-index: 2;
       filter: drop-shadow(10px 0 35px rgba(0, 0, 0, 0.85)) drop-shadow(4px 0 15px rgba(190, 30, 45, 0.4));
@@ -80,9 +80,9 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 3rem 3.5rem 3rem 3rem;
-      /* Precise diagonal cut: top-right stays at 100%, bottom-right moves inward by 100px */
-      clip-path: polygon(0 0, 100% 0, calc(100% - 100px) 100%, 0 100%);
+      padding: 3rem 4rem 3rem 3.5rem;
+      /* Corte en diagonal exacto: el extremo superior derecho en 100%, inferior en calc(100% - 110px) */
+      clip-path: polygon(0 0, 100% 0, calc(100% - 110px) 100%, 0 100%);
       overflow: hidden;
     }
 
@@ -103,7 +103,7 @@
       transform: scale(1.07);
     }
 
-    /* Institutional clear gradient overlay so campus is vibrant and text is readable */
+    /* Institutional gradient overlay */
     .hero-overlay {
       position: absolute;
       inset: 0;
@@ -123,7 +123,7 @@
       position: absolute;
       top: 0;
       right: 0;
-      width: 100px;
+      width: 110px;
       height: 100%;
       z-index: 5;
       pointer-events: none;
@@ -162,13 +162,13 @@
     .hero-center {
       position: relative;
       z-index: 2;
-      max-width: 540px;
+      max-width: 560px;
       margin: 2.5rem 0;
     }
 
     .hero-center h1 {
       font-family: 'Outfit', sans-serif;
-      font-size: clamp(2rem, 3vw, 3.1rem);
+      font-size: clamp(2rem, 3vw, 3.2rem);
       font-weight: 800;
       line-height: 1.15;
       color: #FFFFFF;
@@ -284,19 +284,17 @@
     }
 
     /* ==========================================================================
-       LOGIN SIDE (POSITIONED MORE TO THE LEFT, NEAR THE DIAGONAL)
+       LOGIN SIDE (PARTE DERECHA: FORMULARIO CENTRADO EN SU PROPIO LADO)
        ========================================================================== */
     .login-side {
       position: relative;
-      flex: 1;
+      flex: 0 0 43%;
+      width: 43%;
       min-height: 100vh;
       display: flex;
       align-items: center;
-      justify-content: flex-start;
-      padding-left: clamp(2rem, 5vw, 6rem);
-      padding-right: 2rem;
-      padding-top: 2rem;
-      padding-bottom: 2rem;
+      justify-content: center; /* FORMULARIO EXACTAMENTE CENTRADO EN SU LADO */
+      padding: 2.5rem 2rem;
       z-index: 1;
     }
 
@@ -329,7 +327,7 @@
     .ambient-glow-2 {
       position: absolute;
       bottom: -10%;
-      left: 30%;
+      left: 15%;
       width: 540px;
       height: 540px;
       border-radius: 50%;
@@ -353,7 +351,8 @@
       position: relative;
       z-index: 3;
       width: 100%;
-      max-width: 450px;
+      max-width: 440px;
+      margin: 0 auto;
       animation: card-enter 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
@@ -374,7 +373,7 @@
       -webkit-backdrop-filter: blur(28px) saturate(160%);
       border: 1px solid var(--login-glass-border);
       border-radius: 24px;
-      padding: 2.4rem 2.2rem 2.2rem;
+      padding: 2.35rem 2.15rem 2.15rem;
       box-shadow:
         0 24px 60px rgba(0, 0, 0, 0.55),
         0 0 0 1px rgba(255, 255, 255, 0.08) inset,
@@ -397,7 +396,7 @@
     /* Card Top Branding */
     .login-brand-top {
       text-align: center;
-      margin-bottom: 1.4rem;
+      margin-bottom: 1.35rem;
     }
 
     .login-brand-top img {
@@ -415,7 +414,7 @@
 
     .login-title-box {
       text-align: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.45rem;
     }
 
     .login-title-box h2 {
@@ -744,11 +743,13 @@
       color: #22C55E;
     }
 
-    /* Bottom Copyright */
+    /* Bottom Copyright Centered */
     .page-footer-copy {
       position: absolute;
       bottom: 1.25rem;
-      right: 2.5rem;
+      left: 0;
+      right: 0;
+      text-align: center;
       z-index: 5;
       font-size: 0.72rem;
       color: rgba(255, 255, 255, 0.35);
@@ -760,22 +761,24 @@
        ========================================================================== */
     @media (max-width: 1200px) {
       .hero-wrapper {
-        flex: 0 0 44%;
-        width: 44%;
+        flex: 0 0 54%;
+        width: 54%;
+      }
+      .login-side {
+        flex: 0 0 46%;
+        width: 46%;
+        padding: 2rem 1.5rem;
       }
       .hero-side {
         padding: 2.5rem 2.5rem 2.5rem 2rem;
-        clip-path: polygon(0 0, 100% 0, calc(100% - 80px) 100%, 0 100%);
+        clip-path: polygon(0 0, 100% 0, calc(100% - 90px) 100%, 0 100%);
       }
       .diagonal-laser-svg {
-        width: 80px;
+        width: 90px;
       }
       .hero-stats-card {
         grid-template-columns: 1fr;
         gap: 0.65rem;
-      }
-      .login-side {
-        padding-left: clamp(1.5rem, 3.5vw, 3.5rem);
       }
     }
 
@@ -830,6 +833,7 @@
 
       .login-side {
         width: 100%;
+        flex: none;
         min-height: auto;
         justify-content: center;
         padding: 2.5rem 1.25rem 4rem;
@@ -878,6 +882,7 @@
 
     <!-- ====================================================================
          LADO A: FOTO DE CAMPUS UCV CON BRANDING INSTITUCIONAL Y CORTE DIAGONAL
+         (LADO IZQUIERDO PREDOMINA CON 57% DE ANCHO)
          ==================================================================== -->
     <div class="hero-wrapper">
       <section class="hero-side" aria-label="Campus Universitario UCV">
@@ -885,7 +890,7 @@
         <div class="hero-overlay"></div>
 
         <!-- Laser diagonal SVG strip -->
-        <svg class="diagonal-laser-svg" viewBox="0 0 100 1000" preserveAspectRatio="none" aria-hidden="true">
+        <svg class="diagonal-laser-svg" viewBox="0 0 110 1000" preserveAspectRatio="none" aria-hidden="true">
           <defs>
             <linearGradient id="edgeLaser" x1="100%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stop-color="#BE1E2D" stop-opacity="1" />
@@ -901,7 +906,7 @@
               </feMerge>
             </filter>
           </defs>
-          <line x1="100" y1="0" x2="0" y2="1000" stroke="url(#edgeLaser)" stroke-width="4.5" filter="url(#laserGlow)" />
+          <line x1="110" y1="0" x2="0" y2="1000" stroke="url(#edgeLaser)" stroke-width="4.5" filter="url(#laserGlow)" />
         </svg>
 
         <!-- Top Header: Solo Logo Institucional UCV Virtual -->
@@ -964,7 +969,7 @@
     </div>
 
     <!-- ====================================================================
-         LADO B: PANEL DE LOGIN (POSICIONADO MÁS A LA IZQUIERDA, JUNTO AL CORTE)
+         LADO B: PANEL DE LOGIN (43% DE ANCHO, FORMULARIO EXACTAMENTE CENTRADO)
          ==================================================================== -->
     <main class="login-side" aria-label="Formulario de Inicio de Sesión">
       <div class="login-grid-bg"></div>
@@ -1081,7 +1086,7 @@
         </div>
       </div>
 
-      <!-- Footer Copy -->
+      <!-- Footer Copy Centered -->
       <div class="page-footer-copy">
         © 2026 UCV Virtual • Universidad César Vallejo — Todos los derechos reservados
       </div>
