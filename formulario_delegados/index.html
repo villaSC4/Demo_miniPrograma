@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1RA REUNIÓN DE DELEGADOS 2026-2 — Facultad de Ingeniería y Arquitectura (UCV)</title>
+  <meta name="description" content="Registro de Asistencia y Evidencia de la 1ra Reunión de Delegados 2026-2 de la Facultad de Ingeniería y Arquitectura — Universidad César Vallejo">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="img/logo-ucv.png">
+
+  <!-- Estilos Personalizados -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <main class="form-container" role="main">
+
+    <!-- ====================================================================
+         1. TARJETA BANNER INSTITUCIONAL UCV
+         ==================================================================== -->
+    <header class="banner-card" aria-label="Banner de la reunión">
+      <img 
+        src="img/banner_delegados.png" 
+        alt="1era Reunión de delegados — Facultad de Ingeniería e Arquitectura — UCV Universidad César Vallejo" 
+        class="banner-img"
+      >
+    </header>
+
+    <!-- ====================================================================
+         PANTALLA DE ÉXITO (POST-ENVÍO)
+         ==================================================================== -->
+    <div class="form-card success-card" id="successCard" role="region" aria-live="polite">
+      <div class="success-icon-wrap">
+        <i class="bi bi-check2-circle"></i>
+      </div>
+      <h2 class="success-title">1RA REUNIÓN DE DELEGADOS 2026-2</h2>
+      <p class="success-desc">
+        Se ha registrado tu respuesta satisfactoriamente. Tu participación y compromiso como delegado estudiantil han quedado acreditados en el sistema institucional.
+      </p>
+      <div class="success-meta">
+        <i class="bi bi-clock-history"></i>
+        <span id="successFecha">Registro completado</span>
+      </div>
+      <div>
+        <button type="button" class="btn-new-resp" id="btnNewResp">
+          <i class="bi bi-arrow-repeat"></i> Enviar otra respuesta
+        </button>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         CONTENEDOR DEL FORMULARIO ACTIVO
+         ==================================================================== -->
+    <div id="formWrapper">
+
+      <!-- Alerta flotante de error general -->
+      <div class="alert-banner" id="alertBanner" role="alert">
+        <i class="bi bi-exclamation-octagon-fill"></i>
+        <span id="alertText">Por favor complete todos los campos obligatorios.</span>
+      </div>
+
+      <form id="delegadosForm" novalidate autocomplete="off">
+
+        <!-- ==============================================================
+             TARJETA DE TÍTULO Y DESCRIPCIÓN
+             ============================================================== -->
+        <section class="form-card header-card">
+          <div class="header-accent-stripe"></div>
+          <div class="header-body">
+            <h1 class="form-title">1RA REUNIÓN DE DELEGADOS 2026-2</h1>
+            <p class="form-desc">
+              Estimados delegados, registrar sus datos, como parte de evidencia en la reunión.
+            </p>
+
+            <!-- Recuadro informativo de cuenta / correo institucional -->
+            <div class="account-badge-box">
+              <div class="account-info-row">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <i class="bi bi-envelope-at" style="color: #1A4971; font-size: 1.1rem;"></i>
+                  <span style="font-weight: 600; color: #2D3748; font-size: 0.88rem;">Correo Institucional / Personal:</span>
+                </div>
+                <div class="account-email-status">
+                  <i class="bi bi-shield-check text-success"></i>
+                  <span>Registro verificado</span>
+                </div>
+              </div>
+              <input 
+                type="email" 
+                id="correo" 
+                name="correo" 
+                class="text-input" 
+                placeholder="ejemplo@ucvvirtual.edu.pe" 
+                style="max-width: 100%; font-size: 0.9rem;"
+              >
+            </div>
+
+            <div class="required-notice">* Indica que la pregunta es obligatoria</div>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             PREGUNTA 1: APELLIDOS Y NOMBRES *
+             ============================================================== -->
+        <section class="form-card">
+          <label for="apellidos_nombres" class="field-title">
+            <span>Apellidos y Nombres</span>
+            <span class="req-star">*</span>
+          </label>
+          <input 
+            type="text" 
+            id="apellidos_nombres" 
+            name="apellidos_nombres" 
+            class="text-input" 
+            placeholder="Tu respuesta" 
+            required
+          >
+          <div class="field-error">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            <span class="field-error-text">Esta pregunta es obligatoria</span>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             PREGUNTA 2: CÓDIGO DE ALUMNO *
+             ============================================================== -->
+        <section class="form-card">
+          <label for="codigo_alumno" class="field-title">
+            <span>Código de Alumno</span>
+            <span class="req-star">*</span>
+          </label>
+          <input 
+            type="text" 
+            id="codigo_alumno" 
+            name="codigo_alumno" 
+            class="text-input" 
+            placeholder="Tu respuesta" 
+            maxlength="25"
+            required
+          >
+          <div class="field-error">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            <span class="field-error-text">Esta pregunta es obligatoria</span>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             PREGUNTA 3: ESCUELA PROFESIONAL *
+             ============================================================== -->
+        <section class="form-card">
+          <label for="escuela_profesional" class="field-title">
+            <span>Escuela Profesional</span>
+            <span class="req-star">*</span>
+          </label>
+          <div class="select-wrapper">
+            <select id="escuela_profesional" name="escuela_profesional" class="select-input" required>
+              <option value="" selected disabled>Elegir</option>
+              <option value="INGENIERÍA INDUSTRIAL">Ingeniería Industrial</option>
+              <option value="INGENIERÍA DE SISTEMAS">Ingeniería de Sistemas</option>
+              <option value="INGENIERÍA CIVIL">Ingeniería Civil</option>
+              <option value="INGENIERÍA AMBIENTAL">Ingeniería Ambiental</option>
+              <option value="ARQUITECTURA">Arquitectura</option>
+              <option value="INGENIERÍA EMPRESARIAL">Ingeniería Empresarial</option>
+              <option value="INGENIERÍA MECÁNICA ELÉCTRICA">Ingeniería Mecánica Eléctrica</option>
+              <option value="OTRA ESCUELA">Otra Escuela Profesional</option>
+            </select>
+            <i class="bi bi-caret-down-fill select-arrow"></i>
+          </div>
+          <div class="field-error">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            <span class="field-error-text">Esta pregunta es obligatoria</span>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             PREGUNTA 4: ASIGNATURA *
+             ============================================================== -->
+        <section class="form-card">
+          <label for="asignatura" class="field-title">
+            <span>Asignatura</span>
+            <span class="req-star">*</span>
+          </label>
+          <input 
+            type="text" 
+            id="asignatura" 
+            name="asignatura" 
+            class="text-input" 
+            placeholder="Tu respuesta" 
+            required
+          >
+          <div class="field-error">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            <span class="field-error-text">Esta pregunta es obligatoria</span>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             PREGUNTA 5: SECCIÓN (OPCIONAL)
+             ============================================================== -->
+        <section class="form-card">
+          <label for="seccion" class="field-title">
+            <span>Sección</span>
+          </label>
+          <input 
+            type="text" 
+            id="seccion" 
+            name="seccion" 
+            class="text-input" 
+            placeholder="Tu respuesta"
+          >
+        </section>
+
+        <!-- ==============================================================
+             PREGUNTA 6: CICLO *
+             ============================================================== -->
+        <section class="form-card">
+          <label for="ciclo" class="field-title">
+            <span>Ciclo</span>
+            <span class="req-star">*</span>
+          </label>
+          <div class="select-wrapper">
+            <select id="ciclo" name="ciclo" class="select-input" required>
+              <option value="" selected disabled>Elegir</option>
+              <option value="I">Ciclo I</option>
+              <option value="II">Ciclo II</option>
+              <option value="III">Ciclo III</option>
+              <option value="IV">Ciclo IV</option>
+              <option value="V">Ciclo V</option>
+              <option value="VI">Ciclo VI</option>
+              <option value="VII">Ciclo VII</option>
+              <option value="VIII">Ciclo VIII</option>
+              <option value="IX">Ciclo IX</option>
+              <option value="X">Ciclo X</option>
+            </select>
+            <i class="bi bi-caret-down-fill select-arrow"></i>
+          </div>
+          <div class="field-error">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            <span class="field-error-text">Esta pregunta es obligatoria</span>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             PREGUNTA 7: DECLARACIÓN JURADA Y CONSENTIMIENTO *
+             ============================================================== -->
+        <section class="form-card">
+          <div class="field-title" style="margin-bottom: 0.6rem;">
+            <span class="req-star" style="font-size: 1.25rem;">*</span>
+          </div>
+          <label class="declaration-label">
+            <input 
+              type="checkbox" 
+              id="declaracion_aceptada" 
+              name="declaracion_aceptada" 
+              class="custom-checkbox" 
+              value="1" 
+              required
+            >
+            <span class="declaration-text">
+              Declaro que la información proporcionada en el presente formulario es verdadera, completa y actualizada. Asimismo, autorizo el uso de mis datos personales para fines exclusivamente académicos y administrativos relacionados con la gestión y coordinación de delegados estudiantiles, de conformidad con las disposiciones institucionales vigentes.
+            </span>
+          </label>
+          <div class="field-error">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            <span class="field-error-text">Debe aceptar la declaración jurada para continuar</span>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             BARRA DE ACCIONES: ENVIAR Y BORRAR
+             ============================================================== -->
+        <div class="form-actions">
+          <button type="submit" class="btn-submit" id="submitBtn">
+            <i class="bi bi-send-fill"></i> Enviar
+          </button>
+          <button type="button" class="btn-reset" id="resetBtn">
+            Borrar formulario
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+
+    <!-- ==============================================================
+         PIE DE PÁGINA INSTITUCIONAL
+         ============================================================== -->
+    <footer class="form-footer">
+      <p>Facultad de Ingeniería y Arquitectura — Universidad César Vallejo</p>
+      <p style="margin-top: 0.35rem; font-size: 0.72rem; opacity: 0.85;">
+        Sistema de Registro de Evidencias y Asistencia Estudiantil • Semestre 2026-2
+      </p>
+    </footer>
+
+  </main>
+
+  <!-- Script del Formulario -->
+  <script src="js/form.js"></script>
+
+</body>
+</html>

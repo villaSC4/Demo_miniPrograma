@@ -98,6 +98,17 @@ class AcademicDataHandler(http.server.SimpleHTTPRequestHandler):
             except Exception as e:
                 return self._send_json(500, {"error": str(e)})
 
+        if parsed_path in ['/formulario_delegados/api_delegados', '/api/delegados']:
+            try:
+                del_file = os.path.join(BASE_DIR, 'formulario_delegados', 'data', 'delegados.json')
+                if os.path.exists(del_file):
+                    with open(del_file, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    return self._send_json(200, data)
+                return self._send_json(200, [])
+            except Exception as e:
+                return self._send_json(500, {"error": str(e)})
+
         return super().do_GET()
 
     def do_POST(self):
@@ -216,6 +227,54 @@ class AcademicDataHandler(http.server.SimpleHTTPRequestHandler):
                 })
             except Exception as e:
                 return self._send_json(500, {"error": str(e)})
+
+        if parsed_path in ['/formulario_delegados/submit.php', '/submit.php']:
+            try:
+                length = int(self.headers.get('Content-Length', 0))
+                body = self.rfile.read(length).decode('utf-8')
+                data = json.loads(body)
+                
+                del_dir = os.path.join(BASE_DIR, 'formulario_delegados', 'data')
+                os.makedirs(del_dir, exist_ok=True)
+                del_file = os.path.join(del_dir, 'delegados.json')
+
+                items = []
+                if os.path.exists(del_file):
+                    try:
+                        with open(del_file, 'r', encoding='utf-8') as f:
+                            items = json.load(f)
+                    except Exception:
+                        items = []
+
+                import datetime
+                fecha_now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                new_entry = {
+                    "id": len(items) + 1,
+                    "apellidos_nombres": data.get("apellidos_nombres", "").strip(),
+                    "codigo_alumno": data.get("codigo_alumno", "").strip(),
+                    "correo": data.get("correo", "").strip(),
+                    "escuela_profesional": data.get("escuela_profesional", "").strip(),
+                    "asignatura": data.get("asignatura", "").strip(),
+                    "seccion": data.get("seccion", "").strip(),
+                    "ciclo": data.get("ciclo", "").strip(),
+                    "declaracion_aceptada": 1,
+                    "ip_registro": self.client_address[0],
+                    "fecha_registro": fecha_now
+                }
+                items.insert(0, new_entry)
+
+                with open(del_file, 'w', encoding='utf-8') as f:
+                    json.dump(items, f, indent=2, ensure_ascii=False)
+
+                return self._send_json(200, {
+                    "success": True,
+                    "message": "¡Asistencia registrada con éxito!",
+                    "id": new_entry["id"],
+                    "engine": "local_dev",
+                    "fecha": fecha_now
+                })
+            except Exception as e:
+                return self._send_json(500, {"success": False, "error": str(e)})
 
         return self._send_json(404, {"error": "Ruta no encontrada"})
 

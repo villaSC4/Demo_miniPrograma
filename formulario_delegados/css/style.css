@@ -1,0 +1,499 @@
+/* ==========================================================================
+   ESTILOS: FORMULARIO DE ASISTENCIA — 1RA REUNIÓN DE DELEGADOS 2026-2
+   Facultad de Ingeniería y Arquitectura (UCV)
+   ========================================================================== */
+
+:root {
+  --form-bg: #E9EEF4;
+  --card-bg: #FFFFFF;
+  --text-main: #202124;
+  --text-muted: #5F6368;
+  --primary-blue: #1A4971;
+  --primary-blue-hover: #123452;
+  --primary-accent: #3B71CA;
+  --ucv-red: #BE1E2D;
+  --required-red: #D93025;
+  --border-color: #DADCE0;
+  --border-focus: #1A73E8;
+  --card-radius: 12px;
+  --card-shadow: 0 1px 3px rgba(60, 64, 67, 0.12), 0 1px 2px rgba(60, 64, 67, 0.08);
+  --card-shadow-focus: 0 4px 12px rgba(26, 73, 113, 0.15);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--form-bg);
+  color: var(--text-main);
+  line-height: 1.5;
+  padding: 1rem 0.75rem 3rem 0.75rem;
+  min-height: 100vh;
+}
+
+/* Contenedor Central */
+.form-container {
+  max-width: 660px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+/* Tarjeta Banner */
+.banner-card {
+  background: #FFFFFF;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  line-height: 0;
+}
+
+.banner-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+/* Tarjetas Genéricas */
+.form-card {
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 1.5rem 1.65rem;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+  position: relative;
+}
+
+.form-card:focus-within {
+  box-shadow: var(--card-shadow-focus);
+  border-color: #B5D4FE;
+}
+
+/* Tarjeta de Encabezado Principal */
+.header-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.header-accent-stripe {
+  height: 10px;
+  background: linear-gradient(90deg, #1A4971 0%, #2A689D 50%, #BE1E2D 100%);
+}
+
+.header-body {
+  padding: 1.6rem 1.65rem 1.25rem 1.65rem;
+}
+
+.form-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #1A202C;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  margin-bottom: 0.5rem;
+}
+
+.form-desc {
+  font-size: 0.95rem;
+  color: #4A5568;
+  margin-bottom: 1.25rem;
+  line-height: 1.55;
+}
+
+/* Caja de Identificación de Correo */
+.account-badge-box {
+  border-top: 1px solid #E2E8F0;
+  border-bottom: 1px solid #E2E8F0;
+  padding: 0.85rem 0;
+  margin-bottom: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.account-info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.88rem;
+  color: #4A5568;
+}
+
+.account-email-status {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  color: #718096;
+}
+
+.account-email-status i {
+  font-size: 0.95rem;
+}
+
+.required-notice {
+  font-size: 0.85rem;
+  color: var(--required-red);
+  font-weight: 500;
+}
+
+/* Título de Campo / Pregunta */
+.field-title {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: #202124;
+  margin-bottom: 0.85rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.field-title .req-star {
+  color: var(--required-red);
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+/* Inputs de Texto estilo Material / Underline limpio */
+.text-input {
+  width: 100%;
+  max-width: 480px;
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.55rem 0.15rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: #202124;
+  background: transparent;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.text-input::placeholder {
+  color: #80868B;
+  font-size: 0.92rem;
+}
+
+.text-input:focus {
+  border-bottom: 2px solid var(--primary-accent);
+}
+
+/* Select Desplegable */
+.select-wrapper {
+  position: relative;
+  max-width: 320px;
+}
+
+.select-input {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid #DADCE0;
+  border-radius: 6px;
+  padding: 0.65rem 2.2rem 0.65rem 0.95rem;
+  font-size: 0.93rem;
+  font-family: inherit;
+  color: #3C4043;
+  background-color: #FFFFFF;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.select-input:focus {
+  border-color: var(--primary-accent);
+  box-shadow: 0 0 0 2px rgba(59, 113, 202, 0.2);
+}
+
+.select-arrow {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #5F6368;
+  font-size: 0.85rem;
+}
+
+/* Checkbox Declaración */
+.declaration-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.custom-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  border: 2px solid #5F6368;
+  border-radius: 4px;
+  margin-top: 2px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  background: #FFFFFF;
+}
+
+.custom-checkbox:checked {
+  background-color: var(--primary-blue);
+  border-color: var(--primary-blue);
+}
+
+.custom-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -55%);
+  color: #FFFFFF;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.declaration-text {
+  font-size: 0.88rem;
+  color: #3C4043;
+  line-height: 1.5;
+}
+
+/* Mensajes de Validación de Campo */
+.field-error {
+  display: none;
+  color: var(--required-red);
+  font-size: 0.82rem;
+  margin-top: 0.45rem;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.has-error .field-error {
+  display: flex;
+}
+
+.has-error .text-input {
+  border-bottom-color: var(--required-red);
+}
+
+.has-error .select-input {
+  border-color: var(--required-red);
+}
+
+.has-error .custom-checkbox {
+  border-color: var(--required-red);
+}
+
+/* Barra de Acciones / Envío */
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  padding: 0 0.25rem;
+}
+
+.btn-submit {
+  background-color: var(--primary-blue);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 2rem;
+  font-size: 0.96rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(26, 73, 113, 0.25);
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-submit:hover {
+  background-color: var(--primary-blue-hover);
+  box-shadow: 0 4px 12px rgba(26, 73, 113, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-reset {
+  background: none;
+  border: none;
+  color: var(--primary-accent);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.btn-reset:hover {
+  background-color: rgba(59, 113, 202, 0.08);
+}
+
+/* Alerta General */
+.alert-banner {
+  display: none;
+  padding: 0.85rem 1.15rem;
+  border-radius: var(--card-radius);
+  font-size: 0.9rem;
+  font-weight: 600;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.alert-banner.error {
+  display: flex;
+  background-color: #FCE8E6;
+  color: #C5221F;
+  border: 1px solid #F6AEA9;
+}
+
+/* Pantalla de Éxito */
+.success-card {
+  display: none;
+  text-align: center;
+  padding: 3rem 2rem;
+}
+
+.success-card.active {
+  display: block;
+}
+
+.success-icon-wrap {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #E6F4EA;
+  color: #137333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  margin: 0 auto 1.5rem auto;
+}
+
+.success-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #1F2937;
+  margin-bottom: 0.75rem;
+}
+
+.success-desc {
+  font-size: 0.95rem;
+  color: #4B5563;
+  max-width: 500px;
+  margin: 0 auto 1.75rem auto;
+  line-height: 1.6;
+}
+
+.success-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  background: #F3F4F6;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  color: #4B5563;
+  margin-bottom: 2rem;
+}
+
+.btn-new-resp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--primary-accent);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.92rem;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.btn-new-resp:hover {
+  text-decoration: underline;
+}
+
+/* Pie de Página Institucional */
+.form-footer {
+  text-align: center;
+  margin-top: 1.75rem;
+  font-size: 0.78rem;
+  color: #718096;
+}
+
+.form-footer a {
+  color: var(--primary-blue);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.form-footer a:hover {
+  text-decoration: underline;
+}
+
+/* Spinner */
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  body {
+    padding: 0.5rem 0.5rem 2rem 0.5rem;
+  }
+  .form-card {
+    padding: 1.25rem 1.15rem;
+  }
+  .form-title {
+    font-size: 1.45rem;
+  }
+  .text-input {
+    max-width: 100%;
+  }
+  .select-wrapper {
+    max-width: 100%;
+  }
+  .form-actions {
+    flex-direction: column-reverse;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+  .btn-submit {
+    justify-content: center;
+  }
+  .btn-reset {
+    text-align: center;
+  }
+}

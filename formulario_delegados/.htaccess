@@ -1,0 +1,20 @@
+# ========================================================================
+# .htaccess — Formulario Independiente de Asistencia de Delegados
+# Facultad de Ingeniería y Arquitectura (UCV)
+# ========================================================================
+
+AddDefaultCharset UTF-8
+DefaultLanguage es
+
+# Proteger la carpeta data y archivos sensibles
+<FilesMatch "(\.sql|\.db|\.json|config\.php)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Permitir index.html o index.php como página de inicio
+DirectoryIndex index.html index.php
+
+# Opciones de seguridad básicas
+Options -Indexes
+ServerSignature Off
