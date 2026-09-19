@@ -38,8 +38,8 @@ if (!$isAuth): ?>
   <style>
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background: #030A14;
-      color: #fff;
+      background: #F4F6F9;
+      color: #1E293B;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -48,45 +48,51 @@ if (!$isAuth): ?>
       padding: 1rem;
     }
     .login-box {
-      background: rgba(14, 37, 69, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 16px;
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 14px;
       padding: 2.25rem;
-      max-width: 400px;
+      max-width: 420px;
       width: 100%;
-      box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+      box-shadow: 0 4px 20px rgba(0, 40, 85, 0.08);
       text-align: center;
+    }
+    .login-box img {
+      height: 40px;
+      width: auto;
+      margin-bottom: 1.25rem;
     }
     .login-box h2 {
       font-size: 1.35rem;
-      margin-bottom: 0.5rem;
-      color: #fff;
+      font-weight: 800;
+      margin-bottom: 0.35rem;
+      color: #002855;
     }
     .login-box p {
       font-size: 0.85rem;
-      color: rgba(255,255,255,0.65);
+      color: #64748B;
       margin-bottom: 1.5rem;
     }
     .login-input {
       width: 100%;
       box-sizing: border-box;
-      padding: 0.8rem 1rem;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.2);
+      padding: 0.75rem 1rem;
+      background: #FFFFFF;
+      border: 1.5px solid #CBD5E1;
       border-radius: 8px;
-      color: #fff;
+      color: #1E293B;
       font-size: 0.95rem;
       margin-bottom: 1rem;
       outline: none;
     }
     .login-input:focus {
-      border-color: #3B71CA;
-      box-shadow: 0 0 0 3px rgba(59,113,202,0.25);
+      border-color: #002855;
+      box-shadow: 0 0 0 3px rgba(0, 40, 85, 0.12);
     }
     .login-btn {
       width: 100%;
       padding: 0.8rem;
-      background: #1A4971;
+      background: #C8102E;
       border: none;
       border-radius: 8px;
       color: #fff;
@@ -96,43 +102,46 @@ if (!$isAuth): ?>
       transition: background 0.2s;
     }
     .login-btn:hover {
-      background: #123452;
+      background: #A60D25;
     }
     .error-msg {
-      color: #FF8A8A;
+      color: #DC2626;
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      padding: 0.5rem;
+      border-radius: 6px;
       font-size: 0.82rem;
       margin-bottom: 1rem;
     }
     .back-link {
       display: inline-block;
       margin-top: 1.25rem;
-      color: rgba(255,255,255,0.5);
-      font-size: 0.8rem;
+      color: #64748B;
+      font-size: 0.82rem;
       text-decoration: none;
     }
     .back-link:hover {
-      color: #fff;
+      color: #002855;
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
   <div class="login-box">
-    <div style="font-size: 2.2rem; color: #3B71CA; margin-bottom: 0.5rem;">
-      <i class="bi bi-shield-lock-fill"></i>
-    </div>
-    <h2>Panel de Delegados</h2>
-    <p>Ingrese la contraseña institucional para consultar la lista de asistentes.</p>
+    <img src="img/logo-ucv.png" alt="Universidad César Vallejo">
+    <h2>Control de Asistencia</h2>
+    <p>Acceso restringido para Dirección de Escuela y Coordinación Académica.</p>
 
     <?php if ($errorAuth): ?>
       <div class="error-msg"><?= htmlspecialchars($errorAuth) ?></div>
     <?php endif; ?>
 
     <form method="POST">
-      <input type="password" name="admin_pass" class="login-input" placeholder="Contraseña de acceso" required autofocus>
-      <button type="submit" class="login-btn">Entrar al Panel</button>
+      <input type="password" name="admin_pass" class="login-input" placeholder="Contraseña institucional" required autofocus>
+      <button type="submit" class="login-btn">Ingresar al Panel</button>
     </form>
 
-    <a href="index.html" class="back-link"><i class="bi bi-arrow-left"></i> Volver al formulario</a>
+    <a href="index.html" class="back-link"><i class="bi bi-arrow-left me-1"></i>Volver al formulario</a>
   </div>
 </body>
 </html>
@@ -172,8 +181,9 @@ $engine = DB::getEngine();
       color: #1F2937;
     }
     .top-nav {
-      background: #1A4971;
+      background: #002855;
       color: #fff;
+      border-bottom: 3px solid #C8102E;
       padding: 0.9rem 1.5rem;
       display: flex;
       align-items: center;

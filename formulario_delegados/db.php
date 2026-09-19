@@ -111,6 +111,35 @@ class DB {
         );";
         try {
             self::$pdo->exec($sql);
+
+            // Sincronizar desde delegados.json si existe y la tabla sqlite está vacía
+            if (file_exists(self::$jsonFile)) {
+                $count = (int)self::$pdo->query("SELECT COUNT(*) FROM delegados_asistencia")->fetchColumn();
+                if ($count === 0) {
+                    $raw = @file_get_contents(self::$jsonFile);
+                    $items = json_decode($raw, true) ?: [];
+                    if (!empty($items)) {
+                        $stmt = self::$pdo->prepare("INSERT INTO delegados_asistencia 
+                            (apellidos_nombres, codigo_alumno, correo, escuela_profesional, asignatura, seccion, ciclo, declaracion_aceptada, ip_registro, user_agent, fecha_registro) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                        foreach (array_reverse($items) as $item) {
+                            $stmt->execute([
+                                $item['apellidos_nombres'] ?? '',
+                                $item['codigo_alumno'] ?? '',
+                                $item['correo'] ?? '',
+                                $item['escuela_profesional'] ?? '',
+                                $item['asignatura'] ?? '',
+                                $item['seccion'] ?? '',
+                                $item['ciclo'] ?? '',
+                                $item['declaracion_aceptada'] ?? 1,
+                                $item['ip_registro'] ?? '',
+                                $item['user_agent'] ?? '',
+                                $item['fecha_registro'] ?? date('Y-m-d H:i:s')
+                            ]);
+                        }
+                    }
+                }
+            }
         } catch (Exception $e) {
             // Ignorar
         }
