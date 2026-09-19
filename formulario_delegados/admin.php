@@ -298,11 +298,8 @@ $engine = DB::getEngine();
           <div class="col-md-4">
             <select name="escuela" class="form-select">
               <option value="">-- Todas las Escuelas --</option>
-              <option value="INGENIERÍA INDUSTRIAL" <?= $escuelaFilter === 'INGENIERÍA INDUSTRIAL' ? 'selected' : '' ?>>Ingeniería Industrial</option>
-              <option value="INGENIERÍA DE SISTEMAS" <?= $escuelaFilter === 'INGENIERÍA DE SISTEMAS' ? 'selected' : '' ?>>Ingeniería de Sistemas</option>
-              <option value="INGENIERÍA CIVIL" <?= $escuelaFilter === 'INGENIERÍA CIVIL' ? 'selected' : '' ?>>Ingeniería Civil</option>
-              <option value="INGENIERÍA AMBIENTAL" <?= $escuelaFilter === 'INGENIERÍA AMBIENTAL' ? 'selected' : '' ?>>Ingeniería Ambiental</option>
-              <option value="ARQUITECTURA" <?= $escuelaFilter === 'ARQUITECTURA' ? 'selected' : '' ?>>Arquitectura</option>
+              <option value="Ingeniería Industrial" <?= $escuelaFilter === 'Ingeniería Industrial' ? 'selected' : '' ?>>Ingeniería Industrial</option>
+              <option value="Ingeniería de Sistemas" <?= $escuelaFilter === 'Ingeniería de Sistemas' ? 'selected' : '' ?>>Ingeniería de Sistemas</option>
             </select>
           </div>
           <div class="col-md-2 d-flex gap-2">
