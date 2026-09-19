@@ -17,9 +17,9 @@
 
 // --- Credenciales de Base de Datos MySQL (cPanel) ---
 define('DB_HOST', 'localhost');
-define('DB_NAME', '');           // Nombre de la BD en cPanel (ej. 'u123456_delegados')
-define('DB_USER', 'root');       // Usuario de la BD (ej. 'u123456_admin')
-define('DB_PASS', '');           // Contraseña de la BD
+define('DB_NAME', 'classit_delegados');
+define('DB_USER', 'classit_admin');
+define('DB_PASS', 'uClItY=)iRO_EO_s');
 define('DB_CHARSET', 'utf8mb4');
 
 // --- Configuración Institucional ---
