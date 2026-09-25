@@ -13,3 +13,38 @@ Thumbs.db
 
 # Archives
 *.zip
+
+# ============================================================
+# ARCHIVOS SENSIBLES - NUNCA subir a Git
+# ============================================================
+
+# Credenciales de base de datos y configuración real
+formulario_delegados/config.php
+
+# Bases de datos locales con datos reales
+data/*.db
+data/*.sqlite
+formulario_delegados/data/*.db
+formulario_delegados/data/*.sqlite
+
+# Datos JSON con información real de usuarios/operación
+# (se suben solo los archivos _base como plantillas vacías)
+data/pau_correos.json
+data/grupos.json
+data/docentes.json
+data/carpetas.json
+data/directorios.json
+data/supervisiones.json
+
+# Archivos Excel con datos institucionales
+*.xlsx
+
+# PDFs generados dinámicamente
+pdfs/
+
+# Fuentes locales (pesadas, se cargan desde CDN)
+lib/icons/fonts/
+
+# Logs del servidor
+*.log
+error_log

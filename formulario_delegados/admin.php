@@ -1,7 +1,7 @@
 <?php
 /**
  * Panel de Administración y Visualización de Delegados Registrados
- * 1RA REUNIÓN DE DELEGADOS 2026-2
+ * REUNIÓN DE DELEGADOS 2026-2
  */
 session_start();
 require_once __DIR__ . '/config.php';
@@ -156,6 +156,20 @@ $escuelaFilter = trim($_GET['escuela'] ?? '');
 $delegados = DB::getAllDelegados($search, $escuelaFilter);
 $total = count($delegados);
 
+// Cargar configuración activa del membrete para años/semestres
+$membreteCfgFile = __DIR__ . '/data/config_membrete.json';
+$membreteCfg = [
+    'titulo_reunion' => 'REUNIÓN DE DELEGADOS 2026-2',
+    'semestre' => '2026-II',
+    'fecha_evento' => '24 de Septiembre de 2026',
+    'programa' => 'SUBE A Distancia',
+    'facultad' => 'Facultad de Ingeniería y Arquitectura'
+];
+if (file_exists($membreteCfgFile)) {
+    $c = json_decode(file_get_contents($membreteCfgFile), true);
+    if ($c) $membreteCfg = array_merge($membreteCfg, $c);
+}
+
 // Calcular estadísticas por escuela
 $porEscuela = [];
 foreach ($delegados as $d) {
@@ -170,7 +184,7 @@ $engine = DB::getEngine();
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Asistencia — 1RA REUNIÓN DE DELEGADOS 2026-2</title>
+  <title>Asistencia — <?= htmlspecialchars($membreteCfg['titulo_reunion']) ?></title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -228,11 +242,14 @@ $engine = DB::getEngine();
     <div class="d-flex align-items-center gap-3">
       <i class="bi bi-person-video3 fs-4 text-warning"></i>
       <div>
-        <h1 class="h6 mb-0 fw-bold">1RA REUNIÓN DE DELEGADOS 2026-2</h1>
-        <small style="opacity: 0.8; font-size: 0.76rem;">Facultad de Ingeniería y Arquitectura — Control de Asistencia</small>
+        <h1 class="h6 mb-0 fw-bold"><?= htmlspecialchars($membreteCfg['titulo_reunion']) ?></h1>
+        <small style="opacity: 0.8; font-size: 0.76rem;"><?= htmlspecialchars($membreteCfg['facultad']) ?> • Semestre <?= htmlspecialchars($membreteCfg['semestre']) ?> • <?= htmlspecialchars($membreteCfg['fecha_evento']) ?></small>
       </div>
     </div>
     <div class="d-flex align-items-center gap-2">
+      <a href="index.html" target="_blank" class="btn btn-warning btn-sm fw-semibold" title="Ver y Configurar Formulario Oficial">
+        <i class="bi bi-gear-fill me-1"></i> Configurar Membrete
+      </a>
       <a href="exportar.php" class="btn btn-success btn-sm fw-semibold">
         <i class="bi bi-file-earmark-excel-fill me-1"></i> Exportar a Excel
       </a>

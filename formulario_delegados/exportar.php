@@ -1,7 +1,7 @@
 <?php
 /**
  * Exportación de Asistencia a Excel (CSV con UTF-8 BOM)
- * 1RA REUNIÓN DE DELEGADOS 2026-2
+ * REUNIÓN DE DELEGADOS 2026-2
  */
 session_start();
 require_once __DIR__ . '/config.php';

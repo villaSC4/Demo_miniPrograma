@@ -677,56 +677,6 @@
       to { transform: rotate(360deg); }
     }
 
-    /* Fast Access Demo Chips */
-    .fast-demo-box {
-      margin-top: 1.35rem;
-      padding-top: 1.15rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
-      text-align: center;
-    }
-
-    .fast-demo-title {
-      font-size: 0.74rem;
-      color: rgba(255, 255, 255, 0.6);
-      margin-bottom: 0.6rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.35rem;
-    }
-
-    .fast-chips-row {
-      display: flex;
-      gap: 0.45rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .btn-demo-chip {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      color: rgba(255, 255, 255, 0.88);
-      border-radius: 20px;
-      padding: 0.35rem 0.85rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: inherit;
-      transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-    }
-
-    .btn-demo-chip:hover {
-      background: rgba(190, 30, 45, 0.35);
-      border-color: rgba(255, 80, 95, 0.7);
-      color: #FFFFFF;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 14px rgba(190, 30, 45, 0.35);
-    }
-
     /* Card Footer & Security Notes */
     .card-meta-footer {
       text-align: center;
@@ -1043,28 +993,6 @@
                 <span class="spinner"></span>
               </span>
             </button>
-
-            <!-- Acceso Rápido Demo (1-Clic) -->
-            <div class="fast-demo-box">
-              <div class="fast-demo-title">
-                <i class="bi bi-lightning-charge-fill" style="color: #F59E0B;"></i>
-                <span>Acceso rápido de prueba institucional:</span>
-              </div>
-              <div class="fast-chips-row">
-                <button type="button" class="btn-demo-chip" data-user="admin" data-pass="admin123" data-role="Administrador SGA">
-                  <i class="bi bi-shield-check"></i> Admin
-                </button>
-                <button type="button" class="btn-demo-chip" data-user="coordinador@ucvvirtual.edu.pe" data-pass="demo2026" data-role="Coordinador">
-                  <i class="bi bi-person-check"></i> Coordinador
-                </button>
-                <button type="button" class="btn-demo-chip" data-user="director@ucvvirtual.edu.pe" data-pass="demo2026" data-role="Director">
-                  <i class="bi bi-briefcase"></i> Director
-                </button>
-                <button type="button" class="btn-demo-chip" data-user="auditor@ucvvirtual.edu.pe" data-pass="demo2026" data-role="Auditor SGA">
-                  <i class="bi bi-search"></i> Auditor
-                </button>
-              </div>
-            </div>
           </form>
 
           <!-- Security note & Accreditation -->
@@ -1086,9 +1014,9 @@
        AUTHENTICATION LOGIC (FRONTEND SESSION STORAGE)
        ==================================================================== -->
   <script>
-    // Si ya tiene sesión activa en sessionStorage, redirigir a index.html
+    // Si ya tiene sesión activa en sessionStorage, redirigir al selector de DAC
     if (sessionStorage.getItem('sga_logged_in') === 'true') {
-      window.location.replace('index.html');
+      window.location.replace('selector.html');
     }
 
     // Toggle para ver/ocultar contraseña
@@ -1102,21 +1030,70 @@
       });
     }
 
-    // Función de login con animación de carga
-    function executeLogin(username) {
+    // Función de login con verificación en Base de Datos
+    async function executeLogin(username, password) {
       const btn = document.getElementById('loginBtn');
+      const errorEl = document.getElementById('loginError');
+      const errorText = document.getElementById('loginErrorText');
+
       if (btn) {
         btn.classList.add('loading');
         btn.disabled = true;
       }
+      if (errorEl) errorEl.classList.remove('show');
 
-      setTimeout(() => {
-        const cleanName = (username || 'ADMIN').split('@')[0].toUpperCase();
-        sessionStorage.setItem('sga_logged_in', 'true');
-        sessionStorage.setItem('sga_user_name', cleanName);
-        sessionStorage.setItem('sga_login_time', new Date().toLocaleTimeString('es-PE'));
-        window.location.href = 'index.html';
-      }, 850);
+      try {
+        let response = null;
+        let data = null;
+
+        // Intentar conectar con la API de autenticación (/api/login o api/login.php)
+        try {
+          response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user: username, password: password })
+          });
+        } catch (e) {
+          response = await fetch('api/login.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user: username, password: password })
+          });
+        }
+
+        if (!response.ok && response.status === 404) {
+          response = await fetch('api/login.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user: username, password: password })
+          });
+        }
+
+        data = await response.json();
+
+        if (response.ok && data.success && data.user) {
+          sessionStorage.setItem('sga_logged_in', 'true');
+          sessionStorage.setItem('sga_user_name', data.user.nombre || data.user.email);
+          sessionStorage.setItem('sga_user_email', data.user.email);
+          sessionStorage.setItem('sga_user_role', data.user.rol || 'Coordinador');
+          sessionStorage.setItem('sga_login_time', new Date().toLocaleTimeString('es-PE'));
+
+          setTimeout(() => {
+            window.location.href = 'selector.html';
+          }, 350);
+        } else {
+          throw new Error(data.error || 'Credenciales inválidas. Verifique su usuario y contraseña institucional.');
+        }
+      } catch (err) {
+        if (errorText) {
+          errorText.textContent = err.message || 'Credenciales inválidas. Verifique su usuario y contraseña institucional.';
+        }
+        if (errorEl) errorEl.classList.add('show');
+        if (btn) {
+          btn.classList.remove('loading');
+          btn.disabled = false;
+        }
+      }
     }
 
     // Envío del formulario
@@ -1138,20 +1115,9 @@
           return;
         }
 
-        executeLogin(user);
+        executeLogin(user, pass);
       });
     }
-
-    // Botones de acceso rápido Demo
-    document.querySelectorAll('.btn-demo-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        const email = chip.getAttribute('data-user');
-        const pass = chip.getAttribute('data-pass') || 'admin123';
-        document.getElementById('loginUser').value = email;
-        document.getElementById('loginPass').value = pass;
-        executeLogin(email);
-      });
-    });
 
     // Foco automático en el campo de usuario
     window.addEventListener('DOMContentLoaded', () => {

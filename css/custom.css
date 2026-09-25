@@ -54,18 +54,18 @@ ul.nav li { list-style: none !important; }
   will-change: transform;
 }
 
-/* Contenedor Centrado Proporcional (~80-85% del ancho en pantallas grandes) */
+/* Contenedor Centrado Proporcional con Espacio Generoso */
 .app-container {
-  max-width: 1360px;
-  width: 90%;
+  max-width: 1520px;
+  width: 94%;
   margin: 0 auto;
-  padding: 1.25rem 0.5rem 2.5rem;
+  padding: 2rem 1.25rem 4.5rem;
 }
 
 @media (min-width: 1600px) {
   .app-container {
-    max-width: 1400px;
-    width: 82%;
+    max-width: 1620px;
+    width: 92%;
   }
 }
 
@@ -152,32 +152,36 @@ ul.nav li { list-style: none !important; }
   margin-top: 0.25rem;
 }
 
-/* Tarjetas de Contenido y Tableros */
+/* Tarjetas de Contenido y Tableros con Amplia Separación */
 .content-card {
   background: var(--app-card-bg);
   border: 1px solid var(--app-border);
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(11, 37, 69, 0.04);
+  border-radius: 16px;
+  padding: 1.85rem 2.15rem;
+  box-shadow: 0 4px 20px rgba(11, 37, 69, 0.05);
+  margin-bottom: 2.25rem !important;
 }
 
-/* Pestañas Segmentadas Modernas */
+/* Pestañas Segmentadas Modernas y Holgadas */
 .nav-segmented {
   background-color: #EEF2F6;
-  padding: 0.35rem;
-  border-radius: 10px;
+  padding: 0.45rem;
+  border-radius: 12px;
   display: inline-flex;
-  gap: 0.3rem;
+  gap: 0.4rem;
   border: none;
+  flex-wrap: wrap;
 }
 
 .nav-segmented .nav-link {
   border: none;
-  border-radius: 8px;
+  border-radius: 9px;
   color: #475569;
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   font-weight: 600;
-  padding: 0.45rem 1rem;
+  padding: 0.6rem 1.15rem;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .nav-segmented .nav-link:hover {
@@ -189,7 +193,7 @@ ul.nav li { list-style: none !important; }
   background-color: #FFFFFF;
   color: var(--app-navy-dark);
   font-weight: 700;
-  box-shadow: 0 2px 6px rgba(11, 37, 69, 0.08);
+  box-shadow: 0 2px 8px rgba(11, 37, 69, 0.1);
 }
 
 .nav-segmented .nav-link.active .badge {
@@ -197,7 +201,7 @@ ul.nav li { list-style: none !important; }
   color: #FFFFFF !important;
 }
 
-/* Tablas Modernas y Legibles */
+/* Tablas Modernas, Amplias y Cómodas para Lectura */
 .app-table {
   width: 100%;
   border-collapse: separate;
@@ -207,20 +211,21 @@ ul.nav li { list-style: none !important; }
 .app-table thead th {
   background-color: #F8FAFC;
   color: var(--app-navy);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
-  padding: 0.75rem 0.9rem;
+  letter-spacing: 0.04em;
+  padding: 1.05rem 1.25rem;
   border-bottom: 2px solid var(--app-border);
   border-top: none;
 }
 
 .app-table tbody td {
-  padding: 0.7rem 0.9rem;
-  font-size: 0.84rem;
+  padding: 1.1rem 1.25rem;
+  font-size: 0.88rem;
   border-bottom: 1px solid var(--app-border-subtle);
   vertical-align: middle;
+  line-height: 1.55;
 }
 
 .app-table tbody tr:hover {
@@ -255,11 +260,12 @@ ul.nav li { list-style: none !important; }
   border: 1px solid #E2E8F0;
 }
 
-/* Controles de Formulario */
+/* Controles de Formulario Cómodos y con Espacio */
 .form-select, .form-control {
-  border-radius: 8px;
+  border-radius: 9px;
   border-color: var(--app-border);
-  font-size: 0.84rem;
+  font-size: 0.88rem;
+  padding: 0.55rem 0.95rem;
 }
 
 .form-select:focus, .form-control:focus {
@@ -689,31 +695,34 @@ ul.nav li { list-style: none !important; }
 /* ===================== AREA ACTION BUTTONS (TOP ROW) ===================== */
 .area-action-card {
   background: #FFFFFF;
-  border-radius: 12px;
-  padding: 0.95rem 1rem 0.75rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  border-radius: 14px;
+  padding: 1.35rem 1.45rem 1.15rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   border: 1.5px solid #E2E8F0 !important;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   text-decoration: none;
   position: relative;
   overflow: hidden;
   height: 100%;
+  min-height: 146px;
 }
 
 .area-action-card::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 3px;
+  height: 3.5px;
   background: transparent;
   transition: background 0.2s;
 }
 
 .area-action-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
   border-color: #CBD5E1 !important;
 }
 
@@ -884,41 +893,149 @@ ul.nav li { list-style: none !important; }
 }
 
 .area-card-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 9px;
+  width: 44px;
+  height: 44px;
+  border-radius: 11px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.15rem;
+  font-size: 1.25rem;
+  margin-bottom: 0.85rem;
 }
 
 .area-card-title {
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   color: #0F172A;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.3rem;
   letter-spacing: -0.01em;
 }
 
 .area-card-desc {
-  font-size: 0.73rem;
+  font-size: 0.78rem;
   color: #64748B;
-  line-height: 1.25;
+  line-height: 1.35;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-bottom: 0.5rem;
 }
 
 .area-card-footer {
+  margin-top: auto;
+  padding-top: 0.85rem !important;
+  border-top: 1px solid #F1F5F9;
   transition: all 0.2s;
 }
 
 .area-action-card:hover .area-card-footer i {
-  transform: translateX(3px);
+  transform: translateX(4px);
   transition: transform 0.2s;
 }
+
+/* ==========================================================================
+   ESTILOS ESPECÍFICOS: MÓDULO PAU (ATENCIÓN AL ESTUDIANTE)
+   ========================================================================== */
+.area-card-pau {
+  border-left: 3px solid #0284C7 !important;
+}
+
+.area-card-pau:hover {
+  border-color: #0284C7;
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.15);
+}
+
+.badge-pau-atendido {
+  background-color: #16A34A !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  font-size: 0.78rem !important;
+  padding: 5px 12px !important;
+  border: 1px solid #15803D !important;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  user-select: none;
+  box-shadow: 0 1px 3px rgba(22, 163, 74, 0.25);
+}
+.badge-pau-atendido:hover {
+  background-color: #15803D !important;
+  color: #FFFFFF !important;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(22, 163, 74, 0.35);
+}
+
+.badge-pau-sin-atencion {
+  background-color: #FEF08A !important;
+  color: #854D0E !important;
+  font-weight: 800 !important;
+  font-size: 0.78rem !important;
+  padding: 5px 12px !important;
+  border: 1.5px solid #EAB308 !important;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  user-select: none;
+  box-shadow: 0 1px 3px rgba(234, 179, 8, 0.2);
+}
+.badge-pau-sin-atencion:hover {
+  background-color: #FDE047 !important;
+  color: #713F12 !important;
+  border-color: #CA8A04 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(234, 179, 8, 0.3);
+}
+
+.badge-pau-aprobado {
+  background-color: #0284C7 !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  font-size: 0.78rem !important;
+  padding: 5px 12px !important;
+  border: 1px solid #0369A1 !important;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  user-select: none;
+  box-shadow: 0 1px 3px rgba(2, 132, 199, 0.25);
+}
+.badge-pau-aprobado:hover {
+  background-color: #0369A1 !important;
+  color: #FFFFFF !important;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(2, 132, 199, 0.35);
+}
+
+.badge-pau-sin-aprobacion {
+  background-color: #F1F5F9 !important;
+  color: #334155 !important;
+  font-weight: 700 !important;
+  font-size: 0.78rem !important;
+  padding: 5px 12px !important;
+  border: 1.5px solid #CBD5E1 !important;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  user-select: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.badge-pau-sin-aprobacion:hover {
+  background-color: #E2E8F0 !important;
+  color: #0F172A !important;
+  border-color: #94A3B8 !important;
+  transform: translateY(-1px);
+}
+
+.pau-metric-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 1.35rem 1.6rem;
+  box-shadow: 0 2px 10px rgba(11, 37, 69, 0.04);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.pau-metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.07);
+}
+
 
 
 

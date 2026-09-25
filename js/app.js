@@ -526,7 +526,8 @@ function syncActiveAreaCard(activeTabId) {
     'desempeno-tab': '.area-card-desempeno',
     'supervision-tab': '.area-card-supervision',
     'matriz-tab': '.area-card-matriz',
-    'vacantes-tab': '.area-card-vacantes'
+    'vacantes-tab': '.area-card-vacantes',
+    'pau-tab': '.area-card-pau'
   };
   const selector = map[activeTabId];
   if (selector) {

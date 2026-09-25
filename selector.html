@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Selección de Ambiente — SGA • UCV Virtual</title>
+  <meta name="description" content="Seleccione su Dirección Académica de Carrera (DAC) para acceder al Sistema de Gestión Académica — UCV Virtual">
+
+  <!-- Tipografía Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Favicon UCV Virtual -->
+  <link rel="icon" type="image/png" href="img/logo-ucv-virtual.png">
+
+  <style>
+    /* ================================================================
+       RESET & VARIABLES — PALETA PASTEL UCV
+       ================================================================ */
+    *, *::before, *::after {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+
+    :root {
+      /* UCV Pastel Palette */
+      --ucv-red: #BE1E2D;
+      --ucv-red-pastel: #F8D7DA;
+      --ucv-red-soft: #E8A0A8;
+      --ucv-blue: #1A4B8C;
+      --ucv-blue-pastel: #D4E4F7;
+      --ucv-blue-soft: #A3C4E9;
+      --ucv-gold: #D4A843;
+      --ucv-gold-pastel: #FFF3D6;
+      --ucv-gold-soft: #F0D890;
+      --ucv-cream: #FDF8F0;
+      --ucv-warm-white: #FEFCF9;
+      --ucv-gray-100: #F7F5F2;
+      --ucv-gray-200: #EDE9E3;
+      --ucv-gray-300: #D5CFC6;
+      --ucv-gray-500: #8A8278;
+      --ucv-gray-700: #4A4540;
+      --ucv-gray-900: #2A2622;
+
+      /* Escuelas */
+      --sistemas-primary: #2563EB;
+      --sistemas-pastel: #DBEAFE;
+      --sistemas-soft: #93C5FD;
+      --sistemas-glow: rgba(37, 99, 235, 0.15);
+
+      --industrial-primary: #059669;
+      --industrial-pastel: #D1FAE5;
+      --industrial-soft: #6EE7B7;
+      --industrial-glow: rgba(5, 150, 105, 0.15);
+
+      /* Módulos */
+      --mod-delegados: #E11D48;
+      --mod-delegados-pastel: #FFE4E6;
+      --mod-coordinacion: #7C3AED;
+      --mod-coordinacion-pastel: #EDE9FE;
+      --mod-pau: #0284C7;
+      --mod-pau-pastel: #E0F2FE;
+
+      /* Layout */
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+      --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.06);
+      --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+      --shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.06);
+      --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html, body {
+      min-height: 100vh;
+      width: 100%;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      color: var(--ucv-gray-900);
+      background: var(--ucv-cream);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ================================================================
+       BACKGROUND PATTERN
+       ================================================================ */
+    .page-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse at 20% 0%, rgba(190, 30, 45, 0.06) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 100%, rgba(26, 75, 140, 0.06) 0%, transparent 55%),
+        radial-gradient(ellipse at 50% 50%, rgba(212, 168, 67, 0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .page-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: 
+        radial-gradient(circle at 25% 25%, rgba(190, 30, 45, 0.03) 1px, transparent 1px),
+        radial-gradient(circle at 75% 75%, rgba(26, 75, 140, 0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+
+    /* ================================================================
+       HEADER / NAVBAR
+       ================================================================ */
+    .sel-navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 252, 249, 0.88);
+      backdrop-filter: blur(20px) saturate(1.4);
+      -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      border-bottom: 1px solid var(--ucv-gray-200);
+      padding: 0.75rem 1.5rem;
+    }
+
+    .sel-navbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sel-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .sel-brand img {
+      height: 36px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .sel-brand-text h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--ucv-gray-900);
+      line-height: 1.2;
+    }
+
+    .sel-brand-text small {
+      font-size: 0.72rem;
+      color: var(--ucv-gray-500);
+      font-weight: 500;
+    }
+
+    .sel-user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .sel-user-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--ucv-gray-100);
+      border: 1px solid var(--ucv-gray-200);
+      border-radius: 100px;
+      padding: 0.35rem 0.85rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--ucv-gray-700);
+    }
+
+    .sel-user-badge i {
+      color: var(--ucv-blue);
+    }
+
+    .btn-logout {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: transparent;
+      border: 1px solid var(--ucv-red-pastel);
+      border-radius: 100px;
+      padding: 0.35rem 0.85rem;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--ucv-red);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-logout:hover {
+      background: var(--ucv-red-pastel);
+      border-color: var(--ucv-red-soft);
+    }
+
+    /* ================================================================
+       MAIN CONTAINER
+       ================================================================ */
+    .sel-main {
+      position: relative;
+      z-index: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 3rem;
+    }
+
+    /* ================================================================
+       STEP 1: DAC SELECTOR
+       ================================================================ */
+    .step-container {
+      display: none;
+      animation: fadeSlideUp 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .step-container.active {
+      display: block;
+    }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .step-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .step-header .step-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+      background: var(--ucv-gold-pastel);
+      color: var(--ucv-gold);
+      border: 1.5px solid var(--ucv-gold-soft);
+    }
+
+    .step-header h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: var(--ucv-gray-900);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .step-header p {
+      font-size: 0.92rem;
+      color: var(--ucv-gray-500);
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* DAC Cards Grid */
+    .dac-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .dac-card {
+      position: relative;
+      background: var(--ucv-warm-white);
+      border: 2px solid var(--ucv-gray-200);
+      border-radius: var(--radius-lg);
+      padding: 2rem 1.75rem;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .dac-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      transition: height 0.4s ease;
+    }
+
+    .dac-card.dac-sistemas::before {
+      background: linear-gradient(90deg, var(--sistemas-primary), var(--sistemas-soft));
+    }
+
+    .dac-card.dac-industrial::before {
+      background: linear-gradient(90deg, var(--industrial-primary), var(--industrial-soft));
+    }
+
+    .dac-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .dac-card:hover::before {
+      height: 6px;
+    }
+
+    .dac-card.dac-sistemas:hover {
+      border-color: var(--sistemas-soft);
+      background: linear-gradient(180deg, var(--sistemas-pastel) 0%, var(--ucv-warm-white) 100%);
+    }
+
+    .dac-card.dac-industrial:hover {
+      border-color: var(--industrial-soft);
+      background: linear-gradient(180deg, var(--industrial-pastel) 0%, var(--ucv-warm-white) 100%);
+    }
+
+    .dac-card-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin-bottom: 1.25rem;
+      transition: var(--transition);
+    }
+
+    .dac-sistemas .dac-card-icon {
+      background: var(--sistemas-pastel);
+      color: var(--sistemas-primary);
+      border: 1.5px solid var(--sistemas-soft);
+    }
+
+    .dac-industrial .dac-card-icon {
+      background: var(--industrial-pastel);
+      color: var(--industrial-primary);
+      border: 1.5px solid var(--industrial-soft);
+    }
+
+    .dac-card:hover .dac-card-icon {
+      transform: scale(1.08);
+    }
+
+    .dac-card-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--ucv-gray-900);
+      margin-bottom: 0.35rem;
+    }
+
+    .dac-card-school {
+      font-size: 0.82rem;
+      color: var(--ucv-gray-500);
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .dac-card-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.85rem;
+      border-radius: 100px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .dac-sistemas .dac-card-badge {
+      background: var(--sistemas-pastel);
+      color: var(--sistemas-primary);
+      border: 1px solid var(--sistemas-soft);
+    }
+
+    .dac-industrial .dac-card-badge {
+      background: var(--industrial-pastel);
+      color: var(--industrial-primary);
+      border: 1px solid var(--industrial-soft);
+    }
+
+    .dac-card-enter {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      margin-top: 1.25rem;
+      padding: 0.6rem 1.5rem;
+      border-radius: 100px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .dac-sistemas .dac-card-enter {
+      background: linear-gradient(135deg, var(--sistemas-primary), #3B82F6);
+      box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25);
+    }
+
+    .dac-industrial .dac-card-enter {
+      background: linear-gradient(135deg, var(--industrial-primary), #10B981);
+      box-shadow: 0 4px 16px rgba(5, 150, 105, 0.25);
+    }
+
+    .dac-card-enter:hover {
+      transform: translateY(-1px);
+    }
+
+    .dac-card-enter i {
+      transition: transform 0.3s ease;
+    }
+
+    .dac-card:hover .dac-card-enter i {
+      transform: translateX(3px);
+    }
+
+    /* ================================================================
+       LOADING SCREEN
+       ================================================================ */
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: var(--ucv-cream);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+
+    .loading-overlay.show {
+      display: flex;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .loading-spinner {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 4px solid var(--ucv-gray-200);
+      border-top-color: var(--ucv-red);
+      animation: spin 0.8s linear infinite;
+    }
+
+    .loading-spinner.sistemas {
+      border-top-color: var(--sistemas-primary);
+    }
+
+    .loading-spinner.industrial {
+      border-top-color: var(--industrial-primary);
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--ucv-gray-700);
+    }
+
+    .loading-sub {
+      font-size: 0.82rem;
+      color: var(--ucv-gray-500);
+      margin-top: -0.75rem;
+    }
+
+    /* ================================================================
+       STEP 2: MODULE SELECTOR
+       ================================================================ */
+    .dac-label-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      padding: 0.6rem 1rem;
+      background: var(--ucv-warm-white);
+      border: 1px solid var(--ucv-gray-200);
+      border-radius: var(--radius-sm);
+    }
+
+    .dac-label-bar .dac-active-name {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--ucv-gray-900);
+    }
+
+    .dac-label-bar .dac-active-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dac-label-bar .dac-active-dot.sistemas { background: var(--sistemas-primary); }
+    .dac-label-bar .dac-active-dot.industrial { background: var(--industrial-primary); }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: transparent;
+      border: 1px solid var(--ucv-gray-200);
+      border-radius: 100px;
+      padding: 0.3rem 0.85rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ucv-gray-500);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-back:hover {
+      background: var(--ucv-gray-100);
+      color: var(--ucv-gray-700);
+      border-color: var(--ucv-gray-300);
+    }
+
+    /* Module Cards */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .module-card {
+      position: relative;
+      background: var(--ucv-warm-white);
+      border: 2px solid var(--ucv-gray-200);
+      border-radius: var(--radius-lg);
+      padding: 2rem 1.5rem 1.75rem;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      text-decoration: none;
+      display: block;
+    }
+
+    .module-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      transition: height 0.35s ease;
+    }
+
+    .module-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .module-card:hover::before {
+      height: 6px;
+    }
+
+    /* Delegados */
+    .module-card.mod-delegados::before {
+      background: linear-gradient(90deg, var(--mod-delegados), #FB7185);
+    }
+
+    .module-card.mod-delegados:hover {
+      border-color: #FECDD3;
+      background: linear-gradient(180deg, var(--mod-delegados-pastel) 0%, var(--ucv-warm-white) 100%);
+    }
+
+    .module-card.mod-delegados .module-icon {
+      background: var(--mod-delegados-pastel);
+      color: var(--mod-delegados);
+      border-color: #FECDD3;
+    }
+
+    .module-card.mod-delegados .module-number {
+      background: var(--mod-delegados-pastel);
+      color: var(--mod-delegados);
+    }
+
+    .module-card.mod-delegados .module-enter {
+      background: linear-gradient(135deg, var(--mod-delegados), #FB7185);
+      box-shadow: 0 4px 16px rgba(225, 29, 72, 0.2);
+    }
+
+    /* Coordinación */
+    .module-card.mod-coordinacion::before {
+      background: linear-gradient(90deg, var(--mod-coordinacion), #A78BFA);
+    }
+
+    .module-card.mod-coordinacion:hover {
+      border-color: #DDD6FE;
+      background: linear-gradient(180deg, var(--mod-coordinacion-pastel) 0%, var(--ucv-warm-white) 100%);
+    }
+
+    .module-card.mod-coordinacion .module-icon {
+      background: var(--mod-coordinacion-pastel);
+      color: var(--mod-coordinacion);
+      border-color: #DDD6FE;
+    }
+
+    .module-card.mod-coordinacion .module-number {
+      background: var(--mod-coordinacion-pastel);
+      color: var(--mod-coordinacion);
+    }
+
+    .module-card.mod-coordinacion .module-enter {
+      background: linear-gradient(135deg, var(--mod-coordinacion), #A78BFA);
+      box-shadow: 0 4px 16px rgba(124, 58, 237, 0.2);
+    }
+
+    /* PAU */
+    .module-card.mod-pau::before {
+      background: linear-gradient(90deg, var(--mod-pau), #38BDF8);
+    }
+
+    .module-card.mod-pau:hover {
+      border-color: #BAE6FD;
+      background: linear-gradient(180deg, var(--mod-pau-pastel) 0%, var(--ucv-warm-white) 100%);
+    }
+
+    .module-card.mod-pau .module-icon {
+      background: var(--mod-pau-pastel);
+      color: var(--mod-pau);
+      border-color: #BAE6FD;
+    }
+
+    .module-card.mod-pau .module-number {
+      background: var(--mod-pau-pastel);
+      color: var(--mod-pau);
+    }
+
+    .module-card.mod-pau .module-enter {
+      background: linear-gradient(135deg, var(--mod-pau), #38BDF8);
+      box-shadow: 0 4px 16px rgba(2, 132, 199, 0.2);
+    }
+
+    /* Module card inner elements */
+    .module-number {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+
+    .module-icon {
+      width: 68px;
+      height: 68px;
+      border-radius: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      margin-bottom: 1.25rem;
+      border: 1.5px solid;
+      transition: var(--transition);
+    }
+
+    .module-card:hover .module-icon {
+      transform: scale(1.08);
+    }
+
+    .module-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--ucv-gray-900);
+      margin-bottom: 0.35rem;
+    }
+
+    .module-desc {
+      font-size: 0.8rem;
+      color: var(--ucv-gray-500);
+      line-height: 1.5;
+      margin-bottom: 1.25rem;
+    }
+
+    .module-enter {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.55rem 1.4rem;
+      border-radius: 100px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .module-enter:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+    }
+
+    .module-enter i {
+      transition: transform 0.3s ease;
+    }
+
+    .module-card:hover .module-enter i {
+      transform: translateX(3px);
+    }
+
+    .module-external-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      margin-top: 0.65rem;
+      font-size: 0.68rem;
+      color: var(--ucv-gray-500);
+      font-weight: 500;
+    }
+
+    /* ================================================================
+       FOOTER
+       ================================================================ */
+    .sel-footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--ucv-gray-200);
+      font-size: 0.72rem;
+      color: var(--ucv-gray-500);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .sel-footer i {
+      color: var(--ucv-red-soft);
+    }
+
+    /* ================================================================
+       RESPONSIVE
+       ================================================================ */
+    @media (max-width: 768px) {
+      .sel-main {
+        padding: 1.5rem 1rem 2rem;
+      }
+
+      .dac-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .modules-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .step-header h2 {
+        font-size: 1.35rem;
+      }
+
+      .dac-card {
+        padding: 1.5rem;
+      }
+
+      .module-card {
+        padding: 1.5rem 1.25rem;
+      }
+
+      .sel-navbar-inner {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .sel-brand-text h1 {
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .sel-user-badge span {
+        display: none;
+      }
+    }
+
+    /* ================================================================
+       ANIMATION UTILITIES
+       ================================================================ */
+    .fade-out {
+      animation: fadeOut 0.3s ease forwards;
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(-12px); }
+    }
+
+    .stagger-1 { animation-delay: 0.08s; }
+    .stagger-2 { animation-delay: 0.16s; }
+    .stagger-3 { animation-delay: 0.24s; }
+
+    /* Floating particles */
+    .particle {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0.08;
+      z-index: 0;
+    }
+
+    .particle-1 {
+      width: 300px; height: 300px;
+      background: var(--ucv-red-pastel);
+      top: -80px; right: -80px;
+      animation: floatParticle 20s ease-in-out infinite;
+    }
+
+    .particle-2 {
+      width: 200px; height: 200px;
+      background: var(--ucv-blue-pastel);
+      bottom: -50px; left: -50px;
+      animation: floatParticle 25s ease-in-out infinite reverse;
+    }
+
+    .particle-3 {
+      width: 150px; height: 150px;
+      background: var(--ucv-gold-pastel);
+      top: 40%; left: 60%;
+      animation: floatParticle 18s ease-in-out infinite 3s;
+    }
+
+    @keyframes floatParticle {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(20px, -30px) scale(1.05); }
+      50% { transform: translate(-15px, 20px) scale(0.95); }
+      75% { transform: translate(25px, 15px) scale(1.03); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Auth Gate -->
+  <script>
+    if (sessionStorage.getItem('sga_logged_in') !== 'true') {
+      window.location.replace('login.html');
+    }
+  </script>
+
+  <!-- Floating particles -->
+  <div class="particle particle-1"></div>
+  <div class="particle particle-2"></div>
+  <div class="particle particle-3"></div>
+
+  <!-- Background -->
+  <div class="page-bg"></div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <img src="img/logo-ucv-virtual.png" alt="UCV" style="height: 48px; opacity: 0.6; margin-bottom: 0.5rem;">
+    <div class="loading-spinner" id="loadingSpinner"></div>
+    <div class="loading-text" id="loadingText">Cargando ambiente...</div>
+    <div class="loading-sub" id="loadingSub">Preparando módulos disponibles</div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="sel-navbar">
+    <div class="sel-navbar-inner">
+      <a href="selector.html" class="sel-brand">
+        <img src="img/logo-ucv-virtual.png" alt="UCV Virtual">
+        <div class="sel-brand-text">
+          <h1>Sistema de Gestión Académica</h1>
+          <small><i class="bi bi-gear-wide-connected" style="color: var(--ucv-gold);"></i> Facultad de Ingeniería y Arquitectura • 2026-II</small>
+        </div>
+      </a>
+      <div class="sel-user-info">
+        <div class="sel-user-badge">
+          <i class="bi bi-person-circle"></i>
+          <span id="navUserName">Coordinador</span>
+        </div>
+        <button class="btn-logout" id="btnLogout" title="Cerrar Sesión">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Salir</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="sel-main">
+
+    <!-- ============================================================
+         STEP 1: SELECCIÓN DE DAC (Escuela Profesional)
+         ============================================================ -->
+    <div class="step-container active" id="stepDacSelector">
+      <div class="step-header">
+        <div class="step-icon">
+          <i class="bi bi-buildings"></i>
+        </div>
+        <h2>Selecciona tu Dirección de Carrera</h2>
+        <p>Elige la Dirección Académica de Carrera (DAC) a la que deseas acceder para gestionar sus módulos académicos</p>
+      </div>
+
+      <div class="dac-grid">
+        <!-- DAC Sistemas -->
+        <div class="dac-card dac-sistemas" onclick="selectDAC('sistemas')" id="dacCardSistemas">
+          <div class="dac-card-icon">
+            <i class="bi bi-cpu"></i>
+          </div>
+          <div class="dac-card-title">DAC Sistemas</div>
+          <div class="dac-card-school">Escuela de Ingeniería de Sistemas</div>
+          <div class="dac-card-badge">
+            <i class="bi bi-shield-check"></i>
+            Ambiente Activo
+          </div>
+          <div class="dac-card-enter">
+            <span>Ingresar</span>
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </div>
+
+        <!-- DAC Industrial -->
+        <div class="dac-card dac-industrial" onclick="selectDAC('industrial')" id="dacCardIndustrial">
+          <div class="dac-card-icon">
+            <i class="bi bi-gear-wide-connected"></i>
+          </div>
+          <div class="dac-card-title">DAC Industrial</div>
+          <div class="dac-card-school">Escuela de Ingeniería Industrial</div>
+          <div class="dac-card-badge">
+            <i class="bi bi-shield-check"></i>
+            Ambiente Activo
+          </div>
+          <div class="dac-card-enter">
+            <span>Ingresar</span>
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="sel-footer">
+        <i class="bi bi-shield-fill-check"></i>
+        <span>© 2026 UCV Virtual — Universidad César Vallejo — Todos los derechos reservados</span>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         STEP 2: SELECCIÓN DE MÓDULO (3 opciones)
+         ============================================================ -->
+    <div class="step-container" id="stepModuleSelector">
+      <div class="step-header">
+        <div class="step-icon" id="moduleStepIcon" style="background: var(--sistemas-pastel); color: var(--sistemas-primary); border-color: var(--sistemas-soft);">
+          <i class="bi bi-grid-3x3-gap-fill"></i>
+        </div>
+        <h2>Módulos Disponibles</h2>
+        <p>Selecciona el módulo al que deseas acceder dentro de la dirección de carrera seleccionada</p>
+      </div>
+
+      <!-- Active DAC indicator + back button -->
+      <div class="dac-label-bar">
+        <div class="dac-active-name">
+          <span class="dac-active-dot" id="dacActiveDot"></span>
+          <span id="dacActiveLabel">DAC Sistemas</span>
+        </div>
+        <button class="btn-back" onclick="goBackToDAC()" title="Volver a seleccionar DAC">
+          <i class="bi bi-arrow-left"></i>
+          Cambiar DAC
+        </button>
+      </div>
+
+      <!-- Module Cards -->
+      <div class="modules-grid">
+        <!-- 1.1 Delegados -->
+        <div class="module-card mod-delegados stagger-1" onclick="navigateToModule('delegados')" id="modDelegados">
+          <span class="module-number">1.1</span>
+          <div class="module-icon">
+            <i class="bi bi-people-fill"></i>
+          </div>
+          <div class="module-title">Delegados</div>
+          <div class="module-desc">Gestión de delegados de aula, registro de asistencia y seguimiento de reuniones</div>
+          <div class="module-enter">
+            <span>Acceder</span>
+            <i class="bi bi-arrow-right"></i>
+          </div>
+          <div class="module-external-badge">
+            <i class="bi bi-box-arrow-up-right"></i>
+            Portal externo
+          </div>
+        </div>
+
+        <!-- 1.2 Coordinación Escuela -->
+        <div class="module-card mod-coordinacion stagger-2" onclick="navigateToModule('coordinacion')" id="modCoordinacion">
+          <span class="module-number">1.2</span>
+          <div class="module-icon">
+            <i class="bi bi-kanban-fill"></i>
+          </div>
+          <div class="module-title">Coordinación Escuela</div>
+          <div class="module-desc">Programación académica, directorio docente, vacantes, evaluación de desempeño y carpetas</div>
+          <div class="module-enter">
+            <span>Acceder</span>
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </div>
+
+        <!-- 1.3 PAU -->
+        <div class="module-card mod-pau stagger-3" onclick="navigateToModule('pau')" id="modPau">
+          <span class="module-number">1.3</span>
+          <div class="module-icon">
+            <i class="bi bi-inbox-fill"></i>
+          </div>
+          <div class="module-title">PAU</div>
+          <div class="module-desc">Plataforma de Atención al Estudiante — Seguimiento de correos y solicitudes</div>
+          <div class="module-enter">
+            <span>Acceder</span>
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="sel-footer">
+        <i class="bi bi-shield-fill-check"></i>
+        <span>© 2026 UCV Virtual — Universidad César Vallejo — Todos los derechos reservados</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       LOGIC
+       ==================================================================== -->
+  <script>
+    // State
+    let currentDAC = null;
+
+    // User name from session
+    const userName = sessionStorage.getItem('sga_user_name') || sessionStorage.getItem('sga_user_email') || 'Coordinador';
+    const navUserEl = document.getElementById('navUserName');
+    if (navUserEl) navUserEl.textContent = userName;
+
+    // Logout
+    document.getElementById('btnLogout').addEventListener('click', () => {
+      sessionStorage.clear();
+      window.location.replace('login.html');
+    });
+
+    // ============================
+    // STEP 1 → STEP 2: Select DAC
+    // ============================
+    function selectDAC(dac) {
+      currentDAC = dac;
+      sessionStorage.setItem('sga_dac', dac);
+
+      // Show loading
+      const overlay = document.getElementById('loadingOverlay');
+      const spinner = document.getElementById('loadingSpinner');
+      const loadText = document.getElementById('loadingText');
+      const loadSub = document.getElementById('loadingSub');
+
+      spinner.className = 'loading-spinner ' + dac;
+
+      if (dac === 'sistemas') {
+        loadText.textContent = 'Ingresando a DAC Sistemas...';
+        loadSub.textContent = 'Escuela de Ingeniería de Sistemas';
+      } else {
+        loadText.textContent = 'Ingresando a DAC Industrial...';
+        loadSub.textContent = 'Escuela de Ingeniería Industrial';
+      }
+
+      overlay.classList.add('show');
+
+      // Transition after delay
+      setTimeout(() => {
+        overlay.classList.remove('show');
+        showModuleSelector(dac);
+      }, 1400);
+    }
+
+    // ============================
+    // Show Module Selector (Step 2)
+    // ============================
+    function showModuleSelector(dac) {
+      const step1 = document.getElementById('stepDacSelector');
+      const step2 = document.getElementById('stepModuleSelector');
+      const dot = document.getElementById('dacActiveDot');
+      const label = document.getElementById('dacActiveLabel');
+      const icon = document.getElementById('moduleStepIcon');
+
+      // Update DAC label
+      if (dac === 'sistemas') {
+        dot.className = 'dac-active-dot sistemas';
+        label.textContent = 'DAC Sistemas — Ing. de Sistemas';
+        icon.style.background = 'var(--sistemas-pastel)';
+        icon.style.color = 'var(--sistemas-primary)';
+        icon.style.borderColor = 'var(--sistemas-soft)';
+      } else {
+        dot.className = 'dac-active-dot industrial';
+        label.textContent = 'DAC Industrial — Ing. Industrial';
+        icon.style.background = 'var(--industrial-pastel)';
+        icon.style.color = 'var(--industrial-primary)';
+        icon.style.borderColor = 'var(--industrial-soft)';
+      }
+
+      // Transition steps
+      step1.classList.remove('active');
+      step2.classList.remove('active');
+
+      // Small delay for re-animation
+      requestAnimationFrame(() => {
+        step2.classList.add('active');
+      });
+    }
+
+    // ============================
+    // Go Back to DAC Selection
+    // ============================
+    function goBackToDAC() {
+      const step1 = document.getElementById('stepDacSelector');
+      const step2 = document.getElementById('stepModuleSelector');
+
+      step2.classList.remove('active');
+      sessionStorage.removeItem('sga_dac');
+
+      requestAnimationFrame(() => {
+        step1.classList.add('active');
+      });
+    }
+
+    // ============================
+    // Navigate to Module
+    // ============================
+    function navigateToModule(module) {
+      const dac = currentDAC || sessionStorage.getItem('sga_dac') || 'sistemas';
+
+      // Store in session for context
+      sessionStorage.setItem('sga_active_module', module);
+      sessionStorage.setItem('sga_dac', dac);
+
+      switch (module) {
+        case 'delegados':
+          // Redirect to external delegate portal
+          window.open('https://reg-asistencia-1.class-it.edu.pe', '_blank', 'noopener,noreferrer');
+          break;
+
+        case 'coordinacion':
+          // Redirect to main system (index.html)
+          window.location.href = 'index.html';
+          break;
+
+        case 'pau':
+          // Redirect to main system with PAU tab active
+          sessionStorage.setItem('sga_goto_tab', 'pau-tab');
+          window.location.href = 'index.html';
+          break;
+      }
+    }
+
+    // ============================
+    // Restore state if coming back
+    // ============================
+    (function restoreState() {
+      const savedDAC = sessionStorage.getItem('sga_dac');
+      if (savedDAC) {
+        currentDAC = savedDAC;
+        // Optionally go straight to modules if DAC was previously selected
+        // Uncomment line below if you want auto-skip to modules:
+        // showModuleSelector(savedDAC);
+      }
+    })();
+  </script>
+
+</body>
+</html>

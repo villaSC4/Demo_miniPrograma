@@ -1,5 +1,5 @@
 -- ========================================================================
--- Base de Datos: 1RA REUNIÓN DE DELEGADOS 2026-2
+-- Base de Datos: REUNIÓN DE DELEGADOS 2026-2
 -- Facultad de Ingeniería y Arquitectura - Universidad César Vallejo (UCV)
 -- ========================================================================
 
@@ -19,4 +19,4 @@ CREATE TABLE IF NOT EXISTS `delegados_asistencia` (
   INDEX `idx_codigo` (`codigo_alumno`),
   INDEX `idx_escuela` (`escuela_profesional`),
   INDEX `idx_fecha` (`fecha_registro`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Registros de asistencia - 1ra Reunión de Delegados';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Registros de asistencia - Reunión de Delegados';

@@ -1,5 +1,5 @@
 # Guía de Despliegue en Subdominio cPanel
-## Formulario: 1RA REUNIÓN DE DELEGADOS 2026-2
+## Formulario: REUNIÓN DE DELEGADOS 2026-2
 **Facultad de Ingeniería y Arquitectura — Universidad César Vallejo (UCV)**
 
 Este proyecto es **100% independiente** del minisistema y está preparado para alojarse en su propio subdominio (por ejemplo: `delegados.tudominio.com` o `asistencia.tudominio.com`).

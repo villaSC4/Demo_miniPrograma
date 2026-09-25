@@ -11,15 +11,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Bootstrap 5 CSS y Bootstrap Icons (Carga local instantánea) -->
+  <!-- Bootstrap 5 CSS y Bootstrap Icons (Carga local y CDN de alta disponibilidad) -->
   <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="lib/icons/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
   <!-- Favicon UCV Virtual -->
   <link rel="icon" type="image/png" href="img/logo-ucv-virtual.png">
   
   <!-- Estilos Personalizados Modernos -->
-  <link rel="stylesheet" href="css/custom.css">
+  <link rel="stylesheet" href="css/custom.css?v=3.0">
 
   <!-- Login Gate: redirect to login if not authenticated -->
   <script>
@@ -32,7 +33,7 @@
 
   <!-- NAVBAR INSTITUCIONAL ELEGANTE -->
   <nav class="navbar navbar-dark app-navbar py-2 px-3 shadow-sm sticky-top">
-    <div class="container-fluid" style="max-width: 1360px;">
+    <div class="container-fluid" style="max-width: 1520px;">
       <div class="d-flex align-items-center gap-2">
         <a href="index.html" class="d-inline-flex align-items-center text-decoration-none">
           <img src="img/logo-ucv-virtual.png" alt="UCV Virtual" class="navbar-logo" style="height: 38px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));">
@@ -95,146 +96,166 @@
     <div id="uploadAlert" style="display: none;" class="mb-3"></div>
 
     <!-- 1. BOTONES DE ACCESO DIRECTO A ÁREAS CLAVE -->
-    <div class="row g-2.5 mb-3" id="areaButtonsRow">
+    <div class="row g-3 g-xl-4 mb-4 pb-1" id="areaButtonsRow">
       
       <!-- Área 1: Directorio Docente -->
-      <div class="col-xl col-md-4 col-sm-6">
+      <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-3">
         <button type="button" class="area-action-card w-100 text-start border-0 area-card-directorio" onclick="navigateToArea('directorio-tab')" title="Acceder al Directorio Docente por Ciclos">
           <div class="d-flex align-items-center justify-content-between mb-2">
             <div class="area-card-icon bg-primary-subtle text-primary">
               <i class="bi bi-person-lines-fill"></i>
             </div>
-            <span class="badge bg-primary-subtle text-primary fw-bold" style="font-size: 0.72rem;" id="badgeAreaDirectorio">
+            <span class="badge bg-primary-subtle text-primary fw-bold" style="font-size: 0.74rem; padding: 5px 10px;" id="badgeAreaDirectorio">
               <span id="kpiDocentesCompletos">18</span> Docentes
             </span>
           </div>
           <div class="area-card-title">Directorio Docente</div>
           <div class="area-card-desc">Gestión por Ciclos I al X y apertura</div>
           <div class="area-card-footer mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
-            <span class="small fw-semibold text-primary" style="font-size: 0.74rem;">Abrir Directorio</span>
+            <span class="small fw-semibold text-primary" style="font-size: 0.76rem;">Abrir Directorio</span>
             <i class="bi bi-arrow-right-short text-primary fs-5"></i>
           </div>
         </button>
       </div>
 
       <!-- Área 2: Análisis de Cursos -->
-      <div class="col-xl col-md-4 col-sm-6">
+      <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-3">
         <button type="button" class="area-action-card w-100 text-start border-0 area-card-cursos" onclick="navigateToArea('cursos-tab')" title="Acceder al Análisis de Cursos y Carga Electiva">
           <div class="d-flex align-items-center justify-content-between mb-2">
             <div class="area-card-icon" style="background: #F3E8FF; color: #7C3AED;">
               <i class="bi bi-diagram-3"></i>
             </div>
-            <span class="badge fw-bold" style="background: #F3E8FF; color: #7C3AED; font-size: 0.72rem;" id="badgeAreaCursos">
+            <span class="badge fw-bold" style="background: #F3E8FF; color: #7C3AED; font-size: 0.74rem; padding: 5px 10px;" id="badgeAreaCursos">
               24 Cursos
             </span>
           </div>
           <div class="area-card-title">Análisis de Cursos</div>
           <div class="area-card-desc">Carga electiva, vacantes y cobertura</div>
           <div class="area-card-footer mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
-            <span class="small fw-semibold" style="color: #7C3AED; font-size: 0.74rem;">Ver Cursos</span>
+            <span class="small fw-semibold" style="color: #7C3AED; font-size: 0.76rem;">Ver Cursos</span>
             <i class="bi bi-arrow-right-short fs-5" style="color: #7C3AED;"></i>
           </div>
         </button>
       </div>
 
       <!-- Área 3: Calificar Desempeño (EDD 2026-2) -->
-      <div class="col-xl col-md-4 col-sm-6">
+      <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-3">
         <button type="button" class="area-action-card w-100 text-start border-0 area-card-desempeno" onclick="navigateToArea('desempeno-tab')" title="Evaluación del Desempeño Docente según Rúbrica Oficial (PDF F03 / 0-20 pts)">
           <div class="d-flex align-items-center justify-content-between mb-2">
             <div class="area-card-icon" style="background: #FEF3C7; color: #D97706;">
               <i class="bi bi-award-fill"></i>
             </div>
-            <span class="badge fw-bold" style="background: #FEF3C7; color: #B45309; font-size: 0.72rem;" id="badgeAreaDesempeno">
+            <span class="badge fw-bold" style="background: #FEF3C7; color: #B45309; font-size: 0.74rem; padding: 5px 10px;" id="badgeAreaDesempeno">
               EDD 2026-2
             </span>
           </div>
           <div class="area-card-title">Calificar Desempeño</div>
           <div class="area-card-desc">F03 Observación de clase (0-20 pts)</div>
           <div class="area-card-footer mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
-            <span class="small fw-semibold" style="color: #D97706; font-size: 0.74rem;">Calificar Ahora</span>
+            <span class="small fw-semibold" style="color: #D97706; font-size: 0.76rem;">Calificar Ahora</span>
             <i class="bi bi-arrow-right-short fs-5" style="color: #D97706;"></i>
           </div>
         </button>
       </div>
 
       <!-- Área 4: Supervisión de Carpetas -->
-      <div class="col-xl col-md-4 col-sm-6">
+      <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-3">
         <button type="button" class="area-action-card w-100 text-start border-0 area-card-supervision" onclick="navigateToArea('supervision-tab')" title="Supervisión de Carpetas Docentes y Desempeño">
           <div class="d-flex align-items-center justify-content-between mb-2">
             <div class="area-card-icon bg-success-subtle text-success">
               <i class="bi bi-folder-check"></i>
             </div>
-            <span class="badge bg-success-subtle text-success fw-bold" style="font-size: 0.72rem;" id="badgeAreaSupervision">
+            <span class="badge bg-success-subtle text-success fw-bold" style="font-size: 0.74rem; padding: 5px 10px;" id="badgeAreaSupervision">
               Auditoría UCV
             </span>
           </div>
           <div class="area-card-title">Supervisión Carpetas</div>
           <div class="area-card-desc">Portafolio pedagógico (7 componentes)</div>
           <div class="area-card-footer mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
-            <span class="small fw-semibold text-success" style="font-size: 0.74rem;">Auditar Carpetas</span>
+            <span class="small fw-semibold text-success" style="font-size: 0.76rem;">Auditar Carpetas</span>
             <i class="bi bi-arrow-right-short text-success fs-5"></i>
           </div>
         </button>
       </div>
 
-      <!-- Área 4: Matriz de Programación -->
-      <div class="col-xl col-md-4 col-sm-6">
+      <!-- Área 5: Matriz de Programación -->
+      <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-3">
         <button type="button" class="area-action-card w-100 text-start border-0 area-card-matriz" onclick="navigateToArea('matriz-tab')" title="Matriz Modular Docente y Programación">
           <div class="d-flex align-items-center justify-content-between mb-2">
             <div class="area-card-icon bg-info-subtle text-info">
               <i class="bi bi-calendar4-week"></i>
             </div>
-            <span class="badge bg-info-subtle text-info fw-bold" style="font-size: 0.72rem;" id="badgeAreaMatriz">
+            <span class="badge bg-info-subtle text-info fw-bold" style="font-size: 0.74rem; padding: 5px 10px;" id="badgeAreaMatriz">
               <span id="kpiTotalGrupos">128</span> Grupos
             </span>
           </div>
           <div class="area-card-title">Matriz Modular</div>
           <div class="area-card-desc">Programación mensual (Set-Dic 2026)</div>
           <div class="area-card-footer mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
-            <span class="small fw-semibold text-info" style="font-size: 0.74rem;">Ver Matriz</span>
+            <span class="small fw-semibold text-info" style="font-size: 0.76rem;">Ver Matriz</span>
             <i class="bi bi-arrow-right-short text-info fs-5"></i>
           </div>
         </button>
       </div>
 
-      <!-- Área 5: Bolsa de Vacantes -->
-      <div class="col-xl col-md-4 col-sm-6">
+      <!-- Área 6: Bolsa de Vacantes -->
+      <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-3">
         <button type="button" class="area-action-card w-100 text-start border-0 area-card-vacantes" onclick="navigateToArea('vacantes-tab')" title="Bolsa de Vacantes y Asignación Docente">
           <div class="d-flex align-items-center justify-content-between mb-2">
             <div class="area-card-icon bg-danger-subtle text-danger">
               <i class="bi bi-briefcase"></i>
             </div>
-            <span class="badge bg-danger-subtle text-danger fw-bold" style="font-size: 0.72rem;" id="badgeAreaVacantes">
+            <span class="badge bg-danger-subtle text-danger fw-bold" style="font-size: 0.74rem; padding: 5px 10px;" id="badgeAreaVacantes">
               <span id="kpiGruposVacantes">35</span> Vacantes
             </span>
           </div>
           <div class="area-card-title">Bolsa de Vacantes</div>
           <div class="area-card-desc">Plazas por cubrir y asignación rápida</div>
           <div class="area-card-footer mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
-            <span class="small fw-semibold text-danger" style="font-size: 0.74rem;">Resolver Vacantes</span>
+            <span class="small fw-semibold text-danger" style="font-size: 0.76rem;">Resolver Vacantes</span>
             <i class="bi bi-arrow-right-short text-danger fs-5"></i>
           </div>
         </button>
       </div>
 
       <!-- Área 7: Asistencia Delegados (Enlace Externo a reg-asistencia-1.class-it.edu.pe) -->
-      <div class="col-xl col-md-4 col-sm-6">
+      <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-3">
         <a href="https://reg-asistencia-1.class-it.edu.pe" target="_blank" rel="noopener noreferrer" class="area-action-card w-100 text-start border-0 text-decoration-none d-block" style="border-left: 3px solid #BE1E2D !important;" title="Abrir Formulario Oficial de Asistencia de Delegados en reg-asistencia-1.class-it.edu.pe">
           <div class="d-flex align-items-center justify-content-between mb-2">
             <div class="area-card-icon" style="background: #FEE2E2; color: #BE1E2D;">
               <i class="bi bi-person-check-fill"></i>
             </div>
-            <span class="badge fw-bold" style="background: #FEE2E2; color: #BE1E2D; font-size: 0.72rem;">
+            <span class="badge fw-bold" style="background: #FEE2E2; color: #BE1E2D; font-size: 0.74rem; padding: 5px 10px;">
               En Vivo
             </span>
           </div>
           <div class="area-card-title text-dark">Asistencia Delegados</div>
-          <div class="area-card-desc text-muted">1ra Reunión de Delegados 2026-2</div>
+          <div class="area-card-desc text-muted">Reunión de Delegados 2026-2</div>
           <div class="area-card-footer mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
-            <span class="small fw-semibold" style="color: #BE1E2D; font-size: 0.74rem;">Ir al Formulario</span>
+            <span class="small fw-semibold" style="color: #BE1E2D; font-size: 0.76rem;">Ir al Formulario</span>
             <i class="bi bi-box-arrow-up-right" style="color: #BE1E2D; font-size: 0.78rem;"></i>
           </div>
         </a>
+      </div>
+
+      <!-- Área 8: Atención al Estudiante (PAU / PAE) -->
+      <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-3">
+        <button type="button" class="area-action-card w-100 text-start border-0 area-card-pau" onclick="navigateToArea('pau-tab')" title="Acceder a la Plataforma de Atención al Estudiante (PAU / PAE) y Seguimiento de Correos">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="area-card-icon" style="background: #E0F2FE; color: #0284C7;">
+              <i class="bi bi-inbox-fill"></i>
+            </div>
+            <span class="badge fw-bold" style="background: #E0F2FE; color: #0284C7; font-size: 0.74rem; padding: 5px 10px;" id="badgeAreaPau">
+              <span id="kpiPauTotal">0</span> Correos
+            </span>
+          </div>
+          <div class="area-card-title text-dark">Atención Estudiante (PAU)</div>
+          <div class="area-card-desc text-muted">Bandeja de correos y WhatsApp</div>
+          <div class="area-card-footer mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
+            <span class="small fw-semibold" style="color: #0284C7; font-size: 0.76rem;">Bandeja PAU</span>
+            <i class="bi bi-arrow-right-short fs-5" style="color: #0284C7;"></i>
+          </div>
+        </button>
       </div>
 
       <!-- Elementos métricos auxiliares ocultos para compatibilidad -->
@@ -245,24 +266,24 @@
       </div>
     </div>
 
-    <!-- 2. BARRA DE FILTRADO Y BÚSQUEDA -->
-    <div class="content-card p-3 mb-3">
-      <div class="row g-2.5 align-items-center">
+    <!-- 2. BARRA DE FILTRADO Y BÚSQUEDA AMPLIA -->
+    <div class="content-card p-3.5 p-lg-4 mb-4">
+      <div class="row g-3.5 align-items-center">
         <div class="col-lg-4 col-md-6">
           <div class="input-group input-group-sm">
-            <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-search"></i></span>
-            <input type="text" id="filterSearch" class="form-control form-control-sm border-start-0 ps-1" placeholder="Buscar curso, profesor, sección...">
+            <span class="input-group-text bg-light text-muted border-end-0 px-3"><i class="bi bi-search"></i></span>
+            <input type="text" id="filterSearch" class="form-control form-control-sm border-start-0 ps-1 py-2" placeholder="Buscar curso, profesor, sección...">
           </div>
         </div>
 
         <div class="col-lg-3 col-md-6">
-          <select id="filterEscuela" class="form-select form-select-sm">
+          <select id="filterEscuela" class="form-select form-select-sm py-2">
             <option value="ALL">Todas las Escuelas</option>
           </select>
         </div>
 
         <div class="col-lg-2 col-md-4">
-          <select id="filterModulo" class="form-select form-select-sm">
+          <select id="filterModulo" class="form-select form-select-sm py-2">
             <option value="ALL">Todos los Módulos</option>
             <option value="Set">Setiembre</option>
             <option value="Oct">Octubre</option>
@@ -273,29 +294,29 @@
 
         <div class="col-lg-3 col-md-8">
           <div class="d-flex align-items-center gap-2">
-            <select id="filterDocente" class="form-select form-select-sm">
+            <select id="filterDocente" class="form-select form-select-sm py-2">
               <option value="ALL">Todos (Asignados y Vacantes)</option>
               <option value="CON_DOCENTE">Solo con Docente</option>
               <option value="VACANTE">Solo Vacantes</option>
             </select>
-            <button id="btnResetFilters" class="btn btn-outline-secondary btn-sm px-2 py-1" style="font-size: 0.8rem; white-space: nowrap;" title="Restablecer filtros">
+            <button id="btnResetFilters" class="btn btn-outline-secondary btn-sm px-3 py-2" style="font-size: 0.84rem; white-space: nowrap;" title="Restablecer filtros">
               <i class="bi bi-arrow-counterclockwise"></i>
             </button>
           </div>
         </div>
       </div>
 
-      <div class="d-flex justify-content-between align-items-center pt-2 mt-2 border-top" style="font-size: 0.78rem;">
-        <span class="text-muted" id="filterStatsText">Mostrando 128 de 128 grupos (6,397 alumnos)</span>
+      <div class="d-flex justify-content-between align-items-center pt-3 mt-3 border-top" style="font-size: 0.82rem;">
+        <span class="text-muted fw-semibold" id="filterStatsText">Mostrando 128 de 128 grupos (6,397 alumnos)</span>
         <span class="text-muted">Filtros transversales activos</span>
       </div>
     </div>
 
-    <!-- 3. CONTENEDOR DE TABLAS Y VISTAS -->
-    <div class="content-card p-3">
+    <!-- 3. CONTENEDOR DE TABLAS Y VISTAS (AMPLIO Y SEPARADO) -->
+    <div class="content-card p-3.5 p-lg-4 mb-4">
       
-      <!-- Selector de Pestañas Segmentado -->
-      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom">
+      <!-- Selector de Pestañas Segmentado Holgado -->
+      <div class="mb-3.5 pb-2">
         <ul class="nav nav-segmented" id="mainTab" role="tablist">
           <li class="nav-item" role="presentation">
             <button class="nav-link active" id="matriz-tab" data-bs-toggle="pill" data-bs-target="#tab-matriz" type="button" role="tab">
@@ -345,21 +366,35 @@
               <span class="badge bg-danger ms-1" id="badgeTabAuditoria">6</span>
             </button>
           </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pau-tab" data-bs-toggle="pill" data-bs-target="#tab-pau" type="button" role="tab" style="color: #0284C7; font-weight: 700;">
+              <i class="bi bi-envelope-paper-heart-fill me-1" style="color: #0284C7;"></i> Atención al Estudiante (PAU)
+              <span class="badge ms-1" style="background: #E0F2FE; color: #0284C7;" id="badgeTabPau">0</span>
+            </button>
+          </li>
         </ul>
+      </div>
 
-        <div class="d-flex align-items-center gap-2">
-          <a href="https://reg-asistencia-1.class-it.edu.pe" target="_blank" rel="noopener noreferrer" class="btn btn-outline-danger btn-sm py-1 px-3 fw-bold shadow-sm d-inline-flex align-items-center gap-1.5" style="font-size: 0.8rem; border-color: #BE1E2D; color: #BE1E2D;" title="Abrir Formulario Oficial de Asistencia de Delegados 2026-2 (reg-asistencia-1.class-it.edu.pe)">
-            <i class="bi bi-person-check-fill"></i>
+      <!-- Barra de Acciones y Accesos Rápidos con Separación Limpia -->
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 pb-3 border-bottom">
+        <div class="d-flex align-items-center gap-2 text-muted small fw-semibold">
+          <i class="bi bi-grid-fill text-primary"></i>
+          <span>Vistas y Herramientas del Sistema:</span>
+        </div>
+
+        <div class="d-flex align-items-center gap-2.5 flex-wrap">
+          <a href="https://reg-asistencia-1.class-it.edu.pe" target="_blank" rel="noopener noreferrer" class="btn btn-outline-danger btn-sm py-1.5 px-3.5 fw-bold shadow-xs d-inline-flex align-items-center gap-2" style="font-size: 0.84rem; border-color: #BE1E2D; color: #BE1E2D; border-radius: 8px;" title="Abrir Formulario Oficial de Asistencia de Delegados 2026-2 (reg-asistencia-1.class-it.edu.pe)">
+            <i class="bi bi-person-check-fill fs-6"></i>
             <span>Asistencia Delegados</span>
             <i class="bi bi-box-arrow-up-right ms-0.5" style="font-size: 0.72rem;"></i>
           </a>
-          <button id="btnOpenCalificarDesempenoTop" class="btn btn-warning btn-sm py-1 px-3 fw-bold text-dark shadow-sm" style="font-size: 0.8rem;" title="Abrir instrumento oficial F03 para calificar desempeño docente en aula">
+          <button id="btnOpenCalificarDesempenoTop" class="btn btn-warning btn-sm py-1.5 px-3.5 fw-bold text-dark shadow-xs" style="font-size: 0.84rem; border-radius: 8px;" title="Abrir instrumento oficial F03 para calificar desempeño docente en aula">
             <i class="bi bi-award-fill me-1"></i> Calificar Desempeño
           </button>
-          <button id="btnOpenNewGroupModal" class="btn btn-primary-app btn-sm py-1 px-3 fw-semibold" style="font-size: 0.8rem;" title="Añadir nuevo grupo de clase">
+          <button id="btnOpenNewGroupModal" class="btn btn-primary-app btn-sm py-1.5 px-3.5 fw-semibold shadow-xs" style="font-size: 0.84rem; border-radius: 8px;" title="Añadir nuevo grupo de clase">
             <i class="bi bi-plus-lg me-1"></i> Añadir Grupo
           </button>
-          <button id="btnExportMatrixCsv" class="btn btn-outline-secondary btn-sm py-1 px-2.5 fw-semibold" style="font-size: 0.8rem;">
+          <button id="btnExportMatrixCsv" class="btn btn-outline-secondary btn-sm py-1.5 px-3 fw-semibold shadow-xs" style="font-size: 0.84rem; border-radius: 8px;">
             <i class="bi bi-file-earmark-arrow-down me-1"></i> Exportar CSV
           </button>
         </div>
@@ -1033,6 +1068,170 @@
             </div>
 
           </div>
+        </div>
+
+        <!-- PESTAÑA 9: ATENCIÓN AL ESTUDIANTE (PAU / PAE) & SEGUIMIENTO DE CORREOS -->
+        <div class="tab-pane fade" id="tab-pau" role="tabpanel">
+          
+          <!-- Encabezado de la Bandeja PAU con Amplio Espacio -->
+          <div class="d-flex justify-content-between align-items-start mb-4 pb-3 border-bottom flex-wrap gap-3">
+            <div>
+              <div class="d-flex align-items-center gap-2.5 mb-2">
+                <span class="badge" style="background: #E0F2FE; color: #0284C7; font-size: 0.8rem; padding: 6px 12px; border-radius: 6px;">
+                  <i class="bi bi-shield-check me-1"></i> Módulo 2: Atención al Estudiante
+                </span>
+                <span class="badge bg-light text-muted border" style="font-size: 0.78rem; padding: 6px 12px; border-radius: 6px;">
+                  <i class="bi bi-envelope-at me-1 text-primary"></i> coordinacion.fia@ucvvirtual.edu.pe
+                </span>
+              </div>
+              <h4 class="fw-bold text-dark mb-1" style="font-size: 1.25rem;">
+                Plataforma de Atención al Estudiante (PAU / PAE) — Bandeja de Solicitudes
+              </h4>
+              <p class="text-muted mb-0" style="font-size: 0.85rem; line-height: 1.5;">
+                Control y seguimiento en tiempo real de correos entrantes, estados de atención y vistos buenos de coordinación (FIA - Semestre 2026-II).
+              </p>
+            </div>
+
+            <div class="d-flex align-items-center gap-2.5 flex-wrap">
+
+
+              <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank" rel="noopener noreferrer" class="btn btn-outline-danger btn-sm py-2 px-3 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs" style="border-radius: 8px;" title="Abrir bandeja de entrada de Gmail en una nueva pestaña">
+                <i class="bi bi-envelope-arrow-up-fill text-danger fs-6"></i>
+                <span>Gmail</span>
+                <i class="bi bi-box-arrow-up-right" style="font-size: 0.7rem;"></i>
+              </a>
+
+              <a href="https://web.whatsapp.com" target="_blank" rel="noopener noreferrer" class="btn btn-outline-success btn-sm py-2 px-3 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs" style="border-radius: 8px;" title="Abrir WhatsApp Web de la Escuela">
+                <i class="bi bi-whatsapp text-success fs-6"></i>
+                <span>WhatsApp</span>
+                <i class="bi bi-box-arrow-up-right" style="font-size: 0.7rem;"></i>
+              </a>
+
+              <button type="button" id="btnExportPauExcel" class="btn btn-outline-secondary btn-sm py-2 px-3 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs" style="border-radius: 8px;" title="Exportar reporte en formato Excel idéntico al Drive">
+                <i class="bi bi-file-earmark-spreadsheet-fill text-success fs-6"></i>
+                <span>Exportar Excel</span>
+              </button>
+
+              <button type="button" id="btnOpenNewPauModal" class="btn btn-primary-app btn-sm py-2 px-3.5 fw-semibold shadow-sm d-inline-flex align-items-center gap-2" style="border-radius: 8px;">
+                <i class="bi bi-plus-circle-fill fs-6"></i>
+                <span>+ Nueva Solicitud</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Métricas Resumen KPI Espaciosas -->
+          <div class="row g-3 g-xl-4 mb-4">
+            <div class="col-xl-3 col-sm-6">
+              <div class="pau-metric-card d-flex align-items-center justify-content-between">
+                <div>
+                  <small class="text-muted d-block fw-semibold mb-1" style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.04em;">Total Solicitudes</small>
+                  <span class="fs-2 fw-bold text-dark kpi-pau-total-val" id="kpiPauTotalMetric">0</span>
+                </div>
+                <div class="area-card-icon" style="width: 46px; height: 46px; border-radius: 11px; background: #F1F5F9; color: #475569; font-size: 1.35rem; margin-bottom: 0;">
+                  <i class="bi bi-inbox-fill"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6">
+              <div class="pau-metric-card d-flex align-items-center justify-content-between" style="border-left: 3px solid #16A34A !important;">
+                <div>
+                  <small class="text-muted d-block fw-semibold mb-1" style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.04em;">Atendidos</small>
+                  <span class="fs-2 fw-bold text-success" id="kpiPauAtendidos">0 (0%)</span>
+                </div>
+                <div class="area-card-icon" style="width: 46px; height: 46px; border-radius: 11px; background: #DCFCE7; color: #16A34A; font-size: 1.35rem; margin-bottom: 0;">
+                  <i class="bi bi-check-circle-fill"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6">
+              <div class="pau-metric-card d-flex align-items-center justify-content-between" style="border-left: 3px solid #F59E0B !important;">
+                <div>
+                  <small class="text-muted d-block fw-semibold mb-1" style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.04em;">Sin Atención</small>
+                  <span class="fs-2 fw-bold text-warning" id="kpiPauSinAtencion">0</span>
+                </div>
+                <div class="area-card-icon" style="width: 46px; height: 46px; border-radius: 11px; background: #FEF3C7; color: #B45309; font-size: 1.35rem; margin-bottom: 0;">
+                  <i class="bi bi-clock-history"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6">
+              <div class="pau-metric-card d-flex align-items-center justify-content-between" style="border-left: 3px solid #0284C7 !important;">
+                <div>
+                  <small class="text-muted d-block fw-semibold mb-1" style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.04em;">Visto Aprobado</small>
+                  <span class="fs-2 fw-bold" style="color: #0284C7;" id="kpiPauAprobados">0</span>
+                </div>
+                <div class="area-card-icon" style="width: 46px; height: 46px; border-radius: 11px; background: #E0F2FE; color: #0284C7; font-size: 1.35rem; margin-bottom: 0;">
+                  <i class="bi bi-patch-check-fill"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filtros de la Bandeja PAU con Amplia Separación -->
+          <div class="p-3.5 p-lg-4 bg-light rounded-3 border mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3 flex-wrap flex-grow-1">
+              <div class="input-group input-group-sm" style="max-width: 320px;">
+                <span class="input-group-text bg-white px-3"><i class="bi bi-search text-muted"></i></span>
+                <input type="text" id="filterPauSearch" class="form-control form-control-sm py-2" placeholder="Buscar por alumno, correo o asunto...">
+              </div>
+
+              <select id="filterPauEscuela" class="form-select form-select-sm py-2" style="width: auto;">
+                <option value="ALL">Todas las Escuelas</option>
+                <option value="Ingeniería Industrial">Ingeniería Industrial</option>
+                <option value="Ingeniería de Sistemas">Ingeniería de Sistemas</option>
+              </select>
+
+              <select id="filterPauEstado" class="form-select form-select-sm py-2" style="width: auto;">
+                <option value="ALL">Todos los Estados</option>
+                <option value="Atendido">🟢 Solo Atendidos (Verde)</option>
+                <option value="Sin Atención">🟡 Solo Sin Atención (Amarillo)</option>
+              </select>
+
+              <select id="filterPauVisto" class="form-select form-select-sm py-2" style="width: auto;">
+                <option value="ALL">Todos los Vistos Buenos</option>
+                <option value="APROBADO">🔵 APROBADO</option>
+                <option value="SIN APROBACIÓN">⚪ SIN APROBACIÓN</option>
+              </select>
+
+              <button type="button" id="btnResetPauFilters" class="btn btn-outline-secondary btn-sm px-3 py-2" title="Restablecer filtros">
+                <i class="bi bi-arrow-counterclockwise me-1"></i> Limpiar
+              </button>
+            </div>
+
+            <div class="text-muted small fw-semibold" id="pauFilteredCountText" style="font-size: 0.82rem;">
+              Cargando solicitudes...
+            </div>
+          </div>
+
+          <!-- Tabla de Solicitudes PAU con los Campos Solicitados -->
+          <div class="table-responsive" style="max-height: 560px;">
+            <table class="table table-hover align-middle app-table mb-0" id="pauMainTable">
+              <thead class="sticky-top">
+                <tr>
+                  <th style="width: 45px; white-space: nowrap;" class="text-center">IT</th>
+                  <th style="width: 150px; white-space: nowrap;">Fecha de Correo</th>
+                  <th style="min-width: 190px; white-space: nowrap;">Remitente</th>
+                  <th style="min-width: 180px; white-space: nowrap;">Correo de quien viene</th>
+                  <th style="min-width: 270px;">Asunto</th>
+                  <th class="text-center" style="width: 145px; white-space: nowrap;" title="Clic sobre el botón para alternar entre Atendido y Sin Atención">
+                    Estado de Atención <i class="bi bi-arrow-left-right ms-0.5" style="font-size: 0.7rem;"></i>
+                  </th>
+                  <th class="text-center" style="width: 165px; white-space: nowrap;" title="Clic sobre el botón para alternar entre APROBADO y SIN APROBACIÓN">
+                    Visto Coordinación <i class="bi bi-arrow-left-right ms-0.5" style="font-size: 0.7rem;"></i>
+                  </th>
+                  <th class="text-center" style="width: 155px; white-space: nowrap;">Fecha de Respuesta</th>
+                  <th class="text-center" style="width: 125px; white-space: nowrap;">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="pauTableBody">
+                <!-- Rellenado dinámico desde js/pau.js -->
+              </tbody>
+            </table>
+          </div>
+
         </div>
 
       </div>
@@ -1956,6 +2155,94 @@
     Sistema de Gestión Académica Modular • Dirección Académica • 2026-II
   </footer>
 
+  <!-- MODAL: REGISTRAR / EDITAR TICKET PAU -->
+  <div class="modal fade" id="modalPauTicket" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 540px;">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 14px;">
+        <div class="modal-header py-2.5 px-3.5 bg-light">
+          <div>
+            <h6 class="modal-title fw-bold text-dark mb-0" id="modalPauTitle">Registrar Solicitud PAU</h6>
+            <small class="text-muted" style="font-size: 0.75rem;">Módulo de Atención al Estudiante y Seguimiento de Correos</small>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body py-3 px-3.5">
+          <input type="hidden" id="pauFormId">
+
+          <div class="row g-2 mb-2.5">
+            <div class="col-7">
+              <label for="pauFormRemitente" class="form-label small fw-bold text-dark mb-1">Remitente (Apellidos y Nombres)</label>
+              <input type="text" id="pauFormRemitente" class="form-control form-control-sm" placeholder="Ej. PÉREZ GARCÍA JUAN" required>
+            </div>
+            <div class="col-5">
+              <label for="pauFormFecha" class="form-label small fw-bold text-dark mb-1">Fecha de Correo</label>
+              <input type="text" id="pauFormFecha" class="form-control form-control-sm" placeholder="DD/MM/AAAA HH:MM">
+            </div>
+          </div>
+
+          <div class="row g-2 mb-2.5">
+            <div class="col-7">
+              <label for="pauFormCorreo" class="form-label small fw-bold text-dark mb-1">Correo de quien viene</label>
+              <input type="email" id="pauFormCorreo" class="form-control form-control-sm" placeholder="ejemplo@ucvvirtual.edu.pe" required>
+            </div>
+            <div class="col-5">
+              <label for="pauFormEscuela" class="form-label small fw-bold text-dark mb-1">Escuela</label>
+              <select id="pauFormEscuela" class="form-select form-select-sm">
+                <option value="Ingeniería Industrial">Ing. Industrial</option>
+                <option value="Ingeniería de Sistemas">Ing. de Sistemas</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-2.5">
+            <label for="pauFormTelefono" class="form-label small fw-bold text-dark mb-1">WhatsApp / Teléfono de Contacto</label>
+            <input type="text" id="pauFormTelefono" class="form-control form-control-sm" placeholder="+51 987 654 321">
+          </div>
+
+          <div class="mb-2.5">
+            <label for="pauFormAsunto" class="form-label small fw-bold text-dark mb-1">Asunto del Correo / Solicitud</label>
+            <input type="text" id="pauFormAsunto" class="form-control form-control-sm" placeholder="Ej. REPORTE: NO APARECE HABILITADO EL CURSO..." required>
+          </div>
+
+          <div class="row g-2 mb-2.5">
+            <div class="col-6">
+              <label for="pauFormEstado" class="form-label small fw-bold text-dark mb-1">Estado de Atención</label>
+              <select id="pauFormEstado" class="form-select form-select-sm">
+                <option value="Sin Atención">🟡 Sin Atención (Amarillo)</option>
+                <option value="Atendido">🟢 Atendido (Verde)</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label for="pauFormVisto" class="form-label small fw-bold text-dark mb-1">Visto de Coordinación</label>
+              <select id="pauFormVisto" class="form-select form-select-sm">
+                <option value="SIN APROBACIÓN">⚪ SIN APROBACIÓN</option>
+                <option value="APROBADO">🔵 APROBADO</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-2.5">
+            <label for="pauFormFechaRespuesta" class="form-label small fw-bold text-dark mb-1">Fecha de Respuesta</label>
+            <input type="text" id="pauFormFechaRespuesta" class="form-control form-control-sm" placeholder="DD/MM/AAAA HH:MM o guion (-) si está pendiente">
+          </div>
+
+          <div class="mb-0">
+            <label for="pauFormObs" class="form-label small fw-bold text-dark mb-1">Observaciones / Detalle</label>
+            <textarea id="pauFormObs" class="form-control form-control-sm" rows="2" placeholder="Notas internas, número de ticket o respuesta remitida..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer py-2 px-3.5 bg-light d-flex justify-content-between">
+          <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-3" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" id="btnSavePauTicket" class="btn btn-primary-app btn-sm py-1 px-3.5">
+            <i class="bi bi-check2 me-1"></i> Guardar Solicitud
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
   <!-- SCRIPTS (Carga local ultrarrápida sin latencia externa) -->
   <script src="lib/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="lib/xlsx/xlsx.full.min.js"></script>
@@ -1963,5 +2250,22 @@
   <script src="js/parser.js"></script>
   <script src="js/analytics.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/pau.js?v=3.2"></script>
+
+  <!-- Auto-navigate to specific tab if coming from selector -->
+  <script>
+    (function() {
+      const gotoTab = sessionStorage.getItem('sga_goto_tab');
+      if (gotoTab) {
+        sessionStorage.removeItem('sga_goto_tab');
+        // Wait for DOM + Bootstrap to be ready
+        setTimeout(function() {
+          if (typeof navigateToArea === 'function') {
+            navigateToArea(gotoTab);
+          }
+        }, 600);
+      }
+    })();
+  </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 <?php
 /**
  * Endpoint de Procesamiento de Registro de Asistencia
- * 1RA REUNIÓN DE DELEGADOS 2026-2
+ * REUNIÓN DE DELEGADOS 2026-2
  */
 header('Content-Type: application/json; charset=utf-8');
 
@@ -51,16 +51,20 @@ if (empty($apellidosNombres) || mb_strlen($apellidosNombres) < 4) {
     $errores[] = 'Ingrese sus Apellidos y Nombres completos.';
 }
 
-if (empty($codigoAlumno) || mb_strlen($codigoAlumno) < 4) {
-    $errores[] = 'Ingrese un Código de Alumno válido.';
+if (empty($codigoAlumno) || !preg_match('/^[0-9]{10}$/', $codigoAlumno)) {
+    $errores[] = 'El Código de Estudiante debe contener exactamente 10 dígitos numéricos (ej. 6500018511).';
 }
 
 if (empty($escuela) || $escuela === 'Elegir') {
     $errores[] = 'Seleccione su Escuela Profesional.';
 }
 
-if (empty($asignatura) || mb_strlen($asignatura) < 3) {
-    $errores[] = 'Ingrese el nombre de la Asignatura.';
+if (empty($asignatura) || mb_strlen($asignatura) < 2) {
+    $errores[] = 'Ingrese el nombre de la Asignatura (campo obligatorio).';
+}
+
+if (empty($seccion) || mb_strlen($seccion) < 1) {
+    $errores[] = 'Ingrese la Sección o Grupo de Aula correspondiente (campo obligatorio).';
 }
 
 if (empty($ciclo) || $ciclo === 'Elegir') {

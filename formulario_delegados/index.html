@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>1RA REUNIÓN DE DELEGADOS 2026-2 — Facultad de Ingeniería y Arquitectura | UCV</title>
-  <meta name="description" content="Registro Oficial de Asistencia — 1ra Reunión de Delegados 2026-2 de la Facultad de Ingeniería y Arquitectura, Universidad César Vallejo">
+  <title>REUNIÓN DE DELEGADOS 2026-2 — Facultad de Ingeniería y Arquitectura | UCV</title>
+  <meta name="description" content="Registro Oficial de Asistencia — Reunión de Delegados 2026-2 de la Facultad de Ingeniería y Arquitectura, Universidad César Vallejo">
 
   <!-- Google Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,9 +35,15 @@
           <span class="bar-faculty-sub">Facultad de Ingeniería y Arquitectura</span>
         </div>
       </div>
-      <div class="bar-badge-pill">
-        <i class="bi bi-mortarboard-fill"></i>
-        <span>SUBE A Distancia • Semestre 2026-II</span>
+      <div class="bar-right-group">
+        <div class="bar-badge-pill" id="barBadgePill">
+          <i class="bi bi-mortarboard-fill"></i>
+          <span id="headerPillText">SUBE A Distancia • Semestre 2026-II • 24/09/2026</span>
+        </div>
+        <button type="button" class="bar-btn-gear" id="btnAbrirConfigMembrete" title="Configurar Membrete Oficial para Años Posteriores">
+          <i class="bi bi-gear-fill"></i>
+          <span>Membrete</span>
+        </button>
       </div>
     </div>
   </header>
@@ -51,7 +57,7 @@
     <div class="event-banner-card">
       <img 
         src="img/banner_delegados.png" 
-        alt="1era Reunión de delegados — Facultad de Ingeniería e Arquitectura — UCV" 
+        alt="Reunión de delegados — Facultad de Ingeniería e Arquitectura — UCV" 
         class="banner-graphic"
       >
     </div>
@@ -69,7 +75,7 @@
         <div class="confirm-faculty-sub">Facultad de Ingeniería y Arquitectura — UCV Virtual</div>
 
         <p class="confirm-message">
-          Estimado(a) delegado(a), tus datos han sido incorporados formalmente al acta de asistencia de la <strong>1RA REUNIÓN DE DELEGADOS 2026-2</strong>. Agradecemos tu vocación de servicio, puntualidad y liderazgo en representación de tus compañeros de sección.
+          Estimado(a) delegado(a), tus datos han sido incorporados formalmente al acta de asistencia de la <strong>REUNIÓN DE DELEGADOS 2026-2</strong>. Agradecemos tu vocación de servicio, puntualidad y liderazgo en representación de tus compañeros de sección.
         </p>
 
         <!-- Ficha Resumen de Constancia -->
@@ -126,11 +132,11 @@
           <div class="intro-badge">
             <i class="bi bi-shield-check"></i> Ficha Oficial de Asistencia
           </div>
-          <h1 class="intro-title">1RA REUNIÓN DE DELEGADOS 2026-2</h1>
-          <div class="intro-subtitle">Facultad de Ingeniería y Arquitectura • Programa SUBE</div>
+          <h1 class="intro-title" id="formMainTitle">REUNIÓN DE DELEGADOS 2026-2</h1>
+          <div class="intro-subtitle" id="formMainSubtitle">Facultad de Ingeniería y Arquitectura • Programa SUBE</div>
 
-          <p class="intro-message">
-            Estimados(as) delegados(as): Por encargo de la Dirección de Escuela y la Coordinación Académica, les damos la cordial bienvenida a la primera reunión del semestre. Por favor, registren sus datos de filiación y asignatura como evidencia formal de participación y representatividad estudiantil.
+          <p class="intro-message" id="formMainMessage">
+            Estimados(as) delegados(as): Por encargo de la Dirección de Escuela y la Coordinación Académica, les damos la cordial bienvenida a la reunión de delegados del semestre. Por favor, registren sus datos de filiación y asignatura como evidencia formal de participación y representatividad estudiantil.
           </p>
 
           <div class="notice-box">
@@ -175,23 +181,28 @@
               </div>
             </div>
 
-            <!-- Código de Alumno * -->
+            <!-- Código de Alumno * (Restricción de 10 dígitos numéricos) -->
             <div class="field-item" id="wrap_codigo_alumno">
               <label for="codigo_alumno" class="field-label-text">
                 <span>Código de Estudiante UCV <span class="req-star">*</span></span>
+                <span class="badge" style="background: #E2E8F0; color: #002855; font-size: 0.72rem; font-weight: 700; padding: 2px 7px; border-radius: 4px;">10 dígitos numéricos</span>
               </label>
               <input 
                 type="text" 
                 id="codigo_alumno" 
                 name="codigo_alumno" 
                 class="input-control" 
-                placeholder="Ej. 7000123456" 
-                maxlength="20"
+                placeholder="Ej. 6500018511 (exactamente 10 dígitos)" 
+                maxlength="10"
+                minlength="10"
+                inputmode="numeric"
+                pattern="[0-9]{10}"
+                autocomplete="off"
                 required
               >
               <div class="input-error-feedback">
                 <i class="bi bi-exclamation-circle-fill"></i>
-                <span>Ingrese su código institucional de alumno.</span>
+                <span>El código institucional debe contener exactamente 10 dígitos numéricos (ej. 6500018511).</span>
               </div>
             </div>
 
@@ -256,11 +267,10 @@
               </div>
             </div>
 
-            <!-- Sección -->
+            <!-- Sección * (OBLIGATORIA) -->
             <div class="field-item" id="wrap_seccion">
               <label for="seccion" class="field-label-text">
-                <span>Sección / Grupo de Aula</span>
-                <span class="optional-tag">Opcional</span>
+                <span>Sección / Grupo de Aula <span class="req-star">*</span></span>
               </label>
               <input 
                 type="text" 
@@ -268,7 +278,12 @@
                 name="seccion" 
                 class="input-control" 
                 placeholder="Ej. A1, B2 o Grupo 01"
+                required
               >
+              <div class="input-error-feedback">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                <span>Ingrese la sección o grupo de aula correspondiente (obligatorio).</span>
+              </div>
             </div>
 
             <!-- Ciclo * -->
@@ -366,12 +381,292 @@
       </div>
       <div style="margin-top: 0.35rem;">
         <a href="admin.php" target="_blank"><i class="bi bi-lock-fill me-1"></i>Acceso para Autoridades y Coordinación Académica</a>
+        <span style="margin: 0 0.6rem; opacity: 0.4;">|</span>
+        <button type="button" id="btnAbrirDescarga" class="footer-download-btn">
+          <i class="bi bi-file-earmark-excel-fill"></i> Descargar Registros (Excel)
+        </button>
       </div>
     </div>
   </footer>
 
+  <!-- ====================================================================
+       MODAL DE VALIDACIÓN DE CREDENCIALES PARA DESCARGA
+       ==================================================================== -->
+  <div id="modalDescargaOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalDescargaTitle">
+    <div class="modal-box" id="modalDescargaBox">
+
+      <!-- Cabecera del modal -->
+      <div class="modal-header-ucv">
+        <div class="modal-header-icon">
+          <i class="bi bi-file-earmark-lock2-fill"></i>
+        </div>
+        <div>
+          <h2 class="modal-title" id="modalDescargaTitle">Validar Credenciales</h2>
+          <p class="modal-subtitle">Descarga Protegida — Registros de Delegados 2026-2</p>
+        </div>
+        <button type="button" class="modal-close-btn" id="btnCerrarModal" aria-label="Cerrar">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <!-- Cuerpo del modal -->
+      <div class="modal-body-ucv">
+        <p class="modal-desc">
+          Ingrese las credenciales institucionales autorizadas para descargar el listado completo de delegados registrados.
+        </p>
+
+        <!-- Alerta de error dentro del modal -->
+        <div class="modal-alert-error" id="modalAlertError" role="alert">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          <span id="modalAlertText">Credenciales incorrectas.</span>
+        </div>
+
+        <form id="downloadAuthForm" novalidate autocomplete="off">
+          <div class="modal-field">
+            <label for="dlEmail" class="modal-label">
+              <i class="bi bi-envelope-fill"></i> Correo Institucional
+            </label>
+            <input
+              type="email"
+              id="dlEmail"
+              class="modal-input"
+              placeholder="correo@ucvvirtual.edu.pe"
+              autocomplete="username"
+              required
+            >
+          </div>
+
+          <div class="modal-field">
+            <label for="dlPass" class="modal-label">
+              <i class="bi bi-key-fill"></i> Contraseña
+            </label>
+            <div class="modal-input-pw-wrap">
+              <input
+                type="password"
+                id="dlPass"
+                class="modal-input"
+                placeholder="Contraseña institucional"
+                autocomplete="current-password"
+                required
+              >
+              <button type="button" class="toggle-pw-btn" id="btnTogglePw" aria-label="Mostrar contraseña">
+                <i class="bi bi-eye" id="iconTogglePw"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="modal-submit-btn" id="btnDescargarExcel">
+            <i class="bi bi-download"></i>
+            <span>Validar y Descargar Excel</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Pie del modal -->
+      <div class="modal-footer-ucv">
+        <i class="bi bi-shield-lock-fill me-1" style="color: var(--ucv-navy);"></i>
+        Acceso restringido — Solo personal autorizado de la Facultad
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL DE INICIO DE SESIÓN DE COORDINACIÓN (REPLICADO TAL CUAL DEL EXCEL)
+       ==================================================================== -->
+  <div id="modalLoginMembreteOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalLoginMembreteTitle">
+    <div class="modal-box" id="modalLoginMembreteBox">
+
+      <!-- Cabecera del modal -->
+      <div class="modal-header-ucv">
+        <div class="modal-header-icon">
+          <i class="bi bi-shield-lock-fill"></i>
+        </div>
+        <div>
+          <h2 class="modal-title" id="modalLoginMembreteTitle">Validar Credenciales</h2>
+          <p class="modal-subtitle">Acceso de Coordinación — Gestión de Membrete Oficial</p>
+        </div>
+        <button type="button" class="modal-close-btn" id="btnCerrarModalLoginMembrete" aria-label="Cerrar">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <!-- Cuerpo del modal -->
+      <div class="modal-body-ucv">
+        <p class="modal-desc">
+          Ingrese las credenciales institucionales autorizadas para acceder a la configuración del membretado oficial.
+        </p>
+
+        <!-- Alerta de error dentro del modal -->
+        <div class="modal-alert-error" id="modalLoginMembreteAlert" role="alert">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          <span id="modalLoginMembreteAlertText">Credenciales incorrectas.</span>
+        </div>
+
+        <form id="membreteAuthForm" novalidate autocomplete="off">
+          <div class="modal-field">
+            <label for="mbEmail" class="modal-label">
+              <i class="bi bi-envelope-fill"></i> Correo Institucional
+            </label>
+            <input
+              type="email"
+              id="mbEmail"
+              class="modal-input"
+              placeholder="correo@ucvvirtual.edu.pe"
+              autocomplete="username"
+              required
+            >
+          </div>
+
+          <div class="modal-field">
+            <label for="mbPass" class="modal-label">
+              <i class="bi bi-key-fill"></i> Contraseña
+            </label>
+            <div class="modal-input-pw-wrap">
+              <input
+                type="password"
+                id="mbPass"
+                class="modal-input"
+                placeholder="Contraseña institucional"
+                autocomplete="current-password"
+                required
+              >
+              <button type="button" class="toggle-pw-btn" id="btnToggleMbPw" aria-label="Mostrar contraseña">
+                <i class="bi bi-eye" id="iconToggleMbPw"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="modal-submit-btn" id="btnValidarLoginMembrete">
+            <i class="bi bi-box-arrow-in-right"></i>
+            <span>Validar e Ingresar</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Pie del modal -->
+      <div class="modal-footer-ucv">
+        <i class="bi bi-shield-lock-fill me-1" style="color: var(--ucv-navy);"></i>
+        Acceso restringido — Solo personal autorizado de la Facultad
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL DE CONFIGURACIÓN DEL MEMBRETADO (ESTANDARIZACIÓN PARA AÑOS POSTERIORES)
+       ==================================================================== -->
+  <div id="modalConfigMembreteOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalMembreteTitle">
+    <div class="modal-box" style="max-width: 520px;">
+
+      <!-- Cabecera del modal -->
+      <div class="modal-header-ucv">
+        <div class="modal-header-icon" style="background: rgba(0, 40, 85, 0.1); color: var(--ucv-navy);">
+          <i class="bi bi-sliders2-vertical"></i>
+        </div>
+        <div>
+          <h2 class="modal-title" id="modalMembreteTitle">Configurar Membretado Oficial</h2>
+          <p class="modal-subtitle">Estandarización del Formulario para Años Posteriores</p>
+        </div>
+        <button type="button" class="modal-close-btn" id="btnCerrarModalMembrete" aria-label="Cerrar">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <!-- Cuerpo del modal -->
+      <div class="modal-body-ucv">
+        <!-- Indicador de Sesión Activa -->
+        <div class="session-active-bar" style="display: flex; justify-content: space-between; align-items: center; background: #F1F5F9; border: 1px solid #CBD5E1; padding: 0.5rem 0.85rem; border-radius: 8px; font-size: 0.78rem; margin-bottom: 1rem;">
+          <span style="color: #002855; font-weight: 600;">
+            <i class="bi bi-person-check-fill text-success me-1"></i> Sesión activa: <strong id="lblCoordEmail">coordinacion.fia@ucvvirtual.edu.pe</strong>
+          </span>
+          <button type="button" id="btnCerrarSesionCoord" style="border: none; background: none; color: #DC2626; font-size: 0.76rem; font-weight: 700; cursor: pointer;">
+            <i class="bi bi-box-arrow-right me-0.5"></i> Cerrar sesión
+          </button>
+        </div>
+
+        <p class="modal-desc" style="font-size: 0.82rem; margin-bottom: 1rem;">
+          Configure el título oficial, fecha y semestre para adaptar este formulario de asistencia a cualquier período o año futuro sin alterar su estructura estándar.
+        </p>
+
+        <!-- Alerta de resultado dentro del modal -->
+        <div class="modal-alert-error" id="modalMembreteAlert" role="alert">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          <span id="modalMembreteAlertText">Mensaje</span>
+        </div>
+
+        <form id="formConfigMembrete" novalidate autocomplete="off">
+          
+          <div class="modal-field">
+            <label for="cfgTitulo" class="modal-label">
+              <i class="bi bi-type-h1"></i> Título Oficial de la Reunión / Evento
+            </label>
+            <input type="text" id="cfgTitulo" class="modal-input" placeholder="Ej. REUNIÓN DE DELEGADOS 2026-2" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <div class="modal-field">
+              <label for="cfgSemestre" class="modal-label">
+                <i class="bi bi-calendar3"></i> Semestre / Período
+              </label>
+              <input type="text" id="cfgSemestre" class="modal-input" placeholder="Ej. 2026-II o 2027-I" required>
+            </div>
+
+            <div class="modal-field">
+              <label for="cfgFecha" class="modal-label">
+                <i class="bi bi-calendar-event"></i> Fecha del Evento
+              </label>
+              <input type="text" id="cfgFecha" class="modal-input" placeholder="Ej. 24 de Septiembre de 2026" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <div class="modal-field">
+              <label for="cfgPrograma" class="modal-label">
+                <i class="bi bi-mortarboard"></i> Programa / Modalidad
+              </label>
+              <input type="text" id="cfgPrograma" class="modal-input" placeholder="Ej. SUBE A Distancia" required>
+            </div>
+
+            <div class="modal-field">
+              <label for="cfgFacultad" class="modal-label">
+                <i class="bi bi-buildings"></i> Facultad
+              </label>
+              <input type="text" id="cfgFacultad" class="modal-input" placeholder="Ej. Facultad de Ingeniería y Arquitectura" required>
+            </div>
+          </div>
+
+          <div class="modal-field">
+            <label for="cfgMensaje" class="modal-label">
+              <i class="bi bi-chat-left-text"></i> Mensaje Institucional de Bienvenida
+            </label>
+            <textarea id="cfgMensaje" class="modal-input" rows="3" placeholder="Mensaje de bienvenida que se muestra a los delegados..."></textarea>
+          </div>
+
+          <div style="display: flex; gap: 0.6rem; margin-top: 1rem;">
+            <button type="button" id="btnRestablecerMembrete" style="flex: 1; padding: 0.75rem 0.6rem; border: 1.5px solid #CBD5E1; border-radius: var(--radius-input); background: #FFFFFF; color: #475569; font-weight: 700; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.35rem;">
+              <i class="bi bi-arrow-counterclockwise"></i>
+              <span>Restablecer Valores</span>
+            </button>
+            <button type="submit" class="modal-submit-btn" id="btnGuardarMembrete" style="flex: 2; margin-top: 0; background: var(--ucv-navy);">
+              <i class="bi bi-check2-circle"></i>
+              <span>Guardar y Estandarizar</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Pie del modal -->
+      <div class="modal-footer-ucv">
+        <i class="bi bi-shield-check me-1" style="color: var(--ucv-navy);"></i>
+        Estandarización Institucional — Universidad César Vallejo
+      </div>
+
+    </div>
+  </div>
+
   <!-- Script de Control del Formulario -->
-  <script src="js/form.js"></script>
+  <script src="js/form.js?v=2.9"></script>
 
 </body>
 </html>

@@ -1,1 +1,15 @@
-﻿[]
+[
+  {
+    "id": 1,
+    "apellidos_nombres": "Alumno Delegado Valido",
+    "codigo_alumno": "6500018511",
+    "correo": "",
+    "escuela_profesional": "Ingeniería Industrial",
+    "asignatura": "Procesos",
+    "seccion": "A1",
+    "ciclo": "VII",
+    "declaracion_aceptada": 1,
+    "ip_registro": "127.0.0.1",
+    "fecha_registro": "2026-09-24 21:09:21"
+  }
+]
