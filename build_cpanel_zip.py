@@ -1,57 +1,35 @@
 import os
 import zipfile
 
-def create_cpanel_zip():
-    output_filename = "cpanel_deploy_minisistema.zip"
+def create_update_zip():
+    output_filename = "cpanel_update_nuevos_cambios.zip"
     
-    # Lista de archivos y directorios a incluir en el zip para cPanel
-    include_items = [
-        ".htaccess",
+    # Únicamente los archivos modificados y nuevos de esta sesión (SIN formulario_delegados)
+    files_to_pack = [
         "index.html",
         "selector.html",
-        "login.html",
-        "README_CPANEL.md",
-        "api",
-        "css",
-        "js",
-        "img",
-        "lib",
-        "data",
-        "formulario_delegados"
+        ".htaccess",
+        os.path.join("css", "custom.css"),
+        os.path.join("js", "sistemas_coordinacion.js"),
+        os.path.join("data", ".htaccess")
     ]
     
-    # Exclusiones específicas
-    exclude_exts = {".pyc", ".pyo", ".log"}
-    exclude_dirs = {"__pycache__", ".git", ".vercel"}
-    exclude_files = {"usuarios.db"} # No empaquetar db con datos locales sensibles
-    
-    print(f"Empaquetando {output_filename} para cPanel...")
+    print(f"Generando paquete exclusivo de actualización: {output_filename}")
+    print("Excluyendo completamente formulario_delegados y archivos no modificados...\n")
     
     with zipfile.ZipFile(output_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
-        for item in include_items:
-            if not os.path.exists(item):
-                print(f"Advertencia: {item} no encontrado.")
-                continue
+        for file_path in files_to_pack:
+            if os.path.exists(file_path):
+                # Normalizar ruta interna con barras inclinadas estándar para zip
+                arcname = file_path.replace("\\", "/")
+                zipf.write(file_path, arcname)
+                size_kb = os.path.getsize(file_path) / 1024
+                print(f" + {arcname} ({size_kb:.1f} KB)")
+            else:
+                print(f" [!] Archivo no encontrado: {file_path}")
                 
-            if os.path.isfile(item):
-                zipf.write(item, item)
-                print(f" + {item}")
-            elif os.path.isdir(item):
-                for root, dirs, files in os.walk(item):
-                    # Filtrar directorios excluidos
-                    dirs[:] = [d for d in dirs if d not in exclude_dirs]
-                    
-                    for f in files:
-                        ext = os.path.splitext(f)[1].lower()
-                        if ext in exclude_exts or f in exclude_files:
-                            continue
-                            
-                        file_path = os.path.join(root, f)
-                        arcname = os.path.relpath(file_path, ".")
-                        zipf.write(file_path, arcname)
-                        
-    file_size = os.path.getsize(output_filename) / (1024 * 1024)
-    print(f"\n[OK] ZIP creado exitosamente: {output_filename} ({file_size:.2f} MB)")
+    total_size_kb = os.path.getsize(output_filename) / 1024
+    print(f"\n[OK] Paquete de actualización generado con éxito: {output_filename} ({total_size_kb:.1f} KB)")
 
 if __name__ == "__main__":
-    create_cpanel_zip()
+    create_update_zip()
