@@ -27,6 +27,12 @@ data/*.sqlite
 formulario_delegados/data/*.db
 formulario_delegados/data/*.sqlite
 
+# Archivo de configuración real del formulario (usar config.example.php como base)
+formulario_delegados/config.php
+
+# Datos reales de registros de delegados (se genera automáticamente en producción)
+formulario_delegados/data/delegados.json
+
 # Datos JSON con información real de usuarios/operación
 # (se suben solo los archivos _base como plantillas vacías)
 data/pau_correos.json
