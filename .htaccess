@@ -12,7 +12,9 @@ Options -Indexes
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Rutas para la API de persistencia física
+    # Rutas para la API de persistencia física y autenticación
+    RewriteRule ^api/login/?$ api/login.php [L,QSA]
+    RewriteRule ^api/pau/?$ api/pau.php [L,QSA]
     RewriteRule ^api/grupos/?$ api/grupos.php [L,QSA]
     RewriteRule ^api/docentes/?$ api/docentes.php [L,QSA]
     RewriteRule ^api/directorios/?$ api/directorios.php [L,QSA]

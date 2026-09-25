@@ -938,7 +938,7 @@ ul.nav li { list-style: none !important; }
    ESTILOS ESPECÍFICOS: MÓDULO PAU (ATENCIÓN AL ESTUDIANTE)
    ========================================================================== */
 .area-card-pau {
-  border-left: 3px solid #0284C7 !important;
+  border-left: 1.5px solid #E2E8F0;
 }
 
 .area-card-pau:hover {
@@ -1036,6 +1036,308 @@ ul.nav li { list-style: none !important; }
   box-shadow: 0 8px 22px rgba(0,0,0,0.07);
 }
 
+/* ==============================================================================
+   MÓDULO COORDINACIÓN SISTEMAS (SECCIONES ①, ②, ③ DEL WIREFRAME)
+   ============================================================================== */
 
+/* Banner de Contexto DAC Sistemas */
+.dac-context-banner {
+  background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+  border: 1.5px solid #E2E8F0;
+  border-left: 5px solid #0D6EFD;
+  box-shadow: 0 4px 20px rgba(11, 37, 69, 0.05);
+  border-radius: 16px;
+}
 
+/* Badges numerados ①, ②, ③ del boceto */
+.section-number-badge {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #0B2545;
+  color: #FFFFFF;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 0.88rem;
+  box-shadow: 0 2px 6px rgba(11, 37, 69, 0.25);
+  border: 2px solid #E2E8F0;
+}
 
+/* Tarjetas de Monitoreo ① */
+.monitor-card {
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s;
+  border: 1.5px solid #E2E8F0 !important;
+}
+
+.monitor-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(11, 37, 69, 0.08) !important;
+  border-color: #CBD5E1 !important;
+}
+
+/* ==========================================================================
+   PROCEDIMIENTOS ② - DISEÑO UNIFICADO, ORDENADO Y ELEGANTE
+   ========================================================================== */
+.procedure-card {
+  position: relative !important;
+  background: #FFFFFF !important;
+  border: 1.5px solid #E2E8F0 !important;
+  border-radius: 16px !important;
+  padding: 1.35rem 1.45rem 1.15rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  overflow: hidden !important;
+  min-height: 195px !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-shadow: 0 2px 8px rgba(11, 37, 69, 0.03) !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  border-left: 1.5px solid #E2E8F0 !important;
+}
+
+/* Barra superior de acento visible en TODOS los 6 procedimientos */
+.procedure-card::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 4px !important;
+  border-radius: 16px 16px 0 0 !important;
+  transition: height 0.2s ease, opacity 0.2s ease !important;
+}
+
+.procedure-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 12px 28px rgba(11, 37, 69, 0.09) !important;
+  border-color: #CBD5E1 !important;
+}
+
+.procedure-card:hover::before {
+  height: 6px !important;
+}
+
+/* Colores de acento temáticos para cada procedimiento */
+.proc-theme-blue::before { background: #2563EB !important; }
+.proc-theme-purple::before { background: #7C3AED !important; }
+.proc-theme-cyan::before { background: #0284C7 !important; }
+.proc-theme-rose::before { background: #E11D48 !important; }
+.proc-theme-crimson::before { background: #BE1E2D !important; }
+.proc-theme-sky::before { background: #0284C7 !important; }
+
+/* Cabecera simétrica: número a la izquierda, métrica a la derecha */
+.proc-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.proc-num-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 20px;
+}
+
+.proc-metric-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+/* Temas para Pills y Badges */
+.proc-theme-blue .proc-num-pill { background: #EFF6FF; color: #2563EB; border: 1px solid #DBEAFE; }
+.proc-theme-blue .proc-metric-pill { background: #EFF6FF; color: #1D4ED8; }
+.proc-theme-blue .proc-card-icon { background: #EFF6FF; color: #2563EB; }
+.proc-theme-blue .proc-action-text { color: #2563EB; }
+.proc-theme-blue .proc-action-arrow { color: #2563EB; }
+
+.proc-theme-purple .proc-num-pill { background: #F5F3FF; color: #7C3AED; border: 1px solid #EDE9FE; }
+.proc-theme-purple .proc-metric-pill { background: #F5F3FF; color: #6D28D9; }
+.proc-theme-purple .proc-card-icon { background: #F5F3FF; color: #7C3AED; }
+.proc-theme-purple .proc-action-text { color: #7C3AED; }
+.proc-theme-purple .proc-action-arrow { color: #7C3AED; }
+
+.proc-theme-cyan .proc-num-pill { background: #E0F2FE; color: #0284C7; border: 1px solid #BAE6FD; }
+.proc-theme-cyan .proc-metric-pill { background: #E0F2FE; color: #0369A1; }
+.proc-theme-cyan .proc-card-icon { background: #E0F2FE; color: #0284C7; }
+.proc-theme-cyan .proc-action-text { color: #0284C7; }
+.proc-theme-cyan .proc-action-arrow { color: #0284C7; }
+
+.proc-theme-rose .proc-num-pill { background: #FFE4E6; color: #E11D48; border: 1px solid #FECDD3; }
+.proc-theme-rose .proc-metric-pill { background: #FFE4E6; color: #BE123C; }
+.proc-theme-rose .proc-card-icon { background: #FFE4E6; color: #E11D48; }
+.proc-theme-rose .proc-action-text { color: #E11D48; }
+.proc-theme-rose .proc-action-arrow { color: #E11D48; }
+
+.proc-theme-crimson .proc-num-pill { background: #FEE2E2; color: #BE1E2D; border: 1px solid #FECACA; }
+.proc-theme-crimson .proc-metric-pill { background: #FEE2E2; color: #991B1B; }
+.proc-theme-crimson .proc-card-icon { background: #FEE2E2; color: #BE1E2D; }
+.proc-theme-crimson .proc-action-text { color: #BE1E2D; }
+.proc-theme-crimson .proc-action-arrow { color: #BE1E2D; }
+
+.proc-theme-sky .proc-num-pill { background: #E0F2FE; color: #0284C7; border: 1px solid #BAE6FD; }
+.proc-theme-sky .proc-metric-pill { background: #E0F2FE; color: #0369A1; }
+.proc-theme-sky .proc-card-icon { background: #E0F2FE; color: #0284C7; }
+.proc-theme-sky .proc-action-text { color: #0284C7; }
+.proc-theme-sky .proc-action-arrow { color: #0284C7; }
+
+/* Cuerpo de la tarjeta */
+.proc-card-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  margin-bottom: 0.85rem;
+}
+
+.proc-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.procedure-card:hover .proc-card-icon {
+  transform: scale(1.08);
+}
+
+.proc-card-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin-bottom: 0.2rem;
+  line-height: 1.25;
+}
+
+.proc-card-desc {
+  font-size: 0.8rem;
+  color: #64748B;
+  line-height: 1.45;
+  margin-bottom: 0;
+  min-height: 38px;
+}
+
+/* Footer limpio con animación suave */
+.proc-card-footer {
+  border-top: 1px solid #F1F5F9;
+  padding-top: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.proc-action-text {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.proc-action-arrow {
+  font-size: 1rem;
+  line-height: 1;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.procedure-card:hover .proc-action-arrow {
+  transform: translateX(5px);
+}
+
+/* Calendario / Planner ③ */
+.planner-day-col {
+  border: 1.5px solid #E2E8F0 !important;
+  transition: border-color 0.2s;
+  background: #FFFFFF;
+}
+
+.planner-day-col:hover {
+  border-color: #CBD5E1 !important;
+}
+
+.planner-day-badge {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: #0B2545;
+  color: #FFFFFF;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.agenda-card {
+  transition: all 0.2s ease;
+  background: #F8FAFC !important;
+}
+
+.agenda-card:hover {
+  background: #FFFFFF !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.agenda-card-completed {
+  opacity: 0.65;
+  background: #F1F5F9 !important;
+}
+
+/* Contenedor Espacioso de Sección (Separación y Orden visual) */
+.sistemas-section-card {
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 18px;
+  padding: 2.25rem 2.25rem 2rem;
+  box-shadow: 0 4px 20px rgba(11, 37, 69, 0.04);
+  margin-bottom: 2.75rem;
+}
+
+@media (max-width: 768px) {
+  .sistemas-section-card {
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 2rem;
+  }
+}
+
+.sistemas-view-pill {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.82rem;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  border: 1.5px solid #E2E8F0;
+  background: #FFFFFF;
+  color: #475569;
+}
+.sistemas-view-pill:hover {
+  background: #F8FAFC;
+  border-color: #CBD5E1;
+  color: #0B2545;
+}
+.sistemas-view-pill.active {
+  background: #0B2545 !important;
+  color: #FFFFFF !important;
+  border-color: #0B2545 !important;
+  box-shadow: 0 3px 10px rgba(11, 37, 69, 0.25);
+}
