@@ -95,175 +95,396 @@
     <!-- FEEDBACK DE ACCIONES (ALERTA) -->
     <div id="uploadAlert" style="display: none;" class="mb-3"></div>
 
-    <!-- 1. BOTONES DE ACCESO DIRECTO A ÁREAS CLAVE -->
-    <div class="row g-3 g-xl-4 mb-4 pb-1" id="areaButtonsRow">
-      
-      <!-- Área 1: Directorio Docente -->
-      <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-3">
-        <button type="button" class="area-action-card w-100 text-start border-0 area-card-directorio" onclick="navigateToArea('directorio-tab')" title="Acceder al Directorio Docente por Ciclos">
-          <div class="d-flex align-items-center justify-content-between mb-2">
-            <div class="area-card-icon bg-primary-subtle text-primary">
-              <i class="bi bi-person-lines-fill"></i>
-            </div>
-            <span class="badge bg-primary-subtle text-primary fw-bold" style="font-size: 0.74rem; padding: 5px 10px;" id="badgeAreaDirectorio">
-              <span id="kpiDocentesCompletos">18</span> Docentes
-            </span>
+    <!-- =========================================================================
+         BANNER DE CONTEXTO: DAC SISTEMAS -> COORDINACIÓN
+         ========================================================================= -->
+    <div class="dac-context-banner mb-4 p-3 p-lg-3.5 d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="dac-banner-icon bg-primary text-white rounded-3 d-flex align-items-center justify-content-center shadow-xs" style="width: 46px; height: 46px; font-size: 1.4rem;">
+          <i class="bi bi-cpu"></i>
+        </div>
+        <div>
+          <div class="d-flex align-items-center gap-2 mb-0.5">
+            <span class="badge bg-primary px-2.5 py-0.5 text-white fw-bold" style="font-size: 0.7rem; letter-spacing: 0.5px;">DAC SISTEMAS</span>
+            <i class="bi bi-chevron-right text-muted" style="font-size: 0.7rem;"></i>
+            <span class="badge fw-bold" style="background: #F3E8FF; color: #7C3AED; font-size: 0.7rem;">COORDINACIÓN DE ESCUELA</span>
           </div>
-          <div class="area-card-title">Directorio Docente</div>
-          <div class="area-card-desc">Gestión por Ciclos I al X y apertura</div>
-          <div class="area-card-footer mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
-            <span class="small fw-semibold text-primary" style="font-size: 0.76rem;">Abrir Directorio</span>
-            <i class="bi bi-arrow-right-short text-primary fs-5"></i>
-          </div>
-        </button>
+          <h2 class="h5 mb-0 fw-bold text-dark" style="font-family: 'Outfit', sans-serif; letter-spacing: -0.01em;">
+            DAC - Sistemas <i class="bi bi-arrow-right text-primary mx-1"></i> Coordinación
+          </h2>
+          <small class="text-muted" style="font-size: 0.76rem;">Monitoreo ejecutivo de alumnos, procedimientos de carrera y agenda semanal</small>
+        </div>
       </div>
-
-      <!-- Área 2: Análisis de Cursos -->
-      <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-3">
-        <button type="button" class="area-action-card w-100 text-start border-0 area-card-cursos" onclick="navigateToArea('cursos-tab')" title="Acceder al Análisis de Cursos y Carga Electiva">
-          <div class="d-flex align-items-center justify-content-between mb-2">
-            <div class="area-card-icon" style="background: #F3E8FF; color: #7C3AED;">
-              <i class="bi bi-diagram-3"></i>
-            </div>
-            <span class="badge fw-bold" style="background: #F3E8FF; color: #7C3AED; font-size: 0.74rem; padding: 5px 10px;" id="badgeAreaCursos">
-              24 Cursos
-            </span>
-          </div>
-          <div class="area-card-title">Análisis de Cursos</div>
-          <div class="area-card-desc">Carga electiva, vacantes y cobertura</div>
-          <div class="area-card-footer mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
-            <span class="small fw-semibold" style="color: #7C3AED; font-size: 0.76rem;">Ver Cursos</span>
-            <i class="bi bi-arrow-right-short fs-5" style="color: #7C3AED;"></i>
-          </div>
-        </button>
-      </div>
-
-      <!-- Área 3: Calificar Desempeño (EDD 2026-2) -->
-      <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-3">
-        <button type="button" class="area-action-card w-100 text-start border-0 area-card-desempeno" onclick="navigateToArea('desempeno-tab')" title="Evaluación del Desempeño Docente según Rúbrica Oficial (PDF F03 / 0-20 pts)">
-          <div class="d-flex align-items-center justify-content-between mb-2">
-            <div class="area-card-icon" style="background: #FEF3C7; color: #D97706;">
-              <i class="bi bi-award-fill"></i>
-            </div>
-            <span class="badge fw-bold" style="background: #FEF3C7; color: #B45309; font-size: 0.74rem; padding: 5px 10px;" id="badgeAreaDesempeno">
-              EDD 2026-2
-            </span>
-          </div>
-          <div class="area-card-title">Calificar Desempeño</div>
-          <div class="area-card-desc">F03 Observación de clase (0-20 pts)</div>
-          <div class="area-card-footer mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
-            <span class="small fw-semibold" style="color: #D97706; font-size: 0.76rem;">Calificar Ahora</span>
-            <i class="bi bi-arrow-right-short fs-5" style="color: #D97706;"></i>
-          </div>
-        </button>
-      </div>
-
-      <!-- Área 4: Supervisión de Carpetas -->
-      <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-3">
-        <button type="button" class="area-action-card w-100 text-start border-0 area-card-supervision" onclick="navigateToArea('supervision-tab')" title="Supervisión de Carpetas Docentes y Desempeño">
-          <div class="d-flex align-items-center justify-content-between mb-2">
-            <div class="area-card-icon bg-success-subtle text-success">
-              <i class="bi bi-folder-check"></i>
-            </div>
-            <span class="badge bg-success-subtle text-success fw-bold" style="font-size: 0.74rem; padding: 5px 10px;" id="badgeAreaSupervision">
-              Auditoría UCV
-            </span>
-          </div>
-          <div class="area-card-title">Supervisión Carpetas</div>
-          <div class="area-card-desc">Portafolio pedagógico (7 componentes)</div>
-          <div class="area-card-footer mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
-            <span class="small fw-semibold text-success" style="font-size: 0.76rem;">Auditar Carpetas</span>
-            <i class="bi bi-arrow-right-short text-success fs-5"></i>
-          </div>
-        </button>
-      </div>
-
-      <!-- Área 5: Matriz de Programación -->
-      <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-3">
-        <button type="button" class="area-action-card w-100 text-start border-0 area-card-matriz" onclick="navigateToArea('matriz-tab')" title="Matriz Modular Docente y Programación">
-          <div class="d-flex align-items-center justify-content-between mb-2">
-            <div class="area-card-icon bg-info-subtle text-info">
-              <i class="bi bi-calendar4-week"></i>
-            </div>
-            <span class="badge bg-info-subtle text-info fw-bold" style="font-size: 0.74rem; padding: 5px 10px;" id="badgeAreaMatriz">
-              <span id="kpiTotalGrupos">128</span> Grupos
-            </span>
-          </div>
-          <div class="area-card-title">Matriz Modular</div>
-          <div class="area-card-desc">Programación mensual (Set-Dic 2026)</div>
-          <div class="area-card-footer mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
-            <span class="small fw-semibold text-info" style="font-size: 0.76rem;">Ver Matriz</span>
-            <i class="bi bi-arrow-right-short text-info fs-5"></i>
-          </div>
-        </button>
-      </div>
-
-      <!-- Área 6: Bolsa de Vacantes -->
-      <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-3">
-        <button type="button" class="area-action-card w-100 text-start border-0 area-card-vacantes" onclick="navigateToArea('vacantes-tab')" title="Bolsa de Vacantes y Asignación Docente">
-          <div class="d-flex align-items-center justify-content-between mb-2">
-            <div class="area-card-icon bg-danger-subtle text-danger">
-              <i class="bi bi-briefcase"></i>
-            </div>
-            <span class="badge bg-danger-subtle text-danger fw-bold" style="font-size: 0.74rem; padding: 5px 10px;" id="badgeAreaVacantes">
-              <span id="kpiGruposVacantes">35</span> Vacantes
-            </span>
-          </div>
-          <div class="area-card-title">Bolsa de Vacantes</div>
-          <div class="area-card-desc">Plazas por cubrir y asignación rápida</div>
-          <div class="area-card-footer mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
-            <span class="small fw-semibold text-danger" style="font-size: 0.76rem;">Resolver Vacantes</span>
-            <i class="bi bi-arrow-right-short text-danger fs-5"></i>
-          </div>
-        </button>
-      </div>
-
-      <!-- Área 7: Asistencia Delegados (Enlace Externo a reg-asistencia-1.class-it.edu.pe) -->
-      <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-3">
-        <a href="https://reg-asistencia-1.class-it.edu.pe" target="_blank" rel="noopener noreferrer" class="area-action-card w-100 text-start border-0 text-decoration-none d-block" style="border-left: 3px solid #BE1E2D !important;" title="Abrir Formulario Oficial de Asistencia de Delegados en reg-asistencia-1.class-it.edu.pe">
-          <div class="d-flex align-items-center justify-content-between mb-2">
-            <div class="area-card-icon" style="background: #FEE2E2; color: #BE1E2D;">
-              <i class="bi bi-person-check-fill"></i>
-            </div>
-            <span class="badge fw-bold" style="background: #FEE2E2; color: #BE1E2D; font-size: 0.74rem; padding: 5px 10px;">
-              En Vivo
-            </span>
-          </div>
-          <div class="area-card-title text-dark">Asistencia Delegados</div>
-          <div class="area-card-desc text-muted">Reunión de Delegados 2026-2</div>
-          <div class="area-card-footer mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
-            <span class="small fw-semibold" style="color: #BE1E2D; font-size: 0.76rem;">Ir al Formulario</span>
-            <i class="bi bi-box-arrow-up-right" style="color: #BE1E2D; font-size: 0.78rem;"></i>
-          </div>
+      <div class="d-flex align-items-center gap-2">
+        <a href="selector.html" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1.5 px-3 py-1.5 rounded-pill shadow-xs" style="font-size: 0.8rem;" title="Cambiar de DAC o volver al menú">
+          <i class="bi bi-arrow-left-circle"></i>
+          <span>Cambiar DAC</span>
         </a>
+        <button type="button" class="btn btn-sm btn-primary-app d-inline-flex align-items-center gap-1.5 px-3.5 py-1.5 rounded-pill shadow-xs" onclick="openNewAgendaModal(1, 'Set')" style="font-size: 0.8rem;">
+          <i class="bi bi-calendar-plus"></i>
+          <span>+ Nueva Nota de Agenda</span>
+        </button>
       </div>
+    </div>
 
-      <!-- Área 8: Atención al Estudiante (PAU / PAE) -->
-      <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-3">
-        <button type="button" class="area-action-card w-100 text-start border-0 area-card-pau" onclick="navigateToArea('pau-tab')" title="Acceder a la Plataforma de Atención al Estudiante (PAU / PAE) y Seguimiento de Correos">
-          <div class="d-flex align-items-center justify-content-between mb-2">
-            <div class="area-card-icon" style="background: #E0F2FE; color: #0284C7;">
-              <i class="bi bi-inbox-fill"></i>
-            </div>
-            <span class="badge fw-bold" style="background: #E0F2FE; color: #0284C7; font-size: 0.74rem; padding: 5px 10px;" id="badgeAreaPau">
-              <span id="kpiPauTotal">0</span> Correos
-            </span>
-          </div>
-          <div class="area-card-title text-dark">Atención Estudiante (PAU)</div>
-          <div class="area-card-desc text-muted">Bandeja de correos y WhatsApp</div>
-          <div class="area-card-footer mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
-            <span class="small fw-semibold" style="color: #0284C7; font-size: 0.76rem;">Bandeja PAU</span>
-            <i class="bi bi-arrow-right-short fs-5" style="color: #0284C7;"></i>
-          </div>
+    <!-- =========================================================================
+         SELECTOR DE VISTAS / NAVEGACIÓN RÁPIDA (ORGANIZACIÓN Y LIMPIEZA VISUAL)
+         ========================================================================= -->
+    <div class="sistemas-nav-pill-bar d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4 p-2 px-3 bg-white rounded-4 border shadow-xs">
+      <div class="d-flex align-items-center gap-1.5 flex-wrap">
+        <span class="small text-muted fw-bold me-2 ps-1" style="font-size: 0.78rem;">
+          <i class="bi bi-eye text-primary me-1"></i> Modo de Vista:
+        </span>
+        <button type="button" class="btn sistemas-view-pill active rounded-pill fw-bold" data-view="all" onclick="switchSistemasSection('all')">
+          <i class="bi bi-grid-fill me-1"></i> Vista Completa
+        </button>
+        <button type="button" class="btn sistemas-view-pill rounded-pill fw-semibold" data-view="monitoreo" onclick="switchSistemasSection('monitoreo')">
+          <i class="bi bi-speedometer2 me-1"></i> ① Monitoreo
+        </button>
+        <button type="button" class="btn sistemas-view-pill rounded-pill fw-semibold" data-view="procedimientos" onclick="switchSistemasSection('procedimientos')">
+          <i class="bi bi-boxes me-1"></i> ② Procedimientos
+        </button>
+        <button type="button" class="btn sistemas-view-pill rounded-pill fw-semibold" data-view="agenda" onclick="switchSistemasSection('agenda')">
+          <i class="bi bi-calendar3-range me-1"></i> ③ Agenda & Planner
         </button>
       </div>
 
-      <!-- Elementos métricos auxiliares ocultos para compatibilidad -->
-      <div class="d-none">
-        <span id="kpiDocentesIncompletos"></span>
-        <span id="kpiSinVistoBueno"></span>
-        <span id="kpiAlumnosAfectados"></span>
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-light text-secondary border px-2.5 py-1" style="font-size: 0.74rem;">
+          <i class="bi bi-shield-check text-success me-1"></i> Escuela de Ing. de Sistemas
+        </span>
       </div>
+    </div>
+
+    <!-- =========================================================================
+         SECCIÓN ①: MONITOREO DE ALUMNOS, DOCENTES Y CURSOS (DAC SISTEMAS)
+         ========================================================================= -->
+    <section class="sistemas-section-card" id="secMonitoreo">
+      <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom">
+        <div class="d-flex align-items-center gap-2.5">
+          <div class="section-number-badge">1</div>
+          <div>
+            <h3 class="h5 mb-0 fw-bold text-dark" style="font-family: 'Outfit', sans-serif;">
+              Monitoreo Ejecutivo: <span class="text-primary">Ingeniería de Sistemas</span>
+            </h3>
+            <small class="text-muted" style="font-size: 0.78rem;">Métricas de cobertura y distribución de recursos docentes y estudiantiles</small>
+          </div>
+        </div>
+        <span class="badge bg-light text-muted border px-3 py-1.5 rounded-pill" style="font-size: 0.75rem;">
+          <i class="bi bi-clock-history me-1 text-primary"></i> Datos en Vivo • Semestre 2026-II
+        </span>
+      </div>
+
+      <div class="row g-4">
+        <!-- 1. DOCENTES (Gráfico de Tendencia / Líneas) -->
+        <div class="col-xl-4 col-lg-4 col-md-12">
+          <div class="monitor-card h-100 p-4 bg-white rounded-4 border shadow-xs d-flex flex-column justify-content-between">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <div>
+                <span class="badge bg-primary-subtle text-primary fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">Monitoreo Docentes</span>
+                <h4 class="h6 mb-0 fw-bold text-dark mt-1" style="font-family: 'Outfit', sans-serif; font-size: 1.05rem;">Docentes</h4>
+                <small class="text-muted" style="font-size: 0.74rem;">Tendencia de cobertura mensual</small>
+              </div>
+              <div class="monitor-metric text-end">
+                <div class="fs-3 fw-extrabold text-primary" id="monDocentesCount">6</div>
+                <small class="text-muted" style="font-size: 0.7rem;">Docentes Activos</small>
+              </div>
+            </div>
+            <!-- Contenedor SVG Gráfico de Líneas -->
+            <div class="monitor-chart-container py-3" id="chartDocentesContainer" style="height: 155px;"></div>
+            <div class="d-flex align-items-center justify-content-between pt-2.5 border-top small text-muted" style="font-size: 0.76rem;">
+              <span><i class="bi bi-check-circle-fill text-success me-1"></i>Setiembre: 100% cubierto</span>
+              <span class="fw-semibold text-primary">6 Docentes en nómina</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. ALUMNOS (Gráfico Tacómetro / Velocímetro - Gauge) -->
+        <div class="col-xl-4 col-lg-4 col-md-12">
+          <div class="monitor-card h-100 p-4 bg-white rounded-4 border shadow-xs d-flex flex-column justify-content-between">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <div>
+                <span class="badge bg-success-subtle text-success fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">Monitoreo Alumnos</span>
+                <h4 class="h6 mb-0 fw-bold text-dark mt-1" style="font-family: 'Outfit', sans-serif; font-size: 1.05rem;">Alumnos</h4>
+                <small class="text-muted" style="font-size: 0.74rem;">Tasa de cobertura estudiantil</small>
+              </div>
+              <div class="monitor-metric text-end">
+                <div class="fs-3 fw-extrabold text-success" id="monAlumnosCount">1,258</div>
+                <small class="text-muted" style="font-size: 0.7rem;">Matriculados</small>
+              </div>
+            </div>
+            <!-- Contenedor SVG Tacómetro / Velocímetro -->
+            <div class="monitor-chart-container py-2 d-flex justify-content-center align-items-center" id="chartAlumnosContainer" style="height: 155px;"></div>
+            <div class="d-flex align-items-center justify-content-between pt-2.5 border-top small text-muted" style="font-size: 0.76rem;">
+              <span><i class="bi bi-shield-check text-success me-1"></i>1,072 con docente</span>
+              <span class="badge bg-danger-subtle text-danger" style="font-size: 0.72rem;">186 en vacante</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. CURSOS (Gráfico de Barras Escalonado) -->
+        <div class="col-xl-4 col-lg-4 col-md-12">
+          <div class="monitor-card h-100 p-4 bg-white rounded-4 border shadow-xs d-flex flex-column justify-content-between">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <div>
+                <span class="badge fw-bold text-uppercase" style="background: #F3E8FF; color: #7C3AED; font-size: 0.68rem; letter-spacing: 0.5px;">Monitoreo Cursos</span>
+                <h4 class="h6 mb-0 fw-bold text-dark mt-1" style="font-family: 'Outfit', sans-serif; font-size: 1.05rem;">Cursos</h4>
+                <small class="text-muted" style="font-size: 0.74rem;">Distribución de grupos por asignatura</small>
+              </div>
+              <div class="monitor-metric text-end">
+                <div class="fs-3 fw-extrabold" style="color: #7C3AED;" id="monCursosCount">6</div>
+                <small class="text-muted" style="font-size: 0.7rem;">Asignaturas</small>
+              </div>
+            </div>
+            <!-- Contenedor SVG Barras Escalonadas -->
+            <div class="monitor-chart-container py-3" id="chartCursosContainer" style="height: 155px;"></div>
+            <div class="d-flex align-items-center justify-content-between pt-2.5 border-top small text-muted" style="font-size: 0.76rem;">
+              <span><i class="bi bi-layers-fill text-primary me-1"></i>26 Grupos Totales</span>
+              <span class="fw-semibold" style="color: #7C3AED;">Ciclos II, III y IV</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECCIÓN ②: PROCEDIMIENTOS DE LA FACULTAD DE SISTEMAS (CUADRÍCULA 2X3)
+         ========================================================================= -->
+    <section class="sistemas-section-card" id="secProcedimientos">
+      <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom">
+        <div class="d-flex align-items-center gap-2.5">
+          <div class="section-number-badge">2</div>
+          <div>
+            <h3 class="h5 mb-0 fw-bold text-dark" style="font-family: 'Outfit', sans-serif;">
+              Procedimientos de la Facultad de Sistemas
+            </h3>
+            <small class="text-muted" style="font-size: 0.78rem;">Accesos directos a los 6 módulos operativos de la carrera</small>
+          </div>
+        </div>
+        <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-1.5 rounded-pill" style="font-size: 0.75rem;">
+          6 Procedimientos Clave
+        </span>
+      </div>
+
+      <!-- Cuadrícula 2x3 de 6 Procedimientos con separación amplia y diseño simétrico -->
+      <div class="row g-3 g-xl-4" id="areaButtonsRow">
+        
+        <!-- Procedimiento 1: Directorio Docente -->
+        <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+          <button type="button" class="procedure-card area-action-card area-card-directorio proc-theme-blue w-100 text-start" onclick="navigateToArea('directorio-tab')" title="Procedimiento 1: Directorio Docente por Ciclos">
+            <div class="proc-card-header">
+              <span class="proc-num-pill"><i class="bi bi-hash"></i>01</span>
+              <span class="proc-metric-pill" id="sisBadgeDirectorio">
+                <i class="bi bi-people-fill me-1"></i>6 Docentes
+              </span>
+            </div>
+            <div class="proc-card-body">
+              <div class="proc-card-icon">
+                <i class="bi bi-person-lines-fill"></i>
+              </div>
+              <div class="proc-card-content flex-grow-1">
+                <h4 class="proc-card-title">Directorio Docente</h4>
+                <p class="proc-card-desc">Gestión docente por Ciclos II al IV, aperturas y contactos oficiales.</p>
+              </div>
+            </div>
+            <div class="proc-card-footer">
+              <span class="proc-action-text">Abrir Directorio</span>
+              <span class="proc-action-arrow"><i class="bi bi-arrow-right"></i></span>
+            </div>
+          </button>
+        </div>
+
+        <!-- Procedimiento 2: Análisis de Cursos -->
+        <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+          <button type="button" class="procedure-card area-action-card area-card-cursos proc-theme-purple w-100 text-start" onclick="navigateToArea('cursos-tab')" title="Procedimiento 2: Análisis de Cursos y Malla">
+            <div class="proc-card-header">
+              <span class="proc-num-pill"><i class="bi bi-hash"></i>02</span>
+              <span class="proc-metric-pill" id="sisBadgeCursos">
+                <i class="bi bi-journal-text me-1"></i>6 Cursos
+              </span>
+            </div>
+            <div class="proc-card-body">
+              <div class="proc-card-icon">
+                <i class="bi bi-diagram-3"></i>
+              </div>
+              <div class="proc-card-content flex-grow-1">
+                <h4 class="proc-card-title">Análisis de Cursos</h4>
+                <p class="proc-card-desc">Malla curricular, carga electiva, vacantes y ratios de matrícula.</p>
+              </div>
+            </div>
+            <div class="proc-card-footer">
+              <span class="proc-action-text">Ver Cursos</span>
+              <span class="proc-action-arrow"><i class="bi bi-arrow-right"></i></span>
+            </div>
+          </button>
+        </div>
+
+        <!-- Procedimiento 3: Matriz Modular -->
+        <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+          <button type="button" class="procedure-card area-action-card area-card-matriz proc-theme-cyan w-100 text-start" onclick="navigateToArea('matriz-tab')" title="Procedimiento 3: Matriz Modular Docente">
+            <div class="proc-card-header">
+              <span class="proc-num-pill"><i class="bi bi-hash"></i>03</span>
+              <span class="proc-metric-pill" id="sisBadgeMatriz">
+                <i class="bi bi-calendar4-week me-1"></i>26 Grupos
+              </span>
+            </div>
+            <div class="proc-card-body">
+              <div class="proc-card-icon">
+                <i class="bi bi-calendar4-week"></i>
+              </div>
+              <div class="proc-card-content flex-grow-1">
+                <h4 class="proc-card-title">Matriz Modular</h4>
+                <p class="proc-card-desc">Programación mensual de sesiones teóricas y prácticas (Set-Dic 2026).</p>
+              </div>
+            </div>
+            <div class="proc-card-footer">
+              <span class="proc-action-text">Ver Matriz</span>
+              <span class="proc-action-arrow"><i class="bi bi-arrow-right"></i></span>
+            </div>
+          </button>
+        </div>
+
+        <!-- Procedimiento 4: Bolsa de Vacantes -->
+        <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+          <button type="button" class="procedure-card area-action-card area-card-vacantes proc-theme-rose w-100 text-start" onclick="navigateToArea('vacantes-tab')" title="Procedimiento 4: Bolsa de Vacantes y Asignación">
+            <div class="proc-card-header">
+              <span class="proc-num-pill"><i class="bi bi-hash"></i>04</span>
+              <span class="proc-metric-pill" id="sisBadgeVacantes">
+                <i class="bi bi-briefcase-fill me-1"></i>4 Vacantes
+              </span>
+            </div>
+            <div class="proc-card-body">
+              <div class="proc-card-icon">
+                <i class="bi bi-briefcase"></i>
+              </div>
+              <div class="proc-card-content flex-grow-1">
+                <h4 class="proc-card-title">Bolsa de Vacantes</h4>
+                <p class="proc-card-desc">Plazas desiertas por cubrir y asignación rápida de candidatos.</p>
+              </div>
+            </div>
+            <div class="proc-card-footer">
+              <span class="proc-action-text">Resolver Vacantes</span>
+              <span class="proc-action-arrow"><i class="bi bi-arrow-right"></i></span>
+            </div>
+          </button>
+        </div>
+
+        <!-- Procedimiento 5: Asistencia Docentes y Delegados -->
+        <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+          <a href="https://reg-asistencia-1.class-it.edu.pe" target="_blank" rel="noopener noreferrer" class="procedure-card area-action-card area-card-delegados proc-theme-crimson w-100 text-start text-decoration-none d-flex" title="Procedimiento 5: Registro y Asistencia Docentes y Delegados">
+            <div class="proc-card-header">
+              <span class="proc-num-pill"><i class="bi bi-hash"></i>05</span>
+              <span class="proc-metric-pill">
+                <i class="bi bi-broadcast me-1"></i>En Vivo
+              </span>
+            </div>
+            <div class="proc-card-body">
+              <div class="proc-card-icon">
+                <i class="bi bi-people-fill"></i>
+              </div>
+              <div class="proc-card-content flex-grow-1">
+                <h4 class="proc-card-title">Docentes y Delegados</h4>
+                <p class="proc-card-desc">Registro de asistencia, actas de acuerdos y representatividad de aula.</p>
+              </div>
+            </div>
+            <div class="proc-card-footer">
+              <span class="proc-action-text">Abrir Registro</span>
+              <span class="proc-action-arrow"><i class="bi bi-box-arrow-up-right"></i></span>
+            </div>
+          </a>
+        </div>
+
+        <!-- Procedimiento 6: Atención al Estudiante (PAU) -->
+        <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+          <button type="button" class="procedure-card area-action-card area-card-pau proc-theme-sky w-100 text-start" onclick="navigateToArea('pau-tab')" title="Procedimiento 6: Plataforma de Atención al Estudiante">
+            <div class="proc-card-header">
+              <span class="proc-num-pill"><i class="bi bi-hash"></i>06</span>
+              <span class="proc-metric-pill" id="badgeAreaPau">
+                <i class="bi bi-inbox-fill me-1"></i><span id="kpiPauTotal">0</span> Correos
+              </span>
+            </div>
+            <div class="proc-card-body">
+              <div class="proc-card-icon">
+                <i class="bi bi-inbox-fill"></i>
+              </div>
+              <div class="proc-card-content flex-grow-1">
+                <h4 class="proc-card-title">Atención Estudiante (PAU)</h4>
+                <p class="proc-card-desc">Bandeja de seguimiento de correos, WhatsApp y trámites académicos.</p>
+              </div>
+            </div>
+            <div class="proc-card-footer">
+              <span class="proc-action-text">Bandeja PAU</span>
+              <span class="proc-action-arrow"><i class="bi bi-arrow-right"></i></span>
+            </div>
+          </button>
+        </div>
+
+        <!-- Elementos ocultos requeridos por app.js para evitar errores de renderKPIs() -->
+        <div class="d-none" style="display: none !important;">
+          <span id="badgeAreaDirectorio"><span id="kpiDocentesCompletos"></span></span>
+          <span id="badgeAreaCursos"></span>
+          <span id="badgeAreaMatriz"><span id="kpiTotalGrupos"></span></span>
+          <span id="badgeAreaVacantes"><span id="kpiGruposVacantes"></span></span>
+          <span id="badgeAreaDesempeno"></span>
+          <span id="badgeAreaSupervision"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECCIÓN ③: CALENDARIO / AGENDA DE COORDINACIÓN (PLANNER / DÍAS / MESES)
+         ========================================================================= -->
+    <section class="sistemas-section-card" id="secAgenda">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4 pb-3 border-bottom">
+        <div class="d-flex align-items-center gap-2.5">
+          <div class="section-number-badge">3</div>
+          <div>
+            <h3 class="h5 mb-0 fw-bold text-dark" style="font-family: 'Outfit', sans-serif;">
+              Calendario & Agenda de Coordinación
+            </h3>
+            <small class="text-muted" style="font-size: 0.78rem;">
+              <i class="bi bi-funnel-fill text-primary me-1"></i> Filtro Planner / Días / Meses — Tareas y eventos organizados del Coordinador
+            </small>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-2.5 flex-wrap">
+          <!-- Alternador de diseño de columnas (3 columnas amplias vs 6 compactas) -->
+          <div class="btn-group btn-group-sm" role="group" title="Modo de visualización de días">
+            <button type="button" class="btn btn-outline-secondary agenda-view-toggle active fw-bold py-1.5 px-3" data-mode="spacious" onclick="toggleAgendaViewMode('spacious')">
+              <i class="bi bi-grid-3x2-gap-fill me-1"></i> 3 Días x Fila
+            </button>
+            <button type="button" class="btn btn-outline-secondary agenda-view-toggle fw-semibold py-1.5 px-3" data-mode="compact" onclick="toggleAgendaViewMode('compact')">
+              <i class="bi bi-layout-three-columns me-1"></i> 6 Días
+            </button>
+          </div>
+
+          <!-- Filtro de Meses (Planner) -->
+          <div class="btn-group btn-group-sm" role="group" id="agendaMonthSelector">
+            <button type="button" class="btn btn-outline-primary active py-1.5 px-3 fw-semibold" data-month="Set" onclick="selectAgendaMonth('Set')">Setiembre</button>
+            <button type="button" class="btn btn-outline-primary py-1.5 px-3 fw-semibold" data-month="Oct" onclick="selectAgendaMonth('Oct')">Octubre</button>
+            <button type="button" class="btn btn-outline-primary py-1.5 px-3 fw-semibold" data-month="Nov" onclick="selectAgendaMonth('Nov')">Noviembre</button>
+            <button type="button" class="btn btn-outline-primary py-1.5 px-3 fw-semibold" data-month="Dic" onclick="selectAgendaMonth('Dic')">Diciembre</button>
+          </div>
+
+          <button type="button" class="btn btn-sm btn-primary-app py-1.5 px-3.5 d-inline-flex align-items-center gap-1.5 shadow-sm fw-semibold rounded-pill" onclick="openNewAgendaModal(1, 'Set')">
+            <i class="bi bi-plus-circle-fill"></i>
+            <span>+ Agregar Nota</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Cuadrícula Semanal Planner: Lunes (1) al Sábado (6) renderizada por JS -->
+      <div class="row g-3 g-xl-4" id="agendaPlannerGrid">
+        <!-- Renderizado dinámicamente vía js/sistemas_coordinacion.js -->
+      </div>
+    </section>
+
+    <!-- Elementos métricos auxiliares ocultos para compatibilidad con app.js -->
+    <div class="d-none" style="display: none !important;">
+      <span id="kpiDocentesIncompletos"></span>
+      <span id="kpiSinVistoBueno"></span>
+      <span id="kpiAlumnosAfectados"></span>
     </div>
 
     <!-- 2. BARRA DE FILTRADO Y BÚSQUEDA AMPLIA -->
@@ -2241,7 +2462,82 @@
     </div>
   </div>
 
+  <!-- =========================================================================
+       MODAL: AGREGAR / EDITAR NOTA DE AGENDA (COORDINADOR SISTEMAS)
+       ========================================================================= -->
+  <div class="modal fade" id="modalAgendaNote" tabindex="-1" aria-labelledby="modalAgendaNoteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 border-0 shadow">
+        <div class="modal-header py-2.5 px-3.5 bg-primary text-white">
+          <h5 class="modal-title fs-6 fw-bold" id="modalAgendaNoteLabel">
+            <i class="bi bi-calendar-plus me-1.5"></i> Agregar Nota a la Agenda del Coordinador
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-3.5">
+          <form id="formAgendaNote" onsubmit="event.preventDefault(); saveAgendaNote();">
+            <input type="hidden" id="agendaNoteId" value="">
+            <div class="mb-3">
+              <label for="agendaNoteTitle" class="form-label small fw-bold text-dark mb-1">
+                Texto / Asunto de la Agenda <span class="text-danger">*</span>
+              </label>
+              <input type="text" class="form-control form-control-sm py-2" id="agendaNoteTitle" placeholder="Ej: Reunión con delegados de Sistemas, Entrega de actas..." required>
+            </div>
 
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label for="agendaNoteDay" class="form-label small fw-bold text-dark mb-1">Día de la Semana</label>
+                <select class="form-select form-select-sm py-2" id="agendaNoteDay" required>
+                  <option value="1">Lunes (1)</option>
+                  <option value="2">Martes (2)</option>
+                  <option value="3">Miércoles (3)</option>
+                  <option value="4">Jueves (4)</option>
+                  <option value="5">Viernes (5)</option>
+                  <option value="6">Sábado (6)</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label for="agendaNoteMonth" class="form-label small fw-bold text-dark mb-1">Módulo / Mes</label>
+                <select class="form-select form-select-sm py-2" id="agendaNoteMonth" required>
+                  <option value="Set">Setiembre</option>
+                  <option value="Oct">Octubre</option>
+                  <option value="Nov">Noviembre</option>
+                  <option value="Dic">Diciembre</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label for="agendaNoteTime" class="form-label small fw-bold text-dark mb-1">Hora Estimada</label>
+                <input type="time" class="form-control form-control-sm py-2" id="agendaNoteTime" value="09:00">
+              </div>
+              <div class="col-6">
+                <label for="agendaNoteCategory" class="form-label small fw-bold text-dark mb-1">Categoría / Tipo</label>
+                <select class="form-select form-select-sm py-2" id="agendaNoteCategory">
+                  <option value="reunion">Reunión Oficial</option>
+                  <option value="academico">Gestión Académica</option>
+                  <option value="urgente">Urgente / Vacante</option>
+                  <option value="seguimiento">Seguimiento / PAU</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mb-2">
+              <label for="agendaNoteDesc" class="form-label small fw-bold text-dark mb-1">Detalle Adicional (Opcional)</label>
+              <textarea class="form-control form-control-sm" id="agendaNoteDesc" rows="2" placeholder="Acuerdos, aula virtual, código de curso o enlace..."></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer py-2 px-3.5 bg-light d-flex justify-content-between">
+          <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary-app btn-sm px-4 fw-semibold" onclick="saveAgendaNote()">
+            <i class="bi bi-check2 me-1"></i> Guardar en Agenda
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- SCRIPTS (Carga local ultrarrápida sin latencia externa) -->
   <script src="lib/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -2251,6 +2547,7 @@
   <script src="js/analytics.js"></script>
   <script src="js/app.js"></script>
   <script src="js/pau.js?v=3.2"></script>
+  <script src="js/sistemas_coordinacion.js?v=1.0"></script>
 
   <!-- Auto-navigate to specific tab if coming from selector -->
   <script>
