@@ -1341,3 +1341,367 @@ ul.nav li { list-style: none !important; }
   border-color: #0B2545 !important;
   box-shadow: 0 3px 10px rgba(11, 37, 69, 0.25);
 }
+
+/* ==========================================================================
+   CALENDARIO DIGITAL MENSUAL (ESTILO EDITORIAL INSTITUCIONAL UCV)
+   Diseño 100% simétrico: 7 columnas idénticas (minmax(0, 1fr)), altura uniforme
+   ========================================================================== */
+.digital-calendar-card {
+  background: #FFFFFF;
+  border: 1.5px solid #CBD5E1;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgba(11, 37, 69, 0.05);
+  transition: all 0.25s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cal-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 2rem 1.25rem;
+  background: #FFFFFF;
+  gap: 1.5rem;
+}
+
+.cal-month-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 2.3rem;
+  font-weight: 700;
+  color: #1E293B;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.cal-year-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 2.3rem;
+  font-weight: 800;
+  color: #8E9BAE;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.cal-controls-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cal-nav-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1.5px solid #E2E8F0;
+  background: #FFFFFF;
+  color: #475569;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.cal-nav-btn:hover {
+  background: #F1F5F9;
+  border-color: #CBD5E1;
+  color: #0B2545;
+  transform: translateY(-1px);
+}
+
+.cal-select {
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  border: 1.5px solid #E2E8F0;
+  background: #FFFFFF;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #334155;
+  outline: none;
+  cursor: pointer;
+}
+
+.cal-select:focus {
+  border-color: #0B2545;
+}
+
+/* Fila de Días de la Semana con fondo pastel institucional suave - ESTRICTAMENTE SIMÉTRICA */
+.cal-weekdays-row {
+  display: grid !important;
+  grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+  width: 100% !important;
+  background: #E8E2EA;
+  border-top: 1.5px solid #CBD5E1;
+  border-bottom: 1.5px solid #CBD5E1;
+  box-sizing: border-box;
+}
+
+.cal-weekday-cell {
+  padding: 0.75rem 0.25rem;
+  text-align: center;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #4A4540;
+  letter-spacing: 0.02em;
+  border-right: 1px solid rgba(203, 213, 225, 0.7);
+  min-width: 0 !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cal-weekday-cell:last-child {
+  border-right: none;
+}
+
+/* Cuadrícula de 7 Columnas - ESTRICTAMENTE 1/7 CADA UNA */
+.cal-grid-body {
+  display: grid !important;
+  grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+  width: 100% !important;
+  background: #CBD5E1;
+  gap: 1px;
+  border-bottom: 1.5px solid #CBD5E1;
+  box-sizing: border-box;
+}
+
+.cal-day-cell {
+  background: #FFFFFF;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  height: 108px !important; /* Altura fija uniforme para perfecta simetría */
+  box-sizing: border-box;
+  padding: 0.45rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden !important;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cal-day-cell:hover {
+  background: #F8FAFC;
+  z-index: 2;
+  box-shadow: inset 0 0 0 1.5px #0284C7;
+}
+
+.cal-day-cell.other-month {
+  background: #FAF9F7;
+}
+
+.cal-day-cell.other-month:hover {
+  background: #F5F3EF;
+}
+
+.cal-day-cell.is-today {
+  background: #F0FDF4;
+}
+
+.cal-day-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+  min-width: 0;
+  height: 20px;
+}
+
+.cal-day-num {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #334155;
+  margin-left: auto;
+}
+
+.cal-day-cell.is-today .cal-day-num {
+  background: #16A34A;
+  color: #FFFFFF;
+  border-radius: 6px;
+  padding: 1px 6px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 5px rgba(22, 163, 74, 0.35);
+}
+
+.cal-day-cell.other-month .cal-day-num {
+  color: #A0AEC0;
+  font-weight: 500;
+  opacity: 0.5;
+}
+
+.cal-day-add-btn {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  font-size: 0.72rem;
+  color: #0284C7;
+  padding: 0;
+  line-height: 1;
+}
+
+.cal-day-cell:hover .cal-day-add-btn {
+  opacity: 0.85;
+}
+
+/* Chips / Píldoras de Eventos con texto truncado sin romper la columna */
+.cal-events-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex-grow: 1;
+  min-width: 0 !important;
+  width: 100% !important;
+  overflow: hidden !important;
+}
+
+.cal-event-chip {
+  padding: 2px 5px;
+  border-radius: 5px;
+  font-size: 0.69rem;
+  font-weight: 600;
+  line-height: 1.25;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border: 1px solid transparent;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box;
+  overflow: hidden !important;
+}
+
+.cal-event-chip span {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  flex: 1;
+  display: block;
+}
+
+.cal-event-chip i {
+  flex-shrink: 0;
+  font-size: 0.65rem;
+}
+
+.cal-event-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+.cal-event-chip.cat-reunion {
+  background: #F3E8FF;
+  color: #6B21A8;
+  border-color: #E9D5FF;
+}
+
+.cal-event-chip.cat-academico {
+  background: #DCFCE7;
+  color: #15803D;
+  border-color: #BBF7D0;
+}
+
+.cal-event-chip.cat-urgente {
+  background: #FEE2E2;
+  color: #991B1B;
+  border-color: #FECACA;
+}
+
+.cal-event-chip.cat-seguimiento {
+  background: #E0F2FE;
+  color: #0369A1;
+  border-color: #BAE6FD;
+}
+
+.cal-event-chip.completed {
+  text-decoration: line-through;
+  opacity: 0.55;
+}
+
+.cal-more-events-badge {
+  font-size: 0.64rem;
+  font-weight: 700;
+  color: #0284C7;
+  padding: 1px 4px;
+  text-align: right;
+  margin-top: auto;
+  line-height: 1;
+}
+
+/* Área de Notas / Acuerdos del Mes (Idéntica a la maqueta del usuario) */
+.cal-bottom-notes {
+  background: #E8E2EA;
+  padding: 1.25rem 2rem 1.5rem;
+}
+
+.cal-bottom-notes-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #4A4540;
+  margin-bottom: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cal-notes-lines-container {
+  background: #FFFFFF;
+  border-radius: 12px;
+  padding: 0.85rem 1.25rem;
+  border: 1px solid rgba(203, 213, 225, 0.9);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.cal-notes-textarea {
+  width: 100%;
+  border: none;
+  background: repeating-linear-gradient(
+    transparent,
+    transparent 29px,
+    #CBD5E1 29px,
+    #CBD5E1 30px
+  );
+  line-height: 30px;
+  padding: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.85rem;
+  color: #334155;
+  resize: vertical;
+  min-height: 90px;
+  outline: none;
+}
+
+.cal-notes-textarea::placeholder {
+  color: #94A3B8;
+  font-style: italic;
+}
+
+@media (max-width: 991px) {
+  .cal-header-bar {
+    padding: 1.25rem 1.25rem 1rem;
+  }
+  .cal-month-title, .cal-year-title {
+    font-size: 1.8rem;
+  }
+  .cal-day-cell {
+    height: 90px !important;
+    padding: 0.35rem;
+  }
+  .cal-weekday-cell {
+    font-size: 0.72rem;
+    padding: 0.5rem 0.15rem;
+  }
+}
+
+

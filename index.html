@@ -11,16 +11,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Bootstrap 5 CSS y Bootstrap Icons (Carga local y CDN de alta disponibilidad) -->
+  <!-- Bootstrap 5 CSS y Bootstrap Icons (Carga con CDN de alta disponibilidad) -->
   <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="lib/icons/bootstrap-icons.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="lib/icons/bootstrap-icons.min.css">
 
   <!-- Favicon UCV Virtual -->
   <link rel="icon" type="image/png" href="img/logo-ucv-virtual.png">
   
-  <!-- Estilos Personalizados Modernos -->
-  <link rel="stylesheet" href="css/custom.css?v=3.0">
+  <!-- Estilos Personalizados Modernos (Busting de caché v3.9) -->
+  <link rel="stylesheet" href="css/custom.css?v=3.9">
 
   <!-- Login Gate: redirect to login if not authenticated -->
   <script>
@@ -100,19 +100,19 @@
          ========================================================================= -->
     <div class="dac-context-banner mb-4 p-3 p-lg-3.5 d-flex align-items-center justify-content-between flex-wrap gap-3">
       <div class="d-flex align-items-center gap-3">
-        <div class="dac-banner-icon bg-primary text-white rounded-3 d-flex align-items-center justify-content-center shadow-xs" style="width: 46px; height: 46px; font-size: 1.4rem;">
+        <div class="dac-banner-icon bg-primary text-white rounded-3 d-flex align-items-center justify-content-center shadow-xs" id="dacBannerIcon" style="width: 46px; height: 46px; font-size: 1.4rem;">
           <i class="bi bi-cpu"></i>
         </div>
         <div>
           <div class="d-flex align-items-center gap-2 mb-0.5">
-            <span class="badge bg-primary px-2.5 py-0.5 text-white fw-bold" style="font-size: 0.7rem; letter-spacing: 0.5px;">DAC SISTEMAS</span>
+            <span class="badge bg-primary px-2.5 py-0.5 text-white fw-bold" id="dacBannerPill" style="font-size: 0.7rem; letter-spacing: 0.5px;">DAC SISTEMAS</span>
             <i class="bi bi-chevron-right text-muted" style="font-size: 0.7rem;"></i>
             <span class="badge fw-bold" style="background: #F3E8FF; color: #7C3AED; font-size: 0.7rem;">COORDINACIÓN DE ESCUELA</span>
           </div>
-          <h2 class="h5 mb-0 fw-bold text-dark" style="font-family: 'Outfit', sans-serif; letter-spacing: -0.01em;">
+          <h2 class="h5 mb-0 fw-bold text-dark" id="dacBannerTitle" style="font-family: 'Outfit', sans-serif; letter-spacing: -0.01em;">
             DAC - Sistemas <i class="bi bi-arrow-right text-primary mx-1"></i> Coordinación
           </h2>
-          <small class="text-muted" style="font-size: 0.76rem;">Monitoreo ejecutivo de alumnos, procedimientos de carrera y agenda semanal</small>
+          <small class="text-muted" id="dacBannerSub" style="font-size: 0.76rem;">Monitoreo ejecutivo de alumnos, procedimientos de carrera y agenda semanal</small>
         </div>
       </div>
       <div class="d-flex align-items-center gap-2">
@@ -432,7 +432,7 @@
     </section>
 
     <!-- =========================================================================
-         SECCIÓN ③: CALENDARIO / AGENDA DE COORDINACIÓN (PLANNER / DÍAS / MESES)
+         SECCIÓN ③: CALENDARIO DIGITAL & AGENDA DE COORDINACIÓN (2026)
          ========================================================================= -->
     <section class="sistemas-section-card" id="secAgenda">
       <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4 pb-3 border-bottom">
@@ -443,40 +443,58 @@
               Calendario & Agenda de Coordinación
             </h3>
             <small class="text-muted" style="font-size: 0.78rem;">
-              <i class="bi bi-funnel-fill text-primary me-1"></i> Filtro Planner / Días / Meses — Tareas y eventos organizados del Coordinador
+              <i class="bi bi-calendar3 text-primary me-1"></i> Calendario Digital & Planner — Fechas oficiales, eventos y tareas del Coordinador
             </small>
           </div>
         </div>
 
         <div class="d-flex align-items-center gap-2.5 flex-wrap">
-          <!-- Alternador de diseño de columnas (3 columnas amplias vs 6 compactas) -->
-          <div class="btn-group btn-group-sm" role="group" title="Modo de visualización de días">
-            <button type="button" class="btn btn-outline-secondary agenda-view-toggle active fw-bold py-1.5 px-3" data-mode="spacious" onclick="toggleAgendaViewMode('spacious')">
-              <i class="bi bi-grid-3x2-gap-fill me-1"></i> 3 Días x Fila
+          <!-- Selector de Vista: Calendario Digital vs Planner Semanal -->
+          <div class="btn-group btn-group-sm" role="group" title="Modo de visualización">
+            <button type="button" class="btn btn-primary agenda-main-view-btn active fw-bold py-1.5 px-3" id="btnViewCalendar" onclick="switchAgendaMainView('calendar')">
+              <i class="bi bi-calendar-month-fill me-1"></i> Calendario Digital
             </button>
-            <button type="button" class="btn btn-outline-secondary agenda-view-toggle fw-semibold py-1.5 px-3" data-mode="compact" onclick="toggleAgendaViewMode('compact')">
-              <i class="bi bi-layout-three-columns me-1"></i> 6 Días
+            <button type="button" class="btn btn-outline-secondary agenda-main-view-btn fw-semibold py-1.5 px-3" id="btnViewPlanner" onclick="switchAgendaMainView('planner')">
+              <i class="bi bi-layout-three-columns me-1"></i> Planner Semanal
             </button>
           </div>
 
-          <!-- Filtro de Meses (Planner) -->
-          <div class="btn-group btn-group-sm" role="group" id="agendaMonthSelector">
-            <button type="button" class="btn btn-outline-primary active py-1.5 px-3 fw-semibold" data-month="Set" onclick="selectAgendaMonth('Set')">Setiembre</button>
-            <button type="button" class="btn btn-outline-primary py-1.5 px-3 fw-semibold" data-month="Oct" onclick="selectAgendaMonth('Oct')">Octubre</button>
-            <button type="button" class="btn btn-outline-primary py-1.5 px-3 fw-semibold" data-month="Nov" onclick="selectAgendaMonth('Nov')">Noviembre</button>
-            <button type="button" class="btn btn-outline-primary py-1.5 px-3 fw-semibold" data-month="Dic" onclick="selectAgendaMonth('Dic')">Diciembre</button>
+          <!-- Selector de Meses Rápido (para el planner) -->
+          <div class="btn-group btn-group-sm d-none d-lg-inline-flex" role="group" id="agendaMonthSelector">
+            <button type="button" class="btn btn-outline-secondary active py-1.5 px-2.5 fw-semibold" data-month="Set" onclick="selectAgendaMonth('Set')">Set</button>
+            <button type="button" class="btn btn-outline-secondary py-1.5 px-2.5 fw-semibold" data-month="Oct" onclick="selectAgendaMonth('Oct')">Oct</button>
+            <button type="button" class="btn btn-outline-secondary py-1.5 px-2.5 fw-semibold" data-month="Nov" onclick="selectAgendaMonth('Nov')">Nov</button>
+            <button type="button" class="btn btn-outline-secondary py-1.5 px-2.5 fw-semibold" data-month="Dic" onclick="selectAgendaMonth('Dic')">Dic</button>
           </div>
 
-          <button type="button" class="btn btn-sm btn-primary-app py-1.5 px-3.5 d-inline-flex align-items-center gap-1.5 shadow-sm fw-semibold rounded-pill" onclick="openNewAgendaModal(1, 'Set')">
+          <button type="button" class="btn btn-sm btn-primary-app py-1.5 px-3.5 d-inline-flex align-items-center gap-1.5 shadow-sm fw-semibold rounded-pill" onclick="openNewAgendaModal()">
             <i class="bi bi-plus-circle-fill"></i>
-            <span>+ Agregar Nota</span>
+            <span>+ Agregar Evento / Nota</span>
           </button>
         </div>
       </div>
 
-      <!-- Cuadrícula Semanal Planner: Lunes (1) al Sábado (6) renderizada por JS -->
-      <div class="row g-3 g-xl-4" id="agendaPlannerGrid">
-        <!-- Renderizado dinámicamente vía js/sistemas_coordinacion.js -->
+      <!-- VISTA A: CALENDARIO DIGITAL MENSUAL (INSPIRADO EN LA MAQUETA INSTITUCIONAL) -->
+      <div id="digitalCalendarContainer" class="digital-calendar-card mb-3">
+        <!-- Renderizado dinámicamente vía renderDigitalCalendar() -->
+      </div>
+
+      <!-- VISTA B: PLANNER SEMANAL (LUNES A SÁBADO) -->
+      <div id="weeklyPlannerContainer" style="display: none;">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <small class="text-muted fw-bold"><i class="bi bi-view-stacked me-1"></i> Vista de columnas semanales:</small>
+          <div class="btn-group btn-group-sm" role="group" title="Modo de columnas">
+            <button type="button" class="btn btn-outline-secondary agenda-view-toggle active fw-bold py-1 px-2.5" data-mode="spacious" onclick="toggleAgendaViewMode('spacious')">
+              <i class="bi bi-grid-3x2-gap-fill me-1"></i> 3 Días x Fila
+            </button>
+            <button type="button" class="btn btn-outline-secondary agenda-view-toggle fw-semibold py-1 px-2.5" data-mode="compact" onclick="toggleAgendaViewMode('compact')">
+              <i class="bi bi-layout-three-columns me-1"></i> 6 Días
+            </button>
+          </div>
+        </div>
+        <div class="row g-3 g-xl-4" id="agendaPlannerGrid">
+          <!-- Renderizado dinámicamente vía renderSistemasAgenda() -->
+        </div>
       </div>
     </section>
 
@@ -487,8 +505,16 @@
       <span id="kpiAlumnosAfectados"></span>
     </div>
 
+
+    <!-- =========================================================================
+         BLOQUE OCULTADO TEMPORALMENTE: Filtros, Pestañas y Tablas del SGA
+         Para reactivar: quitar el style="display:none" del div wrapper
+         ========================================================================= -->
+    <div id="sgaMainBlock" style="display:none">
+
     <!-- 2. BARRA DE FILTRADO Y BÚSQUEDA AMPLIA -->
     <div class="content-card p-3.5 p-lg-4 mb-4">
+
       <div class="row g-3.5 align-items-center">
         <div class="col-lg-4 col-md-6">
           <div class="input-group input-group-sm">
@@ -1453,10 +1479,10 @@
             </table>
           </div>
 
-        </div>
-
-      </div>
-    </div>
+        </div><!-- /tab-pane PAU -->
+      </div><!-- /tab-content -->
+    </div><!-- /content-card tabs -->
+    </div><!-- /sgaMainBlock oculto -->
 
   </main>
 
@@ -2470,7 +2496,7 @@
       <div class="modal-content rounded-4 border-0 shadow">
         <div class="modal-header py-2.5 px-3.5 bg-primary text-white">
           <h5 class="modal-title fs-6 fw-bold" id="modalAgendaNoteLabel">
-            <i class="bi bi-calendar-plus me-1.5"></i> Agregar Nota a la Agenda del Coordinador
+            <i class="bi bi-calendar-event me-1.5"></i> <span id="modalAgendaNoteTitleText">Agregar Evento / Nota al Calendario</span>
           </h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
@@ -2479,39 +2505,27 @@
             <input type="hidden" id="agendaNoteId" value="">
             <div class="mb-3">
               <label for="agendaNoteTitle" class="form-label small fw-bold text-dark mb-1">
-                Texto / Asunto de la Agenda <span class="text-danger">*</span>
+                Texto / Asunto de la Nota o Evento <span class="text-danger">*</span>
               </label>
               <input type="text" class="form-control form-control-sm py-2" id="agendaNoteTitle" placeholder="Ej: Reunión con delegados de Sistemas, Entrega de actas..." required>
             </div>
 
             <div class="row g-2 mb-3">
-              <div class="col-6">
-                <label for="agendaNoteDay" class="form-label small fw-bold text-dark mb-1">Día de la Semana</label>
-                <select class="form-select form-select-sm py-2" id="agendaNoteDay" required>
-                  <option value="1">Lunes (1)</option>
-                  <option value="2">Martes (2)</option>
-                  <option value="3">Miércoles (3)</option>
-                  <option value="4">Jueves (4)</option>
-                  <option value="5">Viernes (5)</option>
-                  <option value="6">Sábado (6)</option>
-                </select>
+              <div class="col-7">
+                <label for="agendaNoteDate" class="form-label small fw-bold text-dark mb-1">
+                  <i class="bi bi-calendar-check text-primary me-1"></i> Fecha en Calendario <span class="text-danger">*</span>
+                </label>
+                <input type="date" class="form-control form-control-sm py-2 fw-semibold" id="agendaNoteDate" required>
               </div>
-              <div class="col-6">
-                <label for="agendaNoteMonth" class="form-label small fw-bold text-dark mb-1">Módulo / Mes</label>
-                <select class="form-select form-select-sm py-2" id="agendaNoteMonth" required>
-                  <option value="Set">Setiembre</option>
-                  <option value="Oct">Octubre</option>
-                  <option value="Nov">Noviembre</option>
-                  <option value="Dic">Diciembre</option>
-                </select>
+              <div class="col-5">
+                <label for="agendaNoteTime" class="form-label small fw-bold text-dark mb-1">
+                  <i class="bi bi-clock text-primary me-1"></i> Hora Estimada
+                </label>
+                <input type="time" class="form-control form-control-sm py-2" id="agendaNoteTime" value="09:00">
               </div>
             </div>
 
             <div class="row g-2 mb-3">
-              <div class="col-6">
-                <label for="agendaNoteTime" class="form-label small fw-bold text-dark mb-1">Hora Estimada</label>
-                <input type="time" class="form-control form-control-sm py-2" id="agendaNoteTime" value="09:00">
-              </div>
               <div class="col-6">
                 <label for="agendaNoteCategory" class="form-label small fw-bold text-dark mb-1">Categoría / Tipo</label>
                 <select class="form-select form-select-sm py-2" id="agendaNoteCategory">
@@ -2521,19 +2535,46 @@
                   <option value="seguimiento">Seguimiento / PAU</option>
                 </select>
               </div>
+              <div class="col-6">
+                <label for="agendaNoteDay" class="form-label small fw-bold text-muted mb-1">Día de Semana</label>
+                <select class="form-select form-select-sm py-2 bg-light text-muted" id="agendaNoteDay">
+                  <option value="1">Lunes (1)</option>
+                  <option value="2">Martes (2)</option>
+                  <option value="3">Miércoles (3)</option>
+                  <option value="4">Jueves (4)</option>
+                  <option value="5">Viernes (5)</option>
+                  <option value="6">Sábado (6)</option>
+                  <option value="7">Domingo (7)</option>
+                </select>
+                <input type="hidden" id="agendaNoteMonth" value="Set">
+              </div>
             </div>
 
-            <div class="mb-2">
+            <div class="mb-3">
               <label for="agendaNoteDesc" class="form-label small fw-bold text-dark mb-1">Detalle Adicional (Opcional)</label>
               <textarea class="form-control form-control-sm" id="agendaNoteDesc" rows="2" placeholder="Acuerdos, aula virtual, código de curso o enlace..."></textarea>
             </div>
+
+            <div class="form-check form-switch p-2 bg-light rounded-3 border" id="agendaNoteStatusContainer" style="display: none;">
+              <input class="form-check-input ms-0 me-2" type="checkbox" role="switch" id="agendaNoteCompleted">
+              <label class="form-check-label small fw-bold text-dark" for="agendaNoteCompleted">
+                <i class="bi bi-check-circle-fill text-success me-1"></i> Marcar como actividad completada
+              </label>
+            </div>
           </form>
         </div>
-        <div class="modal-footer py-2 px-3.5 bg-light d-flex justify-content-between">
-          <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-primary-app btn-sm px-4 fw-semibold" onclick="saveAgendaNote()">
-            <i class="bi bi-check2 me-1"></i> Guardar en Agenda
-          </button>
+        <div class="modal-footer py-2 px-3.5 bg-light d-flex justify-content-between align-items-center w-100">
+          <div>
+            <button type="button" class="btn btn-outline-danger btn-sm px-3 fw-semibold" id="btnDeleteAgendaNote" onclick="deleteCurrentModalNote()" style="display: none;">
+              <i class="bi bi-trash3-fill me-1"></i> Eliminar Evento
+            </button>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary-app btn-sm px-4 fw-semibold" onclick="saveAgendaNote()">
+              <i class="bi bi-check2 me-1"></i> <span id="btnSaveAgendaNoteText">Guardar en Calendario</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -2547,11 +2588,36 @@
   <script src="js/analytics.js"></script>
   <script src="js/app.js"></script>
   <script src="js/pau.js?v=3.2"></script>
-  <script src="js/sistemas_coordinacion.js?v=1.0"></script>
+  <script src="js/sistemas_coordinacion.js?v=2.9"></script>
 
-  <!-- Auto-navigate to specific tab if coming from selector -->
+  <!-- Auto-navigate to specific tab and dynamic DAC banner if coming from selector -->
   <script>
     (function() {
+      // Dynamic DAC context adaptation
+      const dac = sessionStorage.getItem('sga_dac');
+      if (dac === 'industrial') {
+        const pill = document.getElementById('dacBannerPill');
+        if (pill) {
+          pill.className = 'badge px-2.5 py-0.5 text-white fw-bold';
+          pill.style.background = '#BE1E2D';
+          pill.textContent = 'DAC INDUSTRIAL';
+        }
+        const title = document.getElementById('dacBannerTitle');
+        if (title) {
+          title.innerHTML = 'DAC - Industrial <i class="bi bi-arrow-right text-danger mx-1"></i> Coordinación';
+        }
+        const icon = document.getElementById('dacBannerIcon');
+        if (icon) {
+          icon.className = 'dac-banner-icon text-white rounded-3 d-flex align-items-center justify-content-center shadow-xs';
+          icon.style.background = '#BE1E2D';
+          icon.innerHTML = '<i class="bi bi-gear-wide-connected"></i>';
+        }
+        const sub = document.getElementById('dacBannerSub');
+        if (sub) {
+          sub.textContent = 'Monitoreo ejecutivo de alumnos, procedimientos de carrera y agenda — Escuela de Ing. Industrial';
+        }
+      }
+
       const gotoTab = sessionStorage.getItem('sga_goto_tab');
       if (gotoTab) {
         sessionStorage.removeItem('sga_goto_tab');

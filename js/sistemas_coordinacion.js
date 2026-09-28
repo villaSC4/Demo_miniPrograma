@@ -9,76 +9,35 @@
  * ==============================================================================
  */
 
-// Estado de la Agenda y Vista
+// Estado de la Agenda, Planner y Calendario Digital
 const AGENDA_STORAGE_KEY = 'sga_sistemas_agenda_v2';
 let activeAgendaMonth = 'Set';
 let agendaViewMode = 'spacious'; // 'spacious' (3x2) o 'compact' (6x1)
 let currentSistemasSection = 'all';
 let agendaModalInstance = null;
 
-// Notas institucionales oficiales precargadas
-const DEFAULT_AGENDA_NOTES = [
-  {
-    id: 1,
-    dia: 1, // Lunes
-    mes: 'Set',
-    hora: '08:30',
-    titulo: 'Apertura oficial del Módulo Setiembre — Bienvenida alumnos de Sistemas',
-    categoria: 'reunion',
-    completado: true,
-    desc: 'Verificación de accesos a aulas virtuales en Clementina y bienvenida a las secciones B1 y B2.'
-  },
-  {
-    id: 2,
-    dia: 2, // Martes
-    mes: 'Set',
-    hora: '10:00',
-    titulo: 'Monitoreo de registro de asistencia docente en primera sesión teórica',
-    categoria: 'seguimiento',
-    completado: true,
-    desc: 'Validar puntualidad y registro de temas en el sílabo digital.'
-  },
-  {
-    id: 3,
-    dia: 3, // Miércoles
-    mes: 'Set',
-    hora: '15:00',
-    titulo: 'Comité de evaluación y cobertura para 4 vacantes de Sistemas',
-    categoria: 'urgente',
-    completado: false,
-    desc: 'Revisión de CVs y asignación de profesores disponibles para Octubre y Noviembre.'
-  },
-  {
-    id: 4,
-    dia: 4, // Jueves
-    mes: 'Set',
-    hora: '11:30',
-    titulo: 'Auditoría preliminar de sílabos en Clementina para Ciclos II, III y IV',
-    categoria: 'academico',
-    completado: false,
-    desc: 'Revisión de los 6 cursos de carrera y material complementario.'
-  },
-  {
-    id: 5,
-    dia: 5, // Viernes
-    mes: 'Set',
-    hora: '17:00',
-    titulo: 'Reunión de coordinación con Delegados de aula — Escuela de Sistemas',
-    categoria: 'reunion',
-    completado: false,
-    desc: 'Enlace en portal de asistencia y recopilación de inquietudes estudiantiles.'
-  },
-  {
-    id: 6,
-    dia: 6, // Sábado
-    mes: 'Set',
-    hora: '09:00',
-    titulo: 'Consolidación de reporte de incidencias y solicitudes PAU de la semana',
-    categoria: 'seguimiento',
-    completado: false,
-    desc: 'Cierre de tickets atendidos con visto bueno de Coordinación FIA.'
-  }
+// Estado del Calendario Digital Mensual (2026)
+let currentCalYear = 2026;
+let currentCalMonth = 8; // 0-indexed: 8 = Setiembre (Semestre 2026-II)
+let currentAgendaMainView = 'calendar'; // 'calendar' o 'planner'
+
+const MONTH_NAMES_ES = [
+  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+  'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre'
 ];
+
+const MONTH_CODE_MAP = {
+  0: 'Ene', 1: 'Feb', 2: 'Mar', 3: 'Abr', 4: 'May', 5: 'Jun',
+  6: 'Jul', 7: 'Ago', 8: 'Set', 9: 'Oct', 10: 'Nov', 11: 'Dic'
+};
+
+const CODE_TO_MONTH_INDEX = {
+  'Ene': 0, 'Feb': 1, 'Mar': 2, 'Abr': 3, 'May': 4, 'Jun': 5,
+  'Jul': 6, 'Ago': 7, 'Set': 8, 'Oct': 9, 'Nov': 10, 'Dic': 11
+};
+
+// Base de datos de agenda en blanco: el usuario agregará sus datos reales poco a poco
+const DEFAULT_AGENDA_NOTES = [];
 
 /**
  * Inicialización al cargar el DOM
@@ -93,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Renderizar con holgura tras estabilización de datos
   setTimeout(() => {
     renderSistemasDashboard();
+    renderDigitalCalendar();
     renderSistemasAgenda();
   }, 300);
 
@@ -454,14 +414,29 @@ function getAgendaNotes() {
   try {
     const raw = localStorage.getItem(AGENDA_STORAGE_KEY);
     if (raw) {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      let parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        // Purgar datos dummy iniciales de prueba si existen en el almacenamiento del usuario
+        const cleaned = parsed.filter(n => {
+          const t = (n.titulo || '').toLowerCase();
+          return !t.includes('apertura oficial del módulo') &&
+                 !t.includes('monitoreo de registro de asistencia') &&
+                 !t.includes('comité de evaluación y cobertura') &&
+                 !t.includes('auditoría preliminar de sílabos') &&
+                 !t.includes('reunión de coordinación con delegados de aula') &&
+                 !t.includes('consolidación de reporte de incidencias') &&
+                 !t.includes('cierre de ciclo mensual y consolidación');
+        });
+        if (cleaned.length !== parsed.length) {
+          saveAllAgendaNotes(cleaned);
+        }
+        return cleaned;
+      }
     }
   } catch (e) {
     console.warn('Error leyendo agenda de localStorage', e);
   }
-  saveAllAgendaNotes(DEFAULT_AGENDA_NOTES);
-  return DEFAULT_AGENDA_NOTES;
+  return [];
 }
 
 function saveAllAgendaNotes(notes) {
@@ -569,20 +544,23 @@ function renderAgendaNoteCard(note) {
   const cat = catStyles[note.categoria] || catStyles.seguimiento;
 
   return `
-    <div class="agenda-card p-3 rounded-3 border ${note.completado ? 'agenda-card-completed' : ''}" style="background: #FFFFFF; border-left: 4px solid ${cat.color} !important;">
+    <div class="agenda-card p-3 rounded-3 border ${note.completado ? 'agenda-card-completed' : ''}" style="background: #FFFFFF; border-left: 4px solid ${cat.color} !important; cursor: pointer;" onclick="openEditAgendaModal(${note.id})" title="Clic para editar o eliminar">
       <div class="d-flex align-items-center justify-content-between mb-1.5">
         <span class="badge fw-bold" style="background: ${cat.bg}; color: ${cat.color}; font-size: 0.68rem; padding: 3px 8px; border-radius: 6px;">
           ${cat.label}
         </span>
         <div class="d-flex align-items-center gap-2">
           <span class="text-muted fw-bold" style="font-size: 0.72rem;"><i class="bi bi-clock me-1 text-primary"></i>${note.hora || '09:00'}</span>
-          <button type="button" class="btn btn-link text-danger p-0" style="font-size: 0.78rem; line-height: 1;" onclick="deleteAgendaNote(${note.id})" title="Eliminar nota">
+          <button type="button" class="btn btn-link text-primary p-0" style="font-size: 0.78rem; line-height: 1;" onclick="event.stopPropagation(); openEditAgendaModal(${note.id})" title="Editar evento">
+            <i class="bi bi-pencil-square"></i>
+          </button>
+          <button type="button" class="btn btn-link text-danger p-0" style="font-size: 0.78rem; line-height: 1;" onclick="event.stopPropagation(); confirmDeleteNote(${note.id})" title="Eliminar evento">
             <i class="bi bi-trash3"></i>
           </button>
         </div>
       </div>
       <div class="d-flex align-items-start gap-2">
-        <input class="form-check-input mt-1" type="checkbox" ${note.completado ? 'checked' : ''} onchange="toggleAgendaNoteComplete(${note.id})" title="Marcar como atendido" style="cursor: pointer; transform: scale(0.95);">
+        <input class="form-check-input mt-1" type="checkbox" ${note.completado ? 'checked' : ''} onclick="event.stopPropagation();" onchange="toggleAgendaNoteComplete(${note.id})" title="Marcar como atendido" style="cursor: pointer; transform: scale(0.95);">
         <p class="mb-0 small fw-bold text-dark agenda-note-text ${note.completado ? 'text-decoration-line-through text-muted' : ''}" style="font-size: 0.82rem; line-height: 1.4;">
           ${escapeHtml(note.titulo)}
         </p>
@@ -592,21 +570,489 @@ function renderAgendaNoteCard(note) {
   `;
 }
 
-function openNewAgendaModal(preSelectedDay = 1, preSelectedMonth = activeAgendaMonth) {
+// ==============================================================================
+// 4. CALENDARIO DIGITAL MENSUAL (DISEÑO FIEL A LA MAQUETA INSTITUCIONAL)
+// ==============================================================================
+
+/**
+ * Renderiza la vista principal del Calendario Digital Mensual (7 columnas, fechas reales)
+ */
+function renderDigitalCalendar() {
+  const container = document.getElementById('digitalCalendarContainer');
+  if (!container) return;
+
+  const year = currentCalYear;
+  const month = currentCalMonth; // 0-indexed (0 = Enero .. 8 = Setiembre)
+  const monthName = MONTH_NAMES_ES[month];
+
+  // 1. Calcular días del mes actual
+  const firstDayOfMonth = new Date(year, month, 1);
+  const lastDayOfMonth = new Date(year, month + 1, 0);
+  const totalDaysInMonth = lastDayOfMonth.getDate();
+
+  // Primer día de la semana (Lunes = 0 .. Domingo = 6)
+  const firstDayWeekday = (firstDayOfMonth.getDay() + 6) % 7;
+
+  // Días del mes anterior para rellenar celdas previas
+  const lastDayOfPrevMonth = new Date(year, month, 0).getDate();
+
+  // Fecha actual de referencia
+  const today = new Date();
+  const isCurrentYearMonth = (today.getFullYear() === year && today.getMonth() === month);
+  const todayDate = today.getDate();
+
+  const allNotes = getAgendaNotes();
+
+  // Cabecera superior con estilo idéntico a la imagen (Mes a la izquierda, Año a la derecha)
+  let html = `
+    <div class="cal-header-bar">
+      <div class="d-flex align-items-center gap-3">
+        <h2 class="cal-month-title mb-0" id="calMonthDisplay">${monthName}</h2>
+        <div class="cal-controls-nav ms-1">
+          <button type="button" class="cal-nav-btn" onclick="prevCalendarMonth()" title="Mes anterior">
+            <i class="bi bi-chevron-left"></i>
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-3 fw-bold rounded-pill" style="font-size: 0.76rem;" onclick="goToTodayCalendar()" title="Ir al mes actual">
+            Hoy
+          </button>
+          <button type="button" class="cal-nav-btn" onclick="nextCalendarMonth()" title="Mes siguiente">
+            <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center gap-3">
+        <select class="cal-select" onchange="changeCalendarMonth(parseInt(this.value, 10))" title="Seleccionar Mes">
+          ${MONTH_NAMES_ES.map((m, idx) => `<option value="${idx}" ${idx === month ? 'selected' : ''}>${m}</option>`).join('')}
+        </select>
+        <div class="cal-year-title mb-0">${year}</div>
+      </div>
+    </div>
+
+    <!-- Fila de Días de la Semana con fondo pastel institucional suave -->
+    <div class="cal-weekdays-row">
+      <div class="cal-weekday-cell">Lunes</div>
+      <div class="cal-weekday-cell">Martes</div>
+      <div class="cal-weekday-cell">Miércoles</div>
+      <div class="cal-weekday-cell">Jueves</div>
+      <div class="cal-weekday-cell">Viernes</div>
+      <div class="cal-weekday-cell">Sábado</div>
+      <div class="cal-weekday-cell">Domingo</div>
+    </div>
+
+    <!-- Cuadrícula de 7 Columnas con Fechas Reales (Estrictamente Simétrica) -->
+    <div class="cal-grid-body">
+  `;
+
+  // 1. Días del mes anterior (trailing days atenuados, ej: 29, 30, 31)
+  for (let i = firstDayWeekday - 1; i >= 0; i--) {
+    const dayNum = lastDayOfPrevMonth - i;
+    const dayFormatted = String(dayNum).padStart(2, '0');
+    const prevMonthIdx = month === 0 ? 11 : month - 1;
+    const prevYear = month === 0 ? year - 1 : year;
+    const fullDate = `${prevYear}-${String(prevMonthIdx + 1).padStart(2, '0')}-${dayFormatted}`;
+
+    html += `
+      <div class="cal-day-cell other-month" onclick="openNewAgendaModal(null, null, '${fullDate}')" title="Agregar evento para el ${dayFormatted}/${String(prevMonthIdx + 1).padStart(2, '0')}/${prevYear}">
+        <div class="cal-day-header">
+          <span class="cal-day-num">${dayFormatted}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  // 2. Días del mes actual
+  for (let d = 1; d <= totalDaysInMonth; d++) {
+    const dayFormatted = String(d).padStart(2, '0');
+    const fullDate = `${year}-${String(month + 1).padStart(2, '0')}-${dayFormatted}`;
+    const isToday = isCurrentYearMonth && (d === todayDate);
+
+    // Buscar notas para esta fecha exacta o por día de semana del mes actual
+    const dayOfWeek = (new Date(year, month, d).getDay() + 6) % 7 + 1; // 1 = Lunes .. 7 = Domingo
+    const monthCode = MONTH_CODE_MAP[month] || 'Set';
+
+    const dayNotes = allNotes.filter(n => {
+      if (n.fecha) {
+        return n.fecha === fullDate;
+      }
+      return (parseInt(n.dia, 10) === dayOfWeek && n.mes === monthCode && d <= 7);
+    });
+
+    const maxVisibleEvents = 2;
+    const visibleNotes = dayNotes.slice(0, maxVisibleEvents);
+    const hiddenCount = dayNotes.length - maxVisibleEvents;
+
+    html += `
+      <div class="cal-day-cell ${isToday ? 'is-today' : ''}" onclick="onCalendarDayClick(event, '${fullDate}', ${dayOfWeek}, '${monthCode}')" title="Clic para agregar o ver notas en ${dayFormatted}/${String(month + 1).padStart(2, '0')}/${year}">
+        <div class="cal-day-header">
+          <span class="cal-day-add-btn" title="Añadir evento en esta fecha"><i class="bi bi-plus-circle-fill"></i></span>
+          <span class="cal-day-num">${dayFormatted}</span>
+        </div>
+        <div class="cal-events-list">
+          ${visibleNotes.map(n => renderCalEventChip(n)).join('')}
+          ${hiddenCount > 0 ? `<div class="cal-more-events-badge">+${hiddenCount} más</div>` : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  // 3. Días del mes siguiente para completar la cuadrícula (35 o 42 casillas)
+  const totalCellsSoFar = firstDayWeekday + totalDaysInMonth;
+  const targetTotal = totalCellsSoFar > 35 ? 42 : 35;
+  const remainingCells = targetTotal - totalCellsSoFar;
+
+  for (let n = 1; n <= remainingCells; n++) {
+    const dayFormatted = String(n).padStart(2, '0');
+    const nextMonthIdx = month === 11 ? 0 : month + 1;
+    const nextYear = month === 11 ? year + 1 : year;
+    const fullDate = `${nextYear}-${String(nextMonthIdx + 1).padStart(2, '0')}-${dayFormatted}`;
+
+    html += `
+      <div class="cal-day-cell other-month" onclick="openNewAgendaModal(null, null, '${fullDate}')" title="Agregar evento para el ${dayFormatted}/${String(nextMonthIdx + 1).padStart(2, '0')}/${nextYear}">
+        <div class="cal-day-header">
+          <span class="cal-day-num">${dayFormatted}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  // 4. Bloque inferior de Notas / Acuerdos del Mes (Idéntico a la imagen de referencia)
+  // 4. Bloque inferior de Notas / Acuerdos del Mes (Data real de eventos del mes)
+  const savedNotepad = getMonthlyNotepad(year, month);
+
+  html += `
+    </div>
+
+    <div class="cal-bottom-notes">
+      <div class="cal-bottom-notes-title">
+        <div class="d-flex align-items-center gap-2">
+          <span><i class="bi bi-journal-text me-1.5 text-primary"></i> Notas & Acuerdos del Mes (${monthName} ${year}):</span>
+        </div>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <button type="button" class="btn btn-sm btn-light border py-1 px-2.5 text-muted fw-semibold" style="font-size: 0.74rem; border-radius: 6px;" onclick="syncMonthlyNotepadWithEvents(${year}, ${month})" title="Generar lista a partir de los eventos del mes">
+            <i class="bi bi-arrow-repeat me-1 text-primary"></i> Sincronizar eventos
+          </button>
+          <button type="button" class="btn btn-sm btn-light border py-1 px-2.5 text-muted fw-semibold" style="font-size: 0.74rem; border-radius: 6px;" onclick="clearMonthlyNotepad(${year}, ${month})" title="Limpiar para redactar notas libres">
+            <i class="bi bi-eraser me-1 text-secondary"></i> Limpiar
+          </button>
+          <span class="badge bg-white text-muted border py-1 px-2.5 fw-semibold" id="notepadAutoSaveStatus" style="font-size: 0.72rem;">
+            <i class="bi bi-cloud-check text-success me-1"></i> Auto-guardado
+          </span>
+        </div>
+      </div>
+      <div class="cal-notes-lines-container">
+        <textarea class="cal-notes-textarea" id="calMonthlyNotepad" placeholder="Sin acuerdos o notas registradas para este mes. Puede escribir libremente aquí o sincronizar con las actividades del mes..." oninput="handleMonthlyNotepadInput(event, ${year}, ${month})">${escapeHtml(savedNotepad)}</textarea>
+      </div>
+    </div>
+  `;
+
+  container.innerHTML = html;
+}
+
+/**
+ * Renderiza la píldora o badge de un evento dentro de una casilla del calendario
+ */
+function renderCalEventChip(note) {
+  const catClasses = {
+    reunion: 'cat-reunion',
+    academico: 'cat-academico',
+    urgente: 'cat-urgente',
+    seguimiento: 'cat-seguimiento'
+  };
+  const catClass = catClasses[note.categoria] || 'cat-seguimiento';
+  const icon = note.categoria === 'reunion' ? 'bi-people-fill' 
+    : (note.categoria === 'urgente' ? 'bi-exclamation-circle-fill' 
+    : (note.categoria === 'academico' ? 'bi-book-fill' : 'bi-clock-fill'));
+
+  return `
+    <div class="cal-event-chip ${catClass} ${note.completado ? 'completed' : ''}" 
+         onclick="event.stopPropagation(); openEditAgendaModal(${note.id})" 
+         title="${escapeHtml(note.titulo)} (${note.hora || '09:00'}) — Clic para editar o eliminar">
+      <i class="bi ${icon}" style="font-size: 0.68rem;"></i>
+      <span>${escapeHtml(note.titulo)}</span>
+    </div>
+  `;
+}
+
+/**
+ * Evento al hacer clic en un día del calendario
+ */
+function onCalendarDayClick(event, fullDate, dayOfWeek, monthCode) {
+  openNewAgendaModal(dayOfWeek, monthCode, fullDate);
+}
+
+/**
+ * Acciones rápidas al hacer clic en un evento del calendario
+ */
+function editOrToggleNote(id) {
+  const allNotes = getAgendaNotes();
+  const note = allNotes.find(n => n.id === id);
+  if (!note) return;
+
+  const currentStatus = note.completado ? 'COMPLETADO ✅' : 'PENDIENTE ⏳';
+  const confirmMsg = `Evento: "${note.titulo}"\nHora: ${note.hora || '09:00'}\nEstado actual: ${currentStatus}\n\n¿Desea marcar este evento como ${note.completado ? 'PENDIENTE' : 'COMPLETADO'}?`;
+
+  if (confirm(confirmMsg)) {
+    note.completado = !note.completado;
+    saveAllAgendaNotes(allNotes);
+    renderDigitalCalendar();
+    renderSistemasAgenda();
+  } else {
+    if (confirm('¿Desea ELIMINAR permanentemente este evento del calendario?')) {
+      deleteAgendaNote(id);
+    }
+  }
+}
+
+/**
+ * Genera el resumen con la data real de los eventos agendados para el mes seleccionado
+ */
+function generateMonthlyRealEventsSummary(year, month) {
+  const allNotes = getAgendaNotes();
+  const monthNotes = allNotes.filter(n => {
+    if (n.fecha) {
+      const parts = n.fecha.split('-');
+      const y = parseInt(parts[0], 10);
+      const m = parseInt(parts[1], 10) - 1;
+      return y === year && m === month;
+    }
+    return false;
+  }).sort((a, b) => (a.fecha || '').localeCompare(b.fecha || ''));
+
+  if (monthNotes.length === 0) {
+    return "";
+  }
+
+  return monthNotes.map(n => {
+    const parts = n.fecha.split('-');
+    const day = parts[2];
+    const monthNum = parts[1];
+    const hora = n.hora ? ` (${n.hora})` : '';
+    return `• ${day}/${monthNum}${hora}: ${n.titulo}`;
+  }).join('\n');
+}
+
+/**
+ * Persistencia del bloc de notas del mes
+ * Si no hay notas guardadas, se llena con la data real de los eventos del mes
+ */
+function getMonthlyNotepad(year, month) {
+  const key = `sga_cal_notepad_${year}_${month}`;
+  let saved = localStorage.getItem(key);
+
+  // Purgar inmediatamente cualquier residuo de texto dummy anterior
+  if (saved && (saved.includes('Inicio del semestre académico 2026-II') || saved.includes('Primer avance de auditoría'))) {
+    localStorage.removeItem(key);
+    saved = null;
+  }
+
+  if (saved !== null) return saved;
+
+  // Si no hay edición manual previa, reflejar las actividades reales del mes
+  return generateMonthlyRealEventsSummary(year, month);
+}
+
+function handleMonthlyNotepadInput(e, year, month) {
+  const key = `sga_cal_notepad_${year}_${month}`;
+  localStorage.setItem(key, e.target.value);
+  const statusBadge = document.getElementById('notepadAutoSaveStatus');
+  if (statusBadge) {
+    statusBadge.innerHTML = '<i class="bi bi-check2 text-success me-1"></i> Guardado';
+    setTimeout(() => {
+      statusBadge.innerHTML = '<i class="bi bi-cloud-check text-success me-1"></i> Auto-guardado';
+    }, 1500);
+  }
+}
+
+function syncMonthlyNotepadWithEvents(year, month) {
+  const realSummary = generateMonthlyRealEventsSummary(year, month);
+  const key = `sga_cal_notepad_${year}_${month}`;
+  localStorage.setItem(key, realSummary);
+  const textarea = document.getElementById('calMonthlyNotepad');
+  if (textarea) {
+    textarea.value = realSummary;
+  }
+  const statusBadge = document.getElementById('notepadAutoSaveStatus');
+  if (statusBadge) {
+    statusBadge.innerHTML = '<i class="bi bi-check2 text-success me-1"></i> Sincronizado';
+    setTimeout(() => {
+      statusBadge.innerHTML = '<i class="bi bi-cloud-check text-success me-1"></i> Auto-guardado';
+    }, 1500);
+  }
+}
+
+function clearMonthlyNotepad(year, month) {
+  const key = `sga_cal_notepad_${year}_${month}`;
+  localStorage.setItem(key, '');
+  const textarea = document.getElementById('calMonthlyNotepad');
+  if (textarea) {
+    textarea.value = '';
+    textarea.focus();
+  }
+  const statusBadge = document.getElementById('notepadAutoSaveStatus');
+  if (statusBadge) {
+    statusBadge.innerHTML = '<i class="bi bi-eraser text-secondary me-1"></i> Limpio';
+    setTimeout(() => {
+      statusBadge.innerHTML = '<i class="bi bi-cloud-check text-success me-1"></i> Auto-guardado';
+    }, 1500);
+  }
+}
+
+/**
+ * Controles de navegación temporal del calendario
+ */
+function prevCalendarMonth() {
+  if (currentCalMonth === 0) {
+    currentCalMonth = 11;
+    currentCalYear--;
+  } else {
+    currentCalMonth--;
+  }
+  syncActiveAgendaMonthWithCalendar();
+  renderDigitalCalendar();
+}
+
+function nextCalendarMonth() {
+  if (currentCalMonth === 11) {
+    currentCalMonth = 0;
+    currentCalYear++;
+  } else {
+    currentCalMonth++;
+  }
+  syncActiveAgendaMonthWithCalendar();
+  renderDigitalCalendar();
+}
+
+function goToTodayCalendar() {
+  const now = new Date();
+  currentCalYear = now.getFullYear() >= 2026 ? now.getFullYear() : 2026;
+  currentCalMonth = now.getMonth();
+  syncActiveAgendaMonthWithCalendar();
+  renderDigitalCalendar();
+}
+
+function changeCalendarMonth(m) {
+  currentCalMonth = m;
+  syncActiveAgendaMonthWithCalendar();
+  renderDigitalCalendar();
+}
+
+function changeCalendarYear(y) {
+  currentCalYear = y;
+  renderDigitalCalendar();
+}
+
+function syncActiveAgendaMonthWithCalendar() {
+  const code = MONTH_CODE_MAP[currentCalMonth];
+  if (code && ['Set', 'Oct', 'Nov', 'Dic'].includes(code)) {
+    activeAgendaMonth = code;
+    document.querySelectorAll('#agendaMonthSelector button').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.month === code);
+    });
+  }
+}
+
+/**
+ * Alternador de vista: Calendario Digital vs Planner Semanal
+ */
+function switchAgendaMainView(view) {
+  currentAgendaMainView = view;
+  const calContainer = document.getElementById('digitalCalendarContainer');
+  const plannerContainer = document.getElementById('weeklyPlannerContainer');
+  const btnCal = document.getElementById('btnViewCalendar');
+  const btnPlan = document.getElementById('btnViewPlanner');
+
+  if (view === 'calendar') {
+    if (calContainer) calContainer.style.display = 'block';
+    if (plannerContainer) plannerContainer.style.display = 'none';
+    btnCal?.classList.add('active', 'btn-primary');
+    btnCal?.classList.remove('btn-outline-primary', 'btn-outline-secondary');
+    btnPlan?.classList.remove('active', 'btn-primary');
+    btnPlan?.classList.add('btn-outline-secondary');
+    renderDigitalCalendar();
+  } else {
+    if (calContainer) calContainer.style.display = 'none';
+    if (plannerContainer) plannerContainer.style.display = 'block';
+    btnPlan?.classList.add('active', 'btn-primary');
+    btnPlan?.classList.remove('btn-outline-primary', 'btn-outline-secondary');
+    btnCal?.classList.remove('active', 'btn-primary');
+    btnCal?.classList.add('btn-outline-secondary');
+    renderSistemasAgenda();
+  }
+}
+
+/**
+ * Modal para CREAR una nueva nota o evento con fecha real
+ */
+function openNewAgendaModal(preSelectedDay = null, preSelectedMonth = null, preSelectedDate = null) {
   const form = document.getElementById('formAgendaNote');
   if (form) form.reset();
 
   const idEl = document.getElementById('agendaNoteId');
   if (idEl) idEl.value = '';
 
+  const titleText = document.getElementById('modalAgendaNoteTitleText');
+  if (titleText) titleText.textContent = 'Agregar Evento / Nota al Calendario';
+
+  const btnSaveText = document.getElementById('btnSaveAgendaNoteText');
+  if (btnSaveText) btnSaveText.textContent = 'Guardar en Calendario';
+
+  const btnDelete = document.getElementById('btnDeleteAgendaNote');
+  if (btnDelete) btnDelete.style.display = 'none';
+
+  const statusContainer = document.getElementById('agendaNoteStatusContainer');
+  if (statusContainer) statusContainer.style.display = 'none';
+
+  const checkCompleted = document.getElementById('agendaNoteCompleted');
+  if (checkCompleted) checkCompleted.checked = false;
+
+  const dateEl = document.getElementById('agendaNoteDate');
   const dayEl = document.getElementById('agendaNoteDay');
-  if (dayEl) dayEl.value = String(preSelectedDay);
-
   const monthEl = document.getElementById('agendaNoteMonth');
-  if (monthEl) monthEl.value = preSelectedMonth;
-
   const timeEl = document.getElementById('agendaNoteTime');
+
   if (timeEl) timeEl.value = '09:00';
+
+  if (preSelectedDate) {
+    if (dateEl) dateEl.value = preSelectedDate;
+    const parts = preSelectedDate.split('-');
+    if (parts.length === 3) {
+      const dObj = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+      const dayOfWeek = (dObj.getDay() + 6) % 7 + 1;
+      if (dayEl) dayEl.value = String(dayOfWeek);
+      const mIdx = dObj.getMonth();
+      const mCode = MONTH_CODE_MAP[mIdx] || 'Set';
+      if (monthEl) monthEl.value = mCode;
+    }
+  } else {
+    const d = preSelectedDay || 1;
+    const m = (preSelectedMonth && CODE_TO_MONTH_INDEX[preSelectedMonth] !== undefined)
+      ? CODE_TO_MONTH_INDEX[preSelectedMonth]
+      : currentCalMonth;
+    const y = currentCalYear;
+
+    const fullFormatted = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    if (dateEl) dateEl.value = fullFormatted;
+    if (dayEl) dayEl.value = String(preSelectedDay || 1);
+    if (monthEl) monthEl.value = preSelectedMonth || activeAgendaMonth;
+  }
+
+  // Listener para sincronizar automáticamente día y mes cuando el usuario cambia la fecha
+  if (dateEl) {
+    dateEl.onchange = function() {
+      if (this.value) {
+        const parts = this.value.split('-');
+        if (parts.length === 3) {
+          const dObj = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+          const dayOfWeek = (dObj.getDay() + 6) % 7 + 1;
+          if (dayEl) dayEl.value = String(dayOfWeek);
+          const mIdx = dObj.getMonth();
+          const mCode = MONTH_CODE_MAP[mIdx] || 'Set';
+          if (monthEl) monthEl.value = mCode;
+        }
+      }
+    };
+  }
 
   if (!agendaModalInstance) {
     const modalEl = document.getElementById('modalAgendaNote');
@@ -620,62 +1066,206 @@ function openNewAgendaModal(preSelectedDay = 1, preSelectedMonth = activeAgendaM
   }
 }
 
+/**
+ * Modal para EDITAR una nota o evento existente del calendario
+ */
+function openEditAgendaModal(id) {
+  const allNotes = getAgendaNotes();
+  const note = allNotes.find(n => String(n.id) === String(id));
+  if (!note) return;
+
+  const form = document.getElementById('formAgendaNote');
+  if (form) form.reset();
+
+  const idEl = document.getElementById('agendaNoteId');
+  if (idEl) idEl.value = String(note.id);
+
+  const titleEl = document.getElementById('agendaNoteTitle');
+  if (titleEl) titleEl.value = note.titulo || '';
+
+  const dateEl = document.getElementById('agendaNoteDate');
+  if (dateEl) dateEl.value = note.fecha || '';
+
+  const timeEl = document.getElementById('agendaNoteTime');
+  if (timeEl) timeEl.value = note.hora || '09:00';
+
+  const catEl = document.getElementById('agendaNoteCategory');
+  if (catEl) catEl.value = note.categoria || 'reunion';
+
+  const dayEl = document.getElementById('agendaNoteDay');
+  if (dayEl) dayEl.value = String(note.dia || 1);
+
+  const monthEl = document.getElementById('agendaNoteMonth');
+  if (monthEl) monthEl.value = note.mes || activeAgendaMonth;
+
+  const descEl = document.getElementById('agendaNoteDesc');
+  if (descEl) descEl.value = note.desc || '';
+
+  // Configurar título del modal y botones para MODO EDICIÓN
+  const titleText = document.getElementById('modalAgendaNoteTitleText');
+  if (titleText) titleText.textContent = 'Editar Evento del Calendario';
+
+  const btnSaveText = document.getElementById('btnSaveAgendaNoteText');
+  if (btnSaveText) btnSaveText.textContent = 'Guardar Cambios';
+
+  const btnDelete = document.getElementById('btnDeleteAgendaNote');
+  if (btnDelete) btnDelete.style.display = 'inline-block';
+
+  const statusContainer = document.getElementById('agendaNoteStatusContainer');
+  if (statusContainer) statusContainer.style.display = 'block';
+
+  const checkCompleted = document.getElementById('agendaNoteCompleted');
+  if (checkCompleted) checkCompleted.checked = !!note.completado;
+
+  // Listener para sincronizar automáticamente día y mes cuando el usuario cambia la fecha
+  if (dateEl) {
+    dateEl.onchange = function() {
+      if (this.value) {
+        const parts = this.value.split('-');
+        if (parts.length === 3) {
+          const dObj = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+          const dayOfWeek = (dObj.getDay() + 6) % 7 + 1;
+          if (dayEl) dayEl.value = String(dayOfWeek);
+          const mIdx = dObj.getMonth();
+          const mCode = MONTH_CODE_MAP[mIdx] || 'Set';
+          if (monthEl) monthEl.value = mCode;
+        }
+      }
+    };
+  }
+
+  if (!agendaModalInstance) {
+    const modalEl = document.getElementById('modalAgendaNote');
+    if (modalEl && typeof bootstrap !== 'undefined') {
+      agendaModalInstance = new bootstrap.Modal(modalEl);
+    }
+  }
+
+  if (agendaModalInstance) {
+    agendaModalInstance.show();
+  }
+}
+
+/**
+ * Elimina la nota abierta actualmente en el modal
+ */
+function deleteCurrentModalNote() {
+  const idEl = document.getElementById('agendaNoteId');
+  const id = idEl ? idEl.value : null;
+  if (!id) return;
+
+  if (confirm('¿Está seguro de que desea ELIMINAR este evento del calendario?')) {
+    deleteAgendaNote(id);
+    if (agendaModalInstance) {
+      agendaModalInstance.hide();
+    }
+    if (typeof showPauToast === 'function') {
+      showPauToast('Evento eliminado del calendario', 'info');
+    }
+  }
+}
+
+/**
+ * Confirmación directa de eliminación (ej: desde el planner)
+ */
+function confirmDeleteNote(id) {
+  if (confirm('¿Desea ELIMINAR este evento del calendario?')) {
+    deleteAgendaNote(id);
+    if (typeof showPauToast === 'function') {
+      showPauToast('Evento eliminado', 'info');
+    }
+  }
+}
+
+/**
+ * Guarda o actualiza una nota o evento con fecha real
+ */
 function saveAgendaNote() {
   const title = (document.getElementById('agendaNoteTitle')?.value || '').trim();
   if (!title) {
-    alert('Por favor ingrese el texto o asunto de la agenda.');
+    alert('Por favor ingrese el texto o asunto del evento.');
     return;
   }
 
-  const dia = parseInt(document.getElementById('agendaNoteDay')?.value || '1', 10);
-  const mes = document.getElementById('agendaNoteMonth')?.value || activeAgendaMonth;
+  const fecha = document.getElementById('agendaNoteDate')?.value || '';
+  let dia = parseInt(document.getElementById('agendaNoteDay')?.value || '1', 10);
+  let mes = document.getElementById('agendaNoteMonth')?.value || activeAgendaMonth;
   const hora = document.getElementById('agendaNoteTime')?.value || '09:00';
   const categoria = document.getElementById('agendaNoteCategory')?.value || 'reunion';
   const desc = (document.getElementById('agendaNoteDesc')?.value || '').trim();
+  const completado = document.getElementById('agendaNoteCompleted')?.checked || false;
+
+  // Si hay fecha real seleccionada, calcular día de la semana y mes con exactitud
+  if (fecha) {
+    const parts = fecha.split('-');
+    if (parts.length === 3) {
+      const dObj = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+      dia = (dObj.getDay() + 6) % 7 + 1;
+      mes = MONTH_CODE_MAP[dObj.getMonth()] || 'Set';
+    }
+  }
 
   const allNotes = getAgendaNotes();
-  const newId = Date.now();
+  const idEl = document.getElementById('agendaNoteId')?.value;
 
-  const newNote = {
-    id: newId,
-    dia,
-    mes,
-    hora,
-    titulo: title,
-    categoria,
-    completado: false,
-    desc
-  };
+  if (idEl) {
+    const idx = allNotes.findIndex(n => String(n.id) === String(idEl));
+    if (idx !== -1) {
+      allNotes[idx].titulo = title;
+      allNotes[idx].fecha = fecha;
+      allNotes[idx].dia = dia;
+      allNotes[idx].mes = mes;
+      allNotes[idx].hora = hora;
+      allNotes[idx].categoria = categoria;
+      allNotes[idx].desc = desc;
+      allNotes[idx].completado = completado;
+    }
+  } else {
+    const newNote = {
+      id: Date.now(),
+      fecha,
+      dia,
+      mes,
+      hora,
+      titulo: title,
+      categoria,
+      completado: false,
+      desc
+    };
+    allNotes.unshift(newNote);
+  }
 
-  allNotes.unshift(newNote);
   saveAllAgendaNotes(allNotes);
 
   if (agendaModalInstance) {
     agendaModalInstance.hide();
   }
 
-  if (mes !== activeAgendaMonth) {
-    selectAgendaMonth(mes);
-  } else {
-    renderSistemasAgenda();
+  // Actualizar ambas vistas sincronizadas
+  renderDigitalCalendar();
+  renderSistemasAgenda();
+
+  if (typeof showPauToast === 'function') {
+    showPauToast(idEl ? 'Evento actualizado correctamente' : 'Evento guardado en el calendario', 'success');
   }
 }
 
 function toggleAgendaNoteComplete(id) {
   const allNotes = getAgendaNotes();
-  const note = allNotes.find(n => n.id === id);
+  const note = allNotes.find(n => String(n.id) === String(id));
   if (note) {
     note.completado = !note.completado;
     saveAllAgendaNotes(allNotes);
+    renderDigitalCalendar();
     renderSistemasAgenda();
   }
 }
 
 function deleteAgendaNote(id) {
-  if (!confirm('¿Desea eliminar esta nota de la agenda?')) return;
   let allNotes = getAgendaNotes();
-  allNotes = allNotes.filter(n => n.id !== id);
+  allNotes = allNotes.filter(n => String(n.id) !== String(id));
   saveAllAgendaNotes(allNotes);
+  renderDigitalCalendar();
   renderSistemasAgenda();
 }
 
@@ -689,13 +1279,30 @@ function escapeHtml(text) {
     .replace(/'/g, '&#039;');
 }
 
-// Exponer funciones globales
+// Exponer funciones globales para acceso desde el HTML
 window.selectAgendaMonth = selectAgendaMonth;
 window.toggleAgendaViewMode = toggleAgendaViewMode;
 window.switchSistemasSection = switchSistemasSection;
 window.openNewAgendaModal = openNewAgendaModal;
+window.openEditAgendaModal = openEditAgendaModal;
+window.deleteCurrentModalNote = deleteCurrentModalNote;
+window.confirmDeleteNote = confirmDeleteNote;
 window.saveAgendaNote = saveAgendaNote;
 window.toggleAgendaNoteComplete = toggleAgendaNoteComplete;
 window.deleteAgendaNote = deleteAgendaNote;
 window.renderSistemasDashboard = renderSistemasDashboard;
 window.renderSistemasAgenda = renderSistemasAgenda;
+
+// Nuevas funciones del Calendario Digital
+window.renderDigitalCalendar = renderDigitalCalendar;
+window.switchAgendaMainView = switchAgendaMainView;
+window.prevCalendarMonth = prevCalendarMonth;
+window.nextCalendarMonth = nextCalendarMonth;
+window.goToTodayCalendar = goToTodayCalendar;
+window.changeCalendarMonth = changeCalendarMonth;
+window.changeCalendarYear = changeCalendarYear;
+window.onCalendarDayClick = onCalendarDayClick;
+window.handleMonthlyNotepadInput = handleMonthlyNotepadInput;
+window.syncMonthlyNotepadWithEvents = syncMonthlyNotepadWithEvents;
+window.clearMonthlyNotepad = clearMonthlyNotepad;
+
