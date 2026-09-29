@@ -1306,3 +1306,313 @@ window.handleMonthlyNotepadInput = handleMonthlyNotepadInput;
 window.syncMonthlyNotepadWithEvents = syncMonthlyNotepadWithEvents;
 window.clearMonthlyNotepad = clearMonthlyNotepad;
 
+/* =============================================================================
+ * PROCEDIMIENTOS ADICIONALES: SLIDER Y PESTAÑA FLOTANTE / HOJA APARTE
+ * ============================================================================= */
+
+let currentProcSlide = 1;
+const TOTAL_PROC_SLIDES = 2;
+
+const PROCEDIMIENTOS_CATALOGO = {
+  "1": {
+    id: "1",
+    num: "07",
+    code: "PROC-FIA-2026-01",
+    titulo: "Procedimiento 1",
+    subtitulo: "Trámite de Homologación y Validación Documentaria",
+    categoria: "Gestión Académica",
+    estado: "En Definición / Pendiente",
+    responsable: "Coordinación Académica - DAC Sistemas",
+    escuela: "Escuela de Ingeniería de Sistemas",
+    descripcion: "Procedimiento oficial para la recepción, revisión preliminar y homologación de solicitudes académicas remitidas por docentes y estudiantes durante el ciclo lectivo.",
+    objetivo: "Estandarizar el registro, revisión y dictamen de expedientes según la directiva oficial del semestre 2026-II, garantizando transparencia y trazabilidad.",
+    pasos: [
+      { titulo: "Recepción de la Solicitud", desc: "Ingreso formal del Formato Único de Trámite (FUT) con sustento documental a través de mesa de partes virtual." },
+      { titulo: "Validación de Requisitos", desc: "La secretaría académica comprueba el cumplimiento de prerrequisitos, créditos y vigencia curricular." },
+      { titulo: "Evaluación Técnica de DAC", desc: "El Comité de Escuela emite informe técnico favorable o de observaciones en un plazo máximo de 72 horas." },
+      { titulo: "Emisión de Resolución y Cierre", desc: "Se suscribe el acta de dictamen y se actualiza el estado en el Minisistema SGA." }
+    ],
+    requisitos: [
+      "Formato Único de Trámite (FUT) debidamente firmado.",
+      "Copia digital de constancia de matrícula 2026-II.",
+      "Informe o sustento documental correspondiente al trámite.",
+      "No registrar deuda administrativa pendiente en UCV Virtual."
+    ]
+  },
+  "2": {
+    id: "2",
+    num: "08",
+    code: "PROC-FIA-2026-02",
+    titulo: "Procedimiento 2",
+    subtitulo: "Seguimiento de Asistencia y Justificaciones Oficiales",
+    categoria: "Control Curricular",
+    estado: "En Definición / Pendiente",
+    responsable: "Secretaría Académica FIA",
+    escuela: "Escuela de Ingeniería de Sistemas",
+    descripcion: "Módulo para la justificación de inasistencias a sesiones teóricas o prácticas y reprogramación coordinada de evaluaciones académicas continuas.",
+    objetivo: "Atender oportunamente las solicitudes de justificación médica, laboral o de fuerza mayor dentro de los plazos reglamentarios institucionales.",
+    pasos: [
+      { titulo: "Presentación de Justificación", desc: "El estudiante presenta la solicitud dentro de las 48 horas posteriores a la sesión no asistida." },
+      { titulo: "Verificación de Evidencia Médica/Laboral", desc: "Validación del certificado médico del MINSA/EsSalud o constancia laboral oficial de la empresa." },
+      { titulo: "Notificación al Docente Titular", desc: "Emisión del comunicado oficial al docente de la asignatura para la apertura de reprogramación." },
+      { titulo: "Reprogramación y Registro de Nota", desc: "Ejecución de la sesión de evaluación reprogramada e ingreso de calificación al portal." }
+    ],
+    requisitos: [
+      "Solicitud de justificación firmada por el estudiante o apoderado.",
+      "Certificado médico oficial visado o constancia laboral membretada.",
+      "Identificación del código de asignatura, sección y fecha exacta de la clase.",
+      "Aprobación de la Coordinación de Escuela."
+    ]
+  },
+  "3": {
+    id: "3",
+    num: "09",
+    code: "PROC-FIA-2026-03",
+    titulo: "Procedimiento 3",
+    subtitulo: "Auditoría de Carga y Evaluación del Desempeño Docente",
+    categoria: "Supervisión Académica",
+    estado: "En Definición / Pendiente",
+    responsable: "Comisión de Calidad y Coordinación Docente",
+    escuela: "Escuela de Ingeniería de Sistemas",
+    descripcion: "Procedimiento de seguimiento al avance del silabo, puntualidad en el ingreso a plataformas virtuales y cumplimiento de rúbricas de evaluación.",
+    objetivo: "Asegurar los estándares de calidad pedagógica y el cumplimiento de las metas de evaluación docente estipuladas para el semestre 2026-II.",
+    pasos: [
+      { titulo: "Muestreo Semanal de Aulas Virtuales", desc: "Supervisión aleatoria de sesiones en vivo y registro de grabación de clases." },
+      { titulo: "Revisión de Entrega Oportuna de Notas", desc: "Auditoría del cronograma de registro de notas en sistema según calendario académico." },
+      { titulo: "Encuesta de Satisfacción Estudiantil", desc: "Consolidación de valoraciones de los delegados y estudiantes del aula." },
+      { titulo: "Informe de Retroalimentación", desc: "Entrega de recomendaciones personalizadas de mejora continua al docente." }
+    ],
+    requisitos: [
+      "Reporte de asistencia y registro de sesiones síncronas.",
+      "Portafolio docente y carpeta pedagógica actualizada en la nube.",
+      "Actas de evaluación firmadas digitalmente por el docente.",
+      "Rúbricas de calificación publicadas para los estudiantes."
+    ]
+  },
+  "pex": {
+    id: "pex",
+    num: "10",
+    code: "PROC-FIA-PEX-2026",
+    titulo: "Procedimiento PEX",
+    subtitulo: "Programa de Experiencia Extraordinaria / Prácticas y Extensión",
+    categoria: "Extensión y Prácticas",
+    estado: "Oficial / Vigente 2026-II",
+    responsable: "Coordinación PEX - FIA UCV Virtual",
+    escuela: "Escuela de Ingeniería de Sistemas",
+    descripcion: "Procedimiento prioritario institucional para la validación, convalidación y acreditación de horas prácticas, laborales y actividades de extensión universitaria para estudiantes de la Escuela de Ingeniería de Sistemas (PEX).",
+    objetivo: "Facilitar el reconocimiento académico formal de la experiencia laboral calificada y de los proyectos de innovación y extensión desarrollados en empresas o comunidades por los alumnos del programa SUBE y regular.",
+    pasos: [
+      { titulo: "Fase 1: Postulación y Ficha PEX", desc: "El estudiante completa la ficha de postulación PEX indicando la modalidad (Prácticas Preprofesionales, Convalidación Laboral o Extensión)." },
+      { titulo: "Fase 2: Evaluación del Plan de Trabajo", desc: "El Comité PEX de la DAC Sistemas evalúa la afinidad de funciones con el perfil de egreso del Ingeniero de Sistemas." },
+      { titulo: "Fase 3: Monitoreo y Asignación de Tutor", desc: "Asignación de un docente asesor para el acompañamiento y validación mensual de bitácoras de actividades." },
+      { titulo: "Fase 4: Sustentación o Dictamen Final", desc: "Aprobación del informe final de prácticas/extensión y emisión del certificado de créditos académicos homologados." }
+    ],
+    requisitos: [
+      "Ficha de Inscripción Oficial al Programa de Experiencia Extraordinaria (PEX).",
+      "Convenio de prácticas preprofesionales suscrito o Constancia laboral que acredite funciones afines a TI/Sistemas.",
+      "Plan de Actividades firmado por el representante legal o jefe directo en la empresa.",
+      "Récord de notas consolidado del estudiante (ciclo mínimo habilitado según plan).",
+      "Informe Final de Experiencia y Constancia de Cumplimiento de Horas Totales."
+    ]
+  },
+  "5": {
+    id: "5",
+    num: "11",
+    code: "PROC-FIA-2026-05",
+    titulo: "Procedimiento 5",
+    subtitulo: "Convalidación y Rectificación de Matrícula",
+    categoria: "Registros Académicos",
+    estado: "En Definición / Pendiente",
+    responsable: "Coordinación de Matrícula y Registros FIA",
+    escuela: "Escuela de Ingeniería de Sistemas",
+    descripcion: "Flujo formal para rectificación de horarios, cambio de sección justificado y convalidación de cursos para alumnos provenientes de traslados.",
+    objetivo: "Resolver oportunamente las situaciones de cruce de horarios y regularización de cupos antes del cierre oficial de listas definitivas.",
+    pasos: [
+      { titulo: "Solicitud de Rectificación en Plataforma", desc: "Registro formal con indicación precisa del código de asignatura de origen y destino." },
+      { titulo: "Verificación de Aforo y Vacantes", desc: "Validación de disponibilidad en el aula virtual con base en la capacidad del docente asignado." },
+      { titulo: "Dictamen y Actualización en Base de Datos", desc: "Aprobación de la coordinación y migración automática del estudiante en el sistema." },
+      { titulo: "Confirmación al Estudiante", desc: "Envío de constancia de matrícula rectificada al correo institucional del alumno." }
+    ],
+    requisitos: [
+      "FUT de solicitud de rectificación con fecha y firma.",
+      "Horario actual y comprobante de cruce horario.",
+      "Constancia de matrícula regular vigente 2026-II.",
+      "Autorización expresa de la Dirección de Escuela."
+    ]
+  },
+  "6": {
+    id: "6",
+    num: "12",
+    code: "PROC-FIA-2026-06",
+    titulo: "Procedimiento 6",
+    subtitulo: "Revisión Curricular, Convalidaciones y Actas Complementarias",
+    categoria: "Auditoría Curricular",
+    estado: "En Definición / Pendiente",
+    responsable: "Dirección de Escuela de Ingeniería de Sistemas",
+    escuela: "Escuela de Ingeniería de Sistemas",
+    descripcion: "Procedimiento de cierre curricular de periodo lectivo, generación de actas rezagadas y regularización de requisitos complementarios de egreso.",
+    objetivo: "Garantizar la consistencia del récord académico y la culminación satisfactoria de las actas oficiales de notas del semestre.",
+    pasos: [
+      { titulo: "Identificación de Casos Observados", desc: "Generación del listado de estudiantes con pendientes de notas complementarias o convalidación." },
+      { titulo: "Reunión de Comisión Curricular", desc: "Sesión de análisis de la malla y validación de competencias adquiridas por el estudiante." },
+      { titulo: "Suscripción de Acta Complementaria", desc: "Firma digital del Director de Escuela y docentes evaluadores en el libro institucional de actas." },
+      { titulo: "Cierre y Publicación Final", desc: "Cierre definitivo del periodo en el Minisistema SGA y emisión de constancias de egreso." }
+    ],
+    requisitos: [
+      "Expediente académico del estudiante completo y foliado.",
+      "Silabos de las asignaturas a homologar o convalidar con visado oficial.",
+      "Acta previa o certificado oficial de notas de la institución de origen.",
+      "Resolución de aprobación de la Facultad de Ingeniería y Arquitectura."
+    ]
+  }
+};
+
+/**
+ * Alterna entre diapositiva 1 (Módulos 01-06) y diapositiva 2 (Procedimientos 07-12)
+ */
+function cambiarVistaProcedimientos(delta) {
+  let target = currentProcSlide + delta;
+  if (target < 1) target = TOTAL_PROC_SLIDES;
+  if (target > TOTAL_PROC_SLIDES) target = 1;
+  irAVistaProcedimientos(target);
+}
+
+/**
+ * Va directamente a una diapositiva específica (1 o 2)
+ */
+function irAVistaProcedimientos(slideNum) {
+  currentProcSlide = slideNum;
+
+  const s1 = document.getElementById('procSlide1');
+  const s2 = document.getElementById('procSlide2');
+  const btnP1 = document.getElementById('btnProcPage1');
+  const btnP2 = document.getElementById('btnProcPage2');
+  const badgeVista = document.getElementById('badgeProcVistaActiva');
+
+  if (s1 && s2) {
+    if (slideNum === 1) {
+      s1.classList.add('active');
+      s2.classList.remove('active');
+      if (btnP1) btnP1.classList.add('active');
+      if (btnP2) btnP2.classList.remove('active');
+      if (badgeVista) badgeVista.textContent = 'Vista 1 / 2: Módulos Operativos (01 al 06)';
+    } else {
+      s1.classList.remove('active');
+      s2.classList.add('active');
+      if (btnP1) btnP1.classList.remove('active');
+      if (btnP2) btnP2.classList.add('active');
+      if (badgeVista) badgeVista.textContent = 'Vista 2 / 2: Nuevos Procedimientos & PEX (07 al 12)';
+    }
+  }
+}
+
+/**
+ * Abre el modal flotante (pestaña flotante dentro de la misma página)
+ */
+function abrirProcedimientoFlotante(id) {
+  const procKey = String(id).toLowerCase();
+  const proc = PROCEDIMIENTOS_CATALOGO[procKey] || PROCEDIMIENTOS_CATALOGO['pex'];
+
+  const modalEl = document.getElementById('modalProcedimientoFlotante');
+  if (!modalEl) {
+    // Si no está el modal, abrir directamente en hoja aparte
+    abrirProcedimientoHojaAparte(procKey);
+    return;
+  }
+
+  // Poblar cabecera
+  const bNum = document.getElementById('modalProcBadgeNum');
+  if (bNum) {
+    bNum.textContent = `#${proc.num}`;
+    bNum.style.background = (procKey === 'pex') ? '#D97706' : '#2563EB';
+  }
+
+  const elTitulo = document.getElementById('modalProcTitulo');
+  if (elTitulo) elTitulo.textContent = proc.titulo;
+
+  const elSub = document.getElementById('modalProcSubtitulo');
+  if (elSub) elSub.textContent = `${proc.subtitulo} • ${proc.escuela}`;
+
+  const elCat = document.getElementById('modalProcCategoria');
+  if (elCat) elCat.textContent = proc.categoria;
+
+  const elEst = document.getElementById('modalProcEstado');
+  if (elEst) elEst.textContent = proc.estado;
+
+  const elResp = document.getElementById('modalProcResponsable');
+  if (elResp) elResp.innerHTML = `<i class="bi bi-shield-check text-primary me-1"></i> ${proc.responsable}`;
+
+  // Tab 1: Descripción
+  const elDesc = document.getElementById('modalProcDescText');
+  if (elDesc) elDesc.textContent = proc.descripcion;
+
+  const elObj = document.getElementById('modalProcObjText');
+  if (elObj) elObj.textContent = proc.objetivo;
+
+  // Tab 2: Pasos
+  const pasosContainer = document.getElementById('modalProcPasosContainer');
+  if (pasosContainer) {
+    pasosContainer.innerHTML = '';
+    proc.pasos.forEach((p, idx) => {
+      const row = document.createElement('div');
+      row.className = 'proc-float-step';
+      row.innerHTML = `
+        <div class="proc-float-step-num">${idx + 1}</div>
+        <div class="flex-grow-1">
+          <strong class="d-block text-dark small mb-0.5">${p.titulo}</strong>
+          <span class="text-muted small">${p.desc}</span>
+        </div>
+      `;
+      pasosContainer.appendChild(row);
+    });
+  }
+
+  // Tab 3: Requisitos
+  const reqContainer = document.getElementById('modalProcReqContainer');
+  if (reqContainer) {
+    reqContainer.innerHTML = '';
+    proc.requisitos.forEach((r, idx) => {
+      const item = document.createElement('div');
+      item.className = 'd-flex align-items-center gap-2 p-2 bg-light rounded-2 border mb-1.5 small';
+      item.innerHTML = `
+        <i class="bi bi-check-circle-fill text-success"></i>
+        <span class="text-dark">${r}</span>
+      `;
+      reqContainer.appendChild(item);
+    });
+  }
+
+  // Configurar botones de Hoja Aparte
+  const btnTop = document.getElementById('btnModalAbrirHojaAparte');
+  if (btnTop) {
+    btnTop.onclick = () => abrirProcedimientoHojaAparte(procKey);
+  }
+
+  const btnFooter = document.getElementById('btnModalFooterHojaAparte');
+  if (btnFooter) {
+    btnFooter.onclick = () => abrirProcedimientoHojaAparte(procKey);
+  }
+
+  // Mostrar modal con Bootstrap 5
+  if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+    const modalInst = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modalInst.show();
+  }
+}
+
+/**
+ * Abre el procedimiento en una hoja aparte (pestaña nueva / target="_blank")
+ */
+function abrirProcedimientoHojaAparte(id) {
+  const procKey = String(id).toLowerCase();
+  const url = `procedimiento.html?id=${encodeURIComponent(procKey)}`;
+  window.open(url, '_blank', 'noopener,noreferrer');
+}
+
+// Exponer funciones globales
+window.cambiarVistaProcedimientos = cambiarVistaProcedimientos;
+window.irAVistaProcedimientos = irAVistaProcedimientos;
+window.abrirProcedimientoFlotante = abrirProcedimientoFlotante;
+window.abrirProcedimientoHojaAparte = abrirProcedimientoHojaAparte;
+
+

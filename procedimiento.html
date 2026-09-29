@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="pageTitle">Procedimiento Oficial — SGA • UCV Virtual</title>
+  <meta name="description" content="Ficha técnica, flujo operativo y requisitos de procedimientos académicos — Facultad de Ingeniería y Arquitectura">
+
+  <!-- Tipografía Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS y Bootstrap Icons -->
+  <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="lib/icons/bootstrap-icons.min.css">
+
+  <!-- Favicon UCV Virtual -->
+  <link rel="icon" type="image/png" href="img/logo-ucv-virtual.png">
+
+  <!-- Estilos Personalizados -->
+  <link rel="stylesheet" href="css/custom.css?v=4.0">
+
+  <style>
+    body {
+      background-color: #F8FAFC;
+      color: #0F172A;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .proc-page-header {
+      background: linear-gradient(135deg, #071930 0%, #0E2545 60%, #163B6B 100%);
+      color: #FFFFFF;
+      padding: 2.2rem 0 2rem;
+      border-bottom: 4px solid #BE1E2D;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .proc-page-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(circle, rgba(13, 110, 253, 0.18) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .proc-detail-card {
+      background: #FFFFFF;
+      border-radius: 16px;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+      padding: 1.85rem;
+      margin-bottom: 1.5rem;
+      transition: box-shadow 0.2s ease;
+    }
+
+    .proc-detail-card:hover {
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.07);
+    }
+
+    .proc-step-number {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #EFF6FF;
+      color: #2563EB;
+      border: 2px solid #BFDBFE;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .proc-step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.1rem;
+      padding: 1.1rem 0;
+      border-bottom: 1px dashed #E2E8F0;
+    }
+
+    .proc-step-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .req-check-item {
+      padding: 0.85rem 1rem;
+      background: #F8FAFC;
+      border-radius: 10px;
+      border: 1px solid #E2E8F0;
+      margin-bottom: 0.65rem;
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      font-size: 0.92rem;
+      transition: all 0.2s ease;
+    }
+
+    .req-check-item:hover {
+      background: #EFF6FF;
+      border-color: #BFDBFE;
+    }
+
+    .req-check-item input[type="checkbox"] {
+      width: 1.25rem;
+      height: 1.25rem;
+      accent-color: #0D6EFD;
+      cursor: pointer;
+    }
+
+    @media print {
+      .proc-no-print {
+        display: none !important;
+      }
+      .proc-page-header {
+        background: #0E2545 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      body {
+        background: #FFFFFF !important;
+      }
+      .proc-detail-card {
+        box-shadow: none !important;
+        border: 1px solid #CCCCCC !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR INSTITUCIONAL -->
+  <nav class="navbar navbar-dark bg-dark py-2 px-3 border-bottom border-dark-subtle proc-no-print" style="background: #030A14 !important;">
+    <div class="container-fluid" style="max-width: 1320px;">
+      <div class="d-flex align-items-center gap-3">
+        <a href="index.html" class="d-inline-flex align-items-center text-decoration-none">
+          <img src="img/logo-ucv-virtual.png" alt="UCV Virtual" style="height: 36px; width: auto; object-fit: contain;">
+        </a>
+        <div style="width: 1px; height: 26px; background: rgba(255,255,255,0.2);"></div>
+        <div>
+          <span class="text-white fw-bold d-block" style="font-size: 0.9rem; font-family: 'Outfit', sans-serif;">Sistema de Gestión Académica (SGA)</span>
+          <small class="text-white-50" style="font-size: 0.74rem;">Hoja Aparte de Procedimiento Institucional • Semestre 2026-II</small>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-outline-light px-3 py-1.5" onclick="window.print()" title="Imprimir o Guardar en PDF">
+          <i class="bi bi-printer me-1"></i> Imprimir / PDF
+        </button>
+        <a href="index.html" class="btn btn-sm btn-primary px-3 py-1.5 fw-semibold" style="background: #0D6EFD; border-color: #0D6EFD;">
+          <i class="bi bi-arrow-left me-1"></i> Volver al Minisistema
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HEADER DEL PROCEDIMIENTO -->
+  <header class="proc-page-header">
+    <div class="container" style="max-width: 1320px;">
+      <nav aria-label="breadcrumb" class="proc-no-print mb-3">
+        <ol class="breadcrumb small mb-0" style="font-size: 0.82rem;">
+          <li class="breadcrumb-item"><a href="index.html" class="text-white-50 text-decoration-none"><i class="bi bi-house me-1"></i>SGA Inicio</a></li>
+          <li class="breadcrumb-item"><a href="index.html#secProcedimientos" class="text-white-50 text-decoration-none">Procedimientos de Carrera</a></li>
+          <li class="breadcrumb-item active text-white fw-semibold" aria-current="page" id="breadcrumbTitle">Procedimiento</li>
+        </ol>
+      </nav>
+
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <div class="d-flex align-items-start gap-3">
+          <div id="headerBadgeNum" class="badge px-3 py-2 text-white fw-bold rounded-3 shadow-sm" style="background: #BE1E2D; font-size: 1.15rem; font-family: 'Outfit', sans-serif;">
+            #00
+          </div>
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+              <h1 class="h3 fw-bold mb-0 text-white" id="headerTitle" style="font-family: 'Outfit', sans-serif;">
+                Cargando procedimiento...
+              </h1>
+              <span class="badge bg-success-subtle text-success border border-success-subtle fw-semibold px-2.5 py-1" id="headerStatus">
+                Vigente 2026-II
+              </span>
+            </div>
+            <p class="text-white-50 mb-0" id="headerSubtitle" style="font-size: 0.95rem;">
+              Facultad de Ingeniería y Arquitectura — Universidad César Vallejo
+            </p>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-2 proc-no-print">
+          <span class="badge bg-white text-dark px-3 py-2 fw-semibold border shadow-xs" id="headerCategory">
+            <i class="bi bi-folder-check text-primary me-1"></i> Gestión Académica
+          </span>
+          <button type="button" class="btn btn-outline-light btn-sm px-3 py-2" onclick="navigator.clipboard.writeText(window.location.href); alert('Enlace copiado al portapapeles');" title="Copiar enlace directo">
+            <i class="bi bi-share me-1"></i> Compartir
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="container my-4 flex-grow-1" style="max-width: 1320px;">
+    
+    <div class="row g-4">
+      
+      <!-- COLUMNA PRINCIPAL (8 COLS) -->
+      <div class="col-lg-8 col-12">
+        
+        <!-- Tarjeta 1: Descripción y Objetivos -->
+        <div class="proc-detail-card">
+          <h2 class="h5 fw-bold text-dark mb-3 d-flex align-items-center gap-2" style="font-family: 'Outfit', sans-serif;">
+            <i class="bi bi-card-text text-primary"></i> 1. Descripción y Propósito Operativo
+          </h2>
+          <p class="text-muted leading-relaxed" id="procDescription" style="font-size: 0.95rem; line-height: 1.65;">
+            Cargando descripción...
+          </p>
+
+          <div class="p-3 bg-light rounded-3 border mt-3">
+            <h6 class="fw-bold text-dark mb-1" style="font-size: 0.88rem;">
+              <i class="bi bi-bullseye text-danger me-1"></i> Objetivo Institucional
+            </h6>
+            <p class="small text-muted mb-0" id="procObjective">
+              Garantizar el cumplimiento riguroso de las directivas académicas y la correcta tramitación documental durante el semestre 2026-II.
+            </p>
+          </div>
+        </div>
+
+        <!-- Tarjeta 2: Flujo y Pasos del Procedimiento -->
+        <div class="proc-detail-card">
+          <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+            <h2 class="h5 fw-bold text-dark mb-0 d-flex align-items-center gap-2" style="font-family: 'Outfit', sans-serif;">
+              <i class="bi bi-diagram-3-fill text-primary"></i> 2. Flujo de Ejecución (Paso a Paso)
+            </h2>
+            <span class="badge bg-primary-subtle text-primary fw-semibold px-2.5 py-1" id="procStepsCount">
+              4 Fases
+            </span>
+          </div>
+
+          <div id="procStepsList">
+            <!-- Render dinámico de pasos -->
+          </div>
+        </div>
+
+        <!-- Tarjeta 3: Requisitos y Checklist Documentario -->
+        <div class="proc-detail-card">
+          <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+            <h2 class="h5 fw-bold text-dark mb-0 d-flex align-items-center gap-2" style="font-family: 'Outfit', sans-serif;">
+              <i class="bi bi-check2-square text-success"></i> 3. Requisitos y Documentos Obligatorios
+            </h2>
+            <small class="text-muted">Marca para verificar</small>
+          </div>
+          <p class="small text-muted mb-3">
+            Asegúrese de adjuntar la documentación completa para evitar observaciones o demoras en la tramitación del expediente.
+          </p>
+
+          <div id="procRequirementsList">
+            <!-- Render dinámico de checklist -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- COLUMNA LATERAL (4 COLS) -->
+      <div class="col-lg-4 col-12">
+        
+        <!-- Ficha Técnica Resumida -->
+        <div class="proc-detail-card sticky-top" style="top: 1.5rem; z-index: 5;">
+          <h3 class="h6 fw-bold text-dark mb-3 pb-2 border-bottom d-flex align-items-center gap-2" style="font-family: 'Outfit', sans-serif;">
+            <i class="bi bi-info-circle-fill text-primary"></i> Ficha Técnica del Procedimiento
+          </h3>
+
+          <div class="d-flex flex-column gap-3 mb-4">
+            <div>
+              <span class="small text-muted d-block" style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Código Institucional</span>
+              <span class="fw-bold text-dark" id="sideCode">PROC-FIA-2026-00</span>
+            </div>
+            <div>
+              <span class="small text-muted d-block" style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Dirección / Escuela</span>
+              <span class="fw-bold text-dark" id="sideEscuela">Escuela de Ingeniería de Sistemas</span>
+            </div>
+            <div>
+              <span class="small text-muted d-block" style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Área Responsable</span>
+              <span class="fw-semibold text-dark" id="sideResponsable">Coordinación Académica FIA</span>
+            </div>
+            <div>
+              <span class="small text-muted d-block" style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Periodo de Vigencia</span>
+              <span class="badge bg-light text-dark border px-2.5 py-1.5 fw-semibold" id="sideVigencia">Semestre Académico 2026-II</span>
+            </div>
+            <div>
+              <span class="small text-muted d-block" style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Plazo Máximo de Atención</span>
+              <span class="fw-semibold text-primary"><i class="bi bi-clock-history me-1"></i>3 a 5 días hábiles</span>
+            </div>
+          </div>
+
+          <!-- Acciones de Descarga / Tramitación -->
+          <div class="pt-3 border-top d-flex flex-column gap-2 proc-no-print">
+            <button type="button" class="btn btn-primary w-100 py-2 fw-semibold shadow-xs" onclick="window.print()">
+              <i class="bi bi-file-earmark-pdf-fill me-1.5"></i> Descargar / Imprimir Ficha
+            </button>
+            <button type="button" class="btn btn-outline-secondary w-100 py-2 fw-semibold" onclick="alert('Descargando plantilla de solicitud oficial...')">
+              <i class="bi bi-download me-1.5"></i> Plantilla Word (.docx)
+            </button>
+            <a href="index.html" class="btn btn-light w-100 py-2 text-muted fw-semibold border">
+              <i class="bi bi-arrow-left me-1"></i> Regresar al Menú Principal
+            </a>
+          </div>
+
+          <!-- Mesa de ayuda -->
+          <div class="mt-4 p-3 bg-light rounded-3 text-center border">
+            <i class="bi bi-headset text-primary fs-3 mb-1 d-block"></i>
+            <span class="fw-bold text-dark d-block small">¿Dudas sobre este procedimiento?</span>
+            <small class="text-muted d-block mb-2">Comunícate con la Coordinación de Carrera</small>
+            <a href="mailto:coordinacion.fia@ucvvirtual.edu.pe" class="btn btn-sm btn-outline-primary px-3 py-1">
+              <i class="bi bi-envelope-fill me-1"></i> Contactar Soporte
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- FOOTER INSTITUCIONAL -->
+  <footer class="bg-dark text-white-50 py-3 mt-auto text-center small border-top proc-no-print" style="background: #030A14 !important;">
+    <div class="container">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <span>© 2026 Universidad César Vallejo — UCV Virtual. Facultad de Ingeniería y Arquitectura.</span>
+        <span>Sistema de Gestión Académica (SGA) • Hoja de Procedimiento</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPT DE DATOS Y RENDERIZADO DINÁMICO SEGÚN ?id= -->
+  <script>
+    const PROCEDIMIENTOS_CATALOGO = {
+      "1": {
+        num: "07",
+        code: "PROC-FIA-2026-01",
+        titulo: "Procedimiento 1",
+        subtitulo: "Trámite de Homologación y Validación Documentaria",
+        categoria: "Gestión Académica",
+        estado: "En Definición / Pendiente",
+        responsable: "Coordinación Académica - DAC Sistemas",
+        escuela: "Escuela de Ingeniería de Sistemas",
+        descripcion: "Procedimiento oficial para la recepción, revisión preliminar y homologación de solicitudes académicas remitidas por docentes y estudiantes durante el ciclo lectivo.",
+        objetivo: "Estandarizar el registro, revisión y dictamen de expedientes según la directiva oficial del semestre 2026-II, garantizando transparencia y trazabilidad.",
+        pasos: [
+          { titulo: "Recepción de la Solicitud", desc: "Ingreso formal del Formato Único de Trámite (FUT) con sustento documental a través de mesa de partes virtual." },
+          { titulo: "Validación de Requisitos", desc: "La secretaría académica comprueba el cumplimiento de prerrequisitos, créditos y vigencia curricular." },
+          { titulo: "Evaluación Técnica de DAC", desc: "El Comité de Escuela emite informe técnico favorable o de observaciones en un plazo máximo de 72 horas." },
+          { titulo: "Emisión de Resolución y Cierre", desc: "Se suscribe el acta de dictamen y se actualiza el estado en el Minisistema SGA." }
+        ],
+        requisitos: [
+          "Formato Único de Trámite (FUT) debidamente firmado.",
+          "Copia digital de constancia de matrícula 2026-II.",
+          "Informe o sustento documental correspondiente al trámite.",
+          "No registrar deuda administrativa pendiente en UCV Virtual."
+        ]
+      },
+      "2": {
+        num: "08",
+        code: "PROC-FIA-2026-02",
+        titulo: "Procedimiento 2",
+        subtitulo: "Seguimiento de Asistencia y Justificaciones Oficiales",
+        categoria: "Control Curricular",
+        estado: "En Definición / Pendiente",
+        responsable: "Secretaría Académica FIA",
+        escuela: "Escuela de Ingeniería de Sistemas",
+        descripcion: "Módulo para la justificación de inasistencias a sesiones teóricas o prácticas y reprogramación coordinada de evaluaciones académicas continuas.",
+        objetivo: "Atender oportunamente las solicitudes de justificación médica, laboral o de fuerza mayor dentro de los plazos reglamentarios institucionales.",
+        pasos: [
+          { titulo: "Presentación de Justificación", desc: "El estudiante presenta la solicitud dentro de las 48 horas posteriores a la sesión no asistida." },
+          { titulo: "Verificación de Evidencia Médica/Laboral", desc: "Validación del certificado médico del MINSA/EsSalud o constancia laboral oficial de la empresa." },
+          { titulo: "Notificación al Docente Titular", desc: "Emisión del comunicado oficial al docente de la asignatura para la apertura de reprogramación." },
+          { titulo: "Reprogramación y Registro de Nota", desc: "Ejecución de la sesión de evaluación reprogramada e ingreso de calificación al portal." }
+        ],
+        requisitos: [
+          "Solicitud de justificación firmada por el estudiante o apoderado.",
+          "Certificado médico oficial visado o constancia laboral membretada.",
+          "Identificación del código de asignatura, sección y fecha exacta de la clase.",
+          "Aprobación de la Coordinación de Escuela."
+        ]
+      },
+      "3": {
+        num: "09",
+        code: "PROC-FIA-2026-03",
+        titulo: "Procedimiento 3",
+        subtitulo: "Auditoría de Carga y Evaluación del Desempeño Docente",
+        categoria: "Supervisión Académica",
+        estado: "En Definición / Pendiente",
+        responsable: "Comisión de Calidad y Coordinación Docente",
+        escuela: "Escuela de Ingeniería de Sistemas",
+        descripcion: "Procedimiento de seguimiento al avance del silabo, puntualidad en el ingreso a plataformas virtuales y cumplimiento de rúbricas de evaluación.",
+        objetivo: "Asegurar los estándares de calidad pedagógica y el cumplimiento de las metas de evaluación docente estipuladas para el semestre 2026-II.",
+        pasos: [
+          { titulo: "Muestreo Semanal de Aulas Virtuales", desc: "Supervisión aleatoria de sesiones en vivo y registro de grabación de clases." },
+          { titulo: "Revisión de Entrega Oportuna de Notas", desc: "Auditoría del cronograma de registro de notas en sistema según calendario académico." },
+          { titulo: "Encuesta de Satisfacción Estudiantil", desc: "Consolidación de valoraciones de los delegados y estudiantes del aula." },
+          { titulo: "Informe de Retroalimentación", desc: "Entrega de recomendaciones personalizadas de mejora continua al docente." }
+        ],
+        requisitos: [
+          "Reporte de asistencia y registro de sesiones síncronas.",
+          "Portafolio docente y carpeta pedagógica actualizada en la nube.",
+          "Actas de evaluación firmadas digitalmente por el docente.",
+          "Rúbricas de calificación publicadas para los estudiantes."
+        ]
+      },
+      "pex": {
+        num: "10",
+        code: "PROC-FIA-PEX-2026",
+        titulo: "Procedimiento PEX",
+        subtitulo: "Programa de Experiencia Extraordinaria / Prácticas y Extensión",
+        categoria: "Extensión y Prácticas",
+        estado: "Oficial / Vigente 2026-II",
+        responsable: "Coordinación PEX - FIA UCV Virtual",
+        escuela: "Escuela de Ingeniería de Sistemas",
+        descripcion: "Procedimiento prioritario institucional para la validación, convalidación y acreditación de horas prácticas, laborales y actividades de extensión universitaria para estudiantes de la Escuela de Ingeniería de Sistemas (PEX).",
+        objetivo: "Facilitar el reconocimiento académico formal de la experiencia laboral calificada y de los proyectos de innovación y extensión desarrollados en empresas o comunidades por los alumnos del programa SUBE y regular.",
+        pasos: [
+          { titulo: "Fase 1: Postulación y Ficha PEX", desc: "El estudiante completa la ficha de postulación PEX indicando la modalidad (Prácticas Preprofesionales, Convalidación Laboral o Extensión)." },
+          { titulo: "Fase 2: Evaluación del Plan de Trabajo", desc: "El Comité PEX de la DAC Sistemas evalúa la afinidad de funciones con el perfil de egreso del Ingeniero de Sistemas." },
+          { titulo: "Fase 3: Monitoreo y Asignación de Tutor", desc: "Asignación de un docente asesor para el acompañamiento y validación mensual de bitácoras de actividades." },
+          { titulo: "Fase 4: Sustentación o Dictamen Final", desc: "Aprobación del informe final de prácticas/extensión y emisión del certificado de créditos académicos homologados." }
+        ],
+        requisitos: [
+          "Ficha de Inscripción Oficial al Programa de Experiencia Extraordinaria (PEX).",
+          "Convenio de prácticas preprofesionales suscrito o Constancia laboral que acredite funciones afines a TI/Sistemas.",
+          "Plan de Actividades firmado por el representante legal o jefe directo en la empresa.",
+          "Récord de notas consolidado del estudiante (ciclo mínimo habilitado según plan).",
+          "Informe Final de Experiencia y Constancia de Cumplimiento de Horas Totales."
+        ]
+      },
+      "5": {
+        num: "11",
+        code: "PROC-FIA-2026-05",
+        titulo: "Procedimiento 5",
+        subtitulo: "Convalidación y Rectificación de Matrícula",
+        categoria: "Registros Académicos",
+        estado: "En Definición / Pendiente",
+        responsable: "Coordinación de Matrícula y Registros FIA",
+        escuela: "Escuela de Ingeniería de Sistemas",
+        descripcion: "Flujo formal para rectificación de horarios, cambio de sección justificado y convalidación de cursos para alumnos provenientes de traslados.",
+        objetivo: "Resolver oportunamente las situaciones de cruce de horarios y regularización de cupos antes del cierre oficial de listas definitivas.",
+        pasos: [
+          { titulo: "Solicitud de Rectificación en Plataforma", desc: "Registro formal con indicación precisa del código de asignatura de origen y destino." },
+          { titulo: "Verificación de Aforo y Vacantes", desc: "Validación de disponibilidad en el aula virtual con base en la capacidad del docente asignado." },
+          { titulo: "Dictamen y Actualización en Base de Datos", desc: "Aprobación de la coordinación y migración automática del estudiante en el sistema." },
+          { titulo: "Confirmación al Estudiante", desc: "Envío de constancia de matrícula rectificada al correo institucional del alumno." }
+        ],
+        requisitos: [
+          "FUT de solicitud de rectificación con fecha y firma.",
+          "Horario actual y comprobante de cruce horario.",
+          "Constancia de matrícula regular vigente 2026-II.",
+          "Autorización expresa de la Dirección de Escuela."
+        ]
+      },
+      "6": {
+        num: "12",
+        code: "PROC-FIA-2026-06",
+        titulo: "Procedimiento 6",
+        subtitulo: "Revisión Curricular, Convalidaciones y Actas Complementarias",
+        categoria: "Auditoría Curricular",
+        estado: "En Definición / Pendiente",
+        responsable: "Dirección de Escuela de Ingeniería de Sistemas",
+        escuela: "Escuela de Ingeniería de Sistemas",
+        descripcion: "Procedimiento de cierre curricular de periodo lectivo, generación de actas rezagadas y regularización de requisitos complementarios de egreso.",
+        objetivo: "Garantizar la consistencia del récord académico y la culminación satisfactoria de las actas oficiales de notas del semestre.",
+        pasos: [
+          { titulo: "Identificación de Casos Observados", desc: "Generación del listado de estudiantes con pendientes de notas complementarias o convalidación." },
+          { titulo: "Reunión de Comisión Curricular", desc: "Sesión de análisis de la malla y validación de competencias adquiridas por el estudiante." },
+          { titulo: "Suscripción de Acta Complementaria", desc: "Firma digital del Director de Escuela y docentes evaluadores en el libro institucional de actas." },
+          { titulo: "Cierre y Publicación Final", desc: "Cierre definitivo del periodo en el Minisistema SGA y emisión de constancias de egreso." }
+        ],
+        requisitos: [
+          "Expediente académico del estudiante completo y foliado.",
+          "Silabos de las asignaturas a homologar o convalidar con visado oficial.",
+          "Acta previa o certificado oficial de notas de la institución de origen.",
+          "Resolución de aprobación de la Facultad de Ingeniería y Arquitectura."
+        ]
+      }
+    };
+
+    (function initProcedurePage() {
+      const params = new URLSearchParams(window.location.search);
+      const rawId = (params.get('id') || 'pex').toLowerCase();
+      
+      const proc = PROCEDIMIENTOS_CATALOGO[rawId] || PROCEDIMIENTOS_CATALOGO['pex'];
+
+      // Document title
+      document.title = `${proc.titulo} — SGA • UCV Virtual`;
+
+      // Header
+      document.getElementById('breadcrumbTitle').textContent = proc.titulo;
+      document.getElementById('headerBadgeNum').textContent = `#${proc.num}`;
+      document.getElementById('headerTitle').textContent = proc.titulo;
+      document.getElementById('headerSubtitle').textContent = proc.subtitulo;
+      document.getElementById('headerStatus').textContent = proc.estado;
+      document.getElementById('headerCategory').innerHTML = `<i class="bi bi-folder-check text-primary me-1"></i> ${proc.categoria}`;
+
+      if (rawId === 'pex') {
+        document.getElementById('headerBadgeNum').style.background = '#D97706';
+        document.getElementById('headerStatus').className = 'badge bg-warning-subtle text-dark border border-warning fw-bold px-2.5 py-1';
+      }
+
+      // Description & Objective
+      document.getElementById('procDescription').textContent = proc.descripcion;
+      document.getElementById('procObjective').textContent = proc.objetivo;
+
+      // Sidebar
+      document.getElementById('sideCode').textContent = proc.code;
+      document.getElementById('sideEscuela').textContent = proc.escuela;
+      document.getElementById('sideResponsable').textContent = proc.responsable;
+
+      // Steps
+      const stepsContainer = document.getElementById('procStepsList');
+      stepsContainer.innerHTML = '';
+      document.getElementById('procStepsCount').textContent = `${proc.pasos.length} Fases`;
+      
+      proc.pasos.forEach((p, idx) => {
+        const item = document.createElement('div');
+        item.className = 'proc-step-item';
+        item.innerHTML = `
+          <div class="proc-step-number">${idx + 1}</div>
+          <div class="flex-grow-1">
+            <h5 class="fw-bold text-dark mb-1" style="font-size: 0.98rem; font-family: 'Outfit', sans-serif;">${p.titulo}</h5>
+            <p class="text-muted mb-0 small leading-normal">${p.desc}</p>
+          </div>
+        `;
+        stepsContainer.appendChild(item);
+      });
+
+      // Requirements
+      const reqContainer = document.getElementById('procRequirementsList');
+      reqContainer.innerHTML = '';
+      proc.requisitos.forEach((r, idx) => {
+        const item = document.createElement('label');
+        item.className = 'req-check-item';
+        item.innerHTML = `
+          <input type="checkbox" id="reqCheck_${idx}">
+          <span class="flex-grow-1">${r}</span>
+          <span class="badge bg-light text-muted border small">Obligatorio</span>
+        `;
+        reqContainer.appendChild(item);
+      });
+
+    })();
+  </script>
+
+</body>
+</html>

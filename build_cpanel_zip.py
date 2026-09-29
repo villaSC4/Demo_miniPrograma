@@ -9,6 +9,7 @@ def create_update_zip():
     # Archivos necesarios para corregir el diseño y estilos en cPanel
     files_to_pack = [
         "index.html",
+        "procedimiento.html",
         "css/custom.css",
         "js/sistemas_coordinacion.js",
         "js/app.js",

@@ -19,8 +19,8 @@
   <!-- Favicon UCV Virtual -->
   <link rel="icon" type="image/png" href="img/logo-ucv-virtual.png">
   
-  <!-- Estilos Personalizados Modernos (Busting de caché v3.9) -->
-  <link rel="stylesheet" href="css/custom.css?v=3.9">
+  <!-- Estilos Personalizados Modernos (Busting de caché v4.0) -->
+  <link rel="stylesheet" href="css/custom.css?v=4.0">
 
   <!-- Login Gate: redirect to login if not authenticated -->
   <script>
@@ -248,186 +248,419 @@
     </section>
 
     <!-- =========================================================================
-         SECCIÓN ②: PROCEDIMIENTOS DE LA FACULTAD DE SISTEMAS (CUADRÍCULA 2X3)
+         SECCIÓN ②: PROCEDIMIENTOS DE LA FACULTAD DE SISTEMAS (12 PROCEDIMIENTOS CON SLIDER)
          ========================================================================= -->
     <section class="sistemas-section-card" id="secProcedimientos">
-      <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom">
+      <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom flex-wrap gap-2">
         <div class="d-flex align-items-center gap-2.5">
           <div class="section-number-badge">2</div>
           <div>
             <h3 class="h5 mb-0 fw-bold text-dark" style="font-family: 'Outfit', sans-serif;">
               Procedimientos de la Facultad de Sistemas
             </h3>
-            <small class="text-muted" style="font-size: 0.78rem;">Accesos directos a los 6 módulos operativos de la carrera</small>
+            <small class="text-muted" style="font-size: 0.78rem;">Accesos directos a los 12 módulos y procedimientos operativos de la carrera</small>
           </div>
         </div>
-        <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-1.5 rounded-pill" style="font-size: 0.75rem;">
-          6 Procedimientos Clave
-        </span>
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-1.5 rounded-pill" style="font-size: 0.75rem;">
+            <i class="bi bi-layers-fill me-1"></i> 12 Procedimientos Clave
+          </span>
+          <span class="badge bg-light text-secondary border px-2.5 py-1.5 fw-semibold d-none d-sm-inline" id="badgeProcVistaActiva" style="font-size: 0.74rem;">
+            Vista 1 / 2: Módulos Operativos (01 al 06)
+          </span>
+        </div>
       </div>
 
-      <!-- Cuadrícula 2x3 de 6 Procedimientos con separación amplia y diseño simétrico -->
-      <div class="row g-3 g-xl-4" id="areaButtonsRow">
+      <!-- Contenedor del Slider con Flechas de Navegación Lateral -->
+      <div class="proc-slider-wrapper">
         
-        <!-- Procedimiento 1: Directorio Docente -->
-        <div class="col-xl-4 col-lg-4 col-md-6 col-12">
-          <button type="button" class="procedure-card area-action-card area-card-directorio proc-theme-blue w-100 text-start" onclick="navigateToArea('directorio-tab')" title="Procedimiento 1: Directorio Docente por Ciclos">
-            <div class="proc-card-header">
-              <span class="proc-num-pill"><i class="bi bi-hash"></i>01</span>
-              <span class="proc-metric-pill" id="sisBadgeDirectorio">
-                <i class="bi bi-people-fill me-1"></i>6 Docentes
-              </span>
-            </div>
-            <div class="proc-card-body">
-              <div class="proc-card-icon">
-                <i class="bi bi-person-lines-fill"></i>
+        <!-- Flecha Izquierda (Anterior) -->
+        <button type="button" class="proc-nav-arrow proc-nav-prev" id="btnProcPrev" onclick="cambiarVistaProcedimientos(-1)" title="Ver procedimientos anteriores (01 - 06)">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+
+        <!-- Viewport del Carrusel -->
+        <div class="proc-slides-viewport">
+          
+          <!-- ==============================================================
+               SLIDE 1: MÓDULOS OPERATIVOS ORIGINALES (#01 AL #06)
+               ============================================================== -->
+          <div class="proc-slide active" id="procSlide1">
+            <div class="row g-3 g-xl-4" id="areaButtonsRow">
+              
+              <!-- Procedimiento 1: Directorio Docente -->
+              <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+                <button type="button" class="procedure-card area-action-card area-card-directorio proc-theme-blue w-100 text-start" onclick="navigateToArea('directorio-tab')" title="Procedimiento 1: Directorio Docente por Ciclos">
+                  <div class="proc-card-header">
+                    <span class="proc-num-pill"><i class="bi bi-hash"></i>01</span>
+                    <span class="proc-metric-pill" id="sisBadgeDirectorio">
+                      <i class="bi bi-people-fill me-1"></i>6 Docentes
+                    </span>
+                  </div>
+                  <div class="proc-card-body">
+                    <div class="proc-card-icon">
+                      <i class="bi bi-person-lines-fill"></i>
+                    </div>
+                    <div class="proc-card-content flex-grow-1">
+                      <h4 class="proc-card-title">Directorio Docente</h4>
+                      <p class="proc-card-desc">Gestión docente por Ciclos II al IV, aperturas y contactos oficiales.</p>
+                    </div>
+                  </div>
+                  <div class="proc-card-footer">
+                    <span class="proc-action-text">Abrir Directorio</span>
+                    <span class="proc-action-arrow"><i class="bi bi-arrow-right"></i></span>
+                  </div>
+                </button>
               </div>
-              <div class="proc-card-content flex-grow-1">
-                <h4 class="proc-card-title">Directorio Docente</h4>
-                <p class="proc-card-desc">Gestión docente por Ciclos II al IV, aperturas y contactos oficiales.</p>
+
+              <!-- Procedimiento 2: Análisis de Cursos -->
+              <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+                <button type="button" class="procedure-card area-action-card area-card-cursos proc-theme-purple w-100 text-start" onclick="navigateToArea('cursos-tab')" title="Procedimiento 2: Análisis de Cursos y Malla">
+                  <div class="proc-card-header">
+                    <span class="proc-num-pill"><i class="bi bi-hash"></i>02</span>
+                    <span class="proc-metric-pill" id="sisBadgeCursos">
+                      <i class="bi bi-journal-text me-1"></i>6 Cursos
+                    </span>
+                  </div>
+                  <div class="proc-card-body">
+                    <div class="proc-card-icon">
+                      <i class="bi bi-diagram-3"></i>
+                    </div>
+                    <div class="proc-card-content flex-grow-1">
+                      <h4 class="proc-card-title">Análisis de Cursos</h4>
+                      <p class="proc-card-desc">Malla curricular, carga electiva, vacantes y ratios de matrícula.</p>
+                    </div>
+                  </div>
+                  <div class="proc-card-footer">
+                    <span class="proc-action-text">Ver Cursos</span>
+                    <span class="proc-action-arrow"><i class="bi bi-arrow-right"></i></span>
+                  </div>
+                </button>
+              </div>
+
+              <!-- Procedimiento 3: Matriz Modular -->
+              <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+                <button type="button" class="procedure-card area-action-card area-card-matriz proc-theme-cyan w-100 text-start" onclick="navigateToArea('matriz-tab')" title="Procedimiento 3: Matriz Modular Docente">
+                  <div class="proc-card-header">
+                    <span class="proc-num-pill"><i class="bi bi-hash"></i>03</span>
+                    <span class="proc-metric-pill" id="sisBadgeMatriz">
+                      <i class="bi bi-calendar4-week me-1"></i>26 Grupos
+                    </span>
+                  </div>
+                  <div class="proc-card-body">
+                    <div class="proc-card-icon">
+                      <i class="bi bi-calendar4-week"></i>
+                    </div>
+                    <div class="proc-card-content flex-grow-1">
+                      <h4 class="proc-card-title">Matriz Modular</h4>
+                      <p class="proc-card-desc">Programación mensual de sesiones teóricas y prácticas (Set-Dic 2026).</p>
+                    </div>
+                  </div>
+                  <div class="proc-card-footer">
+                    <span class="proc-action-text">Ver Matriz</span>
+                    <span class="proc-action-arrow"><i class="bi bi-arrow-right"></i></span>
+                  </div>
+                </button>
+              </div>
+
+              <!-- Procedimiento 4: Bolsa de Vacantes -->
+              <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+                <button type="button" class="procedure-card area-action-card area-card-vacantes proc-theme-rose w-100 text-start" onclick="navigateToArea('vacantes-tab')" title="Procedimiento 4: Bolsa de Vacantes y Asignación">
+                  <div class="proc-card-header">
+                    <span class="proc-num-pill"><i class="bi bi-hash"></i>04</span>
+                    <span class="proc-metric-pill" id="sisBadgeVacantes">
+                      <i class="bi bi-briefcase-fill me-1"></i>4 Vacantes
+                    </span>
+                  </div>
+                  <div class="proc-card-body">
+                    <div class="proc-card-icon">
+                      <i class="bi bi-briefcase"></i>
+                    </div>
+                    <div class="proc-card-content flex-grow-1">
+                      <h4 class="proc-card-title">Bolsa de Vacantes</h4>
+                      <p class="proc-card-desc">Plazas desiertas por cubrir y asignación rápida de candidatos.</p>
+                    </div>
+                  </div>
+                  <div class="proc-card-footer">
+                    <span class="proc-action-text">Resolver Vacantes</span>
+                    <span class="proc-action-arrow"><i class="bi bi-arrow-right"></i></span>
+                  </div>
+                </button>
+              </div>
+
+              <!-- Procedimiento 5: Asistencia Docentes y Delegados -->
+              <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+                <a href="https://reg-asistencia-1.class-it.edu.pe" target="_blank" rel="noopener noreferrer" class="procedure-card area-action-card area-card-delegados proc-theme-crimson w-100 text-start text-decoration-none d-flex" title="Procedimiento 5: Registro y Asistencia Docentes y Delegados">
+                  <div class="proc-card-header">
+                    <span class="proc-num-pill"><i class="bi bi-hash"></i>05</span>
+                    <span class="proc-metric-pill">
+                      <i class="bi bi-broadcast me-1"></i>En Vivo
+                    </span>
+                  </div>
+                  <div class="proc-card-body">
+                    <div class="proc-card-icon">
+                      <i class="bi bi-people-fill"></i>
+                    </div>
+                    <div class="proc-card-content flex-grow-1">
+                      <h4 class="proc-card-title">Docentes y Delegados</h4>
+                      <p class="proc-card-desc">Registro de asistencia, actas de acuerdos y representatividad de aula.</p>
+                    </div>
+                  </div>
+                  <div class="proc-card-footer">
+                    <span class="proc-action-text">Abrir Registro</span>
+                    <span class="proc-action-arrow"><i class="bi bi-box-arrow-up-right"></i></span>
+                  </div>
+                </a>
+              </div>
+
+              <!-- Procedimiento 6: Atención al Estudiante (PAU) -->
+              <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+                <button type="button" class="procedure-card area-action-card area-card-pau proc-theme-sky w-100 text-start" onclick="navigateToArea('pau-tab')" title="Procedimiento 6: Plataforma de Atención al Estudiante">
+                  <div class="proc-card-header">
+                    <span class="proc-num-pill"><i class="bi bi-hash"></i>06</span>
+                    <span class="proc-metric-pill" id="badgeAreaPau">
+                      <i class="bi bi-inbox-fill me-1"></i><span id="kpiPauTotal">0</span> Correos
+                    </span>
+                  </div>
+                  <div class="proc-card-body">
+                    <div class="proc-card-icon">
+                      <i class="bi bi-inbox-fill"></i>
+                    </div>
+                    <div class="proc-card-content flex-grow-1">
+                      <h4 class="proc-card-title">Atención Estudiante (PAU)</h4>
+                      <p class="proc-card-desc">Bandeja de seguimiento de correos, WhatsApp y trámites académicos.</p>
+                    </div>
+                  </div>
+                  <div class="proc-card-footer">
+                    <span class="proc-action-text">Bandeja PAU</span>
+                    <span class="proc-action-arrow"><i class="bi bi-arrow-right"></i></span>
+                  </div>
+                </button>
+              </div>
+
+              <!-- Elementos ocultos requeridos por app.js para evitar errores de renderKPIs() -->
+              <div class="d-none" style="display: none !important;">
+                <span id="badgeAreaDirectorio"><span id="kpiDocentesCompletos"></span></span>
+                <span id="badgeAreaCursos"></span>
+                <span id="badgeAreaMatriz"><span id="kpiTotalGrupos"></span></span>
+                <span id="badgeAreaVacantes"><span id="kpiGruposVacantes"></span></span>
+                <span id="badgeAreaDesempeno"></span>
+                <span id="badgeAreaSupervision"></span>
               </div>
             </div>
-            <div class="proc-card-footer">
-              <span class="proc-action-text">Abrir Directorio</span>
-              <span class="proc-action-arrow"><i class="bi bi-arrow-right"></i></span>
+          </div>
+
+          <!-- ==============================================================
+               SLIDE 2: 6 NUEVOS PROCEDIMIENTOS ADICIONALES (#07 AL #12) & PEX
+               ============================================================== -->
+          <div class="proc-slide" id="procSlide2">
+            <div class="row g-3 g-xl-4" id="areaButtonsRow2">
+              
+              <!-- Procedimiento 7: Procedimiento 1 -->
+              <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+                <div class="procedure-card area-action-card proc-theme-emerald w-100 text-start" onclick="abrirProcedimientoFlotante('1')" title="Procedimiento 1: Trámite y Homologación" style="cursor: pointer;">
+                  <div class="proc-card-header">
+                    <span class="proc-num-pill"><i class="bi bi-hash"></i>07</span>
+                    <span class="proc-metric-pill">
+                      <i class="bi bi-hourglass-split me-1"></i>En Definición
+                    </span>
+                  </div>
+                  <div class="proc-card-body">
+                    <div class="proc-card-icon">
+                      <i class="bi bi-folder-check"></i>
+                    </div>
+                    <div class="proc-card-content flex-grow-1">
+                      <h4 class="proc-card-title">Procedimiento 1</h4>
+                      <p class="proc-card-desc">Homologación y validación documentaria según directivas institucionales.</p>
+                    </div>
+                  </div>
+                  <div class="proc-card-footer">
+                    <div class="d-flex align-items-center gap-1.5">
+                      <span class="proc-action-text fw-bold">Abrir Procedimiento</span>
+                      <span class="proc-action-arrow"><i class="bi bi-window-stack"></i></span>
+                    </div>
+                    <a href="procedimiento.html?id=1" target="_blank" rel="noopener noreferrer" class="proc-btn-separate" title="Abrir en hoja aparte (nueva pestaña)" onclick="event.stopPropagation();">
+                      <i class="bi bi-box-arrow-up-right me-1"></i>Hoja aparte
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Procedimiento 8: Procedimiento 2 -->
+              <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+                <div class="procedure-card area-action-card proc-theme-indigo w-100 text-start" onclick="abrirProcedimientoFlotante('2')" title="Procedimiento 2: Asistencia y Justificaciones" style="cursor: pointer;">
+                  <div class="proc-card-header">
+                    <span class="proc-num-pill"><i class="bi bi-hash"></i>08</span>
+                    <span class="proc-metric-pill">
+                      <i class="bi bi-hourglass-split me-1"></i>En Definición
+                    </span>
+                  </div>
+                  <div class="proc-card-body">
+                    <div class="proc-card-icon">
+                      <i class="bi bi-file-earmark-ruled"></i>
+                    </div>
+                    <div class="proc-card-content flex-grow-1">
+                      <h4 class="proc-card-title">Procedimiento 2</h4>
+                      <p class="proc-card-desc">Seguimiento de asistencias y justificaciones médicas o laborales.</p>
+                    </div>
+                  </div>
+                  <div class="proc-card-footer">
+                    <div class="d-flex align-items-center gap-1.5">
+                      <span class="proc-action-text fw-bold">Abrir Procedimiento</span>
+                      <span class="proc-action-arrow"><i class="bi bi-window-stack"></i></span>
+                    </div>
+                    <a href="procedimiento.html?id=2" target="_blank" rel="noopener noreferrer" class="proc-btn-separate" title="Abrir en hoja aparte (nueva pestaña)" onclick="event.stopPropagation();">
+                      <i class="bi bi-box-arrow-up-right me-1"></i>Hoja aparte
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Procedimiento 9: Procedimiento 3 -->
+              <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+                <div class="procedure-card area-action-card proc-theme-teal w-100 text-start" onclick="abrirProcedimientoFlotante('3')" title="Procedimiento 3: Control y Auditoría" style="cursor: pointer;">
+                  <div class="proc-card-header">
+                    <span class="proc-num-pill"><i class="bi bi-hash"></i>09</span>
+                    <span class="proc-metric-pill">
+                      <i class="bi bi-hourglass-split me-1"></i>En Definición
+                    </span>
+                  </div>
+                  <div class="proc-card-body">
+                    <div class="proc-card-icon">
+                      <i class="bi bi-diagram-2"></i>
+                    </div>
+                    <div class="proc-card-content flex-grow-1">
+                      <h4 class="proc-card-title">Procedimiento 3</h4>
+                      <p class="proc-card-desc">Auditoría de avance silábico, entrega de notas y cumplimiento docente.</p>
+                    </div>
+                  </div>
+                  <div class="proc-card-footer">
+                    <div class="d-flex align-items-center gap-1.5">
+                      <span class="proc-action-text fw-bold">Abrir Procedimiento</span>
+                      <span class="proc-action-arrow"><i class="bi bi-window-stack"></i></span>
+                    </div>
+                    <a href="procedimiento.html?id=3" target="_blank" rel="noopener noreferrer" class="proc-btn-separate" title="Abrir en hoja aparte (nueva pestaña)" onclick="event.stopPropagation();">
+                      <i class="bi bi-box-arrow-up-right me-1"></i>Hoja aparte
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Procedimiento 10: Procedimiento PEX (ESPECÍFICO SOLICITADO) -->
+              <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+                <div class="procedure-card area-action-card proc-theme-gold w-100 text-start" onclick="abrirProcedimientoFlotante('pex')" title="Procedimiento PEX: Prácticas Preprofesionales y Extensión" style="cursor: pointer;">
+                  <div class="proc-card-header">
+                    <span class="proc-num-pill"><i class="bi bi-hash"></i>10</span>
+                    <span class="proc-metric-pill">
+                      <i class="bi bi-award-fill me-1"></i>PEX Oficial
+                    </span>
+                  </div>
+                  <div class="proc-card-body">
+                    <div class="proc-card-icon">
+                      <i class="bi bi-stars"></i>
+                    </div>
+                    <div class="proc-card-content flex-grow-1">
+                      <h4 class="proc-card-title">Procedimiento PEX</h4>
+                      <p class="proc-card-desc">Programa de Experiencia Extraordinaria, Prácticas y Extensión Universitaria.</p>
+                    </div>
+                  </div>
+                  <div class="proc-card-footer">
+                    <div class="d-flex align-items-center gap-1.5">
+                      <span class="proc-action-text fw-bold">Abrir Procedimiento</span>
+                      <span class="proc-action-arrow"><i class="bi bi-window-stack"></i></span>
+                    </div>
+                    <a href="procedimiento.html?id=pex" target="_blank" rel="noopener noreferrer" class="proc-btn-separate" title="Abrir en hoja aparte (nueva pestaña)" onclick="event.stopPropagation();">
+                      <i class="bi bi-box-arrow-up-right me-1"></i>Hoja aparte
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Procedimiento 11: Procedimiento 5 -->
+              <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+                <div class="procedure-card area-action-card proc-theme-violet w-100 text-start" onclick="abrirProcedimientoFlotante('5')" title="Procedimiento 5: Convalidación y Rectificación" style="cursor: pointer;">
+                  <div class="proc-card-header">
+                    <span class="proc-num-pill"><i class="bi bi-hash"></i>11</span>
+                    <span class="proc-metric-pill">
+                      <i class="bi bi-hourglass-split me-1"></i>En Definición
+                    </span>
+                  </div>
+                  <div class="proc-card-body">
+                    <div class="proc-card-icon">
+                      <i class="bi bi-clipboard2-check"></i>
+                    </div>
+                    <div class="proc-card-content flex-grow-1">
+                      <h4 class="proc-card-title">Procedimiento 5</h4>
+                      <p class="proc-card-desc">Rectificación de matrícula, cambio de grupo y convalidación de asignaturas.</p>
+                    </div>
+                  </div>
+                  <div class="proc-card-footer">
+                    <div class="d-flex align-items-center gap-1.5">
+                      <span class="proc-action-text fw-bold">Abrir Procedimiento</span>
+                      <span class="proc-action-arrow"><i class="bi bi-window-stack"></i></span>
+                    </div>
+                    <a href="procedimiento.html?id=5" target="_blank" rel="noopener noreferrer" class="proc-btn-separate" title="Abrir en hoja aparte (nueva pestaña)" onclick="event.stopPropagation();">
+                      <i class="bi bi-box-arrow-up-right me-1"></i>Hoja aparte
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Procedimiento 12: Procedimiento 6 -->
+              <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+                <div class="procedure-card area-action-card proc-theme-coral w-100 text-start" onclick="abrirProcedimientoFlotante('6')" title="Procedimiento 6: Revisión Curricular y Actas" style="cursor: pointer;">
+                  <div class="proc-card-header">
+                    <span class="proc-num-pill"><i class="bi bi-hash"></i>12</span>
+                    <span class="proc-metric-pill">
+                      <i class="bi bi-hourglass-split me-1"></i>En Definición
+                    </span>
+                  </div>
+                  <div class="proc-card-body">
+                    <div class="proc-card-icon">
+                      <i class="bi bi-journal-bookmark"></i>
+                    </div>
+                    <div class="proc-card-content flex-grow-1">
+                      <h4 class="proc-card-title">Procedimiento 6</h4>
+                      <p class="proc-card-desc">Revisión curricular, regularización de actas rezagadas y convalidaciones.</p>
+                    </div>
+                  </div>
+                  <div class="proc-card-footer">
+                    <div class="d-flex align-items-center gap-1.5">
+                      <span class="proc-action-text fw-bold">Abrir Procedimiento</span>
+                      <span class="proc-action-arrow"><i class="bi bi-window-stack"></i></span>
+                    </div>
+                    <a href="procedimiento.html?id=6" target="_blank" rel="noopener noreferrer" class="proc-btn-separate" title="Abrir en hoja aparte (nueva pestaña)" onclick="event.stopPropagation();">
+                      <i class="bi bi-box-arrow-up-right me-1"></i>Hoja aparte
+                    </a>
+                  </div>
+                </div>
+              </div>
+
             </div>
+          </div>
+
+        </div>
+
+        <!-- Flecha Derecha (Siguiente) -->
+        <button type="button" class="proc-nav-arrow proc-nav-next" id="btnProcNext" onclick="cambiarVistaProcedimientos(1)" title="Ver procedimientos siguientes (07 - 12)">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+
+      </div>
+
+      <!-- Barra Inferior de Navegación y Paginación -->
+      <div class="proc-pagination-bar">
+        <div class="proc-pills-selector">
+          <button type="button" class="proc-page-btn active" id="btnProcPage1" onclick="irAVistaProcedimientos(1)">
+            <i class="bi bi-1-circle-fill text-primary"></i> Módulos Operativos (01-06)
+          </button>
+          <button type="button" class="proc-page-btn" id="btnProcPage2" onclick="irAVistaProcedimientos(2)">
+            <i class="bi bi-2-circle-fill text-warning"></i> Nuevos Procedimientos & PEX (07-12)
           </button>
         </div>
-
-        <!-- Procedimiento 2: Análisis de Cursos -->
-        <div class="col-xl-4 col-lg-4 col-md-6 col-12">
-          <button type="button" class="procedure-card area-action-card area-card-cursos proc-theme-purple w-100 text-start" onclick="navigateToArea('cursos-tab')" title="Procedimiento 2: Análisis de Cursos y Malla">
-            <div class="proc-card-header">
-              <span class="proc-num-pill"><i class="bi bi-hash"></i>02</span>
-              <span class="proc-metric-pill" id="sisBadgeCursos">
-                <i class="bi bi-journal-text me-1"></i>6 Cursos
-              </span>
-            </div>
-            <div class="proc-card-body">
-              <div class="proc-card-icon">
-                <i class="bi bi-diagram-3"></i>
-              </div>
-              <div class="proc-card-content flex-grow-1">
-                <h4 class="proc-card-title">Análisis de Cursos</h4>
-                <p class="proc-card-desc">Malla curricular, carga electiva, vacantes y ratios de matrícula.</p>
-              </div>
-            </div>
-            <div class="proc-card-footer">
-              <span class="proc-action-text">Ver Cursos</span>
-              <span class="proc-action-arrow"><i class="bi bi-arrow-right"></i></span>
-            </div>
-          </button>
-        </div>
-
-        <!-- Procedimiento 3: Matriz Modular -->
-        <div class="col-xl-4 col-lg-4 col-md-6 col-12">
-          <button type="button" class="procedure-card area-action-card area-card-matriz proc-theme-cyan w-100 text-start" onclick="navigateToArea('matriz-tab')" title="Procedimiento 3: Matriz Modular Docente">
-            <div class="proc-card-header">
-              <span class="proc-num-pill"><i class="bi bi-hash"></i>03</span>
-              <span class="proc-metric-pill" id="sisBadgeMatriz">
-                <i class="bi bi-calendar4-week me-1"></i>26 Grupos
-              </span>
-            </div>
-            <div class="proc-card-body">
-              <div class="proc-card-icon">
-                <i class="bi bi-calendar4-week"></i>
-              </div>
-              <div class="proc-card-content flex-grow-1">
-                <h4 class="proc-card-title">Matriz Modular</h4>
-                <p class="proc-card-desc">Programación mensual de sesiones teóricas y prácticas (Set-Dic 2026).</p>
-              </div>
-            </div>
-            <div class="proc-card-footer">
-              <span class="proc-action-text">Ver Matriz</span>
-              <span class="proc-action-arrow"><i class="bi bi-arrow-right"></i></span>
-            </div>
-          </button>
-        </div>
-
-        <!-- Procedimiento 4: Bolsa de Vacantes -->
-        <div class="col-xl-4 col-lg-4 col-md-6 col-12">
-          <button type="button" class="procedure-card area-action-card area-card-vacantes proc-theme-rose w-100 text-start" onclick="navigateToArea('vacantes-tab')" title="Procedimiento 4: Bolsa de Vacantes y Asignación">
-            <div class="proc-card-header">
-              <span class="proc-num-pill"><i class="bi bi-hash"></i>04</span>
-              <span class="proc-metric-pill" id="sisBadgeVacantes">
-                <i class="bi bi-briefcase-fill me-1"></i>4 Vacantes
-              </span>
-            </div>
-            <div class="proc-card-body">
-              <div class="proc-card-icon">
-                <i class="bi bi-briefcase"></i>
-              </div>
-              <div class="proc-card-content flex-grow-1">
-                <h4 class="proc-card-title">Bolsa de Vacantes</h4>
-                <p class="proc-card-desc">Plazas desiertas por cubrir y asignación rápida de candidatos.</p>
-              </div>
-            </div>
-            <div class="proc-card-footer">
-              <span class="proc-action-text">Resolver Vacantes</span>
-              <span class="proc-action-arrow"><i class="bi bi-arrow-right"></i></span>
-            </div>
-          </button>
-        </div>
-
-        <!-- Procedimiento 5: Asistencia Docentes y Delegados -->
-        <div class="col-xl-4 col-lg-4 col-md-6 col-12">
-          <a href="https://reg-asistencia-1.class-it.edu.pe" target="_blank" rel="noopener noreferrer" class="procedure-card area-action-card area-card-delegados proc-theme-crimson w-100 text-start text-decoration-none d-flex" title="Procedimiento 5: Registro y Asistencia Docentes y Delegados">
-            <div class="proc-card-header">
-              <span class="proc-num-pill"><i class="bi bi-hash"></i>05</span>
-              <span class="proc-metric-pill">
-                <i class="bi bi-broadcast me-1"></i>En Vivo
-              </span>
-            </div>
-            <div class="proc-card-body">
-              <div class="proc-card-icon">
-                <i class="bi bi-people-fill"></i>
-              </div>
-              <div class="proc-card-content flex-grow-1">
-                <h4 class="proc-card-title">Docentes y Delegados</h4>
-                <p class="proc-card-desc">Registro de asistencia, actas de acuerdos y representatividad de aula.</p>
-              </div>
-            </div>
-            <div class="proc-card-footer">
-              <span class="proc-action-text">Abrir Registro</span>
-              <span class="proc-action-arrow"><i class="bi bi-box-arrow-up-right"></i></span>
-            </div>
-          </a>
-        </div>
-
-        <!-- Procedimiento 6: Atención al Estudiante (PAU) -->
-        <div class="col-xl-4 col-lg-4 col-md-6 col-12">
-          <button type="button" class="procedure-card area-action-card area-card-pau proc-theme-sky w-100 text-start" onclick="navigateToArea('pau-tab')" title="Procedimiento 6: Plataforma de Atención al Estudiante">
-            <div class="proc-card-header">
-              <span class="proc-num-pill"><i class="bi bi-hash"></i>06</span>
-              <span class="proc-metric-pill" id="badgeAreaPau">
-                <i class="bi bi-inbox-fill me-1"></i><span id="kpiPauTotal">0</span> Correos
-              </span>
-            </div>
-            <div class="proc-card-body">
-              <div class="proc-card-icon">
-                <i class="bi bi-inbox-fill"></i>
-              </div>
-              <div class="proc-card-content flex-grow-1">
-                <h4 class="proc-card-title">Atención Estudiante (PAU)</h4>
-                <p class="proc-card-desc">Bandeja de seguimiento de correos, WhatsApp y trámites académicos.</p>
-              </div>
-            </div>
-            <div class="proc-card-footer">
-              <span class="proc-action-text">Bandeja PAU</span>
-              <span class="proc-action-arrow"><i class="bi bi-arrow-right"></i></span>
-            </div>
-          </button>
-        </div>
-
-        <!-- Elementos ocultos requeridos por app.js para evitar errores de renderKPIs() -->
-        <div class="d-none" style="display: none !important;">
-          <span id="badgeAreaDirectorio"><span id="kpiDocentesCompletos"></span></span>
-          <span id="badgeAreaCursos"></span>
-          <span id="badgeAreaMatriz"><span id="kpiTotalGrupos"></span></span>
-          <span id="badgeAreaVacantes"><span id="kpiGruposVacantes"></span></span>
-          <span id="badgeAreaDesempeno"></span>
-          <span id="badgeAreaSupervision"></span>
-        </div>
+        <small class="text-muted d-none d-md-inline" style="font-size: 0.78rem;">
+          <i class="bi bi-arrow-left-right text-primary me-1"></i>Usa las flechas laterales para alternar entre las vistas
+        </small>
       </div>
     </section>
 
@@ -2580,6 +2813,103 @@
     </div>
   </div>
 
+  <!-- =========================================================================
+       MODAL FLOTANTE / PESTAÑA FLOTANTE DE PROCEDIMIENTO
+       ========================================================================= -->
+  <div class="modal fade modal-proc-flotante" id="modalProcedimientoFlotante" tabindex="-1" aria-labelledby="modalProcTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+      <div class="modal-content shadow-lg">
+        <div class="modal-header d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center gap-2.5">
+            <span class="badge bg-warning text-dark fw-bold px-2.5 py-1 rounded-2" id="modalProcBadgeNum" style="font-family: 'Outfit', sans-serif; font-size: 0.88rem;">#00</span>
+            <div>
+              <h5 class="modal-title fw-bold text-white mb-0" id="modalProcTitulo" style="font-family: 'Outfit', sans-serif;">Procedimiento</h5>
+              <small class="text-white-50" id="modalProcSubtitulo" style="font-size: 0.78rem;">Facultad de Ingeniería y Arquitectura • UCV Virtual</small>
+            </div>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-sm btn-outline-light px-2.5 py-1 fw-semibold d-inline-flex align-items-center gap-1.5" id="btnModalAbrirHojaAparte" title="Abrir este procedimiento en una hoja aparte (nueva pestaña)">
+              <i class="bi bi-box-arrow-up-right"></i>
+              <span>Hoja Aparte ↗</span>
+            </button>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+        </div>
+        <div class="modal-body p-4">
+          <!-- Banner de estado y categoría -->
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 p-3 bg-light rounded-3 border mb-3">
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2.5 py-1 fw-bold" id="modalProcCategoria">Gestión Académica</span>
+              <span class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1 fw-semibold" id="modalProcEstado">Vigente 2026-II</span>
+            </div>
+            <div class="small text-muted" id="modalProcResponsable">
+              <i class="bi bi-shield-check text-primary me-1"></i> DAC Sistemas
+            </div>
+          </div>
+
+          <!-- Pestañas internas del modal flotante -->
+          <ul class="nav nav-pills mb-3 gap-2" id="procModalTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active py-1.5 px-3 fw-semibold small" id="proc-tab-desc" data-bs-toggle="pill" data-bs-target="#proc-pill-desc" type="button" role="tab">
+                <i class="bi bi-card-text me-1"></i> Descripción & Objetivos
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link py-1.5 px-3 fw-semibold small" id="proc-tab-pasos" data-bs-toggle="pill" data-bs-target="#proc-pill-pasos" type="button" role="tab">
+                <i class="bi bi-diagram-3-fill me-1"></i> Pasos / Flujo
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link py-1.5 px-3 fw-semibold small" id="proc-tab-req" data-bs-toggle="pill" data-bs-target="#proc-pill-req" type="button" role="tab">
+                <i class="bi bi-check2-square me-1"></i> Requisitos
+              </button>
+            </li>
+          </ul>
+
+          <div class="tab-content border rounded-3 p-3 bg-white" id="procModalTabContent">
+            <!-- TAB 1: Descripción -->
+            <div class="tab-pane fade show active" id="proc-pill-desc" role="tabpanel">
+              <h6 class="fw-bold text-dark mb-2" style="font-size: 0.9rem;">Propósito del Procedimiento</h6>
+              <p class="text-muted small leading-relaxed mb-3" id="modalProcDescText">
+                Cargando descripción...
+              </p>
+              <div class="p-2.5 bg-light rounded-2 border">
+                <span class="d-block fw-bold text-dark small mb-1"><i class="bi bi-bullseye text-danger me-1"></i> Objetivo Operativo:</span>
+                <p class="small text-muted mb-0" id="modalProcObjText">Objetivo...</p>
+              </div>
+            </div>
+
+            <!-- TAB 2: Pasos / Flujo -->
+            <div class="tab-pane fade" id="proc-pill-pasos" role="tabpanel">
+              <h6 class="fw-bold text-dark mb-2" style="font-size: 0.9rem;">Flujo de Ejecución y Fases</h6>
+              <div id="modalProcPasosContainer">
+                <!-- Se llena dinámicamente -->
+              </div>
+            </div>
+
+            <!-- TAB 3: Requisitos -->
+            <div class="tab-pane fade" id="proc-pill-req" role="tabpanel">
+              <h6 class="fw-bold text-dark mb-2" style="font-size: 0.9rem;">Documentos y Requisitos Obligatorios</h6>
+              <div id="modalProcReqContainer">
+                <!-- Se llena dinámicamente -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light py-2.5 px-4 d-flex align-items-center justify-content-between">
+          <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="modal">
+            Cerrar Pestaña
+          </button>
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-sm btn-primary px-3 fw-semibold" id="btnModalFooterHojaAparte">
+              <i class="bi bi-box-arrow-up-right me-1.5"></i> Abrir en Hoja Aparte (Pestaña Completa)
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- SCRIPTS (Carga local ultrarrápida sin latencia externa) -->
   <script src="lib/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="lib/xlsx/xlsx.full.min.js"></script>
@@ -2588,7 +2918,7 @@
   <script src="js/analytics.js"></script>
   <script src="js/app.js"></script>
   <script src="js/pau.js?v=3.2"></script>
-  <script src="js/sistemas_coordinacion.js?v=2.9"></script>
+  <script src="js/sistemas_coordinacion.js?v=3.0"></script>
 
   <!-- Auto-navigate to specific tab and dynamic DAC banner if coming from selector -->
   <script>

@@ -28,6 +28,25 @@ SUPERVISIONES_FILE = os.path.join(DATA_DIR, 'supervisiones.json')
 PAU_FILE = os.path.join(DATA_DIR, 'pau_correos.json')
 AUTH_DB_FILE = os.path.join(DATA_DIR, 'usuarios.db')
 
+def ensure_data_files():
+    """Asegura que los archivos JSON de datos existan a partir de sus plantillas base."""
+    data_mappings = [
+        ('grupos.json', 'grupos_base.json'),
+        ('docentes.json', 'docentes_base.json'),
+        ('directorios.json', 'directorios_base.json'),
+        ('carpetas.json', 'carpetas_base.json'),
+        ('supervisiones.json', 'supervisiones_base.json')
+    ]
+    for target, base in data_mappings:
+        target_path = os.path.join(DATA_DIR, target)
+        base_path = os.path.join(DATA_DIR, base)
+        if not os.path.exists(target_path) and os.path.exists(base_path):
+            try:
+                shutil.copyfile(base_path, target_path)
+                print(f"[DATA] Inicializado {target} desde {base}")
+            except Exception as e:
+                print(f"[DATA] Error al inicializar {target}: {e}")
+
 def init_auth_db():
     """Inicializa la base de datos SQLite de usuarios si no existe y asegura la cuenta institucional."""
     try:
@@ -711,6 +730,7 @@ class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 
 if __name__ == '__main__':
     init_auth_db()
+    ensure_data_files()
     ports_to_try = [int(os.environ.get('PORT', PORT)), 8000, 8081, 8082, 3000]
     httpd = None
     selected_port = None

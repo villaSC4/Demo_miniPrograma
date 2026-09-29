@@ -1264,6 +1264,259 @@ ul.nav li { list-style: none !important; }
   transform: translateX(5px);
 }
 
+/* =========================================================================
+   NUEVOS TEMAS PARA PROCEDIMIENTOS ADICIONALES (07 AL 12) & PEX
+   ========================================================================= */
+.proc-theme-emerald::before { background: #059669 !important; }
+.proc-theme-emerald .proc-num-pill { background: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; }
+.proc-theme-emerald .proc-metric-pill { background: #ECFDF5; color: #047857; }
+.proc-theme-emerald .proc-card-icon { background: #ECFDF5; color: #059669; }
+.proc-theme-emerald .proc-action-text { color: #059669; }
+.proc-theme-emerald .proc-action-arrow { color: #059669; }
+
+.proc-theme-indigo::before { background: #4F46E5 !important; }
+.proc-theme-indigo .proc-num-pill { background: #EEF2FF; color: #4F46E5; border: 1px solid #C7D2FE; }
+.proc-theme-indigo .proc-metric-pill { background: #EEF2FF; color: #4338CA; }
+.proc-theme-indigo .proc-card-icon { background: #EEF2FF; color: #4F46E5; }
+.proc-theme-indigo .proc-action-text { color: #4F46E5; }
+.proc-theme-indigo .proc-action-arrow { color: #4F46E5; }
+
+.proc-theme-teal::before { background: #0D9488 !important; }
+.proc-theme-teal .proc-num-pill { background: #F0FDFA; color: #0D9488; border: 1px solid #99F6E4; }
+.proc-theme-teal .proc-metric-pill { background: #F0FDFA; color: #0F766E; }
+.proc-theme-teal .proc-card-icon { background: #F0FDFA; color: #0D9488; }
+.proc-theme-teal .proc-action-text { color: #0D9488; }
+.proc-theme-teal .proc-action-arrow { color: #0D9488; }
+
+/* TEMA PEX DORADO INSTITUCIONAL */
+.proc-theme-gold::before { background: #D97706 !important; }
+.proc-theme-gold .proc-num-pill { background: #FFFBEB; color: #D97706; border: 1px solid #FDE68A; }
+.proc-theme-gold .proc-metric-pill { background: #FFFBEB; color: #B45309; }
+.proc-theme-gold .proc-card-icon { background: #FEF3C7; color: #D97706; }
+.proc-theme-gold .proc-action-text { color: #D97706; }
+.proc-theme-gold .proc-action-arrow { color: #D97706; }
+
+.proc-theme-violet::before { background: #8B5CF6 !important; }
+.proc-theme-violet .proc-num-pill { background: #F5F3FF; color: #8B5CF6; border: 1px solid #DDD6FE; }
+.proc-theme-violet .proc-metric-pill { background: #F5F3FF; color: #7C3AED; }
+.proc-theme-violet .proc-card-icon { background: #F5F3FF; color: #8B5CF6; }
+.proc-theme-violet .proc-action-text { color: #8B5CF6; }
+.proc-theme-violet .proc-action-arrow { color: #8B5CF6; }
+
+.proc-theme-coral::before { background: #EA580C !important; }
+.proc-theme-coral .proc-num-pill { background: #FFF7ED; color: #EA580C; border: 1px solid #FFEDD5; }
+.proc-theme-coral .proc-metric-pill { background: #FFF7ED; color: #C2410C; }
+.proc-theme-coral .proc-card-icon { background: #FFEDD5; color: #EA580C; }
+.proc-theme-coral .proc-action-text { color: #EA580C; }
+.proc-theme-coral .proc-action-arrow { color: #EA580C; }
+
+/* =========================================================================
+   PROCEDIMIENTOS: CARRUSEL / SLIDER CON FLECHAS LATERALES Y PAGINACIÓN
+   ========================================================================= */
+.proc-slider-wrapper {
+  position: relative;
+  width: 100%;
+  padding: 0 3.25rem;
+}
+
+@media (max-width: 991.98px) {
+  .proc-slider-wrapper {
+    padding: 0 0.5rem;
+  }
+}
+
+/* Flechas de Navegación Lateral (estilo exacto dibujado por el usuario) */
+.proc-nav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 2.5px solid #0099FF;
+  color: #0099FF;
+  box-shadow: 0 8px 24px rgba(0, 153, 255, 0.28), 0 2px 6px rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.55rem;
+  font-weight: 700;
+  cursor: pointer;
+  z-index: 15;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+}
+
+.proc-nav-arrow:hover {
+  background: #0099FF;
+  color: #FFFFFF;
+  border-color: #0099FF;
+  transform: translateY(-50%) scale(1.12);
+  box-shadow: 0 12px 30px rgba(0, 153, 255, 0.45);
+}
+
+.proc-nav-arrow:active {
+  transform: translateY(-50%) scale(0.94);
+}
+
+.proc-nav-arrow.proc-nav-prev {
+  left: -4px;
+}
+
+.proc-nav-arrow.proc-nav-next {
+  right: -4px;
+}
+
+@media (max-width: 991.98px) {
+  .proc-nav-arrow {
+    width: 38px;
+    height: 38px;
+    font-size: 1.25rem;
+  }
+  .proc-nav-arrow.proc-nav-prev { left: -10px; }
+  .proc-nav-arrow.proc-nav-next { right: -10px; }
+}
+
+.proc-slides-viewport {
+  position: relative;
+  width: 100%;
+}
+
+.proc-slide {
+  display: none;
+  opacity: 0;
+  transform: translateX(16px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.proc-slide.active {
+  display: block;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Barra de Paginación e Indicador de Vistas */
+.proc-pagination-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.1rem;
+  border-top: 1px dashed #E2E8F0;
+}
+
+.proc-pills-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #F1F5F9;
+  padding: 4px;
+  border-radius: 30px;
+}
+
+.proc-page-btn {
+  border: none;
+  background: transparent;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #64748B;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.proc-page-btn:hover {
+  color: #0F172A;
+}
+
+.proc-page-btn.active {
+  background: #FFFFFF;
+  color: #0D6EFD;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Botón secundario en la tarjeta para abrir hoja aparte directa */
+.proc-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.proc-btn-separate {
+  padding: 3px 8px;
+  font-size: 0.73rem;
+  font-weight: 700;
+  border-radius: 6px;
+  border: 1px solid #E2E8F0;
+  background: #FFFFFF;
+  color: #64748B;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all 0.2s ease;
+}
+
+.proc-btn-separate:hover {
+  background: #EFF6FF;
+  border-color: #BFDBFE;
+  color: #2563EB;
+}
+
+/* =========================================================================
+   MODAL FLOTANTE / PESTAÑA FLOTANTE DE PROCEDIMIENTO
+   ========================================================================= */
+.modal-proc-flotante .modal-content {
+  border-radius: 18px;
+  border: 1px solid #CBD5E1;
+  box-shadow: 0 20px 50px rgba(7, 25, 48, 0.25);
+  overflow: hidden;
+}
+
+.modal-proc-flotante .modal-header {
+  background: linear-gradient(135deg, #071930 0%, #0E2545 60%, #163B6B 100%);
+  color: #FFFFFF;
+  border-bottom: 3px solid #BE1E2D;
+  padding: 1.25rem 1.5rem;
+}
+
+.modal-proc-flotante .modal-header .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.proc-float-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px dashed #E2E8F0;
+}
+
+.proc-float-step:last-child {
+  border-bottom: none;
+}
+
+.proc-float-step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #EFF6FF;
+  color: #2563EB;
+  font-weight: 800;
+  font-size: 0.82rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
 /* Calendario / Planner ③ */
 .planner-day-col {
   border: 1.5px solid #E2E8F0 !important;
