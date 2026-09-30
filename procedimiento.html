@@ -517,6 +517,17 @@
         document.getElementById('headerStatus').className = 'badge bg-warning-subtle text-dark border border-warning fw-bold px-2.5 py-1';
       }
 
+      if (rawId === '3') {
+        const actionBtn = document.createElement('a');
+        actionBtn.href = 'https://notas-lac.vercel.app/';
+        actionBtn.target = '_blank';
+        actionBtn.rel = 'noopener noreferrer';
+        actionBtn.className = 'btn btn-success w-100 py-2 fw-semibold shadow-xs d-flex align-items-center justify-content-center gap-1.5 mb-2';
+        actionBtn.innerHTML = '<i class="bi bi-clipboard2-check-fill"></i> Abrir Sistema de Rúbricas <i class="bi bi-box-arrow-up-right small"></i>';
+        const actionsContainer = document.querySelector('.proc-no-print');
+        if (actionsContainer) actionsContainer.insertBefore(actionBtn, actionsContainer.firstChild);
+      }
+
       // Description & Objective
       document.getElementById('procDescription').textContent = proc.descripcion;
       document.getElementById('procObjective').textContent = proc.objetivo;
