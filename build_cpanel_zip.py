@@ -2,41 +2,107 @@ import os
 import zipfile
 from datetime import datetime
 
-def create_update_zip():
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
-    output_filename = f"cpanel_update_diseno_completo_{timestamp}.zip"
+def create_cpanel_packages():
+    # 1. PAQUETE COMPLETO: minisistema_cpanel_DEPLOY.zip
+    full_zip_name = "minisistema_cpanel_DEPLOY.zip"
+    
+    # 2. PAQUETE LIGERO DE ACTUALIZACION: cpanel_update_minisistema.zip
+    update_zip_name = "cpanel_update_minisistema.zip"
 
-    # Archivos necesarios para corregir el diseño y estilos en cPanel
-    files_to_pack = [
+    # Extensiones y directorios a omitir en el paquete completo
+    EXCLUDE_DIRS = {
+        '.git', '.vercel', 'node_modules', '__pycache__', 
+        'formulario_delegados', 'Notas', 'notas', 'pdfs'
+    }
+    EXCLUDE_FILES = {
+        full_zip_name, update_zip_name, 'server.py', 'build_cpanel_zip.py',
+        'package-lock.json'
+    }
+    EXCLUDE_EXTENSIONS = {'.zip', '.log'}
+
+    print("==========================================================")
+    print("[INFO] GENERANDO PAQUETES DE DESPLIEGUE PARA CPANEL")
+    print("==========================================================")
+
+    # ---------------------------------------------------------
+    # A. Generar minisistema_cpanel_DEPLOY.zip (Instalacion completa)
+    # ---------------------------------------------------------
+    print(f"\n[1/2] Empaquetando Instalacion Completa: {full_zip_name}...")
+    full_count = 0
+    with zipfile.ZipFile(full_zip_name, 'w', zipfile.ZIP_DEFLATED) as zip_full:
+        for root, dirs, files in os.walk("."):
+            # Filtrar carpetas excluidas
+            dirs[:] = [d for d in dirs if d not in EXCLUDE_DIRS and not d.startswith('.')]
+            
+            for file in files:
+                ext = os.path.splitext(file)[1].lower()
+                if file in EXCLUDE_FILES or ext in EXCLUDE_EXTENSIONS:
+                    continue
+                if ext == '.zip':
+                    continue
+
+                file_path = os.path.join(root, file)
+                rel_path = os.path.relpath(file_path, ".").replace("\\", "/")
+                
+                # Omitir si pertenece a Notas o formulario_delegados
+                if rel_path.startswith("Notas/") or rel_path.startswith("formulario_delegados/"):
+                    continue
+
+                zip_full.write(file_path, rel_path)
+                full_count += 1
+
+    size_full_mb = os.path.getsize(full_zip_name) / (1024 * 1024)
+    print(f" -> {full_zip_name} generado con {full_count} archivos ({size_full_mb:.2f} MB)")
+
+    # ---------------------------------------------------------
+    # B. Generar cpanel_update_minisistema.zip (Actualizacion rapida)
+    # ---------------------------------------------------------
+    update_files = [
         "index.html",
+        "selector.html",
+        "login.html",
         "procedimiento.html",
+        ".htaccess",
         "css/custom.css",
-        "js/sistemas_coordinacion.js",
         "js/app.js",
+        "js/sistemas_coordinacion.js",
+        "js/pau.js",
+        "js/analytics.js",
+        "js/data.js",
+        "js/parser.js",
+        "api/login.php",
+        "api/grupos.php",
+        "api/pau.php",
+        "api/reset.php",
+        "api/carpetas.php",
+        "api/directorios.php",
+        "api/docentes.php",
+        "api/supervisiones.php",
+        "data/grupos_base.json"
     ]
 
-    print(f"Generando paquete de actualización: {output_filename}")
-    print("Incluye: index.html (cache-busting v3.5 y CDN iconos), css/custom.css (33.5 KB estilos), y scripts JS\n")
-
-    with zipfile.ZipFile(output_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
-        for file_path in files_to_pack:
-            if os.path.exists(file_path):
-                arcname = file_path.replace("\\", "/")
-                zipf.write(file_path, arcname)
-                size_kb = os.path.getsize(file_path) / 1024
-                print(f" + {arcname} ({size_kb:.1f} KB)")
+    print(f"\n[2/2] Empaquetando Actualizacion Rapida: {update_zip_name}...")
+    update_count = 0
+    with zipfile.ZipFile(update_zip_name, 'w', zipfile.ZIP_DEFLATED) as zip_update:
+        for f in update_files:
+            if os.path.exists(f):
+                arc = f.replace("\\", "/")
+                zip_update.write(f, arc)
+                update_count += 1
             else:
-                print(f" [!] Archivo no encontrado: {file_path}")
+                print(f" [!] Archivo no encontrado para update: {f}")
 
-    total_size_kb = os.path.getsize(output_filename) / 1024
-    print(f"\n[OK] Paquete generado: {output_filename} ({total_size_kb:.1f} KB)")
-    print("\n=== INSTRUCCIONES DE DEPLOY EN CPANEL ===")
-    print("1. Entrar a cPanel -> Administrador de Archivos")
-    print("2. Navegar a public_html/ (o la carpeta raíz del sistema)")
-    print("3. Subir el ZIP y extraerlo")
-    print("4. Verificar que index.html fue reemplazado")
-    print("5. Refrescar el navegador con Ctrl+F5 para limpiar caché")
-    print("=========================================")
+    size_update_kb = os.path.getsize(update_zip_name) / 1024
+    print(f" -> {update_zip_name} generado con {update_count} archivos ({size_update_kb:.1f} KB)")
+
+    print("\n==========================================================")
+    print("[OK] LISTOS PARA SUBIR A CPANEL")
+    print("==========================================================")
+    print(f"1. Si es INSTALACION DESDE CERO o deseas renovar todo:")
+    print(f"   -> Sube: {full_zip_name}")
+    print(f"2. Si ya tienes la carpeta instalada y solo deseas ACTUALIZAR:")
+    print(f"   -> Sube: {update_zip_name}")
+    print("==========================================================")
 
 if __name__ == "__main__":
-    create_update_zip()
+    create_cpanel_packages()
