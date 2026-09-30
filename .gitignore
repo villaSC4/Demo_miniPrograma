@@ -2,6 +2,12 @@
 .vercel
 node_modules
 
+# Modulos externos / independientes (no se incluyen en el repositorio del minisistema)
+formulario_delegados/
+Notas/
+notas/
+GUIA_DEPLOY_CPANEL_DELEGADOS.md
+
 # Python
 __pycache__/
 *.py[cod]

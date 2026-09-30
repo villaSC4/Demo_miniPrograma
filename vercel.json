@@ -11,6 +11,14 @@
       "dest": "/api/grupos.js"
     },
     {
+      "src": "/api/pau",
+      "dest": "/api/pau.js"
+    },
+    {
+      "src": "/api/login",
+      "dest": "/api/login.js"
+    },
+    {
       "src": "/(.*)",
       "dest": "/$1"
     }
