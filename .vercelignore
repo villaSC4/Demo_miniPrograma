@@ -1,0 +1,11 @@
+# Vercel Deployment Ignore Configuration
+# Excluir scripts de backend PHP para evitar colisión de rutas serverless en /api
+api/*.php
+api/**/*.php
+formulario_delegados/
+Notas/
+notas/
+build_cpanel_zip.py
+server.py
+*.zip
+*.log
