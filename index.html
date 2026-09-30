@@ -362,41 +362,36 @@
                       <p class="proc-card-desc">Programación mensual de sesiones teóricas y prácticas (Set-Dic 2026).</p>
                     </div>
                   </div>
-                  <div class="proc-card-footer d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center gap-1.5">
-                      <span class="proc-action-text">Ver Matriz</span>
-                      <span class="proc-action-arrow"><i class="bi bi-arrow-right"></i></span>
-                    </div>
-                    <a href="https://notas-lac.vercel.app/" target="_blank" rel="noopener noreferrer" class="proc-btn-separate" title="Abrir Sistema de Rúbricas y Evaluación Docente (notas-lac.vercel.app)" onclick="event.stopPropagation();">
-                      <i class="bi bi-clipboard2-check me-1"></i>Rúbrica
-                    </a>
+                  <div class="proc-card-footer">
+                    <span class="proc-action-text">Ver Matriz</span>
+                    <span class="proc-action-arrow"><i class="bi bi-arrow-right"></i></span>
                   </div>
                 </button>
               </div>
 
-              <!-- Procedimiento 4: Bolsa de Vacantes -->
+              <!-- Procedimiento 4: Sistema de Rúbricas y Evaluación Docente -->
               <div class="col-xl-4 col-lg-4 col-md-6 col-12">
-                <button type="button" class="procedure-card area-action-card area-card-vacantes proc-theme-rose w-100 text-start" onclick="navigateToArea('vacantes-tab')" title="Procedimiento 4: Bolsa de Vacantes y Asignación">
+                <a href="https://notas-lac.vercel.app/" target="_blank" rel="noopener noreferrer" class="procedure-card area-action-card area-card-rubrica proc-theme-rose w-100 text-start text-decoration-none d-flex" title="Procedimiento 4: Sistema Oficial de Rúbricas y Evaluación Docente (notas-lac.vercel.app)">
                   <div class="proc-card-header">
                     <span class="proc-num-pill"><i class="bi bi-hash"></i>04</span>
-                    <span class="proc-metric-pill" id="sisBadgeVacantes">
-                      <i class="bi bi-briefcase-fill me-1"></i>4 Vacantes
+                    <span class="proc-metric-pill" id="sisBadgeRubrica">
+                      <i class="bi bi-clipboard2-check-fill me-1"></i>En Vivo • Rúbrica
                     </span>
                   </div>
                   <div class="proc-card-body">
                     <div class="proc-card-icon">
-                      <i class="bi bi-briefcase"></i>
+                      <i class="bi bi-clipboard2-check"></i>
                     </div>
                     <div class="proc-card-content flex-grow-1">
-                      <h4 class="proc-card-title">Bolsa de Vacantes</h4>
-                      <p class="proc-card-desc">Plazas desiertas por cubrir y asignación rápida de candidatos.</p>
+                      <h4 class="proc-card-title">Sistema de Rúbricas</h4>
+                      <p class="proc-card-desc">Evaluación del desempeño docente, rúbricas de aula y registro de notas.</p>
                     </div>
                   </div>
                   <div class="proc-card-footer">
-                    <span class="proc-action-text">Resolver Vacantes</span>
-                    <span class="proc-action-arrow"><i class="bi bi-arrow-right"></i></span>
+                    <span class="proc-action-text">Abrir Rúbricas</span>
+                    <span class="proc-action-arrow"><i class="bi bi-box-arrow-up-right"></i></span>
                   </div>
-                </button>
+                </a>
               </div>
 
               <!-- Procedimiento 5: Asistencia Docentes y Delegados -->
@@ -455,6 +450,7 @@
                 <span id="badgeAreaCursos"></span>
                 <span id="badgeAreaMatriz"><span id="kpiTotalGrupos"></span></span>
                 <span id="badgeAreaVacantes"><span id="kpiGruposVacantes"></span></span>
+                <span id="sisBadgeVacantes"></span>
                 <span id="badgeAreaDesempeno"></span>
                 <span id="badgeAreaSupervision"></span>
               </div>

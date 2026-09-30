@@ -289,6 +289,9 @@ function renderSistemasDashboard() {
   const bVac = document.getElementById('sisBadgeVacantes');
   if (bVac) bVac.innerHTML = `<i class="bi bi-briefcase-fill me-1"></i>${data.vacantesCount} Vacantes`;
 
+  const bRub = document.getElementById('sisBadgeRubrica');
+  if (bRub) bRub.innerHTML = `<i class="bi bi-clipboard2-check-fill me-1"></i>En Vivo • Rúbrica`;
+
   // Actualizar pies de tarjetas de monitoreo dinámicamente
   const docNomina = document.getElementById('monDocentesNomina');
   if (docNomina) docNomina.textContent = `${data.docentesCount} Docentes en nómina`;
