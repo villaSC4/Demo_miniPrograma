@@ -81,6 +81,14 @@ function applyDacContext() {
   if (modalResp) {
     modalResp.textContent = isIndustrial ? 'DAC Industrial' : 'DAC Sistemas';
   }
+
+  // Redirección Rúbrica con filtro dinámico por escuela
+  const linkRubrica = document.getElementById('linkCardRubrica');
+  if (linkRubrica) {
+    linkRubrica.href = isIndustrial 
+      ? 'https://notas-lac.vercel.app/?escuela=industrial' 
+      : 'https://notas-lac.vercel.app/?escuela=sistemas';
+  }
 }
 
 /**

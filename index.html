@@ -371,7 +371,7 @@
 
               <!-- Procedimiento 4: Sistema de Rúbricas y Evaluación Docente -->
               <div class="col-xl-4 col-lg-4 col-md-6 col-12">
-                <a href="https://notas-lac.vercel.app/" target="_blank" rel="noopener noreferrer" class="procedure-card area-action-card area-card-rubrica proc-theme-rose w-100 text-start text-decoration-none d-flex" title="Procedimiento 4: Sistema Oficial de Rúbricas y Evaluación Docente (notas-lac.vercel.app)">
+                <a href="https://notas-lac.vercel.app/?escuela=sistemas" id="linkCardRubrica" target="_blank" rel="noopener noreferrer" class="procedure-card area-action-card area-card-rubrica proc-theme-rose w-100 text-start text-decoration-none d-flex" title="Procedimiento 4: Sistema Oficial de Rúbricas y Evaluación Docente (notas-lac.vercel.app)">
                   <div class="proc-card-header">
                     <span class="proc-num-pill"><i class="bi bi-hash"></i>04</span>
                     <span class="proc-metric-pill" id="sisBadgeRubrica">
@@ -2975,6 +2975,10 @@
         // Modal de Procedimientos
         const modalResp = document.getElementById('modalProcResponsableText');
         if (modalResp) modalResp.textContent = 'DAC Industrial';
+
+        // Redirección Rúbrica con filtro Industrial
+        const linkRubrica = document.getElementById('linkCardRubrica');
+        if (linkRubrica) linkRubrica.href = 'https://notas-lac.vercel.app/?escuela=industrial';
       } else {
         // Enfoque Sistemas
         const pill = document.getElementById('dacBannerPill');
@@ -3013,6 +3017,10 @@
 
         const modalResp = document.getElementById('modalProcResponsableText');
         if (modalResp) modalResp.textContent = 'DAC Sistemas';
+
+        // Redirección Rúbrica con filtro Sistemas
+        const linkRubrica = document.getElementById('linkCardRubrica');
+        if (linkRubrica) linkRubrica.href = 'https://notas-lac.vercel.app/?escuela=sistemas';
       }
 
       const gotoTab = sessionStorage.getItem('sga_goto_tab');

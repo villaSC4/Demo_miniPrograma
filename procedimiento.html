@@ -533,7 +533,9 @@
 
       if (rawId === '3') {
         const actionBtn = document.createElement('a');
-        actionBtn.href = 'https://notas-lac.vercel.app/';
+        actionBtn.href = isIndustrial 
+          ? 'https://notas-lac.vercel.app/?escuela=industrial' 
+          : 'https://notas-lac.vercel.app/?escuela=sistemas';
         actionBtn.target = '_blank';
         actionBtn.rel = 'noopener noreferrer';
         actionBtn.className = 'btn btn-success w-100 py-2 fw-semibold shadow-xs d-flex align-items-center justify-content-center gap-1.5 mb-2';
