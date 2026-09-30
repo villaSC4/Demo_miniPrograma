@@ -40,9 +40,56 @@ const CODE_TO_MONTH_INDEX = {
 const DEFAULT_AGENDA_NOTES = [];
 
 /**
+ * Adapta dinámicamente las etiquetas y textos según el área activa (Sistemas vs Industrial)
+ */
+function applyDacContext() {
+  const dac = (sessionStorage.getItem('sga_dac') || 'sistemas').toLowerCase();
+  const isIndustrial = dac === 'industrial';
+
+  // Badge en la barra de navegación de vistas
+  const schoolBadge = document.getElementById('schoolBadgeActiveText');
+  if (schoolBadge) {
+    schoolBadge.textContent = isIndustrial ? 'Escuela de Ing. Industrial' : 'Escuela de Ing. de Sistemas';
+  }
+
+  // Título de Sección 1: Monitoreo
+  const monTitle = document.getElementById('monitoreoAreaTitle');
+  if (monTitle) {
+    monTitle.textContent = isIndustrial ? 'Ingeniería Industrial' : 'Ingeniería de Sistemas';
+  }
+  const monSub = document.getElementById('monitoreoAreaSub');
+  if (monSub) {
+    monSub.textContent = isIndustrial 
+      ? 'Métricas de cobertura y distribución de recursos — Escuela de Ingeniería Industrial'
+      : 'Métricas de cobertura y distribución de recursos docentes y estudiantiles';
+  }
+
+  // Título de Sección 2: Procedimientos
+  const procTitle = document.getElementById('procedimientosSectionTitle');
+  if (procTitle) {
+    procTitle.textContent = isIndustrial ? 'Procedimientos de la Escuela de Ing. Industrial' : 'Procedimientos de la Facultad de Sistemas';
+  }
+  const procSub = document.getElementById('procedimientosSectionSub');
+  if (procSub) {
+    procSub.textContent = isIndustrial 
+      ? 'Accesos directos a los 12 módulos y procedimientos operativos de Ingeniería Industrial'
+      : 'Accesos directos a los 12 módulos y procedimientos operativos de la carrera';
+  }
+
+  // Modal de Procedimientos
+  const modalResp = document.getElementById('modalProcResponsableText');
+  if (modalResp) {
+    modalResp.textContent = isIndustrial ? 'DAC Industrial' : 'DAC Sistemas';
+  }
+}
+
+/**
  * Inicialización al cargar el DOM
  */
 document.addEventListener('DOMContentLoaded', () => {
+  // Aplicar contexto de DAC de inmediato
+  applyDacContext();
+
   // Inicializar Modal de Agenda
   const modalEl = document.getElementById('modalAgendaNote');
   if (modalEl && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
@@ -51,13 +98,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Renderizar con holgura tras estabilización de datos
   setTimeout(() => {
+    applyDacContext();
     renderSistemasDashboard();
     renderDigitalCalendar();
     renderSistemasAgenda();
   }, 300);
 
   // Escuchar eventos de actualización
-  window.addEventListener('sga_data_updated', renderSistemasDashboard);
+  window.addEventListener('sga_data_updated', () => {
+    applyDacContext();
+    renderSistemasDashboard();
+  });
   window.addEventListener('resize', debounce(renderSistemasDashboard, 250));
 });
 
@@ -124,14 +175,25 @@ function getSistemasData() {
     ? allGroups 
     : (typeof DEMO_GRUPOS_DATA !== 'undefined' ? DEMO_GRUPOS_DATA : []);
 
+  const dac = (sessionStorage.getItem('sga_dac') || 'sistemas').toLowerCase();
+  const isIndustrial = dac === 'industrial';
+  const filterKeyword = isIndustrial ? 'INDUSTRIAL' : 'SISTEMAS';
+
   const sisGroups = sourceGroups.filter(g => 
-    g.escuela && g.escuela.toUpperCase().includes('SISTEMAS')
+    g.escuela && g.escuela.toUpperCase().includes(filterKeyword)
   );
 
-  const totalGrupos = sisGroups.length || 26;
-  const totalAlumnos = sisGroups.reduce((acc, g) => acc + (g.matriculados || 0), 0) || 1258;
+  const defaultGrupos = isIndustrial ? 102 : 26;
+  const defaultAlumnos = isIndustrial ? 5139 : 1258;
+  const defaultDocentes = isIndustrial ? 12 : 6;
+  const defaultCursos = isIndustrial ? 18 : 6;
+  const defaultVacantes = isIndustrial ? 31 : 4;
+  const defaultAlumnosVacantes = isIndustrial ? 1540 : 186;
+
+  const totalGrupos = sisGroups.length || defaultGrupos;
+  const totalAlumnos = sisGroups.reduce((acc, g) => acc + (g.matriculados || 0), 0) || defaultAlumnos;
   
-  // Docentes únicos con carga en Sistemas
+  // Docentes únicos con carga en el área activa
   const docentesSet = new Set();
   sisGroups.forEach(g => {
     const doc = (g.docente || '').trim();
@@ -139,9 +201,9 @@ function getSistemasData() {
       docentesSet.add(doc);
     }
   });
-  const docentesCount = docentesSet.size || 6;
+  const docentesCount = docentesSet.size || defaultDocentes;
 
-  // Cursos únicos de Sistemas
+  // Cursos únicos de la carrera activa
   const cursosMap = {};
   sisGroups.forEach(g => {
     const c = g.curso || 'Curso';
@@ -149,17 +211,17 @@ function getSistemasData() {
     cursosMap[c].grupos++;
     cursosMap[c].matriculados += (g.matriculados || 0);
   });
-  const cursosCount = Object.keys(cursosMap).length || 6;
+  const cursosCount = Object.keys(cursosMap).length || defaultCursos;
 
-  // Vacantes en Sistemas
+  // Vacantes en la carrera activa
   const vacantes = sisGroups.filter(g => {
     const doc = (g.docente || '').trim();
     return !doc || doc.toUpperCase() === 'VACANTE' || doc.toUpperCase() === 'NAN';
   });
-  const vacantesCount = vacantes.length || 4;
-  const alumnosVacantes = vacantes.reduce((acc, g) => acc + (g.matriculados || 0), 0) || 186;
+  const vacantesCount = vacantes.length || defaultVacantes;
+  const alumnosVacantes = vacantes.reduce((acc, g) => acc + (g.matriculados || 0), 0) || defaultAlumnosVacantes;
   const alumnosCubiertos = Math.max(0, totalAlumnos - alumnosVacantes);
-  const porcentajeCobertura = totalAlumnos > 0 ? ((alumnosCubiertos / totalAlumnos) * 100).toFixed(1) : '85.2';
+  const porcentajeCobertura = totalAlumnos > 0 ? ((alumnosCubiertos / totalAlumnos) * 100).toFixed(1) : (isIndustrial ? '70.0' : '85.2');
 
   // Desglose mensual (Set, Oct, Nov, Dic)
   const modulos = {
@@ -182,6 +244,9 @@ function getSistemasData() {
   });
 
   return {
+    isIndustrial,
+    areaName: isIndustrial ? 'Ingeniería Industrial' : 'Ingeniería de Sistemas',
+    schoolName: isIndustrial ? 'Escuela de Ing. Industrial' : 'Escuela de Ing. de Sistemas',
     totalGrupos,
     totalAlumnos,
     docentesCount,
@@ -211,7 +276,7 @@ function renderSistemasDashboard() {
   const curEl = document.getElementById('monCursosCount');
   if (curEl) curEl.textContent = data.cursosCount;
 
-  // Actualizar badges específicos de Sistemas en Sección ② (Procedimientos)
+  // Actualizar badges específicos de la carrera activa en Sección ② (Procedimientos)
   const bDir = document.getElementById('sisBadgeDirectorio');
   if (bDir) bDir.innerHTML = `<i class="bi bi-people-fill me-1"></i>${data.docentesCount} Docentes`;
 
@@ -223,6 +288,22 @@ function renderSistemasDashboard() {
 
   const bVac = document.getElementById('sisBadgeVacantes');
   if (bVac) bVac.innerHTML = `<i class="bi bi-briefcase-fill me-1"></i>${data.vacantesCount} Vacantes`;
+
+  // Actualizar pies de tarjetas de monitoreo dinámicamente
+  const docNomina = document.getElementById('monDocentesNomina');
+  if (docNomina) docNomina.textContent = `${data.docentesCount} Docentes en nómina`;
+
+  const aluCubText = document.getElementById('monAlumnosCubiertosText');
+  if (aluCubText) aluCubText.innerHTML = `<i class="bi bi-shield-check text-success me-1"></i>${data.alumnosCubiertos.toLocaleString()} con docente`;
+
+  const aluVacBadge = document.getElementById('monAlumnosVacantesBadge');
+  if (aluVacBadge) aluVacBadge.textContent = `${data.alumnosVacantes.toLocaleString()} en vacante`;
+
+  const grpTotText = document.getElementById('monGruposTotalesText');
+  if (grpTotText) grpTotText.textContent = `${data.totalGrupos} Grupos Totales`;
+
+  const ciclosText = document.getElementById('monCiclosText');
+  if (ciclosText) ciclosText.textContent = data.isIndustrial ? 'Ciclos I al VIII' : 'Ciclos II, III y IV';
 
   // Renderizar Gráficos SVG Espaciosos
   renderDocentesLineChart(data);
@@ -1520,18 +1601,28 @@ function abrirProcedimientoFlotante(id) {
     return;
   }
 
+  const dac = (sessionStorage.getItem('sga_dac') || 'sistemas').toLowerCase();
+  const isIndustrial = dac === 'industrial';
+  const schoolName = isIndustrial ? 'Escuela de Ingeniería Industrial' : 'Escuela de Ingeniería de Sistemas';
+  const respName = isIndustrial 
+    ? (proc.responsable || '').replace(/Sistemas/gi, 'Industrial') 
+    : proc.responsable;
+  const descText = isIndustrial 
+    ? (proc.descripcion || '').replace(/Ingeniería de Sistemas/gi, 'Ingeniería Industrial').replace(/DAC Sistemas/gi, 'DAC Industrial') 
+    : proc.descripcion;
+
   // Poblar cabecera
   const bNum = document.getElementById('modalProcBadgeNum');
   if (bNum) {
     bNum.textContent = `#${proc.num}`;
-    bNum.style.background = (procKey === 'pex') ? '#D97706' : '#2563EB';
+    bNum.style.background = (procKey === 'pex') ? '#D97706' : (isIndustrial ? '#BE1E2D' : '#2563EB');
   }
 
   const elTitulo = document.getElementById('modalProcTitulo');
   if (elTitulo) elTitulo.textContent = proc.titulo;
 
   const elSub = document.getElementById('modalProcSubtitulo');
-  if (elSub) elSub.textContent = `${proc.subtitulo} • ${proc.escuela}`;
+  if (elSub) elSub.textContent = `${proc.subtitulo} • ${schoolName}`;
 
   const elCat = document.getElementById('modalProcCategoria');
   if (elCat) elCat.textContent = proc.categoria;
@@ -1540,11 +1631,11 @@ function abrirProcedimientoFlotante(id) {
   if (elEst) elEst.textContent = proc.estado;
 
   const elResp = document.getElementById('modalProcResponsable');
-  if (elResp) elResp.innerHTML = `<i class="bi bi-shield-check text-primary me-1"></i> ${proc.responsable}`;
+  if (elResp) elResp.innerHTML = `<i class="bi bi-shield-check text-primary me-1"></i> <span id="modalProcResponsableText">${respName}</span>`;
 
   // Tab 1: Descripción
   const elDesc = document.getElementById('modalProcDescText');
-  if (elDesc) elDesc.textContent = proc.descripcion;
+  if (elDesc) elDesc.textContent = descText;
 
   const elObj = document.getElementById('modalProcObjText');
   if (elObj) elObj.textContent = proc.objetivo;
@@ -1554,13 +1645,16 @@ function abrirProcedimientoFlotante(id) {
   if (pasosContainer) {
     pasosContainer.innerHTML = '';
     proc.pasos.forEach((p, idx) => {
+      const stepDesc = isIndustrial 
+        ? p.desc.replace(/DAC Sistemas/gi, 'DAC Industrial').replace(/Ingeniero de Sistemas/gi, 'Ingeniero Industrial') 
+        : p.desc;
       const row = document.createElement('div');
       row.className = 'proc-float-step';
       row.innerHTML = `
         <div class="proc-float-step-num">${idx + 1}</div>
         <div class="flex-grow-1">
           <strong class="d-block text-dark small mb-0.5">${p.titulo}</strong>
-          <span class="text-muted small">${p.desc}</span>
+          <span class="text-muted small">${stepDesc}</span>
         </div>
       `;
       pasosContainer.appendChild(row);
@@ -1572,11 +1666,14 @@ function abrirProcedimientoFlotante(id) {
   if (reqContainer) {
     reqContainer.innerHTML = '';
     proc.requisitos.forEach((r, idx) => {
+      const reqText = isIndustrial 
+        ? r.replace(/afines a TI\/Sistemas/gi, 'afines a Gestión/Producción Industrial') 
+        : r;
       const item = document.createElement('div');
       item.className = 'd-flex align-items-center gap-2 p-2 bg-light rounded-2 border mb-1.5 small';
       item.innerHTML = `
         <i class="bi bi-check-circle-fill text-success"></i>
-        <span class="text-dark">${r}</span>
+        <span class="text-dark">${reqText}</span>
       `;
       reqContainer.appendChild(item);
     });
@@ -1614,5 +1711,6 @@ window.cambiarVistaProcedimientos = cambiarVistaProcedimientos;
 window.irAVistaProcedimientos = irAVistaProcedimientos;
 window.abrirProcedimientoFlotante = abrirProcedimientoFlotante;
 window.abrirProcedimientoHojaAparte = abrirProcedimientoHojaAparte;
+window.applyDacContext = applyDacContext;
 
 

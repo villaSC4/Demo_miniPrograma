@@ -156,14 +156,14 @@
       </div>
 
       <div class="d-flex align-items-center gap-2">
-        <span class="badge bg-light text-secondary border px-2.5 py-1" style="font-size: 0.74rem;">
-          <i class="bi bi-shield-check text-success me-1"></i> Escuela de Ing. de Sistemas
+        <span class="badge bg-light text-secondary border px-2.5 py-1" id="schoolBadgeActive" style="font-size: 0.74rem;">
+          <i class="bi bi-shield-check text-success me-1" id="schoolBadgeActiveIcon"></i> <span id="schoolBadgeActiveText">Escuela de Ing. de Sistemas</span>
         </span>
       </div>
     </div>
 
     <!-- =========================================================================
-         SECCIÓN ①: MONITOREO DE ALUMNOS, DOCENTES Y CURSOS (DAC SISTEMAS)
+         SECCIÓN ①: MONITOREO DE ALUMNOS, DOCENTES Y CURSOS
          ========================================================================= -->
     <section class="sistemas-section-card" id="secMonitoreo">
       <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom">
@@ -171,9 +171,9 @@
           <div class="section-number-badge">1</div>
           <div>
             <h3 class="h5 mb-0 fw-bold text-dark" style="font-family: 'Outfit', sans-serif;">
-              Monitoreo Ejecutivo: <span class="text-primary">Ingeniería de Sistemas</span>
+              Monitoreo Ejecutivo: <span class="text-primary" id="monitoreoAreaTitle">Ingeniería de Sistemas</span>
             </h3>
-            <small class="text-muted" style="font-size: 0.78rem;">Métricas de cobertura y distribución de recursos docentes y estudiantiles</small>
+            <small class="text-muted" style="font-size: 0.78rem;" id="monitoreoAreaSub">Métricas de cobertura y distribución de recursos docentes y estudiantiles</small>
           </div>
         </div>
         <span class="badge bg-light text-muted border px-3 py-1.5 rounded-pill" style="font-size: 0.75rem;">
@@ -200,7 +200,7 @@
             <div class="monitor-chart-container py-3" id="chartDocentesContainer" style="height: 155px;"></div>
             <div class="d-flex align-items-center justify-content-between pt-2.5 border-top small text-muted" style="font-size: 0.76rem;">
               <span><i class="bi bi-check-circle-fill text-success me-1"></i>Setiembre: 100% cubierto</span>
-              <span class="fw-semibold text-primary">6 Docentes en nómina</span>
+              <span class="fw-semibold text-primary" id="monDocentesNomina">6 Docentes en nómina</span>
             </div>
           </div>
         </div>
@@ -222,8 +222,8 @@
             <!-- Contenedor SVG Tacómetro / Velocímetro -->
             <div class="monitor-chart-container py-2 d-flex justify-content-center align-items-center" id="chartAlumnosContainer" style="height: 155px;"></div>
             <div class="d-flex align-items-center justify-content-between pt-2.5 border-top small text-muted" style="font-size: 0.76rem;">
-              <span><i class="bi bi-shield-check text-success me-1"></i>1,072 con docente</span>
-              <span class="badge bg-danger-subtle text-danger" style="font-size: 0.72rem;">186 en vacante</span>
+              <span id="monAlumnosCubiertosText"><i class="bi bi-shield-check text-success me-1"></i>1,072 con docente</span>
+              <span class="badge bg-danger-subtle text-danger" id="monAlumnosVacantesBadge" style="font-size: 0.72rem;">186 en vacante</span>
             </div>
           </div>
         </div>
@@ -245,8 +245,8 @@
             <!-- Contenedor SVG Barras Escalonadas -->
             <div class="monitor-chart-container py-3" id="chartCursosContainer" style="height: 155px;"></div>
             <div class="d-flex align-items-center justify-content-between pt-2.5 border-top small text-muted" style="font-size: 0.76rem;">
-              <span><i class="bi bi-layers-fill text-primary me-1"></i>26 Grupos Totales</span>
-              <span class="fw-semibold" style="color: #7C3AED;">Ciclos II, III y IV</span>
+              <span><i class="bi bi-layers-fill text-primary me-1"></i><span id="monGruposTotalesText">26 Grupos Totales</span></span>
+              <span class="fw-semibold" style="color: #7C3AED;" id="monCiclosText">Ciclos II, III y IV</span>
             </div>
           </div>
         </div>
@@ -261,10 +261,10 @@
         <div class="d-flex align-items-center gap-2.5">
           <div class="section-number-badge">2</div>
           <div>
-            <h3 class="h5 mb-0 fw-bold text-dark" style="font-family: 'Outfit', sans-serif;">
+            <h3 class="h5 mb-0 fw-bold text-dark" style="font-family: 'Outfit', sans-serif;" id="procedimientosSectionTitle">
               Procedimientos de la Facultad de Sistemas
             </h3>
-            <small class="text-muted" style="font-size: 0.78rem;">Accesos directos a los 12 módulos y procedimientos operativos de la carrera</small>
+            <small class="text-muted" style="font-size: 0.78rem;" id="procedimientosSectionSub">Accesos directos a los 12 módulos y procedimientos operativos de la carrera</small>
           </div>
         </div>
         <div class="d-flex align-items-center gap-2">
@@ -2751,7 +2751,7 @@
               <label for="agendaNoteTitle" class="form-label small fw-bold text-dark mb-1">
                 Texto / Asunto de la Nota o Evento <span class="text-danger">*</span>
               </label>
-              <input type="text" class="form-control form-control-sm py-2" id="agendaNoteTitle" placeholder="Ej: Reunión con delegados de Sistemas, Entrega de actas..." required>
+              <input type="text" class="form-control form-control-sm py-2" id="agendaNoteTitle" placeholder="Ej: Reunión con delegados, Entrega de actas..." required>
             </div>
 
             <div class="row g-2 mb-3">
@@ -2854,7 +2854,7 @@
               <span class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1 fw-semibold" id="modalProcEstado">Vigente 2026-II</span>
             </div>
             <div class="small text-muted" id="modalProcResponsable">
-              <i class="bi bi-shield-check text-primary me-1"></i> DAC Sistemas
+              <i class="bi bi-shield-check text-primary me-1"></i> <span id="modalProcResponsableText">DAC Sistemas</span>
             </div>
           </div>
 
@@ -2933,10 +2933,12 @@
 
   <!-- Auto-navigate to specific tab and dynamic DAC banner if coming from selector -->
   <script>
-    (function() {
+    (function applyIndexDacContext() {
       // Dynamic DAC context adaptation
-      const dac = sessionStorage.getItem('sga_dac');
-      if (dac === 'industrial') {
+      const dac = (sessionStorage.getItem('sga_dac') || 'sistemas').toLowerCase();
+      const isIndustrial = dac === 'industrial';
+
+      if (isIndustrial) {
         const pill = document.getElementById('dacBannerPill');
         if (pill) {
           pill.className = 'badge px-2.5 py-0.5 text-white fw-bold';
@@ -2957,12 +2959,69 @@
         if (sub) {
           sub.textContent = 'Monitoreo ejecutivo de alumnos, procedimientos de carrera y agenda — Escuela de Ing. Industrial';
         }
+
+        // Active school badge (Sección superior)
+        const schoolBadge = document.getElementById('schoolBadgeActiveText');
+        if (schoolBadge) schoolBadge.textContent = 'Escuela de Ing. Industrial';
+
+        // Sección 1: Monitoreo
+        const monTitle = document.getElementById('monitoreoAreaTitle');
+        if (monTitle) monTitle.textContent = 'Ingeniería Industrial';
+        const monSub = document.getElementById('monitoreoAreaSub');
+        if (monSub) monSub.textContent = 'Métricas de cobertura y distribución de recursos — Escuela de Ingeniería Industrial';
+
+        // Sección 2: Procedimientos
+        const procTitle = document.getElementById('procedimientosSectionTitle');
+        if (procTitle) procTitle.textContent = 'Procedimientos de la Escuela de Ing. Industrial';
+        const procSub = document.getElementById('procedimientosSectionSub');
+        if (procSub) procSub.textContent = 'Accesos directos a los 12 módulos y procedimientos operativos de Ingeniería Industrial';
+
+        // Modal de Procedimientos
+        const modalResp = document.getElementById('modalProcResponsableText');
+        if (modalResp) modalResp.textContent = 'DAC Industrial';
+      } else {
+        // Enfoque Sistemas
+        const pill = document.getElementById('dacBannerPill');
+        if (pill) {
+          pill.className = 'badge bg-primary px-2.5 py-0.5 text-white fw-bold';
+          pill.style.background = '';
+          pill.textContent = 'DAC SISTEMAS';
+        }
+        const title = document.getElementById('dacBannerTitle');
+        if (title) {
+          title.innerHTML = 'DAC - Sistemas <i class="bi bi-arrow-right text-primary mx-1"></i> Coordinación';
+        }
+        const icon = document.getElementById('dacBannerIcon');
+        if (icon) {
+          icon.className = 'dac-banner-icon bg-primary text-white rounded-3 d-flex align-items-center justify-content-center shadow-xs';
+          icon.style.background = '';
+          icon.innerHTML = '<i class="bi bi-cpu"></i>';
+        }
+        const sub = document.getElementById('dacBannerSub');
+        if (sub) {
+          sub.textContent = 'Monitoreo ejecutivo de alumnos, procedimientos de carrera y agenda semanal';
+        }
+
+        const schoolBadge = document.getElementById('schoolBadgeActiveText');
+        if (schoolBadge) schoolBadge.textContent = 'Escuela de Ing. de Sistemas';
+
+        const monTitle = document.getElementById('monitoreoAreaTitle');
+        if (monTitle) monTitle.textContent = 'Ingeniería de Sistemas';
+        const monSub = document.getElementById('monitoreoAreaSub');
+        if (monSub) monSub.textContent = 'Métricas de cobertura y distribución de recursos docentes y estudiantiles';
+
+        const procTitle = document.getElementById('procedimientosSectionTitle');
+        if (procTitle) procTitle.textContent = 'Procedimientos de la Facultad de Sistemas';
+        const procSub = document.getElementById('procedimientosSectionSub');
+        if (procSub) procSub.textContent = 'Accesos directos a los 12 módulos y procedimientos operativos de la carrera';
+
+        const modalResp = document.getElementById('modalProcResponsableText');
+        if (modalResp) modalResp.textContent = 'DAC Sistemas';
       }
 
       const gotoTab = sessionStorage.getItem('sga_goto_tab');
       if (gotoTab) {
         sessionStorage.removeItem('sga_goto_tab');
-        // Wait for DOM + Bootstrap to be ready
         setTimeout(function() {
           if (typeof navigateToArea === 'function') {
             navigateToArea(gotoTab);

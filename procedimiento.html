@@ -501,14 +501,28 @@
       
       const proc = PROCEDIMIENTOS_CATALOGO[rawId] || PROCEDIMIENTOS_CATALOGO['pex'];
 
+      const dac = (sessionStorage.getItem('sga_dac') || 'sistemas').toLowerCase();
+      const isIndustrial = dac === 'industrial';
+
+      const schoolName = isIndustrial ? 'Escuela de Ingeniería Industrial' : 'Escuela de Ingeniería de Sistemas';
+      const respName = isIndustrial 
+        ? (proc.responsable || '').replace(/Sistemas/gi, 'Industrial')
+        : proc.responsable;
+      const descText = isIndustrial
+        ? (proc.descripcion || '').replace(/Ingeniería de Sistemas/gi, 'Ingeniería Industrial').replace(/DAC Sistemas/gi, 'DAC Industrial')
+        : proc.descripcion;
+
       // Document title
       document.title = `${proc.titulo} — SGA • UCV Virtual`;
 
       // Header
       document.getElementById('breadcrumbTitle').textContent = proc.titulo;
       document.getElementById('headerBadgeNum').textContent = `#${proc.num}`;
+      if (isIndustrial && rawId !== 'pex') {
+        document.getElementById('headerBadgeNum').style.background = '#BE1E2D';
+      }
       document.getElementById('headerTitle').textContent = proc.titulo;
-      document.getElementById('headerSubtitle').textContent = proc.subtitulo;
+      document.getElementById('headerSubtitle').textContent = `${proc.subtitulo} • ${schoolName}`;
       document.getElementById('headerStatus').textContent = proc.estado;
       document.getElementById('headerCategory').innerHTML = `<i class="bi bi-folder-check text-primary me-1"></i> ${proc.categoria}`;
 
@@ -529,13 +543,13 @@
       }
 
       // Description & Objective
-      document.getElementById('procDescription').textContent = proc.descripcion;
+      document.getElementById('procDescription').textContent = descText;
       document.getElementById('procObjective').textContent = proc.objetivo;
 
       // Sidebar
       document.getElementById('sideCode').textContent = proc.code;
-      document.getElementById('sideEscuela').textContent = proc.escuela;
-      document.getElementById('sideResponsable').textContent = proc.responsable;
+      document.getElementById('sideEscuela').textContent = schoolName;
+      document.getElementById('sideResponsable').textContent = respName;
 
       // Steps
       const stepsContainer = document.getElementById('procStepsList');
@@ -543,13 +557,16 @@
       document.getElementById('procStepsCount').textContent = `${proc.pasos.length} Fases`;
       
       proc.pasos.forEach((p, idx) => {
+        const stepDesc = isIndustrial 
+          ? p.desc.replace(/DAC Sistemas/gi, 'DAC Industrial').replace(/Ingeniero de Sistemas/gi, 'Ingeniero Industrial') 
+          : p.desc;
         const item = document.createElement('div');
         item.className = 'proc-step-item';
         item.innerHTML = `
           <div class="proc-step-number">${idx + 1}</div>
           <div class="flex-grow-1">
             <h5 class="fw-bold text-dark mb-1" style="font-size: 0.98rem; font-family: 'Outfit', sans-serif;">${p.titulo}</h5>
-            <p class="text-muted mb-0 small leading-normal">${p.desc}</p>
+            <p class="text-muted mb-0 small leading-normal">${stepDesc}</p>
           </div>
         `;
         stepsContainer.appendChild(item);
@@ -559,11 +576,14 @@
       const reqContainer = document.getElementById('procRequirementsList');
       reqContainer.innerHTML = '';
       proc.requisitos.forEach((r, idx) => {
+        const reqText = isIndustrial 
+          ? r.replace(/afines a TI\/Sistemas/gi, 'afines a Gestión/Producción Industrial') 
+          : r;
         const item = document.createElement('label');
         item.className = 'req-check-item';
         item.innerHTML = `
           <input type="checkbox" id="reqCheck_${idx}">
-          <span class="flex-grow-1">${r}</span>
+          <span class="flex-grow-1">${reqText}</span>
           <span class="badge bg-light text-muted border small">Obligatorio</span>
         `;
         reqContainer.appendChild(item);
