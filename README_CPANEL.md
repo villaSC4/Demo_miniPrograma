@@ -6,12 +6,14 @@ El Minisistema Académico Modular está 100% empaquetado, probado y listo para s
 
 ## 📦 Paquetes de Despliegue Disponibles
 
-En la raíz del proyecto encontrarás 2 archivos `.zip` listos para usar:
+En la raíz del proyecto encontrarás 3 archivos `.zip` listos para usar:
 
-1. **`minisistema_cpanel_DEPLOY.zip`** *(1.39 MB - Recomendado para instalación desde cero)*
-   - Contiene la totalidad de archivos necesarios: frontend, librerías (Bootstrap 5, Icons, XLSX), estilos, imágenes del campus, base de datos inicial y endpoints PHP.
-2. **`cpanel_update_minisistema.zip`** *(143 KB - Recomendado para actualizaciones rápidas)*
-   - Contiene únicamente el código modificado reciente (`index.html`, `selector.html`, `login.html`, `procedimiento.html`, `css/custom.css`, scripts `js/` y `api/`).
+1. **`minisistema_cpanel_DEPLOY.zip`** *(1.41 MB - Recomendado para instalación desde cero)*
+   - Contiene la totalidad de archivos del Minisistema: frontend, nuevo módulo **Docentes y Delegados**, selector, dashboards Chart.js, librerías (Bootstrap 5, Icons, XLSX), estilos UCV, base de datos limpia y endpoints PHP.
+2. **`cpanel_update_minisistema.zip`** *(160 KB - Recomendado para actualizaciones rápidas)*
+   - Contiene únicamente el código modificado reciente (`index.html`, `selector.html`, `login.html`, `docentes_delegados.html`, `procedimiento.html`, `css/custom.css`, scripts `js/`, `api/` y plantillas base limpias).
+3. **`formulario_delegados_cpanel_DEPLOY.zip`** *(380 KB - Para subdominio de asistencia estudiantil)*
+   - Contiene el Portal Oficial de Registro de Delegados con base de datos limpia, listo para extraer en la raíz de su subdominio (ej: `reg-asistencia-1.class-it.edu.pe`).
 
 ---
 
@@ -56,15 +58,16 @@ En la raíz del proyecto encontrarás 2 archivos `.zip` listos para usar:
 ### Paso 5: Permisos de la Carpeta `data/`
 El sistema almacena físicamente todas las modificaciones y evaluaciones en archivos JSON dentro de `data/`:
 1. Verifica que la carpeta **`data/`** tenga permisos **`755`** (estándar en cPanel).
-2. Como cPanel ejecuta PHP bajo el mismo usuario de la cuenta, la persistencia física en `data/grupos.json` y `data/pau_correos.json` funcionará de inmediato.
+2. Como cPanel ejecuta PHP bajo el mismo usuario de la cuenta, la persistencia física en `data/grupos.json`, `data/delegados.json` y `data/pau_correos.json` funcionará de inmediato.
 
 ---
 
 ## 🛠️ Endpoints API en PHP Integrados (Carpeta `api/`)
 * `api/login.php` — Servicio de autenticación con SQLite y MySQL.
 * `api/grupos.php` — Lectura y guardado de programación modular académica (128 grupos).
+* `api/docentes.php` — Directorio docente oficial (18 docentes UCV por ciclos y carreras).
+* `api/delegados.php` — Padrón persistente de delegados estudiantiles (limpio y dinámico).
 * `api/pau.php` — Módulo de Atención al Estudiante y seguimiento de correos PAU.
-* `api/docentes.php` — Directorio docente por ciclos y especialidades.
 * `api/directorios.php` — Catálogo y apertura de periodos de gestión académica.
 * `api/carpetas.php` — Supervisión y auditoría de Carpetas Docentes Virtuales (Clementina).
 * `api/supervisiones.php` — Evaluación de Desempeño en Aula con Rúbrica Oficial F03.
@@ -76,11 +79,7 @@ El sistema almacena físicamente todas las modificaciones y evaluaciones en arch
 Abre en tu navegador la URL donde lo instalaste:
 * `https://tudominio.com/`
 * Inicia sesión con **`admin` / `admin123`** o **`coordinacion.fia` / `DelegadosFIA2026`**.
-* Selecciona tu área en el **Selector de DAC** (Sistemas o Industrial).
-* Verifica los módulos:
-  1. **Monitoreo Ejecutivo Dinámico** (Gráficos en vivo para Sistemas o Industrial)
-  2. **Procedimientos 1 al 12** con slider lateral y fichas flotantes
-  3. **Procedimiento #04** con redirección directa al Sistema de Rúbricas
-  4. **Procedimiento PEX** oficial
-  5. **Calendario Digital & Planner de Coordinación 2026**
-  6. **Atención al Estudiante (PAU)**
+* En el **Selector de Módulos (`selector.html`)**:
+  1. **Módulo 1.1: Docentes y Delegados (`docentes_delegados.html`)** — Dashboard analítico dual (Docentes Tipo 1 y Delegados Tipo 2), gráficos Chart.js, barra de búsqueda en tiempo real, filtros por chips y tabla unificada.
+  2. **Módulo 1.2: Gestión Académica Principal (`index.html`)** — Matriz modular de 128 grupos, monitoreo ejecutivo, filtros de DAC (Sistemas / Industrial), calendario y atención PAU.
+  3. **Módulo 1.3: Sistema de Evaluación y Rúbricas (`notas-lac.vercel.app`)** — Redirección automática con filtro por carrera.
