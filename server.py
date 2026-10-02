@@ -294,6 +294,29 @@ class AcademicDataHandler(http.server.SimpleHTTPRequestHandler):
             except Exception as e:
                 return self._send_json(500, {"error": str(e)})
 
+        if parsed_path.startswith('/api/whatsapp'):
+            try:
+                import urllib.request
+                target_url = f"http://127.0.0.1:3001{self.path}"
+                req = urllib.request.Request(target_url, headers={'User-Agent': 'MinisistemaProxy/1.0'})
+                with urllib.request.urlopen(req, timeout=4) as response:
+                    content = response.read()
+                    status = response.status
+                    content_type = response.headers.get('Content-Type', 'application/json')
+                    self.send_response(status)
+                    self.send_header('Content-Type', content_type)
+                    self.send_header('Content-Length', str(len(content)))
+                    self.send_header('Access-Control-Allow-Origin', '*')
+                    self.end_headers()
+                    self.wfile.write(content)
+                    return
+            except Exception as e:
+                return self._send_json(503, {
+                    "status": "OFFLINE_NODE",
+                    "error": "Microservicio WhatsApp no conectado en puerto 3001. Inicie con `npm run whatsapp`.",
+                    "details": str(e)
+                })
+
         return super().do_GET()
 
     def do_POST(self):
@@ -758,6 +781,35 @@ class AcademicDataHandler(http.server.SimpleHTTPRequestHandler):
                 return
             except Exception as e:
                 return self._send_json(500, {"success": False, "error": str(e)})
+
+        if parsed_path.startswith('/api/whatsapp'):
+            try:
+                import urllib.request
+                target_url = f"http://127.0.0.1:3001{self.path}"
+                length = int(self.headers.get('Content-Length', 0))
+                body = self.rfile.read(length) if length > 0 else None
+                headers = {'User-Agent': 'MinisistemaProxy/1.0'}
+                if self.headers.get('Content-Type'):
+                    headers['Content-Type'] = self.headers.get('Content-Type')
+
+                req = urllib.request.Request(target_url, data=body, headers=headers, method='POST')
+                with urllib.request.urlopen(req, timeout=15) as response:
+                    content = response.read()
+                    status = response.status
+                    content_type = response.headers.get('Content-Type', 'application/json')
+                    self.send_response(status)
+                    self.send_header('Content-Type', content_type)
+                    self.send_header('Content-Length', str(len(content)))
+                    self.send_header('Access-Control-Allow-Origin', '*')
+                    self.end_headers()
+                    self.wfile.write(content)
+                    return
+            except Exception as e:
+                return self._send_json(503, {
+                    "status": "OFFLINE_NODE",
+                    "error": "Microservicio WhatsApp no conectado en puerto 3001.",
+                    "details": str(e)
+                })
 
         return self._send_json(404, {"error": "Ruta no encontrada"})
 

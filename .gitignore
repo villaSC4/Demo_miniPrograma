@@ -47,6 +47,10 @@ data/docentes.json
 data/carpetas.json
 data/directorios.json
 data/supervisiones.json
+data/delegados.json
+data/whatsapp_session/
+data/whatsapp_media/
+data/whatsapp_chats.json
 
 # Archivos Excel con datos institucionales
 *.xlsx

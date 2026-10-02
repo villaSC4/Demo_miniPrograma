@@ -4,9 +4,23 @@
   "description": "Sistema de Gestión Académica y Control Modular de Cargas Docentes",
   "main": "index.html",
   "scripts": {
-    "start": "py -3 server.py"
+    "start": "py -3 server.py",
+    "whatsapp": "node whatsapp_service.js"
   },
-  "keywords": ["academico", "modular", "gestion", "docentes"],
+  "keywords": [
+    "academico",
+    "modular",
+    "gestion",
+    "docentes"
+  ],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.24",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "multer": "^2.4.0",
+    "pino": "^10.4.0",
+    "qrcode": "^1.5.4"
+  }
 }
