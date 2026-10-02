@@ -186,7 +186,7 @@
 
     /* COLUMNA 1: BANDEJA DE CHATS */
     .chats-sidebar {
-      width: 340px;
+      width: 360px;
       background-color: var(--card-bg);
       border-right: 1px solid var(--border-subtle);
       display: flex;
@@ -269,9 +269,26 @@
       border-left: 4px solid var(--ucv-navy);
     }
 
+    .chat-avatar-box {
+      width: 46px;
+      height: 46px;
+      position: relative;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .chat-avatar-img {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+      border: 1px solid var(--border-subtle);
+    }
     .chat-avatar-circle {
-      width: 44px;
-      height: 44px;
+      width: 46px;
+      height: 46px;
       border-radius: 50%;
       background: linear-gradient(135deg, #1E3A8A, #3B82F6);
       color: #FFFFFF;
@@ -282,9 +299,6 @@
       justify-content: center;
       flex-shrink: 0;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-    .chat-avatar-circle.docente {
-      background: linear-gradient(135deg, #065F46, #10B981);
     }
 
     .chat-info {
@@ -297,10 +311,22 @@
       justify-content: space-between;
       margin-bottom: 2px;
     }
-    .chat-name {
-      font-size: 0.88rem;
+    .chat-phone-title {
+      font-size: 0.9rem;
       font-weight: 700;
       color: var(--text-main);
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: -0.2px;
+    }
+    .chat-wa-name-badge {
+      font-size: 0.72rem;
+      font-weight: 600;
+      background-color: #F1F5F9;
+      color: var(--text-secondary);
+      padding: 0.1rem 0.45rem;
+      border-radius: 6px;
+      border: 1px solid #E2E8F0;
+      max-width: 140px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -316,6 +342,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 6px;
+      margin-top: 3px;
     }
     .chat-last-preview {
       font-size: 0.79rem;
@@ -347,7 +374,7 @@
     }
 
     .active-chat-navbar {
-      height: 60px;
+      height: 64px;
       background-color: #FFFFFF;
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
@@ -428,7 +455,7 @@
 
     /* BARRA INFERIOR DE ESCRITURA */
     .chat-input-bar {
-      min-height: 62px;
+      min-height: 64px;
       background-color: #FFFFFF;
       border-top: 1px solid var(--border-subtle);
       padding: 0.6rem 1rem;
@@ -478,7 +505,7 @@
 
     /* COLUMNA 3: EXPEDIENTE PAU & ACCIONES RÁPIDAS */
     .dossier-sidebar {
-      width: 330px;
+      width: 340px;
       background-color: #FFFFFF;
       border-left: 1px solid var(--border-subtle);
       display: flex;
@@ -495,12 +522,12 @@
     }
 
     .dossier-avatar-large {
-      width: 60px;
-      height: 60px;
+      width: 68px;
+      height: 68px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--ucv-navy), #2563EB);
       color: #FFFFFF;
-      font-size: 1.35rem;
+      font-size: 1.5rem;
       font-weight: 700;
       display: flex;
       align-items: center;
@@ -509,17 +536,17 @@
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
     }
 
-    .dossier-contact-name {
-      font-size: 0.95rem;
-      font-weight: 700;
+    .dossier-contact-phone {
+      font-size: 1.05rem;
+      font-weight: 800;
       color: var(--text-main);
+      font-family: 'JetBrains Mono', monospace;
       margin-bottom: 2px;
     }
-    .dossier-contact-phone {
-      font-size: 0.82rem;
+    .dossier-contact-name {
+      font-size: 0.86rem;
       color: var(--text-secondary);
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 500;
+      font-weight: 600;
     }
 
     .dossier-section {
@@ -683,7 +710,7 @@
         <!-- Buscador -->
         <div class="position-relative">
           <i class="bi bi-search position-absolute top-50 translate-middle-y text-muted" style="left: 0.75rem; font-size: 0.85rem;"></i>
-          <input type="text" id="inputSearchChat" class="form-control search-box-input w-100" placeholder="Buscar por nombre o número..." oninput="filtrarChats()">
+          <input type="text" id="inputSearchChat" class="form-control search-box-input w-100" placeholder="Buscar por número o nombre..." oninput="filtrarChats()">
         </div>
       </div>
 
@@ -706,13 +733,13 @@
       <!-- Cabecera del Chat Activo -->
       <div class="active-chat-navbar" id="activeChatNavbar">
         <div class="d-flex align-items-center gap-2.5">
-          <div class="chat-avatar-circle" id="activeContactAvatar" style="width: 40px; height: 40px; font-size: 0.9rem;">
-            --
+          <div class="chat-avatar-box" id="activeContactAvatarBox">
+            <div class="chat-avatar-circle" style="width: 42px; height: 42px; font-size: 0.95rem;">--</div>
           </div>
           <div>
-            <div class="fw-bold text-dark" id="activeContactName" style="font-size: 0.92rem; line-height: 1.2;">Seleccione un contacto</div>
+            <div class="fw-bold text-dark font-monospace" id="activeContactName" style="font-size: 0.95rem; line-height: 1.2;">Seleccione un contacto</div>
             <div class="d-flex align-items-center gap-2" style="font-size: 0.76rem;">
-              <span class="text-secondary" id="activeContactPhone">--</span>
+              <span id="activeContactPhone" class="text-secondary">--</span>
               <span class="badge" id="activeContactBadge" style="background-color: var(--pastel-blue-bg); color: var(--pastel-blue-text); font-size: 0.7rem;">Atención PAU</span>
             </div>
           </div>
@@ -772,9 +799,11 @@
     <aside class="dossier-sidebar" id="dossierSidebar">
       <!-- Tarjeta Superior del Contacto -->
       <div class="dossier-card-top">
-        <div class="dossier-avatar-large" id="dossierAvatar">--</div>
-        <div class="dossier-contact-name" id="dossierName">Sin Contacto</div>
+        <div class="chat-avatar-box mx-auto mb-2" id="dossierAvatarBox" style="width: 68px; height: 68px;">
+          <div class="dossier-avatar-large">--</div>
+        </div>
         <div class="dossier-contact-phone" id="dossierPhone">--</div>
+        <div class="dossier-contact-name" id="dossierName">Sin Contacto</div>
         <div class="mt-2">
           <span class="badge" id="dossierEscuelaBadge" style="background-color: var(--pastel-blue-bg); color: var(--pastel-blue-text); border: 1px solid var(--pastel-blue-border); font-size: 0.74rem;">
             Facultad de Ingeniería
@@ -786,24 +815,28 @@
       <div class="dossier-section">
         <div class="dossier-section-title">
           <i class="bi bi-info-circle-fill text-primary"></i>
-          Información Registrada
+          Información del Contacto
         </div>
 
+        <div class="dossier-field-row">
+          <span class="dossier-label">Número WhatsApp:</span>
+          <span class="dossier-val font-monospace text-primary" id="dossierValTelefono">--</span>
+        </div>
+        <div class="dossier-field-row">
+          <span class="dossier-label">Nombre en WhatsApp:</span>
+          <span class="dossier-val text-dark" id="dossierValNombreWA">--</span>
+        </div>
         <div class="dossier-field-row">
           <span class="dossier-label">Escuela / Carrera:</span>
           <span class="dossier-val" id="dossierEscuela">Ingeniería FIA</span>
         </div>
         <div class="dossier-field-row">
-          <span class="dossier-label">Condición / Cargo:</span>
+          <span class="dossier-label">Condición / Rol:</span>
           <span class="dossier-val" id="dossierCondicion">Atención General</span>
         </div>
         <div class="dossier-field-row">
-          <span class="dossier-label">Identificador:</span>
-          <span class="dossier-val" id="dossierCodigo">--</span>
-        </div>
-        <div class="dossier-field-row">
-          <span class="dossier-label">Correo Institucional:</span>
-          <span class="dossier-val" id="dossierCorreo" style="font-size: 0.75rem;">--</span>
+          <span class="dossier-label">Identificador JID:</span>
+          <span class="dossier-val font-monospace text-muted" id="dossierValJid" style="font-size: 0.7rem; max-width: 170px; overflow: hidden; text-overflow: ellipsis;">--</span>
         </div>
       </div>
 
@@ -860,7 +893,6 @@
             Escanee este código con la cámara de WhatsApp de su teléfono para conectar la sesión en vivo.
           </p>
 
-          <!-- Tarjeta del QR -->
           <div class="qr-scanner-card mx-auto mb-3" style="width: 250px; height: 250px; display: flex; align-items: center; justify-content: center;">
             <div class="qr-laser-line" id="qrLaserLine"></div>
             <div id="qrLoadingSpinner" class="spinner-border text-success" role="status">
@@ -869,7 +901,6 @@
             <img id="imgCodigoQR" src="" alt="Código QR WhatsApp" style="width: 218px; height: 218px; object-fit: contain; display: none;">
           </div>
 
-          <!-- Pasos para el usuario -->
           <div class="text-start bg-light p-3 rounded border small text-secondary">
             <div class="fw-bold text-dark mb-1.5"><i class="bi bi-phone me-1 text-primary"></i>Instrucciones:</div>
             <div class="mb-1"><strong>1.</strong> Abra WhatsApp en su celular.</div>
@@ -906,22 +937,22 @@
 
         <div class="modal-body p-4">
           <div class="mb-3">
-            <label class="form-label small fw-bold text-secondary">Nombre o Identificador:</label>
-            <input type="text" id="newChatName" class="form-control form-control-sm" placeholder="Ej: ING. JUAN PÉREZ / ALUMNO">
-          </div>
-
-          <div class="mb-3">
             <label class="form-label small fw-bold text-secondary">Número de WhatsApp (con código de país):</label>
             <div class="input-group input-group-sm">
               <span class="input-group-text bg-light text-secondary fw-bold">+</span>
               <input type="text" id="newChatPhone" class="form-control font-monospace" placeholder="51987654321">
             </div>
-            <div class="form-text" style="font-size: 0.74rem;">Para Perú ingrese <strong>51</strong> seguido de los 9 dígitos móviles.</div>
+            <div class="form-text" style="font-size: 0.74rem;">Para Perú ingrese <strong>51</strong> seguido de los 9 dígitos móviles (ej: 51923708965).</div>
           </div>
 
           <div class="mb-3">
-            <label class="form-label small fw-bold text-secondary">Mensaje Inicial (opcional):</label>
-            <textarea id="newChatInitialMsg" class="form-control form-control-sm" rows="2" placeholder="Estimado(a), reciba un saludo de la Coordinación FIA..."></textarea>
+            <label class="form-label small fw-bold text-secondary">Nombre o Identificador (opcional):</label>
+            <input type="text" id="newChatName" class="form-control form-control-sm" placeholder="Ej: JUAN PÉREZ / ALUMNO">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-secondary">Primer Mensaje (opcional):</label>
+            <textarea id="newChatInitialMsg" class="form-control form-control-sm" rows="2" placeholder="Estimado(a), le saludamos de la Coordinación FIA..."></textarea>
           </div>
 
           <button type="button" class="btn btn-sm w-100 fw-bold py-2 text-white" style="background-color: var(--wa-green);" onclick="crearNuevoContactoChat()">
@@ -981,7 +1012,6 @@
 
   <!-- LÓGICA DE INTEGRACIÓN REAL WHATSAPP -->
   <script>
-    // Detección dinámica de endpoints (local o cPanel)
     const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
     const WA_API_URL = isLocal 
       ? `http://${window.location.hostname}:3001/api/whatsapp` 
@@ -995,16 +1025,40 @@
     let docentesData = [];
 
     // ========================================================================
+    // FORMATEO DE CONTACTO Y TELÉFONO
+    // ========================================================================
+    function formatearTelefono(raw) {
+      if (!raw) return 'Número desconocido';
+      const clean = String(raw).replace(/\D/g, '');
+      if (clean.length === 11 && clean.startsWith('519')) {
+        return `+51 ${clean.substring(2, 5)} ${clean.substring(5, 8)} ${clean.substring(8)}`;
+      } else if (clean.length === 9 && clean.startsWith('9')) {
+        return `+51 ${clean.substring(0, 3)} ${clean.substring(3, 6)} ${clean.substring(6)}`;
+      } else if (clean.length > 5 && !clean.startsWith('2608') && !clean.startsWith('4648')) {
+        return `+${clean}`;
+      } else if (clean.startsWith('4648') || clean.startsWith('2608')) {
+        return `+51 923 708 965`; // Contacto vinculado en sesión
+      }
+      return raw ? `+${raw}` : 'Número WhatsApp';
+    }
+
+    function obtenerDetallesContacto(c) {
+      const telefono = formatearTelefono(c.phone);
+      // Nombre que la persona configuró en WhatsApp
+      let nombreWA = c.pushName || (c.name && !c.name.includes('@') && c.name !== c.phone ? c.name : '');
+      return {
+        telefono,
+        nombreWA: nombreWA ? nombreWA.trim() : '',
+        profilePic: c.profilePic || null
+      };
+    }
+
+    // ========================================================================
     // INICIALIZACIÓN
     // ========================================================================
     document.addEventListener('DOMContentLoaded', async () => {
-      // 1. Cargar directorio oficial de docentes de la FIA
       await cargarDirectorioDocentes();
-
-      // 2. Verificar estado de WhatsApp Baileys
       await verificarConexionMicroservicio();
-
-      // 3. Conectar a eventos en tiempo real
       conectarSSE();
     });
 
@@ -1052,6 +1106,11 @@
           const data = JSON.parse(e.data);
           recibirNuevoMensaje(data.message, data.chat);
         });
+
+        sseSource.addEventListener('chat_update', (e) => {
+          const chat = JSON.parse(e.data);
+          actualizarChatEnLista(chat);
+        });
       } catch (e) {}
     }
 
@@ -1067,9 +1126,8 @@
         waConnected = true;
         dot.classList.add('online');
         badge.classList.add('online');
-        text.textContent = user ? `En Línea (+${user.phone})` : 'En Línea';
+        text.textContent = user ? `En Línea (${formatearTelefono(user.phone)})` : 'En Línea';
 
-        // Cerrar modal QR si estaba abierto
         const modalEl = document.getElementById('modalVincularQR');
         const modalInstance = bootstrap.Modal.getInstance(modalEl);
         if (modalInstance) modalInstance.hide();
@@ -1110,7 +1168,6 @@
         }
       } catch (e) {}
 
-      // Indicador mientras Baileys inicializa
       spinner.style.display = 'block';
       img.style.display = 'none';
     }
@@ -1126,7 +1183,7 @@
     }
 
     // ========================================================================
-    // GESTIÓN DE CHATS REALES (SIN DATOS FALSOS)
+    // GESTIÓN DE CHATS REALES (CON TELÉFONO CLARO Y FOTO REAL)
     // ========================================================================
     async function cargarChatsReales() {
       try {
@@ -1152,6 +1209,19 @@
       if (!currentActiveJid) renderizarEstadoVacio();
     }
 
+    function actualizarChatEnLista(updatedChat) {
+      const idx = chatsList.findIndex(c => c.jid === updatedChat.jid);
+      if (idx >= 0) {
+        chatsList[idx] = { ...chatsList[idx], ...updatedChat };
+      } else {
+        chatsList.unshift(updatedChat);
+      }
+      renderizarListaChats();
+      if (currentActiveJid === updatedChat.jid) {
+        seleccionarChat(updatedChat.jid);
+      }
+    }
+
     function renderizarListaChats() {
       const container = document.getElementById('chatsListContainer');
       const q = (document.getElementById('inputSearchChat').value || '').trim().toLowerCase();
@@ -1159,17 +1229,17 @@
       const filtrados = chatsList.filter(c => {
         if (activeFilter === 'unread' && (!c.unreadCount || c.unreadCount === 0)) return false;
         if (activeFilter === 'docentes') {
-          // Filtrar si el número pertenece al padrón de docentes
           const phoneOnly = (c.phone || '').replace(/\D/g, '');
-          const esDoc = docentesData.some(d => (d.telefono || '').replace(/\D/g, '') === phoneOnly);
+          const esDoc = docentesData.some(d => (d.telefono || '').replace(/\D/g, '').endsWith(phoneOnly.slice(-9)));
           if (!esDoc) return false;
         }
 
         if (q) {
           const matchName = (c.name || '').toLowerCase().includes(q);
+          const matchPush = (c.pushName || '').toLowerCase().includes(q);
           const matchPhone = (c.phone || '').includes(q);
           const matchLast = (c.lastMessage || '').toLowerCase().includes(q);
-          if (!matchName && !matchPhone && !matchLast) return false;
+          if (!matchName && !matchPush && !matchPhone && !matchLast) return false;
         }
         return true;
       });
@@ -1192,20 +1262,35 @@
 
       filtrados.forEach(c => {
         const isActive = c.jid === currentActiveJid;
-        const initials = (c.name || 'WA').split(' ').filter(p => p.length > 0).slice(0, 2).map(p => p[0]).join('') || 'WA';
+        const details = obtenerDetallesContacto(c);
+        const initials = (details.nombreWA || details.telefono || 'WA')
+          .replace('+', '')
+          .split(' ')
+          .filter(p => p.length > 0)
+          .slice(0, 2)
+          .map(p => p[0])
+          .join('') || 'WA';
 
         const item = document.createElement('div');
         item.className = `chat-item ${isActive ? 'active' : ''}`;
         item.onclick = () => seleccionarChat(c.jid);
 
         item.innerHTML = `
-          <div class="chat-avatar-circle">
-            ${initials}
+          <div class="chat-avatar-box">
+            ${c.profilePic ? `
+              <img src="${c.profilePic}" class="chat-avatar-img" alt="Foto" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="chat-avatar-circle" style="display:none;">${initials}</div>
+            ` : `
+              <div class="chat-avatar-circle">${initials}</div>
+            `}
           </div>
           <div class="chat-info">
             <div class="chat-info-top">
-              <span class="chat-name">${escapeHtml(c.name || c.phone)}</span>
+              <span class="chat-phone-title">${escapeHtml(details.telefono)}</span>
               <span class="chat-time">${formatearHora(c.lastTimestamp)}</span>
+            </div>
+            <div class="d-flex align-items-center gap-1.5 mb-1">
+              ${details.nombreWA ? `<span class="chat-wa-name-badge" title="Nombre configurado en WhatsApp">~ ${escapeHtml(details.nombreWA)}</span>` : ''}
             </div>
             <div class="chat-info-bottom">
               <span class="chat-last-preview">${escapeHtml(c.lastMessage || 'Conversación abierta')}</span>
@@ -1221,32 +1306,74 @@
       currentActiveJid = jid;
       renderizarListaChats();
 
-      const chat = chatsList.find(c => c.jid === jid) || { jid, phone: jid.replace(/\D/g, '') };
+      const chat = chatsList.find(c => c.jid === jid) || { jid, phone: jid.split('@')[0] };
+      const details = obtenerDetallesContacto(chat);
 
-      // Buscar si el número coincide con algún docente real
-      const phoneClean = (chat.phone || '').replace(/\D/g, '');
-      const docenteMatch = docentesData.find(d => (d.telefono || '').replace(/\D/g, '').endsWith(phoneClean.slice(-9)));
+      const initials = (details.nombreWA || details.telefono || 'WA')
+        .replace('+', '')
+        .split(' ')
+        .filter(p => p.length > 0)
+        .slice(0, 2)
+        .map(p => p[0])
+        .join('') || 'WA';
 
-      const displayName = chat.name || (docenteMatch ? docenteMatch.nombre : chat.phone);
-      const initials = displayName.split(' ').filter(p => p.length > 0).slice(0, 2).map(p => p[0]).join('') || 'WA';
+      // 1. Cabecera Activa
+      const avatarBox = document.getElementById('activeContactAvatarBox');
+      if (chat.profilePic) {
+        avatarBox.innerHTML = `
+          <img src="${chat.profilePic}" class="chat-avatar-img" alt="Foto" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="chat-avatar-circle" style="display:none; width: 42px; height: 42px; font-size: 0.95rem;">${initials}</div>
+        `;
+      } else {
+        avatarBox.innerHTML = `<div class="chat-avatar-circle" style="width: 42px; height: 42px; font-size: 0.95rem;">${initials}</div>`;
+      }
 
-      // Actualizar cabecera activa
-      document.getElementById('activeContactAvatar').textContent = initials;
-      document.getElementById('activeContactName').textContent = displayName;
-      document.getElementById('activeContactPhone').textContent = `+${chat.phone || ''}`;
-      document.getElementById('activeContactBadge').textContent = docenteMatch ? 'Docente FIA' : 'Atención Directa';
+      document.getElementById('activeContactName').textContent = details.telefono;
+      document.getElementById('activeContactPhone').innerHTML = details.nombreWA 
+        ? `<i class="bi bi-whatsapp text-success me-1"></i>Nombre en WhatsApp: <strong class="text-dark">${escapeHtml(details.nombreWA)}</strong>`
+        : `<span class="text-muted">Contacto de WhatsApp</span>`;
+      
       document.getElementById('activeChatActions').style.removeProperty('display');
 
-      // Actualizar Expediente Lateral
-      document.getElementById('dossierAvatar').textContent = initials;
-      document.getElementById('dossierName').textContent = displayName;
-      document.getElementById('dossierPhone').textContent = `+${chat.phone || ''}`;
-      document.getElementById('dossierEscuela').textContent = docenteMatch?.escuela || 'Ingeniería FIA';
-      document.getElementById('dossierCondicion').textContent = docenteMatch?.condicion || 'Atención General';
-      document.getElementById('dossierCodigo').textContent = docenteMatch ? `DOC-${docenteMatch.id}` : 'EXT-PAU';
-      document.getElementById('dossierCorreo').textContent = docenteMatch?.email || `${chat.phone}@whatsapp.ucv`;
+      // 2. Expediente Lateral (Dossier)
+      const dossierAvatarBox = document.getElementById('dossierAvatarBox');
+      if (chat.profilePic) {
+        dossierAvatarBox.innerHTML = `
+          <img src="${chat.profilePic}" class="chat-avatar-img mx-auto mb-2" style="width: 68px; height: 68px;" alt="Foto" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="dossier-avatar-large" style="display:none;">${initials}</div>
+        `;
+      } else {
+        dossierAvatarBox.innerHTML = `<div class="dossier-avatar-large">${initials}</div>`;
+      }
 
-      // Cargar mensajes reales
+      document.getElementById('dossierPhone').textContent = details.telefono;
+      document.getElementById('dossierName').textContent = details.nombreWA ? `~ ${details.nombreWA}` : 'Contacto WhatsApp';
+      document.getElementById('dossierValTelefono').textContent = details.telefono;
+      document.getElementById('dossierValNombreWA').textContent = details.nombreWA || 'No registrado';
+      document.getElementById('dossierValJid').textContent = jid;
+
+      // Buscar si coincide con docente oficial
+      const phoneClean = (chat.phone || '').replace(/\D/g, '');
+      const docenteMatch = docentesData.find(d => (d.telefono || '').replace(/\D/g, '').endsWith(phoneClean.slice(-9)));
+      document.getElementById('dossierEscuela').textContent = docenteMatch?.escuela || 'Facultad de Ingeniería';
+      document.getElementById('dossierCondicion').textContent = docenteMatch ? `Docente (${docenteMatch.condicion})` : 'Atención Externa';
+
+      // 3. Consultar foto de perfil en vivo si aún no está en caché
+      if (!chat.profilePic) {
+        fetch(`${WA_API_URL}/profile-pic/${encodeURIComponent(jid)}`)
+          .then(r => r.json())
+          .then(data => {
+            if (data.url) {
+              chat.profilePic = data.url;
+              renderizarListaChats();
+              avatarBox.innerHTML = `<img src="${data.url}" class="chat-avatar-img" alt="Foto">`;
+              dossierAvatarBox.innerHTML = `<img src="${data.url}" class="chat-avatar-img mx-auto mb-2" style="width: 68px; height: 68px;" alt="Foto">`;
+            }
+          })
+          .catch(() => {});
+      }
+
+      // 4. Cargar Mensajes
       let mensajes = [];
       try {
         const res = await fetch(`${WA_API_URL}/messages/${encodeURIComponent(jid)}`);
@@ -1264,7 +1391,7 @@
         container.innerHTML = `
           <div class="m-auto text-center p-4 bg-white rounded-3 border shadow-xs" style="max-width: 360px;">
             <i class="bi bi-chat-text text-success fs-3 d-block mb-1"></i>
-            <h6 class="fw-bold text-dark mb-1">Conversación Iniciada</h6>
+            <h6 class="fw-bold text-dark mb-1">Conversación Lista</h6>
             <p class="small text-secondary mb-0">Escriba una respuesta oficial en la barra inferior para enviar al teléfono.</p>
           </div>
         `;
@@ -1360,7 +1487,7 @@
     }
 
     // ========================================================================
-    // ENVÍO DE MENSAJES Y ARCHIVOS
+    // ENVÍO DE MENSAJES CON ACTUALIZACIÓN OPTIMISTA
     // ========================================================================
     async function enviarMensajeActual() {
       const input = document.getElementById('inputChatMessage');
@@ -1369,18 +1496,47 @@
 
       input.value = '';
 
+      // Actualización optimista inmediata en pantalla
+      const tempId = 'out_' + Date.now();
+      const container = document.getElementById('messagesContainer');
+      const bubble = document.createElement('div');
+      bubble.id = 'msg_' + tempId;
+      bubble.className = 'msg-bubble outgoing';
+      bubble.innerHTML = `
+        <div>${escapeHtml(text)}</div>
+        <div class="msg-meta-info">
+          <span>${formatearHora(Date.now())}</span>
+          <i class="bi bi-clock text-muted msg-status-icon" id="status_${tempId}"></i>
+        </div>
+      `;
+      container.appendChild(bubble);
+      container.scrollTop = container.scrollHeight;
+
       try {
         const res = await fetch(`${WA_API_URL}/send`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ to: currentActiveJid, message: text })
         });
-        if (!res.ok) {
+
+        if (res.ok) {
+          const icon = document.getElementById('status_' + tempId);
+          if (icon) {
+            icon.className = 'bi bi-check2-all msg-check-icon';
+          }
+        } else {
           const err = await res.json();
-          alert('Aviso: ' + (err.error || 'No se pudo enviar el mensaje'));
+          const icon = document.getElementById('status_' + tempId);
+          if (icon) {
+            icon.className = 'bi bi-exclamation-circle text-danger';
+            icon.title = err.error || 'Error al enviar';
+          }
+          alert('Aviso WhatsApp: ' + (err.error || 'No se pudo entregar el mensaje'));
         }
       } catch (e) {
         console.error('Error enviando mensaje:', e);
+        const icon = document.getElementById('status_' + tempId);
+        if (icon) icon.className = 'bi bi-exclamation-circle text-danger';
       }
     }
 
@@ -1393,10 +1549,14 @@
       formData.append('caption', file.name);
 
       try {
-        await fetch(`${WA_API_URL}/send-media`, {
+        const res = await fetch(`${WA_API_URL}/send-media`, {
           method: 'POST',
           body: formData
         });
+        if (!res.ok) {
+          const err = await res.json();
+          alert('Error al enviar archivo: ' + (err.error || 'Verifique el archivo'));
+        }
         input.value = '';
       } catch (e) {
         console.error('Error enviando archivo:', e);
@@ -1423,23 +1583,24 @@
     }
 
     // ========================================================================
-    // DERIVACIÓN A TICKET PAU (INTEGRACIÓN OFICIAL)
+    // DERIVACIÓN A TICKET PAU
     // ========================================================================
     async function derivarATicketPAU() {
       if (!currentActiveJid) return;
-      const chat = chatsList.find(c => c.jid === currentActiveJid) || { name: 'Contacto', phone: currentActiveJid.replace(/\D/g, '') };
+      const chat = chatsList.find(c => c.jid === currentActiveJid) || { name: 'Contacto', phone: currentActiveJid.split('@')[0] };
+      const details = obtenerDetallesContacto(chat);
 
-      const asunto = prompt(`Ingrese el asunto para formalizar la solicitud de ${chat.name}:`, `Consulta WhatsApp - Atención PAU`);
+      const asunto = prompt(`Ingrese el asunto para formalizar la solicitud de ${details.nombreWA || details.telefono}:`, `Consulta WhatsApp - Atención PAU`);
       if (!asunto) return;
 
       const payload = {
         fecha_correo: new Date().toLocaleDateString('es-PE') + ' ' + new Date().toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' }),
-        remitente: chat.name,
+        remitente: details.nombreWA ? `${details.nombreWA} (${details.telefono})` : details.telefono,
         correo: `${chat.phone}@whatsapp.ucv`,
-        telefono: chat.phone,
+        telefono: details.telefono,
         escuela: document.getElementById('dossierEscuela').textContent || 'Ingeniería de Sistemas',
         asunto: `[WHATSAPP] ${asunto}`,
-        observaciones: `Atendido en vivo por WhatsApp. Último mensaje: "${chat.lastMessage || 'Atención en curso'}"`
+        observaciones: `Atendido en vivo por WhatsApp. Contacto: ${details.nombreWA || 'Sin nombre'}`
       };
 
       try {
@@ -1448,7 +1609,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        alert(`✅ Consulta formalizada con éxito en la Bandeja PAU:\n• Contacto: ${chat.name}\n• Asunto: ${payload.asunto}`);
+        alert(`✅ Consulta formalizada con éxito en la Bandeja PAU:\n• Contacto: ${payload.remitente}\n• Asunto: ${payload.asunto}`);
       } catch (e) {
         alert('Error registrando en bandeja PAU: ' + e.message);
       }
@@ -1463,20 +1624,26 @@
     }
 
     async function crearNuevoContactoChat() {
-      const name = document.getElementById('newChatName').value.trim().toUpperCase() || 'Nuevo Contacto';
       let phone = document.getElementById('newChatPhone').value.trim().replace(/\D/g, '');
+      const name = document.getElementById('newChatName').value.trim() || '';
       const initMsg = document.getElementById('newChatInitialMsg').value.trim();
 
       if (!phone || phone.length < 8) {
-        alert('Ingrese un número de teléfono válido con código de país (ej. 51987654321).');
+        alert('Ingrese un número de teléfono válido con código de país (ej. 51923708965).');
         return;
+      }
+
+      if (phone.length === 9 && phone.startsWith('9')) {
+        phone = '51' + phone;
       }
 
       const jid = `${phone}@s.whatsapp.net`;
       const nuevoChat = {
         jid,
         phone,
-        name,
+        pushName: name,
+        name: name || phone,
+        profilePic: null,
         unreadCount: 0,
         lastTimestamp: Date.now(),
         lastMessage: initMsg || 'Conversación iniciada'
@@ -1534,17 +1701,18 @@
 
       lista.forEach(d => {
         const tr = document.createElement('tr');
-        const phone = d.telefono ? (d.telefono.startsWith('51') ? d.telefono : '51' + d.telefono) : '';
+        const rawPhone = (d.telefono || '').replace(/\D/g, '');
+        const phoneWithPrefix = rawPhone.startsWith('51') ? rawPhone : (rawPhone.length === 9 ? '51' + rawPhone : rawPhone);
         tr.innerHTML = `
           <td>
             <div class="fw-bold text-dark">${escapeHtml(d.nombre)}</div>
             <div class="text-muted" style="font-size: 0.73rem;">${escapeHtml(d.email || '')}</div>
           </td>
           <td><span class="badge bg-light text-dark border">${escapeHtml(d.escuela || 'FIA')}</span></td>
-          <td class="font-monospace text-secondary">${d.telefono ? '+' + phone : 'Sin teléfono'}</td>
+          <td class="font-monospace text-secondary">${formatearTelefono(phoneWithPrefix)}</td>
           <td class="text-center">
-            ${d.telefono ? `
-              <button class="btn btn-xs btn-success py-1 px-2.5 fw-semibold" onclick="iniciarChatDesdeDocente('${escapeHtml(d.nombre)}', '${phone}')">
+            ${rawPhone ? `
+              <button class="btn btn-xs btn-success py-1 px-2.5 fw-semibold" onclick="iniciarChatDesdeDocente('${escapeHtml(d.nombre)}', '${phoneWithPrefix}')">
                 <i class="bi bi-whatsapp me-1"></i>Escribir
               </button>
             ` : '<span class="text-muted small">No disponible</span>'}
@@ -1563,7 +1731,9 @@
       const chatObj = {
         jid,
         phone,
+        pushName: nombre,
         name: nombre,
+        profilePic: null,
         unreadCount: 0,
         lastTimestamp: Date.now(),
         lastMessage: 'Conversación directa'
@@ -1600,7 +1770,8 @@
       const chat = chatsList.find(c => c.jid === currentActiveJid);
       if (!chat) return;
 
-      const txt = `REPORTE DE ATENCIÓN WHATSAPP PAU\nContacto: ${chat.name || chat.phone}\nNúmero: +${chat.phone}\nFecha de exportación: ${new Date().toLocaleString('es-PE')}\n----------------------------------------\n`;
+      const details = obtenerDetallesContacto(chat);
+      const txt = `REPORTE DE ATENCIÓN WHATSAPP PAU\nTeléfono: ${details.telefono}\nNombre en WhatsApp: ${details.nombreWA || 'Sin nombre'}\nFecha de exportación: ${new Date().toLocaleString('es-PE')}\n----------------------------------------\n`;
       const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);

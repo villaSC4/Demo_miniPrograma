@@ -19,7 +19,9 @@ const {
   DisconnectReason,
   fetchLatestBaileysVersion,
   downloadMediaMessage,
-  jidDecode
+  jidDecode,
+  jidNormalizedUser,
+  isLidUser
 } = require('@whiskeysockets/baileys');
 
 // Configuración de Directorios
@@ -54,6 +56,8 @@ let currentQR = null;
 let connectionStatus = 'DISCONNECTED'; // 'DISCONNECTED', 'QR_READY', 'CONNECTING', 'CONNECTED'
 let connectedAccount = null;
 let sseClients = [];
+let lidToPhoneMap = {};
+let contactProfilePics = {};
 let chatsData = {
   chats: {},
   messages: {}
@@ -107,12 +111,65 @@ async function startWhatsAppSocket() {
       version,
       auth: state,
       logger: pino({ level: 'silent' }),
-      printQRInTerminal: true,
       browser: ['UCV PAU Virtual', 'Chrome', '120.0.0']
     });
 
     // Guardado de credenciales
     sock.ev.on('creds.update', saveCreds);
+
+    // Mapeo dinámico de número de teléfono y LID
+    sock.ev.on('chats.phoneNumberShare', ({ lid, jid }) => {
+      console.log(`[WA-MAP] phoneNumberShare recibido: ${lid} -> ${jid}`);
+      if (lid && jid) {
+        const cleanPhone = jid.split('@')[0];
+        lidToPhoneMap[lid] = cleanPhone;
+        if (chatsData.chats[lid]) {
+          chatsData.chats[lid].phone = cleanPhone;
+          saveChatsToDisk();
+          broadcastSSE('chat_update', chatsData.chats[lid]);
+        }
+      }
+    });
+
+    sock.ev.on('contacts.upsert', (contacts) => {
+      for (const c of contacts) {
+        if (c.lid && c.id) {
+          const cleanPhone = c.id.split('@')[0];
+          lidToPhoneMap[c.lid] = cleanPhone;
+          if (chatsData.chats[c.lid]) {
+            chatsData.chats[c.lid].phone = cleanPhone;
+            if (c.notify || c.name) chatsData.chats[c.lid].pushName = c.notify || c.name;
+          }
+        }
+        if (c.imgUrl) {
+          contactProfilePics[c.id] = c.imgUrl;
+          if (c.lid) contactProfilePics[c.lid] = c.imgUrl;
+          if (chatsData.chats[c.id]) chatsData.chats[c.id].profilePic = c.imgUrl;
+          if (c.lid && chatsData.chats[c.lid]) chatsData.chats[c.lid].profilePic = c.imgUrl;
+        }
+      }
+      saveChatsToDisk();
+    });
+
+    sock.ev.on('contacts.update', (updates) => {
+      for (const c of updates) {
+        if (c.lid && c.id) {
+          const cleanPhone = c.id.split('@')[0];
+          lidToPhoneMap[c.lid] = cleanPhone;
+          if (chatsData.chats[c.lid]) {
+            chatsData.chats[c.lid].phone = cleanPhone;
+            if (c.notify || c.name) chatsData.chats[c.lid].pushName = c.notify || c.name;
+          }
+        }
+        if (c.imgUrl) {
+          contactProfilePics[c.id] = c.imgUrl;
+          if (c.lid) contactProfilePics[c.lid] = c.imgUrl;
+          if (chatsData.chats[c.id]) chatsData.chats[c.id].profilePic = c.imgUrl;
+          if (c.lid && chatsData.chats[c.lid]) chatsData.chats[c.lid].profilePic = c.imgUrl;
+        }
+      }
+      saveChatsToDisk();
+    });
 
     // Actualización de Conexión y Código QR
     sock.ev.on('connection.update', async (update) => {
@@ -129,18 +186,16 @@ async function startWhatsAppSocket() {
         currentQR = null;
         const statusCode = lastDisconnect?.error?.output?.statusCode;
         const shouldReconnect = statusCode !== DisconnectReason.loggedOut;
-        console.log(`[WA-ENGINE] Conexión cerrada. Razón código: ${statusCode}. Reintentar: ${shouldReconnect}`);
+        console.log(`[WA-ENGINE] Conexión cerrada. Código: ${statusCode}. Reintentar: ${shouldReconnect}`);
 
         if (statusCode === DisconnectReason.loggedOut) {
           connectionStatus = 'DISCONNECTED';
           connectedAccount = null;
-          // Limpiar sesión al cerrar sesión manualmente
           try {
             fs.rmSync(SESSION_DIR, { recursive: true, force: true });
             fs.mkdirSync(SESSION_DIR, { recursive: true });
           } catch (e) {}
           broadcastSSE('status', { status: connectionStatus, user: null });
-          // Reiniciar para generar nuevo QR limpio
           setTimeout(startWhatsAppSocket, 2000);
         } else {
           connectionStatus = 'DISCONNECTED';
@@ -173,8 +228,27 @@ async function startWhatsAppSocket() {
         if (!jid || jid === 'status@broadcast') continue;
 
         const isFromMe = !!key.fromMe;
-        const pushName = msg.pushName || 'Contacto UCV';
+        const pushName = msg.pushName || '';
         const timestamp = (msg.messageTimestamp ? Number(msg.messageTimestamp) * 1000 : Date.now());
+
+        const normJid = jidNormalizedUser(jid);
+        let cleanPhone = normJid.split('@')[0];
+        if (lidToPhoneMap[normJid]) {
+          cleanPhone = lidToPhoneMap[normJid];
+        }
+
+        // Consultar o cachear foto de perfil
+        let profilePic = chatsData.chats[normJid]?.profilePic || contactProfilePics[normJid] || null;
+        if (!profilePic && sock) {
+          sock.profilePictureUrl(normJid, 'preview').then(pic => {
+            if (pic) {
+              if (chatsData.chats[normJid]) chatsData.chats[normJid].profilePic = pic;
+              contactProfilePics[normJid] = pic;
+              saveChatsToDisk();
+              broadcastSSE('chat_update', chatsData.chats[normJid]);
+            }
+          }).catch(() => {});
+        }
 
         let messageType = 'text';
         let bodyText = '';
@@ -230,9 +304,9 @@ async function startWhatsAppSocket() {
 
         const messageObj = {
           id: key.id,
-          jid,
+          jid: normJid,
           fromMe: isFromMe,
-          senderName: isFromMe ? 'Tú (Coordinación)' : pushName,
+          senderName: isFromMe ? 'Tú (Coordinación)' : (pushName || cleanPhone),
           type: messageType,
           body: bodyText,
           mediaUrl,
@@ -242,22 +316,24 @@ async function startWhatsAppSocket() {
         };
 
         // Guardar en la estructura de chats
-        if (!chatsData.messages[jid]) chatsData.messages[jid] = [];
-        chatsData.messages[jid].push(messageObj);
+        if (!chatsData.messages[normJid]) chatsData.messages[normJid] = [];
+        chatsData.messages[normJid].push(messageObj);
 
-        // Actualizar datos del chat
-        const cleanPhone = jid.split('@')[0];
-        chatsData.chats[jid] = {
-          jid,
+        // Actualizar datos del chat con teléfono claro y nombre de WhatsApp (pushName)
+        const currentChat = chatsData.chats[normJid] || {};
+        chatsData.chats[normJid] = {
+          jid: normJid,
           phone: cleanPhone,
-          name: pushName || cleanPhone,
+          pushName: pushName || currentChat.pushName || null,
+          name: pushName || currentChat.name || cleanPhone,
+          profilePic: profilePic || currentChat.profilePic || null,
           lastMessage: bodyText || (messageType === 'image' ? '📷 Foto' : messageType === 'video' ? '🎥 Video' : '📎 Archivo'),
           lastTimestamp: timestamp,
-          unreadCount: isFromMe ? 0 : (chatsData.chats[jid]?.unreadCount || 0) + 1
+          unreadCount: isFromMe ? 0 : (currentChat.unreadCount || 0) + 1
         };
 
         saveChatsToDisk();
-        broadcastSSE('message', { message: messageObj, chat: chatsData.chats[jid] });
+        broadcastSSE('message', { message: messageObj, chat: chatsData.chats[normJid] });
       }
     });
 
@@ -329,16 +405,44 @@ app.get('/api/whatsapp/chats', (req, res) => {
 // 4. Obtener mensajes de un contacto específico
 app.get('/api/whatsapp/messages/:jid', (req, res) => {
   const jid = decodeURIComponent(req.params.jid);
-  const msgs = chatsData.messages[jid] || [];
-  // Resetear contador de no leídos al abrir conversación
-  if (chatsData.chats[jid]) {
+  const norm = jidNormalizedUser(jid);
+  const msgs = chatsData.messages[norm] || chatsData.messages[jid] || [];
+
+  if (chatsData.chats[norm]) {
+    chatsData.chats[norm].unreadCount = 0;
+    saveChatsToDisk();
+  } else if (chatsData.chats[jid]) {
     chatsData.chats[jid].unreadCount = 0;
     saveChatsToDisk();
   }
   res.json(msgs);
 });
 
-// 5. Enviar mensaje de texto
+// 5. Consultar foto de perfil en tiempo real de WhatsApp
+app.get('/api/whatsapp/profile-pic/:jid', async (req, res) => {
+  const jid = decodeURIComponent(req.params.jid);
+  try {
+    if (!sock || connectionStatus !== 'CONNECTED') {
+      return res.json({ url: null });
+    }
+    const norm = jidNormalizedUser(jid);
+    if (chatsData.chats[norm]?.profilePic) {
+      return res.json({ url: chatsData.chats[norm].profilePic });
+    }
+    const pic = await sock.profilePictureUrl(norm, 'preview').catch(() => null);
+    if (pic) {
+      if (chatsData.chats[norm]) chatsData.chats[norm].profilePic = pic;
+      contactProfilePics[norm] = pic;
+      saveChatsToDisk();
+      return res.json({ url: pic });
+    }
+    res.json({ url: null });
+  } catch (err) {
+    res.json({ url: null });
+  }
+});
+
+// 6. Enviar mensaje de texto
 app.post('/api/whatsapp/send', async (req, res) => {
   const { to, message } = req.body;
   if (!to || !message) {
@@ -350,17 +454,24 @@ app.post('/api/whatsapp/send', async (req, res) => {
   }
 
   try {
-    let cleanPhone = to.replace(/\D/g, '');
-    if (!cleanPhone.includes('@')) {
-      cleanPhone = `${cleanPhone}@s.whatsapp.net`;
+    let targetJid = to.trim();
+    if (targetJid.includes('@')) {
+      targetJid = jidNormalizedUser(targetJid);
+    } else {
+      let digits = targetJid.replace(/\D/g, '');
+      if (digits.length === 9 && digits.startsWith('9')) {
+        digits = '51' + digits; // Prefijo Perú
+      }
+      targetJid = `${digits}@s.whatsapp.net`;
     }
 
-    const sent = await sock.sendMessage(cleanPhone, { text: message.trim() });
+    console.log(`[WA-SEND] Enviando mensaje a targetJid: ${targetJid}`);
+    const sent = await sock.sendMessage(targetJid, { text: message.trim() });
     const timestamp = Date.now();
 
     const messageObj = {
       id: sent.key.id,
-      jid: cleanPhone,
+      jid: targetJid,
       fromMe: true,
       senderName: 'Tú (Coordinación)',
       type: 'text',
@@ -370,29 +481,37 @@ app.post('/api/whatsapp/send', async (req, res) => {
       status: 'sent'
     };
 
-    if (!chatsData.messages[cleanPhone]) chatsData.messages[cleanPhone] = [];
-    chatsData.messages[cleanPhone].push(messageObj);
+    if (!chatsData.messages[targetJid]) chatsData.messages[targetJid] = [];
+    chatsData.messages[targetJid].push(messageObj);
 
-    chatsData.chats[cleanPhone] = {
-      jid: cleanPhone,
-      phone: cleanPhone.split('@')[0],
-      name: chatsData.chats[cleanPhone]?.name || cleanPhone.split('@')[0],
+    let phone = targetJid.split('@')[0];
+    if (lidToPhoneMap[targetJid]) {
+      phone = lidToPhoneMap[targetJid];
+    }
+
+    const currentChat = chatsData.chats[targetJid] || {};
+    chatsData.chats[targetJid] = {
+      jid: targetJid,
+      phone: phone,
+      pushName: currentChat.pushName || null,
+      name: currentChat.pushName || currentChat.name || phone,
+      profilePic: currentChat.profilePic || contactProfilePics[targetJid] || null,
       lastMessage: message.trim(),
       lastTimestamp: timestamp,
       unreadCount: 0
     };
 
     saveChatsToDisk();
-    broadcastSSE('message', { message: messageObj, chat: chatsData.chats[cleanPhone] });
+    broadcastSSE('message', { message: messageObj, chat: chatsData.chats[targetJid] });
 
     res.json({ success: true, message: messageObj });
   } catch (err) {
-    console.error('[WA-SEND] Error al enviar texto:', err.message);
+    console.error('[WA-SEND] Error al enviar texto:', err);
     res.status(500).json({ error: err.message });
   }
 });
 
-// 6. Enviar Multimedia (Imágenes, Videos, Documentos)
+// 7. Enviar Multimedia (Imágenes, Videos, Documentos)
 app.post('/api/whatsapp/send-media', upload.single('file'), async (req, res) => {
   const { to, caption } = req.body;
   const file = req.file;
@@ -406,11 +525,18 @@ app.post('/api/whatsapp/send-media', upload.single('file'), async (req, res) => 
   }
 
   try {
-    let cleanPhone = to.replace(/\D/g, '');
-    if (!cleanPhone.includes('@')) {
-      cleanPhone = `${cleanPhone}@s.whatsapp.net`;
+    let targetJid = to.trim();
+    if (targetJid.includes('@')) {
+      targetJid = jidNormalizedUser(targetJid);
+    } else {
+      let digits = targetJid.replace(/\D/g, '');
+      if (digits.length === 9 && digits.startsWith('9')) {
+        digits = '51' + digits;
+      }
+      targetJid = `${digits}@s.whatsapp.net`;
     }
 
+    console.log(`[WA-MEDIA] Enviando archivo a targetJid: ${targetJid}`);
     const fileBuffer = fs.readFileSync(file.path);
     const mime = file.mimetype || '';
     let sendPayload = {};
@@ -429,13 +555,13 @@ app.post('/api/whatsapp/send-media', upload.single('file'), async (req, res) => 
       sendPayload = { document: fileBuffer, mimetype: mime, fileName: file.originalname };
     }
 
-    const sent = await sock.sendMessage(cleanPhone, sendPayload);
+    const sent = await sock.sendMessage(targetJid, sendPayload);
     const timestamp = Date.now();
     const mediaUrl = `/api/whatsapp/media/${file.filename}`;
 
     const messageObj = {
       id: sent.key.id,
-      jid: cleanPhone,
+      jid: targetJid,
       fromMe: true,
       senderName: 'Tú (Coordinación)',
       type: messageType,
@@ -446,54 +572,60 @@ app.post('/api/whatsapp/send-media', upload.single('file'), async (req, res) => 
       status: 'sent'
     };
 
-    if (!chatsData.messages[cleanPhone]) chatsData.messages[cleanPhone] = [];
-    chatsData.messages[cleanPhone].push(messageObj);
+    if (!chatsData.messages[targetJid]) chatsData.messages[targetJid] = [];
+    chatsData.messages[targetJid].push(messageObj);
 
-    chatsData.chats[cleanPhone] = {
-      jid: cleanPhone,
-      phone: cleanPhone.split('@')[0],
-      name: chatsData.chats[cleanPhone]?.name || cleanPhone.split('@')[0],
-      lastMessage: messageType === 'image' ? '📷 Foto enviada' : messageType === 'video' ? '🎥 Video enviado' : '📎 Documento',
+    let phone = targetJid.split('@')[0];
+    if (lidToPhoneMap[targetJid]) {
+      phone = lidToPhoneMap[targetJid];
+    }
+
+    const currentChat = chatsData.chats[targetJid] || {};
+    chatsData.chats[targetJid] = {
+      jid: targetJid,
+      phone: phone,
+      pushName: currentChat.pushName || null,
+      name: currentChat.pushName || currentChat.name || phone,
+      profilePic: currentChat.profilePic || contactProfilePics[targetJid] || null,
+      lastMessage: caption || (messageType === 'image' ? '📷 Foto' : messageType === 'video' ? '🎥 Video' : '📎 Archivo'),
       lastTimestamp: timestamp,
       unreadCount: 0
     };
 
     saveChatsToDisk();
-    broadcastSSE('message', { message: messageObj, chat: chatsData.chats[cleanPhone] });
+    broadcastSSE('message', { message: messageObj, chat: chatsData.chats[targetJid] });
 
     res.json({ success: true, message: messageObj });
   } catch (err) {
-    console.error('[WA-SEND-MEDIA] Error enviando archivo:', err.message);
+    console.error('[WA-MEDIA] Error al enviar archivo:', err);
     res.status(500).json({ error: err.message });
   }
 });
 
-// 7. Cerrar Sesión y Desvincular
+// 8. Desvincular Sesión (Cerrar sesión)
 app.post('/api/whatsapp/logout', async (req, res) => {
   try {
     if (sock) {
       await sock.logout();
+      sock = null;
     }
-  } catch (e) {}
-
-  try {
+    connectionStatus = 'DISCONNECTED';
+    connectedAccount = null;
+    currentQR = null;
     fs.rmSync(SESSION_DIR, { recursive: true, force: true });
     fs.mkdirSync(SESSION_DIR, { recursive: true });
-  } catch (e) {}
-
-  connectionStatus = 'DISCONNECTED';
-  connectedAccount = null;
-  currentQR = null;
-  broadcastSSE('status', { status: connectionStatus, user: null });
-
-  setTimeout(startWhatsAppSocket, 1500);
-  res.json({ success: true, message: 'Sesión cerrada exitosamente.' });
+    broadcastSSE('status', { status: connectionStatus, user: null });
+    res.json({ success: true, message: 'Sesión cerrada exitosamente' });
+    setTimeout(startWhatsAppSocket, 1500);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// Iniciar servidor HTTP y Baileys
+// Iniciar Servidor Express y Conexión WhatsApp
 app.listen(PORT, () => {
-  console.log(`==========================================================`);
+  console.log('==========================================================');
   console.log(`[OK] Microservicio WhatsApp PAU corriendo en http://localhost:${PORT}`);
-  console.log(`==========================================================`);
+  console.log('==========================================================');
   startWhatsAppSocket();
 });
