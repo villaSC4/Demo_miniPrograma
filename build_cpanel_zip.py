@@ -81,7 +81,9 @@ def create_cpanel_packages():
         "api/delegados.php",
         "api/supervisiones.php",
         "data/delegados.json",
-        "data/grupos_base.json"
+        "data/delegados_base.json",
+        "data/grupos_base.json",
+        "data/docentes_base.json"
     ]
 
     print(f"\n[2/2] Empaquetando Actualizacion Rapida: {update_zip_name}...")

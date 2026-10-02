@@ -974,66 +974,99 @@
     // CARGA DE DATOS: DOCENTES (TIPO 1) + DELEGADOS (TIPO 2)
     // ========================================================================
     async function cargarDatosDocentesYDelegados() {
-      // 1. Cargar Docentes desde localStorage o data/docentes.json
+      // Limpiar caché previa en caso de que guardara registros de prueba anteriores
+      try {
+        const cachedDels = localStorage.getItem('sga_modulo_delegados');
+        if (cachedDels && (cachedDels.includes('PALOMINO DÁVILA') || cachedDels.includes('RODRÍGUEZ QUISPE VALERIA') || cachedDels.includes('Alumno Delegado'))) {
+          localStorage.removeItem('sga_modulo_delegados');
+        }
+      } catch(e) {}
+
+      // 1. Cargar Docentes Oficiales (Directorio Institucional)
       let docs = [];
-      const localDocs = localStorage.getItem('sga_modulo_docentes');
-      if (localDocs) {
-        try { docs = JSON.parse(localDocs); } catch(e){}
-      }
+      try {
+        const res = await fetch('api/docentes');
+        if (res.ok) {
+          const json = await res.json();
+          if (Array.isArray(json) && json.length > 0) docs = json;
+        }
+      } catch (e) {}
 
       if (!docs || docs.length === 0) {
         try {
           const res = await fetch('data/docentes.json');
-          if (res.ok) docs = await res.json();
-        } catch (e) {
-          console.warn('Fallback a docentes base:', e);
-        }
+          if (res.ok) {
+            const json = await res.json();
+            if (Array.isArray(json) && json.length > 0) docs = json;
+          }
+        } catch (e) {}
       }
 
-      // Si aún no hay, semilla de respaldo oficial
       if (!docs || docs.length === 0) {
-        docs = [
-          { id: 1, nombre: "AMACHE SANCHEZ MILTON FREDDY", escuela: "INGENIERIA DE SISTEMAS", grado: "DOCTOR", condicion: "CONTRATADO", ciclos: [2], cursos: ["ALGORITMOS Y PROGRAMACIÓN"], email: "amachem@ucvvirtual.edu.pe" },
-          { id: 2, nombre: "AGREDA PALOMINO RICARDO NOE", escuela: "INGENIERIA DE SISTEMAS", grado: "MAGÍSTER", condicion: "ORDINARIO", ciclos: [4], cursos: ["FÍSICA GENERAL"], email: "agredar@ucvvirtual.edu.pe" },
-          { id: 3, nombre: "ANTEZANA ELORRIETA ANGEL ESTUARD", escuela: "INGENIERIA DE SISTEMAS", grado: "DOCTOR", condicion: "CONTRATADO", ciclos: [3], cursos: ["MATEMÁTICA PARA LA INGENIERÍA"], email: "antezanaa@ucvvirtual.edu.pe" },
-          { id: 4, nombre: "GUTIERREZ MENDOZA FREDDY", escuela: "INGENIERIA DE SISTEMAS", grado: "MAGÍSTER", condicion: "ORDINARIO", ciclos: [5], cursos: ["BASES DE DATOS"], email: "gutierrezf@ucvvirtual.edu.pe" },
-          { id: 5, nombre: "LOPEZ SEGURA ROSA LUZ", escuela: "INGENIERIA DE SISTEMAS", grado: "DOCTOR", condicion: "ORDINARIO", ciclos: [6], cursos: ["INGENIERÍA DE SOFTWARE"], email: "lopezr@ucvvirtual.edu.pe" },
-          { id: 6, nombre: "ROSALES LOPEZ PEDRO", escuela: "INGENIERIA DE SISTEMAS", grado: "MAGÍSTER", condicion: "CONTRATADO", ciclos: [7], cursos: ["REDES Y TELECOMUNICACIONES"], email: "rosalesp@ucvvirtual.edu.pe" },
-          { id: 7, nombre: "QUISPE MAMANI CARLOS ALBERTO", escuela: "INGENIERIA INDUSTRIAL", grado: "MAGÍSTER", condicion: "ORDINARIO", ciclos: [5], cursos: ["INVESTIGACIÓN DE OPERACIONES"], email: "cquispe@ucvvirtual.edu.pe" },
-          { id: 8, nombre: "CABRERA BAZAN HERNAN", escuela: "INGENIERIA INDUSTRIAL", grado: "DOCTOR", condicion: "ORDINARIO", ciclos: [6], cursos: ["CONTROL ESTADÍSTICO DE PROCESOS"], email: "hcabrera@ucvvirtual.edu.pe" },
-          { id: 9, nombre: "VIGO ALVA KATTY VANESA", escuela: "INGENIERIA INDUSTRIAL", grado: "MAGÍSTER", condicion: "ORDINARIO", ciclos: [5], cursos: ["ACCESIBILIDAD Y DISEÑO UNIVERSAL"], email: "vigok@ucvvirtual.edu.pe" },
-          { id: 10, nombre: "RIVERA RAMIREZ YDANIA VANESSA", escuela: "INGENIERIA INDUSTRIAL", grado: "MAGÍSTER", condicion: "ORDINARIO", ciclos: [6], cursos: ["SIMULACIÓN E INTELIGENCIA DE DATOS"], email: "riveray@ucvvirtual.edu.pe" }
-        ];
+        try {
+          const res = await fetch('data/docentes_base.json');
+          if (res.ok) {
+            const json = await res.json();
+            if (Array.isArray(json) && json.length > 0) docs = json;
+          }
+        } catch (e) {}
       }
-      listaDocentes = docs;
 
-      // 2. Cargar Delegados desde localStorage o data/delegados.json
-      let dels = [];
-      const localDels = localStorage.getItem('sga_modulo_delegados');
-      if (localDels) {
-        try { dels = JSON.parse(localDels); } catch(e){}
+      // Si localStorage tiene adiciones locales válidas de docentes hechas por el usuario
+      const localDocs = localStorage.getItem('sga_modulo_docentes');
+      if (localDocs) {
+        try {
+          const parsed = JSON.parse(localDocs);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            // Unir sin duplicar por código
+            parsed.forEach(p => {
+              if (p && p.codigo && !docs.some(d => d.codigo === p.codigo || d.nombre === p.nombre)) {
+                docs.unshift(p);
+              }
+            });
+          }
+        } catch(e){}
       }
+
+      listaDocentes = docs || [];
+
+      // 2. Cargar Delegados (Únicamente registros reales o vacío)
+      let dels = [];
+      try {
+        const res = await fetch('api/delegados');
+        if (res.ok) {
+          const json = await res.json();
+          if (Array.isArray(json)) dels = json;
+        }
+      } catch(e) {}
 
       if (!dels || dels.length === 0) {
         try {
           const res = await fetch('data/delegados.json');
-          if (res.ok) dels = await res.json();
-        } catch(e) {
-          console.warn('Fallback a delegados base:', e);
-        }
+          if (res.ok) {
+            const json = await res.json();
+            if (Array.isArray(json)) dels = json;
+          }
+        } catch(e) {}
       }
 
-      if (!dels || dels.length === 0) {
-        dels = [
-          { id: 1, apellidos_nombres: "PALOMINO DÁVILA AARON GABRIEL", codigo_alumno: "6500018511", escuela_profesional: "Ingeniería de Sistemas", asignatura: "ALGORITMOS Y PROGRAMACIÓN", seccion: "A1", ciclo: "II", correo: "apalominod@ucvvirtual.edu.pe" },
-          { id: 2, apellidos_nombres: "RODRÍGUEZ QUISPE VALERIA SOFÍA", codigo_alumno: "7200451890", escuela_profesional: "Ingeniería Industrial", asignatura: "ESTUDIO DEL TRABAJO", seccion: "B1", ciclo: "V", correo: "vrodriguezq@ucvvirtual.edu.pe" },
-          { id: 3, apellidos_nombres: "FLORES MENDOZA CARLOS EDUARDO", codigo_alumno: "6500029314", escuela_profesional: "Ingeniería de Sistemas", asignatura: "FÍSICA GENERAL", seccion: "A2", ciclo: "IV", correo: "cfloresme@ucvvirtual.edu.pe" },
-          { id: 4, apellidos_nombres: "GUTIÉRREZ CHÁVEZ MARÍA JOSÉ", codigo_alumno: "7300184725", escuela_profesional: "Ingeniería Industrial", asignatura: "CONTROL ESTADÍSTICO DE PROCESOS", seccion: "A1", ciclo: "VI", correo: "mgutierrezch@ucvvirtual.edu.pe" },
-          { id: 5, apellidos_nombres: "CASTILLO ZAVALETA BRAYAN ALEXIS", codigo_alumno: "6500031899", escuela_profesional: "Ingeniería de Sistemas", asignatura: "MATEMÁTICA PARA LA INGENIERÍA", seccion: "B2", ciclo: "III", correo: "bcastilloz@ucvvirtual.edu.pe" },
-          { id: 6, apellidos_nombres: "CAMPOS MORALES DIANA CAROLINA", codigo_alumno: "7100492811", escuela_profesional: "Ingeniería Industrial", asignatura: "INVESTIGACIÓN DE OPERACIONES", seccion: "C1", ciclo: "VII", correo: "dcamposmo@ucvvirtual.edu.pe" }
-        ];
+      // Cargar nuevas inscripciones locales si existen
+      const localDels = localStorage.getItem('sga_modulo_delegados');
+      if (localDels) {
+        try {
+          const parsedDels = JSON.parse(localDels);
+          if (Array.isArray(parsedDels)) {
+            parsedDels.forEach(pd => {
+              if (pd && pd.codigo_alumno && !dels.some(d => d.codigo_alumno === pd.codigo_alumno)) {
+                dels.unshift(pd);
+              }
+            });
+          }
+        } catch(e){}
       }
-      listaDelegados = dels;
+
+      // Sin data de prueba: Si no hay delegados registrados, la nómina queda en 0
+      listaDelegados = dels || [];
 
       // 3. Crear matriz unificada
       unificarRegistros();

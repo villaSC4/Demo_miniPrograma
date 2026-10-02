@@ -36,7 +36,8 @@ def ensure_data_files():
         ('docentes.json', 'docentes_base.json'),
         ('directorios.json', 'directorios_base.json'),
         ('carpetas.json', 'carpetas_base.json'),
-        ('supervisiones.json', 'supervisiones_base.json')
+        ('supervisiones.json', 'supervisiones_base.json'),
+        ('delegados.json', 'delegados_base.json')
     ]
     for target, base in data_mappings:
         target_path = os.path.join(DATA_DIR, target)
