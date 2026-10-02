@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Módulo Docentes y Delegados — SGA • UCV Virtual</title>
+  <meta name="description" content="Módulo unificado de gestión de docentes y delegados de aula con dashboards analíticos, búsqueda en tiempo real y registro de asistencia — UCV Virtual">
+
+  <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS & Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Chart.js para los 2 Dashboards -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Favicon UCV Virtual -->
+  <link rel="icon" type="image/png" href="img/logo-ucv-virtual.png">
+
+  <style>
+    /* ==========================================================================
+       VARIABLES INSTITUCIONALES UCV
+       ========================================================================== */
+    :root {
+      --ucv-navy: #002855;
+      --ucv-navy-dark: #001A3A;
+      --ucv-navy-light: #1A4B8C;
+      --ucv-red: #BE1E2D;
+      --ucv-red-hover: #9E1925;
+      --ucv-gold: #D4A843;
+      --ucv-cream: #F8FAFC;
+      --ucv-card-bg: #FFFFFF;
+      --ucv-border: #E2E8F0;
+      --ucv-text-main: #0F172A;
+      --ucv-text-muted: #64748B;
+
+      /* Módulo Docentes (Tipo 1) */
+      --tipo-docente-bg: #EFF6FF;
+      --tipo-docente-border: #BFDBFE;
+      --tipo-docente-text: #1D4ED8;
+      --tipo-docente-badge: #1E40AF;
+
+      /* Módulo Delegados (Tipo 2) */
+      --tipo-delegado-bg: #FFF1F2;
+      --tipo-delegado-border: #FECDD3;
+      --tipo-delegado-text: #BE123C;
+      --tipo-delegado-badge: #9F1239;
+
+      /* Escuelas */
+      --sis-color: #2563EB;
+      --sis-bg: #DBEAFE;
+      --ind-color: #059669;
+      --ind-bg: #D1FAE5;
+
+      --radius-xl: 18px;
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --shadow-sm: 0 1px 3px rgba(0, 40, 85, 0.05);
+      --shadow-card: 0 4px 20px -2px rgba(0, 40, 85, 0.07), 0 2px 6px -1px rgba(0, 40, 85, 0.04);
+      --shadow-hover: 0 10px 28px -4px rgba(0, 40, 85, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: var(--ucv-cream);
+      color: var(--ucv-text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1, h2, h3, h4, h5, .brand-font {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    /* Navbar Principal */
+    .app-navbar {
+      background: linear-gradient(135deg, var(--ucv-navy-dark) 0%, var(--ucv-navy) 100%);
+      border-bottom: 3px solid var(--ucv-red);
+      padding: 0.75rem 1.5rem;
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(0, 26, 58, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 1020;
+    }
+
+    .brand-logo-img {
+      height: 38px;
+      width: auto;
+      object-contain: contain;
+    }
+
+    .navbar-divider {
+      width: 1px;
+      height: 32px;
+      background: rgba(255, 255, 255, 0.25);
+      margin: 0 1rem;
+    }
+
+    /* Subheader & Breadcrumbs */
+    .page-header-strip {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--ucv-border);
+      padding: 1.25rem 0;
+    }
+
+    /* Dashboards Cards */
+    .dashboard-panel-card {
+      background: #FFFFFF;
+      border: 1px solid var(--ucv-border);
+      border-radius: var(--radius-xl);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-card);
+      transition: all 0.3s ease;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dashboard-panel-card:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-2px);
+    }
+
+    .dashboard-panel-card.docente-theme {
+      border-top: 4px solid var(--ucv-navy-light);
+    }
+
+    .dashboard-panel-card.delegado-theme {
+      border-top: 4px solid var(--ucv-red);
+    }
+
+    .dash-pill-number {
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .dash-pill-docente {
+      background: var(--tipo-docente-bg);
+      color: var(--tipo-docente-text);
+      border: 1px solid var(--tipo-docente-border);
+    }
+
+    .dash-pill-delegado {
+      background: var(--tipo-delegado-bg);
+      color: var(--tipo-delegado-text);
+      border: 1px solid var(--tipo-delegado-border);
+    }
+
+    .metric-bubble {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+      text-align: center;
+      flex: 1;
+    }
+
+    .metric-bubble .num {
+      font-size: 1.75rem;
+      font-weight: 800;
+      line-height: 1;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .metric-bubble .lbl {
+      font-size: 0.72rem;
+      color: var(--ucv-text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-top: 0.25rem;
+    }
+
+    .chart-container-box {
+      position: relative;
+      height: 170px;
+      width: 100%;
+      margin: 1rem 0;
+    }
+
+    /* Toolbar de Búsqueda y Filtros */
+    .filter-search-box {
+      background: #FFFFFF;
+      border: 1px solid var(--ucv-border);
+      border-radius: var(--radius-xl);
+      padding: 1.25rem 1.5rem;
+      box-shadow: var(--shadow-card);
+      margin-bottom: 1.5rem;
+    }
+
+    .main-search-input {
+      border: 2px solid #CBD5E1;
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem 0.75rem 2.85rem;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+
+    .main-search-input:focus {
+      border-color: var(--ucv-navy-light);
+      box-shadow: 0 0 0 4px rgba(26, 75, 140, 0.15);
+      outline: none;
+    }
+
+    .btn-search-trigger {
+      background: var(--ucv-navy);
+      color: #fff;
+      font-weight: 700;
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1.5rem;
+      border: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-search-trigger:hover {
+      background: var(--ucv-navy-dark);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    /* Chips de Tipo */
+    .type-filter-chip {
+      padding: 0.4rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: 1.5px solid #CBD5E1;
+      background: #FFFFFF;
+      color: #475569;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .type-filter-chip:hover {
+      background: #F1F5F9;
+      border-color: #94A3B8;
+    }
+
+    .type-filter-chip.active-all {
+      background: var(--ucv-navy);
+      color: #fff;
+      border-color: var(--ucv-navy);
+    }
+
+    .type-filter-chip.active-docente {
+      background: var(--tipo-docente-badge);
+      color: #fff;
+      border-color: var(--tipo-docente-badge);
+    }
+
+    .type-filter-chip.active-delegado {
+      background: var(--tipo-delegado-badge);
+      color: #fff;
+      border-color: var(--tipo-delegado-badge);
+    }
+
+    /* Tabla Unificada */
+    .unified-table-container {
+      background: #FFFFFF;
+      border: 1px solid var(--ucv-border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      margin-bottom: 2.5rem;
+    }
+
+    .unified-table {
+      margin-bottom: 0;
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    .unified-table thead th {
+      background: #F8FAFC;
+      color: #475569;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 1rem 1.25rem;
+      border-bottom: 1.5px solid var(--ucv-border);
+      white-space: nowrap;
+    }
+
+    .unified-table tbody td {
+      padding: 1rem 1.25rem;
+      vertical-align: middle;
+      border-bottom: 1px solid #F1F5F9;
+      font-size: 0.88rem;
+    }
+
+    .unified-table tbody tr:hover td {
+      background: #F8FAFC;
+    }
+
+    /* Badges de Tipo para la Tabla */
+    .badge-tipo-docente {
+      background: var(--tipo-docente-bg);
+      color: var(--tipo-docente-text);
+      border: 1.5px solid var(--tipo-docente-border);
+      font-weight: 800;
+      font-size: 0.76rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .badge-tipo-delegado {
+      background: var(--tipo-delegado-bg);
+      color: var(--tipo-delegado-text);
+      border: 1.5px solid var(--tipo-delegado-border);
+      font-weight: 800;
+      font-size: 0.76rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    /* Badges de Escuela */
+    .badge-escuela-sistemas {
+      background: var(--sis-bg);
+      color: var(--sis-color);
+      font-weight: 700;
+      font-size: 0.76rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      border: 1px solid rgba(37, 99, 235, 0.25);
+    }
+
+    .badge-escuela-industrial {
+      background: var(--ind-bg);
+      color: var(--ind-color);
+      font-weight: 700;
+      font-size: 0.76rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      border: 1px solid rgba(5, 150, 105, 0.25);
+    }
+
+    .avatar-icon-box {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+    }
+
+    .avatar-docente {
+      background: #DBEAFE;
+      color: #1D4ED8;
+    }
+
+    .avatar-delegado {
+      background: #FFE4E6;
+      color: #BE123C;
+    }
+
+    /* Footer */
+    .app-footer {
+      background: #FFFFFF;
+      border-top: 1px solid var(--ucv-border);
+      padding: 1.25rem 0;
+      font-size: 0.8rem;
+      color: var(--ucv-text-muted);
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       1. BARRA SUPERIOR INSTITUCIONAL
+       ======================================================================== -->
+  <header class="app-navbar">
+    <div class="container-fluid px-lg-4 d-flex align-items-center justify-content-between flex-wrap gap-2">
+      <!-- Marca y Logos -->
+      <div class="d-flex align-items-center">
+        <a href="selector.html" class="d-flex align-items-center text-decoration-none">
+          <img src="img/logo-ucv-virtual.png" alt="UCV Virtual" class="brand-logo-img">
+        </a>
+        <div class="navbar-divider d-none d-sm-block"></div>
+        <div>
+          <span class="badge bg-danger text-uppercase fw-bold px-2 py-0.5 me-1" style="font-size: 0.68rem;">Módulo 1.1</span>
+          <span class="fw-bold text-white fs-6 d-block d-sm-inline">Docentes y Delegados</span>
+          <span class="text-white-50 d-none d-md-inline small ms-2">• Facultad de Ingeniería y Arquitectura</span>
+        </div>
+      </div>
+
+      <!-- DAC Selector & Controles Rápidos -->
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <!-- Switch de Coordinación DAC -->
+        <div class="dropdown">
+          <button class="btn btn-sm btn-outline-light dropdown-toggle fw-semibold px-3 py-1.5 rounded-pill shadow-xs" type="button" id="dropdownDac" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="badge rounded-circle bg-success me-1 p-1" style="width: 8px; height: 8px; display: inline-block;"></span>
+            <span id="labelDacActual">DAC Sistemas</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="dropdownDac">
+            <li><h6 class="dropdown-header text-uppercase text-muted" style="font-size: 0.7rem;">Dirección de Carrera</h6></li>
+            <li><a class="dropdown-item fw-semibold" href="#" onclick="cambiarFiltroDac('sistemas')"><i class="bi bi-cpu text-primary me-2"></i>DAC Sistemas</a></li>
+            <li><a class="dropdown-item fw-semibold" href="#" onclick="cambiarFiltroDac('industrial')"><i class="bi bi-gear-wide-connected text-success me-2"></i>DAC Industrial</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item fw-semibold" href="#" onclick="cambiarFiltroDac('todas')"><i class="bi bi-grid-fill text-secondary me-2"></i>Ver Ambas Carreras</a></li>
+          </ul>
+        </div>
+
+        <a href="index.html" class="btn btn-sm btn-outline-light px-2.5 py-1.5 rounded-pill" title="Ir al Sistema de Coordinación de Escuela">
+          <i class="bi bi-kanban-fill me-1"></i>
+          <span class="d-none d-sm-inline">Coordinación</span>
+        </a>
+
+        <a href="selector.html" class="btn btn-sm btn-light fw-bold px-3 py-1.5 rounded-pill shadow-xs" title="Volver al Selector General">
+          <i class="bi bi-arrow-left me-1"></i>
+          <span class="d-none d-sm-inline">Selector</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       2. CABECERA DE PÁGINA Y PRESENTACIÓN
+       ======================================================================== -->
+  <section class="page-header-strip">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1" style="font-size: 0.8rem;">
+              <li class="breadcrumb-item"><a href="selector.html" class="text-decoration-none text-muted">SGA UCV</a></li>
+              <li class="breadcrumb-item active text-primary fw-semibold" aria-current="page">Módulo Delegados y Docentes</li>
+            </ol>
+          </nav>
+          <h2 class="fw-bold mb-0 text-slate-900" style="font-size: 1.5rem;">
+            Gestión Integral de Docentes y Delegados de Aula
+          </h2>
+          <p class="text-muted small mb-0 mt-1">
+            Supervisión pedagógica docente, representatividad estudiantil por ciclo y control de asistencia oficial (2026-II).
+          </p>
+        </div>
+
+        <!-- Acciones rápidas -->
+        <div class="d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-outline-primary btn-sm fw-bold px-3 py-2 rounded-pill shadow-xs" data-bs-toggle="modal" data-bs-target="#modalNuevoDocente">
+            <i class="bi bi-person-plus-fill me-1"></i> + Registrar Docente
+          </button>
+          <button type="button" class="btn btn-danger btn-sm fw-bold px-3 py-2 rounded-pill shadow-xs" data-bs-toggle="modal" data-bs-target="#modalNuevoDelegado">
+            <i class="bi bi-person-badge-fill me-1"></i> + Registrar Delegado
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       3. SECCIÓN DASHBOARDS (LOS DOS BLOQUES SUPERIORES DEL BOSQUEJO)
+       ======================================================================== -->
+  <main class="container-fluid px-lg-4 py-4 flex-grow-1">
+
+    <div class="row g-4 mb-4">
+      <!-- ==========================================
+           DASHBOARD 1: DASHBOARD DOCENTES (Tipo 1)
+           ========================================== -->
+      <div class="col-xl-6 col-lg-6 col-12">
+        <div class="dashboard-panel-card docente-theme">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="d-flex align-items-center gap-2">
+              <div class="avatar-icon-box avatar-docente">
+                <i class="bi bi-mortarboard-fill"></i>
+              </div>
+              <div>
+                <span class="dash-pill-number dash-pill-docente">1 • Docentes</span>
+                <h4 class="fw-bold mb-0 mt-0.5 text-primary">Dashboard Docentes</h4>
+              </div>
+            </div>
+            <a href="https://notas-lac.vercel.app/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary fw-semibold rounded-pill px-2.5" id="linkRubricaDocentes" title="Abrir Sistema de Rúbricas Oficial">
+              <i class="bi bi-clipboard2-check-fill me-1"></i> Rúbricas <i class="bi bi-box-arrow-up-right small"></i>
+            </a>
+          </div>
+
+          <!-- Métricas en burbujas -->
+          <div class="d-flex gap-2 mb-3">
+            <div class="metric-bubble">
+              <div class="num text-primary" id="kpiDocentesTotal">18</div>
+              <div class="lbl">Total Docentes</div>
+            </div>
+            <div class="metric-bubble">
+              <div class="num text-dark" id="kpiDocentesOrdinarios">8</div>
+              <div class="lbl">Ordinarios</div>
+            </div>
+            <div class="metric-bubble">
+              <div class="num text-dark" id="kpiDocentesContratados">10</div>
+              <div class="lbl">Contratados</div>
+            </div>
+            <div class="metric-bubble">
+              <div class="num text-success" id="kpiDocentesCursos">32</div>
+              <div class="lbl">Cursos Asignados</div>
+            </div>
+          </div>
+
+          <!-- Gráfico de Dashboard Docentes -->
+          <div class="chart-container-box">
+            <canvas id="chartDocentes"></canvas>
+          </div>
+
+          <div class="d-flex align-items-center justify-content-between pt-2 border-top text-muted small">
+            <span><i class="bi bi-check-circle-fill text-success me-1"></i>Programación académica activa</span>
+            <button class="btn btn-link btn-sm text-decoration-none p-0 fw-bold" onclick="filtrarTablaPorTipo('docente')">
+              Ver solo docentes <i class="bi bi-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           DASHBOARD 2: DASHBOARD DELEGADOS (Tipo 2)
+           ========================================== -->
+      <div class="col-xl-6 col-lg-6 col-12">
+        <div class="dashboard-panel-card delegado-theme">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="d-flex align-items-center gap-2">
+              <div class="avatar-icon-box avatar-delegado">
+                <i class="bi bi-people-fill"></i>
+              </div>
+              <div>
+                <span class="dash-pill-number dash-pill-delegado">2 • Delegados</span>
+                <h4 class="fw-bold mb-0 mt-0.5 text-danger">Dashboard Delegados</h4>
+              </div>
+            </div>
+            <a href="formulario_delegados/index.html" target="_blank" class="btn btn-sm btn-outline-danger fw-semibold rounded-pill px-2.5" title="Abrir Formulario de Asistencia">
+              <i class="bi bi-file-earmark-check-fill me-1"></i> Formulario <i class="bi bi-box-arrow-up-right small"></i>
+            </a>
+          </div>
+
+          <!-- Métricas en burbujas -->
+          <div class="d-flex gap-2 mb-3">
+            <div class="metric-bubble">
+              <div class="num text-danger" id="kpiDelegadosTotal">10</div>
+              <div class="lbl">Delegados</div>
+            </div>
+            <div class="metric-bubble">
+              <div class="num text-dark" id="kpiDelegadosSistemas">5</div>
+              <div class="lbl">Sistemas</div>
+            </div>
+            <div class="metric-bubble">
+              <div class="num text-dark" id="kpiDelegadosIndustrial">5</div>
+              <div class="lbl">Industrial</div>
+            </div>
+            <div class="metric-bubble">
+              <div class="num text-success" id="kpiDelegadosAsistencia">100%</div>
+              <div class="lbl">Asistencia</div>
+            </div>
+          </div>
+
+          <!-- Gráfico de Dashboard Delegados (Curva de representatividad por ciclo) -->
+          <div class="chart-container-box">
+            <canvas id="chartDelegados"></canvas>
+          </div>
+
+          <div class="d-flex align-items-center justify-content-between pt-2 border-top text-muted small">
+            <span><i class="bi bi-shield-lock-fill text-primary me-1"></i>Acta oficial de reunión 2026-II</span>
+            <button class="btn btn-link btn-sm text-decoration-none text-danger p-0 fw-bold" onclick="filtrarTablaPorTipo('delegado')">
+              Ver solo delegados <i class="bi bi-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================
+         4. BARRA DE BÚSQUEDA Y FILTRADO (ZONA CENTRAL DEL BOSQUEJO)
+         ======================================================================== -->
+    <section class="filter-search-box">
+      <div class="row g-3 align-items-center">
+        <!-- Input de Búsqueda con Botón Buscar -->
+        <div class="col-lg-6 col-12">
+          <div class="position-relative">
+            <i class="bi bi-search position-absolute top-50 translate-middle-y text-muted ms-3 fs-6"></i>
+            <input 
+              type="text" 
+              id="inputBuscar" 
+              class="form-control main-search-input" 
+              placeholder="Buscar por nombre, código de alumno/docente, asignatura o correo..."
+              autocomplete="off"
+            >
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-6">
+          <button class="btn btn-search-trigger w-100" id="btnEjecutarBusqueda" onclick="aplicarFiltros()">
+            <i class="bi bi-search me-1"></i> Buscar
+          </button>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-6">
+          <select id="selectFiltroEscuela" class="form-select py-2.5 rounded-3 fw-semibold text-slate-700" onchange="aplicarFiltros()">
+            <option value="todas">Todas las Carreras</option>
+            <option value="sistemas">Ing. de Sistemas</option>
+            <option value="industrial">Ing. Industrial</option>
+          </select>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-12">
+          <button class="btn btn-outline-success fw-bold w-100 py-2.5 rounded-3 d-flex align-items-center justify-content-center gap-1.5" onclick="exportarTablaAExcel()" title="Descargar datos en formato Excel (CSV)">
+            <i class="bi bi-file-earmark-excel-fill"></i>
+            <span>Exportar Excel</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Filtros Rápidos por Tipo (Clave del requerimiento: 1 Docente / 2 Delegado) -->
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 pt-3 mt-3 border-top">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <span class="text-muted small fw-bold text-uppercase me-1" style="font-size: 0.72rem;">Filtrar Tipo:</span>
+          <button type="button" class="type-filter-chip active-all" id="chipTipoTodos" onclick="filtrarTablaPorTipo('todos')">
+            <i class="bi bi-grid-fill"></i> Todos (<span id="countPillTodos">28</span>)
+          </button>
+          <button type="button" class="type-filter-chip" id="chipTipoDocente" onclick="filtrarTablaPorTipo('docente')">
+            <i class="bi bi-mortarboard-fill text-primary"></i> 1 Docentes (<span id="countPillDocentes">18</span>)
+          </button>
+          <button type="button" class="type-filter-chip" id="chipTipoDelegado" onclick="filtrarTablaPorTipo('delegado')">
+            <i class="bi bi-person-badge-fill text-danger"></i> 2 Delegados (<span id="countPillDelegados">10</span>)
+          </button>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.72rem;">Ciclo:</span>
+          <select id="selectFiltroCiclo" class="form-select form-select-sm fw-semibold rounded-2 py-1" style="width: auto; font-size: 0.8rem;" onchange="aplicarFiltros()">
+            <option value="todos">Todos los Ciclos</option>
+            <option value="I">Ciclo I</option>
+            <option value="II">Ciclo II</option>
+            <option value="III">Ciclo III</option>
+            <option value="IV">Ciclo IV</option>
+            <option value="V">Ciclo V</option>
+            <option value="VI">Ciclo VI</option>
+            <option value="VII">Ciclo VII</option>
+            <option value="VIII">Ciclo VIII</option>
+            <option value="IX">Ciclo IX</option>
+            <option value="X">Ciclo X</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         5. TABLA UNIFICADA DE REGISTROS (ZONA INFERIOR DEL BOSQUEJO)
+         ======================================================================== -->
+    <section class="unified-table-container">
+      <div class="p-3 bg-white border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-2">
+          <span class="fw-bold text-slate-800" style="font-size: 0.95rem;">
+            <i class="bi bi-table text-primary me-1"></i> Padrón Oficial de Docentes y Delegados
+          </span>
+          <span class="badge bg-light text-dark border px-2 py-1" id="badgeResultadosConteo">28 registros</span>
+        </div>
+        <div class="text-muted small">
+          <i class="bi bi-info-circle me-1"></i> Ordenado alfabéticamente por nombres
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table unified-table" id="tablaDocentesDelegados">
+          <thead>
+            <tr>
+              <th style="width: 55px;" class="text-center">N°</th>
+              <th>Nombre y Apellidos</th>
+              <th style="width: 110px;">Ciclo</th>
+              <th style="width: 100px;">Año</th>
+              <th>Carrera</th>
+              <th style="width: 140px;">Tipo</th>
+              <th style="width: 110px;" class="text-end">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyRegistros">
+            <!-- Los registros se cargan dinámicamente vía JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Estado vacío si la búsqueda no arroja resultados -->
+      <div id="emptyStateBox" class="p-5 text-center d-none">
+        <div class="w-12 h-12 rounded-circle bg-light border d-inline-flex align-items-center justify-content-center text-muted mb-2">
+          <i class="bi bi-search fs-4"></i>
+        </div>
+        <h5 class="fw-bold text-slate-700">No se encontraron registros</h5>
+        <p class="text-muted small mb-3">Pruebe ajustando los términos de búsqueda o cambiando los filtros de tipo y escuela.</p>
+        <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="limpiarFiltros()">Limpiar filtros</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================================
+       6. MODAL: REGISTRAR NUEVO DOCENTE
+       ======================================================================== -->
+  <div class="modal fade" id="modalNuevoDocente" tabindex="-1" aria-labelledby="modalNuevoDocenteTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="modal-header bg-primary text-white py-3">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-mortarboard-fill fs-5"></i>
+            <div>
+              <h5 class="modal-title fw-bold" id="modalNuevoDocenteTitle">Registrar Nuevo Docente</h5>
+              <div style="font-size: 0.72rem; opacity: 0.85;">Tipo 1 • Docente de Carrera FIA</div>
+            </div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <form id="formNuevoDocente" onsubmit="guardarNuevoDocente(event)">
+          <div class="modal-body p-4">
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-slate-700">Apellidos y Nombres <span class="text-danger">*</span></label>
+              <input type="text" id="docNombre" class="form-control" placeholder="Ej. CHÁVEZ PAREDES LUIS ALBERTO" required>
+            </div>
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label small fw-bold text-slate-700">Código Docente <span class="text-danger">*</span></label>
+                <input type="text" id="docCodigo" class="form-control" placeholder="DOC-1025" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-bold text-slate-700">Escuela <span class="text-danger">*</span></label>
+                <select id="docEscuela" class="form-select" required>
+                  <option value="INGENIERIA DE SISTEMAS">Ing. de Sistemas</option>
+                  <option value="INGENIERIA INDUSTRIAL">Ing. Industrial</option>
+                </select>
+              </div>
+            </div>
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label small fw-bold text-slate-700">Grado Académico</label>
+                <select id="docGrado" class="form-select">
+                  <option value="DOCTOR">Doctor</option>
+                  <option value="MAGÍSTER" selected>Magíster</option>
+                  <option value="LICENCIADO">Licenciado / Ing.</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-bold text-slate-700">Condición</label>
+                <select id="docCondicion" class="form-select">
+                  <option value="ORDINARIO">Ordinario</option>
+                  <option value="CONTRATADO" selected>Contratado</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-slate-700">Ciclos que dicta (separados por coma)</label>
+              <input type="text" id="docCiclos" class="form-control" placeholder="Ej. 3, 5, 7">
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-slate-700">Cursos / Carga Lectiva <span class="text-danger">*</span></label>
+              <textarea id="docCursos" class="form-control" rows="2" placeholder="Ej. ALGORITMOS Y PROGRAMACIÓN, FÍSICA GENERAL" required></textarea>
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold text-slate-700">Correo Electrónico Institucional</label>
+              <input type="email" id="docEmail" class="form-control" placeholder="docente@ucvvirtual.edu.pe">
+            </div>
+          </div>
+          <div class="modal-footer bg-light p-3">
+            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-sm btn-primary rounded-pill px-4 fw-bold">Guardar Docente</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       7. MODAL: REGISTRAR NUEVO DELEGADO
+       ======================================================================== -->
+  <div class="modal fade" id="modalNuevoDelegado" tabindex="-1" aria-labelledby="modalNuevoDelegadoTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="modal-header bg-danger text-white py-3">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-person-badge-fill fs-5"></i>
+            <div>
+              <h5 class="modal-title fw-bold" id="modalNuevoDelegadoTitle">Registrar Nuevo Delegado</h5>
+              <div style="font-size: 0.72rem; opacity: 0.85;">Tipo 2 • Delegado de Aula Estudiantil</div>
+            </div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <form id="formNuevoDelegado" onsubmit="guardarNuevoDelegado(event)">
+          <div class="modal-body p-4">
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-slate-700">Apellidos y Nombres <span class="text-danger">*</span></label>
+              <input type="text" id="delNombre" class="form-control" placeholder="Ej. RAMOS VÁSQUEZ GABRIELA LUCÍA" required>
+            </div>
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label small fw-bold text-slate-700">Código de Alumno (10 dígitos) <span class="text-danger">*</span></label>
+                <input type="text" id="delCodigo" class="form-control" maxlength="10" placeholder="6500018511" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-bold text-slate-700">Escuela <span class="text-danger">*</span></label>
+                <select id="delEscuela" class="form-select" required>
+                  <option value="Ingeniería de Sistemas">Ing. de Sistemas</option>
+                  <option value="Ingeniería Industrial">Ing. Industrial</option>
+                </select>
+              </div>
+            </div>
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label small fw-bold text-slate-700">Ciclo Académico <span class="text-danger">*</span></label>
+                <select id="delCiclo" class="form-select" required>
+                  <option value="I">Ciclo I</option>
+                  <option value="II">Ciclo II</option>
+                  <option value="III">Ciclo III</option>
+                  <option value="IV">Ciclo IV</option>
+                  <option value="V" selected>Ciclo V</option>
+                  <option value="VI">Ciclo VI</option>
+                  <option value="VII">Ciclo VII</option>
+                  <option value="VIII">Ciclo VIII</option>
+                  <option value="IX">Ciclo IX</option>
+                  <option value="X">Ciclo X</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-bold text-slate-700">Sección <span class="text-danger">*</span></label>
+                <input type="text" id="delSeccion" class="form-control" placeholder="Ej. A1 o Grupo 01" required>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-slate-700">Asignatura Representada <span class="text-danger">*</span></label>
+              <input type="text" id="delAsignatura" class="form-control" placeholder="Ej. INVESTIGACIÓN DE OPERACIONES" required>
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold text-slate-700">Correo Electrónico Institucional</label>
+              <input type="email" id="delEmail" class="form-control" placeholder="estudiante@ucvvirtual.edu.pe">
+            </div>
+          </div>
+          <div class="modal-footer bg-light p-3">
+            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-sm btn-danger rounded-pill px-4 fw-bold">Guardar Delegado</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       8. MODAL: DETALLE / FICHA COMPLETA
+       ======================================================================== -->
+  <div class="modal fade" id="modalDetalleFicha" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="modal-header py-3" id="modalDetalleHeader">
+          <h5 class="modal-title fw-bold" id="modalDetalleTitulo">Ficha de Registro</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body p-4" id="modalDetalleCuerpo">
+          <!-- Renderizado dinámico -->
+        </div>
+        <div class="modal-footer bg-light p-3">
+          <button type="button" class="btn btn-sm btn-secondary rounded-pill px-3" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pie de Página -->
+  <footer class="app-footer">
+    <div class="container-fluid px-lg-4 d-flex align-items-center justify-content-between flex-wrap gap-2">
+      <div>
+        <strong>© 2026 Universidad César Vallejo S.A.C.</strong> • Vicerrectorado Académico • Dirección de Escuela FIA
+      </div>
+      <div>
+        <span>Módulo Oficial: <strong>Docentes y Delegados (Tipo 1 & Tipo 2)</strong> • SUBE a Distancia</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- ========================================================================
+       LÓGICA JAVASCRIPT DEL MÓDULO UNIFICADO
+       ======================================================================== -->
+  <script>
+    // Estado Global en Memoria
+    let listaDocentes = [];
+    let listaDelegados = [];
+    let registrosUnificados = [];
+    let registrosFiltrados = [];
+
+    let filtroTipoActual = 'todos'; // 'todos', 'docente', 'delegado'
+    let filtroEscuelaActual = 'todas'; // 'todas', 'sistemas', 'industrial'
+    let filtroCicloActual = 'todos';
+    let filtroBusquedaActual = '';
+
+    let chartDocentesInstance = null;
+    let chartDelegadosInstance = null;
+
+    // Inicialización al cargar DOM
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Leer DAC inicial de sesión si existe
+      const dacSesion = sessionStorage.getItem('sga_dac') || 'sistemas';
+      aplicarDacInicial(dacSesion);
+
+      // Cargar datos
+      await cargarDatosDocentesYDelegados();
+
+      // Renderizar todo
+      actualizarDashboardsYGraficos();
+      aplicarFiltros();
+
+      // Listener para búsqueda con tecla Enter
+      const inputBuscar = document.getElementById('inputBuscar');
+      if (inputBuscar) {
+        inputBuscar.addEventListener('keyup', (e) => {
+          if (e.key === 'Enter') aplicarFiltros();
+        });
+        // Búsqueda en vivo al borrar
+        inputBuscar.addEventListener('input', (e) => {
+          if (e.target.value === '') aplicarFiltros();
+        });
+      }
+    });
+
+    // Configurar contexto DAC
+    function aplicarDacInicial(dac) {
+      const label = document.getElementById('labelDacActual');
+      const linkRubrica = document.getElementById('linkRubricaDocentes');
+
+      if (dac === 'industrial') {
+        if (label) label.textContent = 'DAC Industrial';
+        if (linkRubrica) linkRubrica.href = 'https://notas-lac.vercel.app/?escuela=industrial';
+        document.getElementById('selectFiltroEscuela').value = 'industrial';
+        filtroEscuelaActual = 'industrial';
+      } else if (dac === 'sistemas') {
+        if (label) label.textContent = 'DAC Sistemas';
+        if (linkRubrica) linkRubrica.href = 'https://notas-lac.vercel.app/?escuela=sistemas';
+        document.getElementById('selectFiltroEscuela').value = 'sistemas';
+        filtroEscuelaActual = 'sistemas';
+      } else {
+        if (label) label.textContent = 'Ambas Carreras';
+        document.getElementById('selectFiltroEscuela').value = 'todas';
+        filtroEscuelaActual = 'todas';
+      }
+    }
+
+    function cambiarFiltroDac(dac) {
+      sessionStorage.setItem('sga_dac', dac);
+      aplicarDacInicial(dac);
+      aplicarFiltros();
+    }
+
+    // ========================================================================
+    // CARGA DE DATOS: DOCENTES (TIPO 1) + DELEGADOS (TIPO 2)
+    // ========================================================================
+    async function cargarDatosDocentesYDelegados() {
+      // 1. Cargar Docentes desde localStorage o data/docentes.json
+      let docs = [];
+      const localDocs = localStorage.getItem('sga_modulo_docentes');
+      if (localDocs) {
+        try { docs = JSON.parse(localDocs); } catch(e){}
+      }
+
+      if (!docs || docs.length === 0) {
+        try {
+          const res = await fetch('data/docentes.json');
+          if (res.ok) docs = await res.json();
+        } catch (e) {
+          console.warn('Fallback a docentes base:', e);
+        }
+      }
+
+      // Si aún no hay, semilla de respaldo oficial
+      if (!docs || docs.length === 0) {
+        docs = [
+          { id: 1, nombre: "AMACHE SANCHEZ MILTON FREDDY", escuela: "INGENIERIA DE SISTEMAS", grado: "DOCTOR", condicion: "CONTRATADO", ciclos: [2], cursos: ["ALGORITMOS Y PROGRAMACIÓN"], email: "amachem@ucvvirtual.edu.pe" },
+          { id: 2, nombre: "AGREDA PALOMINO RICARDO NOE", escuela: "INGENIERIA DE SISTEMAS", grado: "MAGÍSTER", condicion: "ORDINARIO", ciclos: [4], cursos: ["FÍSICA GENERAL"], email: "agredar@ucvvirtual.edu.pe" },
+          { id: 3, nombre: "ANTEZANA ELORRIETA ANGEL ESTUARD", escuela: "INGENIERIA DE SISTEMAS", grado: "DOCTOR", condicion: "CONTRATADO", ciclos: [3], cursos: ["MATEMÁTICA PARA LA INGENIERÍA"], email: "antezanaa@ucvvirtual.edu.pe" },
+          { id: 4, nombre: "GUTIERREZ MENDOZA FREDDY", escuela: "INGENIERIA DE SISTEMAS", grado: "MAGÍSTER", condicion: "ORDINARIO", ciclos: [5], cursos: ["BASES DE DATOS"], email: "gutierrezf@ucvvirtual.edu.pe" },
+          { id: 5, nombre: "LOPEZ SEGURA ROSA LUZ", escuela: "INGENIERIA DE SISTEMAS", grado: "DOCTOR", condicion: "ORDINARIO", ciclos: [6], cursos: ["INGENIERÍA DE SOFTWARE"], email: "lopezr@ucvvirtual.edu.pe" },
+          { id: 6, nombre: "ROSALES LOPEZ PEDRO", escuela: "INGENIERIA DE SISTEMAS", grado: "MAGÍSTER", condicion: "CONTRATADO", ciclos: [7], cursos: ["REDES Y TELECOMUNICACIONES"], email: "rosalesp@ucvvirtual.edu.pe" },
+          { id: 7, nombre: "QUISPE MAMANI CARLOS ALBERTO", escuela: "INGENIERIA INDUSTRIAL", grado: "MAGÍSTER", condicion: "ORDINARIO", ciclos: [5], cursos: ["INVESTIGACIÓN DE OPERACIONES"], email: "cquispe@ucvvirtual.edu.pe" },
+          { id: 8, nombre: "CABRERA BAZAN HERNAN", escuela: "INGENIERIA INDUSTRIAL", grado: "DOCTOR", condicion: "ORDINARIO", ciclos: [6], cursos: ["CONTROL ESTADÍSTICO DE PROCESOS"], email: "hcabrera@ucvvirtual.edu.pe" },
+          { id: 9, nombre: "VIGO ALVA KATTY VANESA", escuela: "INGENIERIA INDUSTRIAL", grado: "MAGÍSTER", condicion: "ORDINARIO", ciclos: [5], cursos: ["ACCESIBILIDAD Y DISEÑO UNIVERSAL"], email: "vigok@ucvvirtual.edu.pe" },
+          { id: 10, nombre: "RIVERA RAMIREZ YDANIA VANESSA", escuela: "INGENIERIA INDUSTRIAL", grado: "MAGÍSTER", condicion: "ORDINARIO", ciclos: [6], cursos: ["SIMULACIÓN E INTELIGENCIA DE DATOS"], email: "riveray@ucvvirtual.edu.pe" }
+        ];
+      }
+      listaDocentes = docs;
+
+      // 2. Cargar Delegados desde localStorage o data/delegados.json
+      let dels = [];
+      const localDels = localStorage.getItem('sga_modulo_delegados');
+      if (localDels) {
+        try { dels = JSON.parse(localDels); } catch(e){}
+      }
+
+      if (!dels || dels.length === 0) {
+        try {
+          const res = await fetch('data/delegados.json');
+          if (res.ok) dels = await res.json();
+        } catch(e) {
+          console.warn('Fallback a delegados base:', e);
+        }
+      }
+
+      if (!dels || dels.length === 0) {
+        dels = [
+          { id: 1, apellidos_nombres: "PALOMINO DÁVILA AARON GABRIEL", codigo_alumno: "6500018511", escuela_profesional: "Ingeniería de Sistemas", asignatura: "ALGORITMOS Y PROGRAMACIÓN", seccion: "A1", ciclo: "II", correo: "apalominod@ucvvirtual.edu.pe" },
+          { id: 2, apellidos_nombres: "RODRÍGUEZ QUISPE VALERIA SOFÍA", codigo_alumno: "7200451890", escuela_profesional: "Ingeniería Industrial", asignatura: "ESTUDIO DEL TRABAJO", seccion: "B1", ciclo: "V", correo: "vrodriguezq@ucvvirtual.edu.pe" },
+          { id: 3, apellidos_nombres: "FLORES MENDOZA CARLOS EDUARDO", codigo_alumno: "6500029314", escuela_profesional: "Ingeniería de Sistemas", asignatura: "FÍSICA GENERAL", seccion: "A2", ciclo: "IV", correo: "cfloresme@ucvvirtual.edu.pe" },
+          { id: 4, apellidos_nombres: "GUTIÉRREZ CHÁVEZ MARÍA JOSÉ", codigo_alumno: "7300184725", escuela_profesional: "Ingeniería Industrial", asignatura: "CONTROL ESTADÍSTICO DE PROCESOS", seccion: "A1", ciclo: "VI", correo: "mgutierrezch@ucvvirtual.edu.pe" },
+          { id: 5, apellidos_nombres: "CASTILLO ZAVALETA BRAYAN ALEXIS", codigo_alumno: "6500031899", escuela_profesional: "Ingeniería de Sistemas", asignatura: "MATEMÁTICA PARA LA INGENIERÍA", seccion: "B2", ciclo: "III", correo: "bcastilloz@ucvvirtual.edu.pe" },
+          { id: 6, apellidos_nombres: "CAMPOS MORALES DIANA CAROLINA", codigo_alumno: "7100492811", escuela_profesional: "Ingeniería Industrial", asignatura: "INVESTIGACIÓN DE OPERACIONES", seccion: "C1", ciclo: "VII", correo: "dcamposmo@ucvvirtual.edu.pe" }
+        ];
+      }
+      listaDelegados = dels;
+
+      // 3. Crear matriz unificada
+      unificarRegistros();
+    }
+
+    // Normalizar y unir ambos conjuntos de datos
+    function unificarRegistros() {
+      registrosUnificados = [];
+
+      // Mapear Docentes (Tipo 1)
+      listaDocentes.forEach((d, idx) => {
+        const escuelaNorm = (d.escuela || '').toUpperCase().includes('SISTEMA') ? 'Ingeniería de Sistemas' : 'Ingeniería Industrial';
+        const ciclosTexto = Array.isArray(d.ciclos) && d.ciclos.length > 0 
+          ? d.ciclos.map(c => `Ciclo ${c}`).join(', ') 
+          : 'Ciclo Variado';
+
+        registrosUnificados.push({
+          idGlobal: `doc-${d.id || idx}`,
+          tipoNumero: 1,
+          tipoTexto: 'Docente',
+          nombre: d.nombre,
+          codigo: d.codigo || `DOC-${1000 + (idx + 1)}`,
+          correo: d.email || '',
+          telefono: d.telefono || '',
+          escuela: escuelaNorm,
+          cicloTexto: ciclosTexto,
+          ciclosArray: Array.isArray(d.ciclos) ? d.ciclos.map(String) : [],
+          año: '2026-II',
+          cursos: Array.isArray(d.cursos) ? d.cursos : [d.cursos || 'Sin asignatura'],
+          condicion: d.condicion || 'CONTRATADO',
+          grado: d.grado || 'MAGÍSTER',
+          objetoOriginal: d
+        });
+      });
+
+      // Mapear Delegados (Tipo 2)
+      listaDelegados.forEach((del, idx) => {
+        const escuelaNorm = (del.escuela_profesional || del.escuela || '').toUpperCase().includes('SISTEMA') ? 'Ingeniería de Sistemas' : 'Ingeniería Industrial';
+        const cicloStr = String(del.ciclo || 'I').replace(/^Ciclo\s*/i, '');
+
+        registrosUnificados.push({
+          idGlobal: `del-${del.id || idx}`,
+          tipoNumero: 2,
+          tipoTexto: 'Delegado',
+          nombre: del.apellidos_nombres || del.nombre || 'Delegado Estudiantil',
+          codigo: del.codigo_alumno || del.codigo || '6500000000',
+          correo: del.correo || del.email || '',
+          telefono: del.telefono || '',
+          escuela: escuelaNorm,
+          cicloTexto: `Ciclo ${cicloStr}`,
+          ciclosArray: [cicloStr],
+          año: '2026-II',
+          cursos: [del.asignatura || del.curso || 'Delegado de Sección'],
+          seccion: del.seccion || 'A1',
+          objetoOriginal: del
+        });
+      });
+
+      // Ordenar por orden alfabético
+      registrosUnificados.sort((a, b) => a.nombre.localeCompare(b.nombre));
+    }
+
+    // ========================================================================
+    // FILTRADO DINÁMICO DE LA TABLA
+    // ========================================================================
+    function filtrarTablaPorTipo(tipo) {
+      filtroTipoActual = tipo;
+
+      // Actualizar chips
+      document.getElementById('chipTipoTodos').className = tipo === 'todos' ? 'type-filter-chip active-all' : 'type-filter-chip';
+      document.getElementById('chipTipoDocente').className = tipo === 'docente' ? 'type-filter-chip active-docente' : 'type-filter-chip';
+      document.getElementById('chipTipoDelegado').className = tipo === 'delegado' ? 'type-filter-chip active-delegado' : 'type-filter-chip';
+
+      aplicarFiltros();
+    }
+
+    function aplicarFiltros() {
+      const q = (document.getElementById('inputBuscar').value || '').trim().toLowerCase();
+      const escuela = document.getElementById('selectFiltroEscuela').value;
+      const ciclo = document.getElementById('selectFiltroCiclo').value;
+
+      filtroBusquedaActual = q;
+      filtroEscuelaActual = escuela;
+      filtroCicloActual = ciclo;
+
+      registrosFiltrados = registrosUnificados.filter(item => {
+        // Filtro por Tipo (1 Docente / 2 Delegado)
+        if (filtroTipoActual === 'docente' && item.tipoNumero !== 1) return false;
+        if (filtroTipoActual === 'delegado' && item.tipoNumero !== 2) return false;
+
+        // Filtro por Escuela
+        if (escuela === 'sistemas' && !item.escuela.toLowerCase().includes('sistema')) return false;
+        if (escuela === 'industrial' && !item.escuela.toLowerCase().includes('industrial')) return false;
+
+        // Filtro por Ciclo
+        if (ciclo !== 'todos') {
+          const matchCiclo = item.cicloTexto.toLowerCase().includes(ciclo.toLowerCase()) || 
+                             item.ciclosArray.some(c => c.toLowerCase() === ciclo.toLowerCase());
+          if (!matchCiclo) return false;
+        }
+
+        // Filtro por Búsqueda de texto (Nombre, código, cursos, correo)
+        if (q) {
+          const matchNombre = item.nombre.toLowerCase().includes(q);
+          const matchCodigo = item.codigo.toLowerCase().includes(q);
+          const matchCorreo = item.correo.toLowerCase().includes(q);
+          const matchCursos = item.cursos.some(c => c.toLowerCase().includes(q));
+          if (!matchNombre && !matchCodigo && !matchCorreo && !matchCursos) return false;
+        }
+
+        return true;
+      });
+
+      renderizarTabla();
+    }
+
+    function limpiarFiltros() {
+      document.getElementById('inputBuscar').value = '';
+      document.getElementById('selectFiltroEscuela').value = 'todas';
+      document.getElementById('selectFiltroCiclo').value = 'todos';
+      filtrarTablaPorTipo('todos');
+    }
+
+    // ========================================================================
+    // RENDERIZADO DE LA TABLA UNIFICADA (Idéntica al dibujo)
+    // ========================================================================
+    function renderizarTabla() {
+      const tbody = document.getElementById('tbodyRegistros');
+      const emptyBox = document.getElementById('emptyStateBox');
+      const badgeCount = document.getElementById('badgeResultadosConteo');
+
+      if (!tbody) return;
+
+      tbody.innerHTML = '';
+      badgeCount.textContent = `${registrosFiltrados.length} registros`;
+
+      if (registrosFiltrados.length === 0) {
+        emptyBox.classList.remove('d-none');
+        return;
+      }
+      emptyBox.classList.add('d-none');
+
+      registrosFiltrados.forEach((item, index) => {
+        const tr = document.createElement('tr');
+
+        // N°
+        const tdNum = document.createElement('td');
+        tdNum.className = 'text-center fw-bold text-muted';
+        tdNum.textContent = index + 1;
+
+        // Nombre y Apellidos (con avatar de color)
+        const tdNombre = document.createElement('td');
+        const isDoc = item.tipoNumero === 1;
+        const initials = item.nombre.split(' ').filter(p => p.length > 2).slice(0, 2).map(p => p[0]).join('') || (isDoc ? 'DC' : 'DL');
+        
+        tdNombre.innerHTML = `
+          <div class="d-flex align-items-center gap-2.5">
+            <div class="avatar-icon-box ${isDoc ? 'avatar-docente' : 'avatar-delegado'}">
+              ${initials}
+            </div>
+            <div>
+              <div class="fw-bold text-slate-900">${item.nombre}</div>
+              <div class="d-flex align-items-center gap-2 mt-0.5 text-muted" style="font-size: 0.76rem;">
+                <span class="font-monospace fw-semibold"><i class="bi bi-person-vcard me-1"></i>${item.codigo}</span>
+                ${item.correo ? `<span>•</span><span class="text-truncate" style="max-width: 190px;">${item.correo}</span>` : ''}
+              </div>
+            </div>
+          </div>
+        `;
+
+        // Ciclo
+        const tdCiclo = document.createElement('td');
+        tdCiclo.innerHTML = `<span class="badge bg-slate-100 text-dark border fw-bold px-2 py-1">${item.cicloTexto}</span>`;
+
+        // Año
+        const tdAño = document.createElement('td');
+        tdAño.innerHTML = `<span class="fw-semibold text-slate-700 font-monospace">${item.año}</span>`;
+
+        // Carrera
+        const tdCarrera = document.createElement('td');
+        const isSis = item.escuela.includes('Sistemas');
+        tdCarrera.innerHTML = `
+          <span class="${isSis ? 'badge-escuela-sistemas' : 'badge-escuela-industrial'}">
+            <i class="bi ${isSis ? 'bi-cpu' : 'bi-gear'} me-1"></i>${item.escuela}
+          </span>
+        `;
+
+        // Tipo (1 Docente / 2 Delegado) -> La columna solicitada
+        const tdTipo = document.createElement('td');
+        tdTipo.innerHTML = isDoc
+          ? `<span class="badge-tipo-docente"><i class="bi bi-mortarboard-fill"></i> 1 Docente</span>`
+          : `<span class="badge-tipo-delegado"><i class="bi bi-person-badge-fill"></i> 2 Delegado</span>`;
+
+        // Acciones
+        const tdAcciones = document.createElement('td');
+        tdAcciones.className = 'text-end';
+        tdAcciones.innerHTML = `
+          <button type="button" class="btn btn-sm btn-light border fw-semibold px-2 py-1 shadow-2xs" onclick="mostrarDetalleFicha('${item.idGlobal}')" title="Ver Ficha Completa">
+            <i class="bi bi-eye"></i> Detalle
+          </button>
+        `;
+
+        tr.appendChild(tdNum);
+        tr.appendChild(tdNombre);
+        tr.appendChild(tdCiclo);
+        tr.appendChild(tdAño);
+        tr.appendChild(tdCarrera);
+        tr.appendChild(tdTipo);
+        tr.appendChild(tdAcciones);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    // ========================================================================
+    // ACTUALIZACIÓN DE LOS 2 DASHBOARDS & GRÁFICOS CHART.JS
+    // ========================================================================
+    function actualizarDashboardsYGraficos() {
+      // 1. Métricas Docentes
+      const totalDocs = listaDocentes.length;
+      const ordinarios = listaDocentes.filter(d => (d.condicion || '').toUpperCase() === 'ORDINARIO').length;
+      const contratados = totalDocs - ordinarios;
+      let totalCursosAsignados = 0;
+      listaDocentes.forEach(d => {
+        totalCursosAsignados += Array.isArray(d.cursos) ? d.cursos.length : 1;
+      });
+
+      document.getElementById('kpiDocentesTotal').textContent = totalDocs;
+      document.getElementById('kpiDocentesOrdinarios').textContent = ordinarios;
+      document.getElementById('kpiDocentesContratados').textContent = contratados;
+      document.getElementById('kpiDocentesCursos').textContent = totalCursosAsignados;
+
+      // 2. Métricas Delegados
+      const totalDels = listaDelegados.length;
+      const delsSis = listaDelegados.filter(d => (d.escuela_profesional || d.escuela || '').toLowerCase().includes('sistema')).length;
+      const delsInd = totalDels - delsSis;
+
+      document.getElementById('kpiDelegadosTotal').textContent = totalDels;
+      document.getElementById('kpiDelegadosSistemas').textContent = delsSis;
+      document.getElementById('kpiDelegadosIndustrial').textContent = delsInd;
+      document.getElementById('kpiDelegadosAsistencia').textContent = totalDels > 0 ? '100%' : '0%';
+
+      // Conteo de píldoras de tipo
+      document.getElementById('countPillTodos').textContent = totalDocs + totalDels;
+      document.getElementById('countPillDocentes').textContent = totalDocs;
+      document.getElementById('countPillDelegados').textContent = totalDels;
+
+      // 3. Renderizar Gráfico Dashboard Docentes
+      renderizarChartDocentes(ordinarios, contratados, totalDocs);
+
+      // 4. Renderizar Gráfico Dashboard Delegados (Curva de Ciclos)
+      renderizarChartDelegados();
+    }
+
+    function renderizarChartDocentes(ordinarios, contratados, total) {
+      const ctx = document.getElementById('chartDocentes');
+      if (!ctx) return;
+
+      if (chartDocentesInstance) chartDocentesInstance.destroy();
+
+      // Desglose por carrera
+      const sis = listaDocentes.filter(d => (d.escuela || '').toLowerCase().includes('sistema')).length;
+      const ind = total - sis;
+
+      chartDocentesInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Sistemas', 'Industrial', 'Ordinarios', 'Contratados'],
+          datasets: [{
+            label: 'Docentes',
+            data: [sis, ind, ordinarios, contratados],
+            backgroundColor: [
+              'rgba(37, 99, 235, 0.85)',
+              'rgba(5, 150, 105, 0.85)',
+              'rgba(0, 40, 85, 0.85)',
+              'rgba(212, 168, 67, 0.85)'
+            ],
+            borderRadius: 6,
+            borderSkipped: false
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => ` ${ctx.raw} docentes registrados`
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { stepSize: 2, font: { size: 10 } },
+              grid: { color: '#F1F5F9' }
+            },
+            x: {
+              ticks: { font: { size: 11, weight: '600' } },
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    }
+
+    function renderizarChartDelegados() {
+      const ctx = document.getElementById('chartDelegados');
+      if (!ctx) return;
+
+      if (chartDelegadosInstance) chartDelegadosInstance.destroy();
+
+      // Conteo por ciclos del I al X
+      const ciclos = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+      const dataConteo = ciclos.map(c => {
+        return listaDelegados.filter(d => {
+          const cic = String(d.ciclo || '').replace(/^Ciclo\s*/i, '');
+          return cic === c;
+        }).length;
+      });
+
+      chartDelegadosInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ciclos.map(c => `C-${c}`),
+          datasets: [{
+            label: 'Delegados de Aula',
+            data: dataConteo,
+            borderColor: '#BE1E2D',
+            backgroundColor: 'rgba(190, 30, 45, 0.12)',
+            fill: true,
+            tension: 0.35,
+            pointBackgroundColor: '#BE1E2D',
+            pointRadius: 4,
+            pointHoverRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => ` ${ctx.raw} delegados en ${ciclos[ctx.dataIndex]}`
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { stepSize: 1, font: { size: 10 } },
+              grid: { color: '#F1F5F9' }
+            },
+            x: {
+              ticks: { font: { size: 10, weight: '600' } },
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    }
+
+    // ========================================================================
+    // REGISTRO DE NUEVOS DOCENTES & DELEGADOS (PERSISTENCIA Y REACTIVIDAD)
+    // ========================================================================
+    function guardarNuevoDocente(e) {
+      e.preventDefault();
+      const nombre = document.getElementById('docNombre').value.trim().toUpperCase();
+      const codigo = document.getElementById('docCodigo').value.trim().toUpperCase();
+      const escuela = document.getElementById('docEscuela').value;
+      const grado = document.getElementById('docGrado').value;
+      const condicion = document.getElementById('docCondicion').value;
+      const ciclosRaw = document.getElementById('docCiclos').value.trim();
+      const cursosRaw = document.getElementById('docCursos').value.trim();
+      const email = document.getElementById('docEmail').value.trim().toLowerCase();
+
+      const ciclos = ciclosRaw ? ciclosRaw.split(',').map(c => c.trim()).filter(Boolean) : [1];
+      const cursos = cursosRaw ? cursosRaw.split(',').map(c => c.trim()).filter(Boolean) : ['Carga General'];
+
+      const nuevoDoc = {
+        id: Date.now(),
+        nombre,
+        codigo,
+        escuela,
+        grado,
+        condicion,
+        ciclos,
+        cursos,
+        email: email || `${codigo.toLowerCase()}@ucvvirtual.edu.pe`
+      };
+
+      listaDocentes.unshift(nuevoDoc);
+      localStorage.setItem('sga_modulo_docentes', JSON.stringify(listaDocentes));
+
+      // Cerrar modal
+      const modalEl = document.getElementById('modalNuevoDocente');
+      const modalInstance = bootstrap.Modal.getInstance(modalEl);
+      if (modalInstance) modalInstance.hide();
+      document.getElementById('formNuevoDocente').reset();
+
+      // Actualizar vista completa
+      unificarRegistros();
+      actualizarDashboardsYGraficos();
+      aplicarFiltros();
+
+      alert(`✅ Docente registrado con éxito:\n${nombre} (${codigo})\nIncorporado al Dashboard 1 y tabla unificada.`);
+    }
+
+    function guardarNuevoDelegado(e) {
+      e.preventDefault();
+      const nombre = document.getElementById('delNombre').value.trim().toUpperCase();
+      const codigo = document.getElementById('delCodigo').value.trim();
+      const escuela = document.getElementById('delEscuela').value;
+      const ciclo = document.getElementById('delCiclo').value;
+      const seccion = document.getElementById('delSeccion').value.trim().toUpperCase();
+      const asignatura = document.getElementById('delAsignatura').value.trim().toUpperCase();
+      const correo = document.getElementById('delEmail').value.trim().toLowerCase();
+
+      if (codigo.length !== 10 || !/^\d+$/.test(codigo)) {
+        alert('El código de estudiante debe tener exactamente 10 dígitos numéricos.');
+        return;
+      }
+
+      const nuevoDel = {
+        id: Date.now(),
+        apellidos_nombres: nombre,
+        codigo_alumno: codigo,
+        escuela_profesional: escuela,
+        ciclo: ciclo,
+        seccion: seccion,
+        asignatura: asignatura,
+        correo: correo || `${codigo}@ucvvirtual.edu.pe`,
+        declaracion_aceptada: 1,
+        fecha_registro: new Date().toISOString().replace('T', ' ').substring(0, 19)
+      };
+
+      listaDelegados.unshift(nuevoDel);
+      localStorage.setItem('sga_modulo_delegados', JSON.stringify(listaDelegados));
+
+      // Cerrar modal
+      const modalEl = document.getElementById('modalNuevoDelegado');
+      const modalInstance = bootstrap.Modal.getInstance(modalEl);
+      if (modalInstance) modalInstance.hide();
+      document.getElementById('formNuevoDelegado').reset();
+
+      // Actualizar vista completa
+      unificarRegistros();
+      actualizarDashboardsYGraficos();
+      aplicarFiltros();
+
+      alert(`✅ Delegado(a) registrado(a) con éxito:\n${nombre} (${codigo})\nIncorporado al Dashboard 2 y tabla unificada.`);
+    }
+
+    // Modal de Detalle
+    function mostrarDetalleFicha(idGlobal) {
+      const item = registrosUnificados.find(r => r.idGlobal === idGlobal);
+      if (!item) return;
+
+      const header = document.getElementById('modalDetalleHeader');
+      const titulo = document.getElementById('modalDetalleTitulo');
+      const cuerpo = document.getElementById('modalDetalleCuerpo');
+
+      const isDoc = item.tipoNumero === 1;
+
+      header.className = isDoc ? 'modal-header bg-primary text-white py-3' : 'modal-header bg-danger text-white py-3';
+      titulo.textContent = isDoc ? `Ficha Docente: ${item.codigo}` : `Ficha Delegado: ${item.codigo}`;
+
+      cuerpo.innerHTML = `
+        <div class="text-center mb-3">
+          <div class="avatar-icon-box ${isDoc ? 'avatar-docente' : 'avatar-delegado'} mx-auto mb-2" style="width: 54px; height: 54px; font-size: 1.35rem;">
+            ${isDoc ? '<i class="bi bi-mortarboard-fill"></i>' : '<i class="bi bi-person-badge-fill"></i>'}
+          </div>
+          <h5 class="fw-bold mb-1">${item.nombre}</h5>
+          <span class="badge ${isDoc ? 'badge-tipo-docente' : 'badge-tipo-delegado'}">${item.tipoNumero} • ${item.tipoTexto}</span>
+        </div>
+
+        <ul class="list-group list-group-flush small border rounded-3 mb-3">
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">Escuela:</span>
+            <span class="fw-bold">${item.escuela}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">Ciclo Académico:</span>
+            <span class="fw-bold">${item.cicloTexto}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">Semestre / Año:</span>
+            <span class="fw-bold">${item.año}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">Correo Institucional:</span>
+            <span class="fw-bold">${item.correo || 'No especificado'}</span>
+          </li>
+          ${isDoc ? `
+            <li class="list-group-item d-flex justify-content-between">
+              <span class="text-muted">Grado Académico:</span>
+              <span class="fw-bold">${item.grado}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <span class="text-muted">Condición:</span>
+              <span class="fw-bold">${item.condicion}</span>
+            </li>
+          ` : `
+            <li class="list-group-item d-flex justify-content-between">
+              <span class="text-muted">Sección / Grupo:</span>
+              <span class="fw-bold">${item.seccion || 'A1'}</span>
+            </li>
+          `}
+        </ul>
+
+        <div>
+          <label class="small fw-bold text-muted text-uppercase mb-1">
+            ${isDoc ? 'Carga Lectiva y Asignaturas Asignadas:' : 'Asignatura Representada:'}
+          </label>
+          <div class="p-2.5 bg-light rounded-3 border small">
+            ${item.cursos.map(c => `<span class="badge bg-white text-dark border me-1 mb-1 p-1.5"><i class="bi bi-book me-1 text-primary"></i>${c}</span>`).join('')}
+          </div>
+        </div>
+
+        <div class="mt-3 pt-2 border-top d-flex gap-2">
+          ${isDoc ? `
+            <a href="https://notas-lac.vercel.app/?escuela=${item.escuela.toLowerCase().includes('sistema') ? 'sistemas' : 'industrial'}" target="_blank" class="btn btn-sm btn-primary w-100 fw-bold">
+              <i class="bi bi-clipboard2-check-fill me-1"></i> Abrir Rúbrica de Observación
+            </a>
+          ` : `
+            <a href="formulario_delegados/index.html" target="_blank" class="btn btn-sm btn-danger w-100 fw-bold">
+              <i class="bi bi-file-earmark-check-fill me-1"></i> Ver Formulario de Asistencia
+            </a>
+          `}
+        </div>
+      `;
+
+      const modal = new bootstrap.Modal(document.getElementById('modalDetalleFicha'));
+      modal.show();
+    }
+
+    // ========================================================================
+    // EXPORTAR A EXCEL (CSV con UTF-8 BOM)
+    // ========================================================================
+    function exportarTablaAExcel() {
+      if (registrosFiltrados.length === 0) {
+        alert('No hay registros para exportar con los filtros actuales.');
+        return;
+      }
+
+      const headers = ['N°', 'Tipo', 'Nombre y Apellidos', 'Codigo', 'Correo', 'Carrera', 'Ciclo', 'Año', 'Cursos/Asignaturas'];
+      const rows = registrosFiltrados.map((item, idx) => [
+        idx + 1,
+        item.tipoTexto,
+        `"${item.nombre.replace(/"/g, '""')}"`,
+        item.codigo,
+        item.correo,
+        `"${item.escuela}"`,
+        `"${item.cicloTexto}"`,
+        item.año,
+        `"${item.cursos.join('; ')}"`
+      ]);
+
+      const csvContent = "\uFEFF" + [headers.join(';'), ...rows.map(r => r.join(';'))].join('\r\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Docentes_y_Delegados_FIA_2026_${new Date().toISOString().substring(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  </script>
+
+</body>
+</html>

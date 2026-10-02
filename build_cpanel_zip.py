@@ -62,6 +62,7 @@ def create_cpanel_packages():
         "selector.html",
         "login.html",
         "procedimiento.html",
+        "docentes_delegados.html",
         ".htaccess",
         "css/custom.css",
         "js/app.js",
@@ -77,7 +78,9 @@ def create_cpanel_packages():
         "api/carpetas.php",
         "api/directorios.php",
         "api/docentes.php",
+        "api/delegados.php",
         "api/supervisiones.php",
+        "data/delegados.json",
         "data/grupos_base.json"
     ]
 
