@@ -3,48 +3,67 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Módulo PAU • WhatsApp Live Hub | UCV Virtual FIA</title>
+  <title>Módulo PAU • WhatsApp Live Hub | UCV Virtual</title>
   
-  <!-- Tipografía Ergonómica Anti-Fatiga Visual -->
+  <!-- Tipografía Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   
-  <!-- Bootstrap 5 & Icons -->
+  <!-- Bootstrap 5 CSS y Bootstrap Icons -->
   <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="lib/icons/bootstrap-icons.min.css">
   
+  <!-- Favicon UCV Virtual -->
+  <link rel="icon" type="image/png" href="img/logo-ucv-virtual.png">
+
   <style>
     :root {
-      /* Paleta Ergonómica Descansada (Soft Slate Dark - Cero Fatiga Ocular) */
-      --bg-app: #0B131A;
-      --bg-panel: #111B21;
-      --bg-surface: #182229;
-      --bg-surface-hover: #202C33;
-      --bg-active: #2A3942;
-      --border-subtle: #222E35;
-      --border-medium: #313D45;
-      
-      --text-primary: #E9EDEF;
-      --text-secondary: #8696A0;
-      --text-muted: #667781;
-      
-      /* Acentos WhatsApp & UCV */
-      --wa-emerald: #00A884;
-      --wa-emerald-hover: #02906F;
-      --wa-bubble-in: #202C33;
-      --wa-bubble-out: #005C4B;
-      --wa-check-blue: #53BDEB;
-      
+      /* Paleta Institucional UCV Virtual (Colores Pasteles y Descansados) */
+      --ucv-navy-dark: #071A30;
+      --ucv-navy: #0B2545;
+      --ucv-navy-light: #133B6B;
       --ucv-red: #BE1E2D;
-      --ucv-blue: #0284C7;
-      --ucv-gold: #D4A843;
+      --ucv-red-soft: #FDE8E9;
+      
+      --app-bg: #F4F6F9;
+      --card-bg: #FFFFFF;
+      --border-subtle: #E2E8F0;
+      --border-strong: #CBD5E1;
+      
+      /* Tipografía de Alto Contraste y Cero Fatiga */
+      --text-main: #0F172A;
+      --text-secondary: #475569;
+      --text-muted: #64748B;
+      
+      /* Acentos WhatsApp Suaves (Pastel Verde / Esmeralda) */
+      --wa-green: #0E7A53;
+      --wa-green-hover: #0B6343;
+      --wa-green-pastel: #E8F5E9;
+      --wa-green-border: #C8E6C9;
+      --wa-bubble-in: #FFFFFF;
+      --wa-bubble-out: #DCF8C6;
+      --wa-check-blue: #0284C7;
+      
+      /* Tonos Pasteles Académicos */
+      --pastel-blue-bg: #EFF6FF;
+      --pastel-blue-text: #1E40AF;
+      --pastel-blue-border: #BFDBFE;
+      
+      --pastel-amber-bg: #FEF3C7;
+      --pastel-amber-text: #92400E;
+      --pastel-amber-border: #FDE68A;
+      
+      --pastel-red-bg: #FEE2E2;
+      --pastel-red-text: #991B1B;
+      --pastel-red-border: #FECACA;
     }
 
     * {
       box-sizing: border-box;
       scrollbar-width: thin;
-      scrollbar-color: #374045 transparent;
+      scrollbar-color: #CBD5E1 transparent;
     }
 
     *::-webkit-scrollbar {
@@ -55,955 +74,963 @@
       background: transparent;
     }
     *::-webkit-scrollbar-thumb {
-      background: #374045;
+      background: #CBD5E1;
       border-radius: 6px;
     }
     *::-webkit-scrollbar-thumb:hover {
-      background: #4A555C;
+      background: #94A3B8;
     }
 
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background-color: var(--bg-app);
-      color: var(--text-primary);
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: var(--app-bg);
+      color: var(--text-main);
       height: 100vh;
       overflow: hidden;
       display: flex;
       flex-direction: column;
     }
 
-    /* BARRA SUPERIOR INSTITUCIONAL */
-    .pau-topbar {
-      height: 60px;
-      background-color: var(--bg-panel);
-      border-bottom: 1px solid var(--border-subtle);
+    /* BARRA SUPERIOR INSTITUCIONAL UCV VIRTUAL */
+    .app-navbar {
+      height: 62px;
+      background: linear-gradient(135deg, var(--ucv-navy-dark) 0%, var(--ucv-navy) 65%, var(--ucv-navy-light) 100%);
+      border-bottom: 3px solid var(--ucv-red);
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 1.25rem;
-      z-index: 40;
       flex-shrink: 0;
+      z-index: 50;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
     }
 
-    .brand-logo-box {
+    .brand-box {
       display: flex;
       align-items: center;
       gap: 12px;
     }
 
-    .brand-icon-shield {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #00A884, #005C4B);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #FFF;
-      font-size: 1.25rem;
-      box-shadow: 0 4px 14px rgba(0, 168, 132, 0.25);
+    .brand-logo-img {
+      height: 36px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
     }
 
-    .status-pill {
+    .brand-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+
+    .brand-subtitle {
+      font-size: 0.74rem;
+      color: rgba(255, 255, 255, 0.75);
+      font-weight: 500;
+    }
+
+    /* ESTADO DE CONEXIÓN PASTEL */
+    .badge-status {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      padding: 5px 12px;
+      gap: 6px;
+      padding: 0.35rem 0.75rem;
       border-radius: 20px;
       font-size: 0.78rem;
       font-weight: 600;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-medium);
-      transition: all 0.25s ease;
+      letter-spacing: 0.2px;
+    }
+    .badge-status.online {
+      background-color: var(--wa-green-pastel);
+      color: #14532D;
+      border: 1px solid var(--wa-green-border);
+    }
+    .badge-status.waiting {
+      background-color: var(--pastel-amber-bg);
+      color: var(--pastel-amber-text);
+      border: 1px solid var(--pastel-amber-border);
+    }
+    .badge-status.offline {
+      background-color: var(--pastel-red-bg);
+      color: var(--pastel-red-text);
+      border: 1px solid var(--pastel-red-border);
     }
 
     .status-dot {
-      width: 9px;
-      height: 9px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background-color: #64748B;
+      display: inline-block;
     }
-
-    .status-dot.online {
-      background-color: #10B981;
-      box-shadow: 0 0 10px #10B981;
-      animation: pulseDot 2s infinite;
-    }
-    .status-dot.waiting {
-      background-color: #F59E0B;
-      box-shadow: 0 0 10px #F59E0B;
-      animation: pulseDot 1.5s infinite;
-    }
-    .status-dot.offline {
-      background-color: #EF4444;
-    }
+    .status-dot.online { background-color: #16A34A; box-shadow: 0 0 6px #16A34A; }
+    .status-dot.waiting { background-color: #D97706; animation: pulseDot 1.6s infinite; }
+    .status-dot.offline { background-color: #DC2626; }
 
     @keyframes pulseDot {
-      0% { transform: scale(0.95); opacity: 0.8; }
-      50% { transform: scale(1.15); opacity: 1; }
-      100% { transform: scale(0.95); opacity: 0.8; }
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
     }
 
-    /* CONTENEDOR PRINCIPAL TRES COLUMNAS */
-    .pau-chat-workspace {
-      display: flex;
+    /* CONTENEDOR PRINCIPAL MODULAR (3 COLUMNAS) */
+    .pau-main-layout {
       flex: 1;
-      height: calc(100vh - 60px);
-      position: relative;
-      background-color: var(--bg-app);
+      display: flex;
+      overflow: hidden;
+      background-color: var(--app-bg);
     }
 
-    /* COLUMNA 1: LISTA DE CHATS */
+    /* COLUMNA 1: BANDEJA DE CHATS */
     .chats-sidebar {
-      width: 360px;
-      background-color: var(--bg-panel);
+      width: 340px;
+      background-color: var(--card-bg);
       border-right: 1px solid var(--border-subtle);
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
-      height: 100%;
     }
 
     .chats-header {
-      padding: 12px 16px;
-      background-color: var(--bg-panel);
+      padding: 1rem 1rem 0.75rem;
       border-bottom: 1px solid var(--border-subtle);
+      background-color: #FFFFFF;
     }
 
-    .search-input-box {
-      background-color: var(--bg-surface);
+    .search-box-input {
+      background-color: #F8FAFC;
       border: 1px solid var(--border-subtle);
       border-radius: 8px;
-      display: flex;
-      align-items: center;
-      padding: 6px 12px;
-      gap: 8px;
-      transition: border-color 0.2s;
+      font-size: 0.84rem;
+      color: var(--text-main);
+      padding: 0.45rem 0.75rem 0.45rem 2.2rem;
+      transition: all 0.2s ease;
     }
-    .search-input-box:focus-within {
-      border-color: var(--wa-emerald);
-      box-shadow: 0 0 0 1px var(--wa-emerald);
-    }
-
-    .search-input-box input {
-      background: transparent;
-      border: none;
-      color: var(--text-primary);
-      font-size: 0.85rem;
+    .search-box-input:focus {
+      background-color: #FFFFFF;
+      border-color: #94A3B8;
+      box-shadow: 0 0 0 3px rgba(14, 122, 83, 0.12);
       outline: none;
-      width: 100%;
-    }
-    .search-input-box input::placeholder {
-      color: var(--text-muted);
     }
 
-    .filter-chips {
+    .filter-pills {
       display: flex;
       gap: 6px;
-      padding: 8px 16px;
-      background-color: var(--bg-panel);
+      padding: 0.65rem 1rem;
+      background-color: #F8FAFC;
       border-bottom: 1px solid var(--border-subtle);
-      overflow-x: auto;
     }
-
     .filter-chip {
-      background-color: var(--bg-surface);
-      color: var(--text-secondary);
-      border: 1px solid transparent;
-      border-radius: 16px;
-      padding: 4px 12px;
-      font-size: 0.74rem;
+      font-size: 0.75rem;
       font-weight: 600;
+      padding: 0.25rem 0.65rem;
+      border-radius: 14px;
+      background-color: #FFFFFF;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-subtle);
       cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s;
+      user-select: none;
+      transition: all 0.15s ease;
     }
     .filter-chip:hover {
-      background-color: var(--bg-surface-hover);
-      color: var(--text-primary);
+      background-color: #F1F5F9;
+      color: var(--text-main);
     }
     .filter-chip.active {
-      background-color: rgba(0, 168, 132, 0.16);
-      color: var(--wa-emerald);
-      border-color: rgba(0, 168, 132, 0.35);
+      background-color: var(--ucv-navy);
+      color: #FFFFFF;
+      border-color: var(--ucv-navy);
     }
 
-    .chats-list-container {
+    .chats-list-scroll {
       flex: 1;
       overflow-y: auto;
+      padding: 0.35rem 0;
     }
 
     .chat-item {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 12px 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #F1F5F9;
       cursor: pointer;
-      transition: background-color 0.15s;
+      transition: background-color 0.15s ease;
       position: relative;
     }
     .chat-item:hover {
-      background-color: var(--bg-surface-hover);
+      background-color: #F8FAFC;
     }
     .chat-item.active {
-      background-color: var(--bg-active);
+      background-color: #EFF6FF;
+      border-left: 4px solid var(--ucv-navy);
     }
 
-    .chat-avatar {
-      width: 46px;
-      height: 46px;
+    .chat-avatar-circle {
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #1E3A8A, #0284C7);
+      background: linear-gradient(135deg, #1E3A8A, #3B82F6);
+      color: #FFFFFF;
+      font-weight: 700;
+      font-size: 0.95rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #FFF;
-      font-weight: 700;
-      font-size: 1rem;
       flex-shrink: 0;
-      position: relative;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
-    .chat-avatar.ind {
-      background: linear-gradient(135deg, #047857, #10B981);
+    .chat-avatar-circle.docente {
+      background: linear-gradient(135deg, #065F46, #10B981);
     }
 
     .chat-info {
       flex: 1;
       min-width: 0;
     }
-
     .chat-info-top {
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 3px;
+      margin-bottom: 2px;
     }
-
     .chat-name {
       font-size: 0.88rem;
-      font-weight: 600;
-      color: var(--text-primary);
+      font-weight: 700;
+      color: var(--text-main);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      margin-right: 6px;
     }
-
     .chat-time {
       font-size: 0.72rem;
       color: var(--text-muted);
+      font-weight: 500;
       flex-shrink: 0;
     }
-
     .chat-info-bottom {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      gap: 6px;
     }
-
-    .chat-last-msg {
-      font-size: 0.8rem;
+    .chat-last-preview {
+      font-size: 0.79rem;
       color: var(--text-secondary);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 220px;
     }
-
-    .unread-badge {
-      background-color: var(--wa-emerald);
-      color: #0B131A;
-      font-size: 0.7rem;
-      font-weight: 800;
+    .badge-unread {
+      background-color: var(--wa-green);
+      color: #FFFFFF;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
       border-radius: 10px;
-      padding: 1px 7px;
       min-width: 18px;
       text-align: center;
     }
 
-    /* COLUMNA 2: CONVERSACIÓN ACTIVA (CENTRO) */
-    .chat-main-area {
+    /* COLUMNA 2: ÁREA DE CONVERSACIÓN CENTRAL */
+    .chat-conversation-area {
       flex: 1;
       display: flex;
       flex-direction: column;
-      height: 100%;
-      background: #0B141A url("data:image/svg+xml,%3Csvg width='64' height='64' viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8 16c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zm0-2c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6zm32 0c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zm0-2c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6zm-16 16c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zm0-2c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6zm32 0c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zm0-2c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6z' fill='%23111b21' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E") repeat;
+      background-color: #EFEAE2;
+      background-image: radial-gradient(#D6D1C7 0.75px, transparent 0.75px);
+      background-size: 16px 16px;
       position: relative;
     }
 
-    .conversation-header {
+    .active-chat-navbar {
       height: 60px;
-      background-color: var(--bg-panel);
+      background-color: #FFFFFF;
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 1.25rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
       z-index: 20;
     }
 
-    .active-contact-meta {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .messages-scroll-area {
+    .messages-stream-box {
       flex: 1;
       overflow-y: auto;
-      padding: 1.25rem 2.5rem;
+      padding: 1.25rem 1.75rem;
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
 
-    /* BURBUJAS DE MENSAJE */
     .msg-bubble {
       max-width: 65%;
-      padding: 7px 12px 6px 12px;
-      border-radius: 9px;
+      padding: 0.65rem 0.95rem;
+      border-radius: 12px;
       font-size: 0.88rem;
       line-height: 1.45;
       position: relative;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
       word-break: break-word;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     }
-
-    .msg-in {
+    .msg-bubble.incoming {
       align-self: flex-start;
       background-color: var(--wa-bubble-in);
-      color: var(--text-primary);
-      border-top-left-radius: 2px;
+      color: var(--text-main);
+      border-top-left-radius: 3px;
+      border: 1px solid var(--border-subtle);
     }
-
-    .msg-out {
+    .msg-bubble.outgoing {
       align-self: flex-end;
       background-color: var(--wa-bubble-out);
-      color: #E9EDEF;
-      border-top-right-radius: 2px;
+      color: #0F3822;
+      border-top-right-radius: 3px;
+      border: 1px solid #C8E6C9;
     }
 
-    .msg-meta {
+    .msg-meta-info {
       display: flex;
       align-items: center;
       justify-content: flex-end;
       gap: 4px;
-      margin-top: 3px;
-      font-size: 0.68rem;
-      color: rgba(255, 255, 255, 0.55);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      user-select: none;
     }
-    .msg-check {
+    .msg-bubble.outgoing .msg-meta-info {
+      color: #3B6B4C;
+    }
+    .msg-check-icon {
+      font-size: 0.82rem;
       color: var(--wa-check-blue);
-      font-size: 0.78rem;
     }
 
     .msg-media-img {
       max-width: 100%;
-      border-radius: 6px;
-      margin-bottom: 5px;
+      max-height: 280px;
+      border-radius: 8px;
+      margin-bottom: 6px;
       cursor: pointer;
-      transition: transform 0.2s;
+      display: block;
     }
-    .msg-media-img:hover {
-      transform: scale(1.02);
-    }
-
     .msg-media-video {
       max-width: 100%;
-      border-radius: 6px;
-      margin-bottom: 5px;
+      max-height: 280px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      outline: none;
     }
 
-    /* BARRA DE ENTRADA INFERIOR */
+    /* BARRA INFERIOR DE ESCRITURA */
     .chat-input-bar {
       min-height: 62px;
-      background-color: var(--bg-panel);
+      background-color: #FFFFFF;
       border-top: 1px solid var(--border-subtle);
+      padding: 0.6rem 1rem;
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 8px 16px;
+      box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.03);
       z-index: 20;
     }
 
-    .btn-chat-icon {
-      background: transparent;
-      border: none;
-      color: var(--text-secondary);
-      font-size: 1.25rem;
-      padding: 6px;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .btn-chat-icon:hover {
-      color: var(--text-primary);
-      background-color: var(--bg-surface-hover);
-    }
-
-    .input-message-field {
+    .chat-textarea {
       flex: 1;
-      background-color: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      color: var(--text-primary);
+      border: 1px solid var(--border-strong);
+      border-radius: 20px;
+      padding: 0.55rem 1.1rem;
       font-size: 0.88rem;
-      padding: 9px 14px;
+      color: var(--text-main);
+      background-color: #F8FAFC;
+      transition: all 0.15s ease;
+    }
+    .chat-textarea:focus {
+      background-color: #FFFFFF;
+      border-color: var(--wa-green);
+      box-shadow: 0 0 0 3px rgba(14, 122, 83, 0.12);
       outline: none;
-      transition: border-color 0.2s;
-    }
-    .input-message-field:focus {
-      border-color: var(--wa-emerald);
-    }
-    .input-message-field::placeholder {
-      color: var(--text-muted);
     }
 
     .btn-send-wa {
-      background-color: var(--wa-emerald);
-      color: #0B131A;
-      border: none;
-      border-radius: 50%;
       width: 42px;
       height: 42px;
+      border-radius: 50%;
+      background-color: var(--wa-green);
+      color: #FFFFFF;
+      border: none;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       cursor: pointer;
-      transition: transform 0.15s, background-color 0.2s;
+      transition: background-color 0.2s ease, transform 0.1s ease;
       flex-shrink: 0;
     }
     .btn-send-wa:hover {
-      background-color: var(--wa-emerald-hover);
-      transform: scale(1.05);
-    }
-    .btn-send-wa:active {
-      transform: scale(0.95);
+      background-color: var(--wa-green-hover);
+      transform: scale(1.04);
     }
 
-    /* COLUMNA 3: EXPEDIENTE / FICHA DEL ALUMNO (DERECHA) */
-    .student-dossier-panel {
-      width: 320px;
-      background-color: var(--bg-panel);
+    /* COLUMNA 3: EXPEDIENTE PAU & ACCIONES RÁPIDAS */
+    .dossier-sidebar {
+      width: 330px;
+      background-color: #FFFFFF;
       border-left: 1px solid var(--border-subtle);
       display: flex;
       flex-direction: column;
-      flex-shrink: 0;
-      height: 100%;
       overflow-y: auto;
-      padding: 1.25rem;
+      flex-shrink: 0;
     }
 
-    .dossier-card {
-      background-color: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 1.25rem;
+    .dossier-card-top {
+      padding: 1.25rem 1rem;
       text-align: center;
-      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border-subtle);
+      background-color: #F8FAFC;
     }
 
-    .quick-reply-btn {
-      width: 100%;
-      text-align: left;
-      background-color: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-secondary);
-      border-radius: 8px;
-      padding: 8px 12px;
-      font-size: 0.78rem;
-      margin-bottom: 6px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .quick-reply-btn:hover {
-      background-color: var(--bg-surface-hover);
-      color: var(--text-primary);
-      border-color: var(--border-medium);
-    }
-
-    /* MODAL DE CÓDIGO QR REAL */
-    .qr-scan-container {
-      background-color: #FFF;
-      padding: 16px;
-      border-radius: 16px;
-      display: inline-block;
-      position: relative;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-
-    .qr-laser-line {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, transparent, #00A884, transparent);
-      box-shadow: 0 0 12px #00A884;
-      animation: scanLaser 2.2s infinite ease-in-out;
-    }
-
-    @keyframes scanLaser {
-      0% { top: 12px; }
-      50% { top: calc(100% - 15px); }
-      100% { top: 12px; }
-    }
-
-    /* BANNER DE AVISO SERVICIO */
-    .service-alert-banner {
-      background: rgba(245, 158, 11, 0.12);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-      color: #FCD34D;
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-size: 0.8rem;
+    .dossier-avatar-large {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--ucv-navy), #2563EB);
+      color: #FFFFFF;
+      font-size: 1.35rem;
+      font-weight: 700;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin: 10px 16px 0 16px;
-    }
-
-    /* ESTADO VACÍO */
-    .empty-chat-state {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      padding: 2rem;
-      color: var(--text-muted);
+      margin: 0 auto 0.75rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
     }
-    .empty-chat-state i {
-      font-size: 3.5rem;
-      color: var(--text-muted);
-      margin-bottom: 1rem;
-      opacity: 0.6;
+
+    .dossier-contact-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+    .dossier-contact-phone {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+    }
+
+    .dossier-section {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .dossier-section-title {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dossier-field-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 0.55rem;
+      font-size: 0.83rem;
+    }
+    .dossier-label {
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .dossier-val {
+      color: var(--text-main);
+      font-weight: 700;
+      text-align: right;
+    }
+
+    /* PLANTILLAS DE RESPUESTA PASTEL */
+    .template-card-btn {
+      width: 100%;
+      text-align: left;
+      padding: 0.6rem 0.75rem;
+      margin-bottom: 0.45rem;
+      border-radius: 8px;
+      background-color: #F8FAFC;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .template-card-btn:hover {
+      background-color: var(--pastel-blue-bg);
+      border-color: var(--pastel-blue-border);
+      color: var(--pastel-blue-text);
+      transform: translateX(2px);
+    }
+
+    /* ESTADO VACÍO ELEGANTE */
+    .empty-state-card {
+      margin: auto;
+      max-width: 440px;
+      background-color: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 2.25rem 1.75rem;
+      text-align: center;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    }
+
+    /* MODAL QR ELEGANTE */
+    .qr-scanner-card {
+      background: #FFFFFF;
+      padding: 1.5rem;
+      border-radius: 14px;
+      text-align: center;
+      position: relative;
+      display: inline-block;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--border-subtle);
+    }
+    .qr-laser-line {
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #10B981, transparent);
+      box-shadow: 0 0 8px #10B981;
+      animation: scanLaser 2.4s ease-in-out infinite alternate;
+    }
+    @keyframes scanLaser {
+      0% { top: 12%; }
+      100% { top: 88%; }
     }
   </style>
 </head>
 <body>
 
-  <!-- BARRA SUPERIOR INSTITUCIONAL -->
-  <header class="pau-topbar">
-    <div class="brand-logo-box">
-      <a href="selector.html" class="btn btn-outline-secondary btn-sm border-0 text-muted px-2 py-1" title="Volver al Selector de Módulos">
-        <i class="bi bi-arrow-left fs-5"></i>
+  <!-- NAVBAR INSTITUCIONAL UCV VIRTUAL -->
+  <header class="app-navbar">
+    <div class="brand-box">
+      <a href="index.html" class="d-flex align-items-center text-decoration-none">
+        <img src="img/logo-ucv-virtual.png" alt="UCV Virtual" class="brand-logo-img">
       </a>
-      <div class="brand-icon-shield">
-        <i class="bi bi-whatsapp"></i>
-      </div>
+      <div class="d-none d-sm-block" style="width: 1px; height: 26px; background: rgba(255,255,255,0.25);"></div>
       <div>
-        <div class="fw-bold d-flex align-items-center gap-2" style="font-size: 0.96rem; letter-spacing: -0.01em;">
-          <span>PAU • Central WhatsApp Live</span>
-          <span class="badge bg-danger fw-bold" style="font-size: 0.65rem; letter-spacing: 0.05em;">FIA 2026-2</span>
-        </div>
-        <div class="text-muted" style="font-size: 0.74rem;">
-          Atención al Estudiante y Docente en Tiempo Real • UCV Virtual
-        </div>
+        <div class="brand-title">PAU Multicanal • WhatsApp Live Hub</div>
+        <div class="brand-subtitle">Facultad de Ingeniería y Arquitectura • Atención en Tiempo Real</div>
       </div>
     </div>
 
-    <!-- Indicador de Estado y Acciones Rápidas -->
+    <!-- ACCIONES DE CABECERA Y ESTADO -->
     <div class="d-flex align-items-center gap-2.5">
-      <!-- Indicador de Estado Conexión WhatsApp -->
-      <div class="status-pill" id="badgeWaStatus">
-        <span class="status-dot offline" id="dotWaStatus"></span>
-        <span id="textWaStatus" class="font-monospace">Desconectado</span>
+      <!-- Indicador de Estado Real -->
+      <div id="badgeWaStatus" class="badge-status waiting" title="Estado de la conexión WhatsApp Multi-Device">
+        <span id="dotWaStatus" class="status-dot waiting"></span>
+        <span id="textWaStatus">Comprobando conexión...</span>
       </div>
 
-      <!-- Botón Vincular / QR -->
-      <button type="button" class="btn btn-sm btn-outline-light border-secondary d-inline-flex align-items-center gap-1.5 px-3 py-1.5 fw-semibold" style="border-radius: 8px;" onclick="abrirModalQR()">
-        <i class="bi bi-qr-code-scan text-success"></i>
+      <!-- Botón Vincular QR -->
+      <button type="button" class="btn btn-sm text-white fw-bold d-inline-flex align-items-center gap-1.5 shadow-sm px-3 py-1.5" style="background-color: var(--wa-green); border-radius: 8px;" onclick="abrirModalQR()" title="Escanear Código QR con el teléfono celular">
+        <i class="bi bi-qr-code-scan"></i>
         <span>Vincular Celular (QR)</span>
       </button>
 
-      <!-- Conmutador Modo Demo / En Vivo -->
-      <button type="button" class="btn btn-sm btn-dark border-secondary px-2.5 py-1.5" id="btnToggleDemoMode" onclick="alternarModoDemo()" title="Cambiar entre servidor real Baileys y datos de demostración">
-        <i class="bi bi-sliders text-warning me-1"></i>
-        <span id="labelDemoMode">Modo Demo</span>
+      <!-- Botón Directorio Docentes Real -->
+      <button type="button" class="btn btn-sm btn-outline-light d-none d-md-inline-flex align-items-center gap-1.5 px-2.5 py-1.5" style="border-radius: 8px;" onclick="abrirModalDirectorio()" title="Ver padrón de docentes con teléfonos reales">
+        <i class="bi bi-person-lines-fill"></i>
+        <span>Directorio FIA</span>
       </button>
 
-      <!-- Botón Desvincular -->
-      <button type="button" class="btn btn-sm btn-outline-danger border-0 px-2 py-1.5" id="btnLogoutWA" onclick="cerrarSesionWA()" title="Desvincular WhatsApp">
-        <i class="bi bi-box-arrow-right fs-6"></i>
-      </button>
-
-      <!-- Enlace a Bandeja PAU Completa -->
-      <a href="index.html#pau" class="btn btn-sm btn-primary py-1.5 px-3 fw-semibold shadow-sm d-inline-flex align-items-center gap-1.5" style="border-radius: 8px;">
-        <i class="bi bi-inbox-fill"></i>
+      <!-- Volver a la Bandeja PAU General -->
+      <a href="index.html#pau" class="btn btn-sm btn-light fw-semibold d-inline-flex align-items-center gap-1.5 px-3 py-1.5" style="border-radius: 8px; color: var(--ucv-navy);" title="Regresar al Sistema de Gestión Académica">
+        <i class="bi bi-inbox-fill text-primary"></i>
         <span>Bandeja PAU</span>
       </a>
     </div>
   </header>
 
-  <!-- ESPACIO DE TRABAJO MULTICANAL DE 3 COLUMNAS -->
-  <main class="pau-chat-workspace">
+  <!-- CUERPO PRINCIPAL (3 COLUMNAS) -->
+  <main class="pau-main-layout">
 
-    <!-- COLUMNA 1: LISTA DE CHATS & ESTUDIANTES -->
+    <!-- COLUMNA 1: BANDEJA DE CHATS -->
     <aside class="chats-sidebar">
       <div class="chats-header">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <span class="fw-bold small text-uppercase" style="letter-spacing: 0.05em; color: var(--text-secondary); font-size: 0.76rem;">Bandeja de Mensajes</span>
-          <button type="button" class="btn btn-sm btn-outline-secondary border-0 p-1 text-muted" onclick="abrirModalNuevoContacto()" title="Iniciar conversación con nuevo número">
-            <i class="bi bi-chat-dots-fill text-success fs-6"></i>
-          </button>
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="fw-bold" style="font-size: 0.92rem; color: var(--text-main);">
+            <i class="bi bi-chat-left-text-fill text-success me-1.5"></i>Conversaciones
+          </span>
+          <div class="d-flex gap-1">
+            <button class="btn btn-xs btn-outline-secondary py-1 px-2 rounded" onclick="abrirModalNuevoChat()" title="Iniciar conversación con cualquier número de WhatsApp" style="font-size: 0.76rem;">
+              <i class="bi bi-plus-lg me-1"></i>Nuevo Chat
+            </button>
+            <button class="btn btn-xs btn-outline-secondary py-1 px-2 rounded" onclick="cargarChatsReales()" title="Recargar chats" style="font-size: 0.76rem;">
+              <i class="bi bi-arrow-clockwise"></i>
+            </button>
+          </div>
         </div>
 
-        <div class="search-input-box">
-          <i class="bi bi-search text-muted"></i>
-          <input type="text" id="inputSearchChat" placeholder="Buscar por alumno, teléfono o carrera..." oninput="filtrarChats()">
+        <!-- Buscador -->
+        <div class="position-relative">
+          <i class="bi bi-search position-absolute top-50 translate-middle-y text-muted" style="left: 0.75rem; font-size: 0.85rem;"></i>
+          <input type="text" id="inputSearchChat" class="form-control search-box-input w-100" placeholder="Buscar por nombre o número..." oninput="filtrarChats()">
         </div>
       </div>
 
-      <!-- Chips de Filtro Rápido -->
-      <div class="filter-chips">
-        <button class="filter-chip active" id="chipAll" onclick="filtrarCategoria('all')">Todos</button>
-        <button class="filter-chip" id="chipUnread" onclick="filtrarCategoria('unread')">No leídos</button>
-        <button class="filter-chip" id="chipSis" onclick="filtrarCategoria('sistemas')">Sistemas</button>
-        <button class="filter-chip" id="chipInd" onclick="filtrarCategoria('industrial')">Industrial</button>
+      <!-- Filtros Pasteles -->
+      <div class="filter-pills">
+        <span class="filter-chip active" id="chipAll" onclick="filtrarCategoria('all')">Todos</span>
+        <span class="filter-chip" id="chipUnread" onclick="filtrarCategoria('unread')">No leídos</span>
+        <span class="filter-chip" id="chipDocentes" onclick="filtrarCategoria('docentes')">Docentes</span>
       </div>
 
-      <!-- Banner de Servicio Node / Offline -->
-      <div class="service-alert-banner d-none" id="bannerNodeOffline">
-        <div class="d-flex align-items-center gap-1.5">
-          <i class="bi bi-exclamation-triangle-fill"></i>
-          <span>Servicio WhatsApp local detenido.</span>
-        </div>
-        <span class="badge bg-warning text-dark font-monospace" style="cursor: pointer;" onclick="alternarModoDemo(true)">Usar Demo</span>
-      </div>
-
-      <!-- Listado de Conversaciones -->
-      <div class="chats-list-container" id="chatsListContainer">
-        <!-- Renderizado dinámico vía JavaScript -->
+      <!-- Lista con Scroll -->
+      <div class="chats-list-scroll" id="chatsListContainer">
+        <!-- Render dinámico de chats reales -->
       </div>
     </aside>
 
-    <!-- COLUMNA 2: CONVERSACIÓN ACTIVA EN VIVO -->
-    <section class="chat-main-area">
-      <!-- Cabecera de la Conversación Activa -->
-      <div class="conversation-header" id="activeChatHeader">
-        <div class="active-contact-meta">
-          <div class="chat-avatar" id="activeContactAvatar">--</div>
+    <!-- COLUMNA 2: ÁREA DE CONVERSACIÓN CENTRAL -->
+    <section class="chat-conversation-area" id="chatCentralSection">
+      
+      <!-- Cabecera del Chat Activo -->
+      <div class="active-chat-navbar" id="activeChatNavbar">
+        <div class="d-flex align-items-center gap-2.5">
+          <div class="chat-avatar-circle" id="activeContactAvatar" style="width: 40px; height: 40px; font-size: 0.9rem;">
+            --
+          </div>
           <div>
-            <div class="d-flex align-items-center gap-2">
-              <span class="fw-bold" id="activeContactName" style="font-size: 0.95rem;">Selecciona un chat</span>
-              <span class="badge bg-primary text-white py-0.5 px-2 small" id="activeContactBadge" style="font-size: 0.65rem;">Alumno UCV</span>
-            </div>
-            <div class="text-muted d-flex align-items-center gap-2" style="font-size: 0.75rem;">
-              <span class="font-monospace" id="activeContactPhone">+51 --- --- ---</span>
-              <span>•</span>
-              <span class="text-success" id="activeContactStatusOnline"><i class="bi bi-circle-fill me-1" style="font-size: 0.5rem;"></i>En línea</span>
+            <div class="fw-bold text-dark" id="activeContactName" style="font-size: 0.92rem; line-height: 1.2;">Seleccione un contacto</div>
+            <div class="d-flex align-items-center gap-2" style="font-size: 0.76rem;">
+              <span class="text-secondary" id="activeContactPhone">--</span>
+              <span class="badge" id="activeContactBadge" style="background-color: var(--pastel-blue-bg); color: var(--pastel-blue-text); font-size: 0.7rem;">Atención PAU</span>
             </div>
           </div>
         </div>
 
-        <div class="d-flex align-items-center gap-2">
-          <!-- Botón Generar Ticket PAU Directo -->
-          <button type="button" class="btn btn-sm btn-outline-info border-secondary d-inline-flex align-items-center gap-1.5 px-2.5 py-1" onclick="derivarATicketPAU()" title="Convertir consulta en Ticket PAU formal">
-            <i class="bi bi-ticket-detailed-fill"></i>
-            <span>Derivar a PAU</span>
+        <!-- Acciones sobre la conversación activa -->
+        <div class="d-flex align-items-center gap-2" id="activeChatActions" style="display: none !important;">
+          <button type="button" class="btn btn-sm fw-semibold d-inline-flex align-items-center gap-1.5 px-2.5 py-1.5" style="background-color: var(--pastel-blue-bg); color: var(--pastel-blue-text); border: 1px solid var(--pastel-blue-border); border-radius: 8px; font-size: 0.78rem;" onclick="derivarATicketPAU()" title="Registrar esta consulta en la bandeja de correos/tickets PAU">
+            <i class="bi bi-file-earmark-check-fill"></i>
+            <span>Derivar a Ticket PAU</span>
           </button>
-
-          <!-- Opciones adicionales -->
-          <button type="button" class="btn-chat-icon" onclick="exportarHistorialChat()" title="Exportar chat">
+          <button type="button" class="btn btn-sm btn-outline-secondary px-2.5 py-1.5" style="border-radius: 8px; font-size: 0.78rem;" onclick="exportarHistorialChat()" title="Descargar transcripción del chat">
             <i class="bi bi-download"></i>
           </button>
         </div>
       </div>
 
-      <!-- Zona de Mensajes con Scroll -->
-      <div class="messages-scroll-area" id="messagesContainer">
-        <div class="empty-chat-state" id="emptyChatPlaceholder">
-          <i class="bi bi-chat-square-quote"></i>
-          <h6 class="fw-bold text-white mb-1">Módulo PAU • WhatsApp Live Chat</h6>
-          <p class="small text-muted" style="max-width: 320px;">
-            Selecciona una conversación del panel izquierdo o vincula tu celular para recibir y responder solicitudes de alumnos y docentes en tiempo real.
-          </p>
-        </div>
+      <!-- Flujo de Mensajes -->
+      <div class="messages-stream-box" id="messagesContainer">
+        <!-- Estado inicial: se carga con JavaScript -->
       </div>
 
       <!-- Barra de Envío Inferior -->
-      <div class="chat-input-bar">
-        <!-- Selector de Archivo Multimedia -->
-        <input type="file" id="mediaFileInput" class="d-none" accept="image/*,video/*,application/pdf" onchange="subirArchivoMultimedia(this)">
-        
-        <button type="button" class="btn-chat-icon" onclick="document.getElementById('mediaFileInput').click()" title="Adjuntar foto, video o documento">
-          <i class="bi bi-paperclip"></i>
+      <div class="chat-input-bar" id="chatInputBar">
+        <input type="file" id="inputFileMedia" class="d-none" accept="image/*,video/*,.pdf,.doc,.docx" onchange="subirArchivoMultimedia(this)">
+        <button type="button" class="btn btn-light border text-secondary px-2.5 py-2 rounded-circle" onclick="document.getElementById('inputFileMedia').click()" title="Adjuntar foto, video o documento">
+          <i class="bi bi-paperclip fs-6"></i>
         </button>
 
-        <button type="button" class="btn-chat-icon" onclick="insertarEmoji('👋')" title="Insertar saludo">
-          <i class="bi bi-emoji-smile"></i>
-        </button>
+        <div class="dropdown">
+          <button type="button" class="btn btn-light border text-secondary px-2.5 py-2 rounded-circle" data-bs-toggle="dropdown" title="Insertar emoji">
+            <i class="bi bi-emoji-smile fs-6"></i>
+          </button>
+          <ul class="dropdown-menu shadow border-0 p-2" style="font-size: 1.25rem; min-width: 180px;">
+            <div class="d-flex flex-wrap gap-2 justify-content-center">
+              <span role="button" onclick="insertarEmoji('👋')">👋</span>
+              <span role="button" onclick="insertarEmoji('✅')">✅</span>
+              <span role="button" onclick="insertarEmoji('📌')">📌</span>
+              <span role="button" onclick="insertarEmoji('📝')">📝</span>
+              <span role="button" onclick="insertarEmoji('👍')">👍</span>
+              <span role="button" onclick="insertarEmoji('🎓')">🎓</span>
+              <span role="button" onclick="insertarEmoji('🤝')">🤝</span>
+              <span role="button" onclick="insertarEmoji('⏳')">⏳</span>
+            </div>
+          </ul>
+        </div>
 
-        <input type="text" id="inputChatMessage" class="input-message-field" placeholder="Escribe un mensaje de respuesta oficial..." onkeydown="handleInputKeyPress(event)">
+        <input type="text" id="inputChatMessage" class="chat-textarea" placeholder="Escriba un mensaje oficial para enviar..." onkeypress="handleInputKeyPress(event)">
 
-        <button type="button" class="btn-send-wa" id="btnSendMessage" onclick="enviarMensajeActual()" title="Enviar mensaje">
-          <i class="bi bi-send-fill"></i>
+        <button type="button" class="btn-send-wa" onclick="enviarMensajeActual()" title="Enviar mensaje por WhatsApp">
+          <i class="bi bi-send-fill" style="transform: translateX(1px);"></i>
         </button>
       </div>
     </section>
 
-    <!-- COLUMNA 3: EXPEDIENTE / FICHA DEL ALUMNO PAU -->
-    <aside class="student-dossier-panel d-none d-xl-flex">
-      <div class="dossier-card">
-        <div class="chat-avatar mx-auto mb-2.5" id="dossierAvatar" style="width: 60px; height: 60px; font-size: 1.4rem;">--</div>
-        <h6 class="fw-bold mb-0.5 text-white" id="dossierName">Estudiante UCV</h6>
-        <div class="font-monospace text-muted small mb-2" id="dossierPhone">+51 ---</div>
-        <span class="badge bg-primary px-2.5 py-1" id="dossierEscuela">Ingeniería de Sistemas</span>
-      </div>
-
-      <div class="mb-3">
-        <label class="text-uppercase fw-bold text-muted small mb-1.5" style="font-size: 0.72rem; letter-spacing: 0.05em;">Información Académica</label>
-        <div class="p-2.5 rounded-3 border small" style="background: var(--bg-surface); border-color: var(--border-subtle) !important;">
-          <div class="d-flex justify-content-between mb-1.5">
-            <span class="text-muted">Código:</span>
-            <span class="fw-bold font-monospace" id="dossierCodigo">7000123456</span>
-          </div>
-          <div class="d-flex justify-content-between mb-1.5">
-            <span class="text-muted">Ciclo:</span>
-            <span class="fw-bold" id="dossierCiclo">Ciclo VI</span>
-          </div>
-          <div class="d-flex justify-content-between mb-1.5">
-            <span class="text-muted">Sección:</span>
-            <span class="fw-bold" id="dossierSeccion">A1</span>
-          </div>
-          <div class="d-flex justify-content-between">
-            <span class="text-muted">Modalidad:</span>
-            <span class="fw-bold text-success">SUBE Virtual</span>
-          </div>
+    <!-- COLUMNA 3: EXPEDIENTE PAU & RESPUESTAS RÁPIDAS -->
+    <aside class="dossier-sidebar" id="dossierSidebar">
+      <!-- Tarjeta Superior del Contacto -->
+      <div class="dossier-card-top">
+        <div class="dossier-avatar-large" id="dossierAvatar">--</div>
+        <div class="dossier-contact-name" id="dossierName">Sin Contacto</div>
+        <div class="dossier-contact-phone" id="dossierPhone">--</div>
+        <div class="mt-2">
+          <span class="badge" id="dossierEscuelaBadge" style="background-color: var(--pastel-blue-bg); color: var(--pastel-blue-text); border: 1px solid var(--pastel-blue-border); font-size: 0.74rem;">
+            Facultad de Ingeniería
+          </span>
         </div>
       </div>
 
-      <!-- Respuestas Rápidas Institucionales -->
-      <div class="mb-3">
-        <label class="text-uppercase fw-bold text-muted small mb-1.5" style="font-size: 0.72rem; letter-spacing: 0.05em;">Plantillas de Respuesta Rápida</label>
-        <button type="button" class="quick-reply-btn" onclick="usarPlantilla('¡Hola! Te saluda la Coordinación Académica FIA UCV. ¿En qué trámite o consulta te podemos apoyar el día de hoy?')">
-          👋 Saludo y bienvenida formal
+      <!-- Ficha de Datos Institucionales -->
+      <div class="dossier-section">
+        <div class="dossier-section-title">
+          <i class="bi bi-info-circle-fill text-primary"></i>
+          Información Registrada
+        </div>
+
+        <div class="dossier-field-row">
+          <span class="dossier-label">Escuela / Carrera:</span>
+          <span class="dossier-val" id="dossierEscuela">Ingeniería FIA</span>
+        </div>
+        <div class="dossier-field-row">
+          <span class="dossier-label">Condición / Cargo:</span>
+          <span class="dossier-val" id="dossierCondicion">Atención General</span>
+        </div>
+        <div class="dossier-field-row">
+          <span class="dossier-label">Identificador:</span>
+          <span class="dossier-val" id="dossierCodigo">--</span>
+        </div>
+        <div class="dossier-field-row">
+          <span class="dossier-label">Correo Institucional:</span>
+          <span class="dossier-val" id="dossierCorreo" style="font-size: 0.75rem;">--</span>
+        </div>
+      </div>
+
+      <!-- Plantillas de Respuesta Rápida -->
+      <div class="dossier-section flex-1">
+        <div class="dossier-section-title">
+          <i class="bi bi-lightning-charge-fill text-warning"></i>
+          Respuestas Rápidas (1 Clic)
+        </div>
+
+        <button type="button" class="template-card-btn" onclick="usarPlantilla('Estimado(a), reciba un cordial saludo de la Coordinación Académica FIA UCV. ¿En qué podemos orientarle el día de hoy?')">
+          <span>👋</span> Saludo y bienvenida formal
         </button>
-        <button type="button" class="quick-reply-btn" onclick="usarPlantilla('Estimado(a) estudiante, tu solicitud ha sido derivada a la Dirección de Escuela para su validación en actas. En breve te notificaremos.')">
-          📋 Notificación de derivación a Escuela
+
+        <button type="button" class="template-card-btn" onclick="usarPlantilla('Su solicitud ha sido derivada a la Dirección de Escuela para su respectiva validación académica. Le mantendremos informado.')">
+          <span>📌</span> Notificación de derivación
         </button>
-        <button type="button" class="quick-reply-btn" onclick="usarPlantilla('Por favor, envíanos una captura de pantalla de tu Intranet o correo institucional para poder verificar tu caso con el área de registros.')">
-          📷 Solicitar evidencia de intranet
+
+        <button type="button" class="template-card-btn" onclick="usarPlantilla('Por favor, sírvase adjuntar una captura de pantalla clara de la incidencia o constancia desde su campus virtual para agilizar la atención.')">
+          <span>📑</span> Solicitar evidencia de intranet
         </button>
-        <button type="button" class="quick-reply-btn" onclick="usarPlantilla('Tu trámite se encuentra registrado y formalizado en la bandeja PAU bajo el estado APROBADO.')">
-          ✅ Confirmación de trámite aprobado
+
+        <button type="button" class="template-card-btn" onclick="usarPlantilla('Confirmamos que el trámite solicitado ha sido aprobado satisfactoriamente en el sistema institucional. ¡Éxitos en su semestre académico!')">
+          <span>✅</span> Confirmación de trámite aprobado
         </button>
       </div>
 
-      <!-- Enlace directo a Pizarra Zoom -->
-      <div class="mt-auto pt-2 border-top border-secondary">
-        <a href="https://zoom.us" target="_blank" class="btn btn-sm btn-outline-primary w-100 d-inline-flex align-items-center justify-content-center gap-2 py-2 fw-semibold" style="border-radius: 8px;">
+      <!-- Acceso a Sala Zoom Institucional -->
+      <div class="p-3 border-top bg-light text-center">
+        <a href="https://zoom.us/" target="_blank" rel="noopener noreferrer" class="btn btn-sm w-100 fw-bold py-2 d-inline-flex align-items-center justify-content-center gap-2" style="background-color: var(--pastel-blue-bg); color: var(--pastel-blue-text); border: 1px solid var(--pastel-blue-border); border-radius: 8px;">
           <i class="bi bi-camera-video-fill"></i>
-          <span>Atención Vía Zoom</span>
+          <span>Atención Directa Vía Zoom</span>
         </a>
       </div>
     </aside>
-
   </main>
 
-  <!-- MODAL DE ESCANEO DE CÓDIGO QR REAL -->
+  <!-- ======================================================================== -->
+  <!-- MODAL: ESCANEAR CÓDIGO QR REAL (BAILEYS) -->
+  <!-- ======================================================================== -->
   <div class="modal fade" id="modalVincularQR" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content border-0 shadow-lg text-white" style="background-color: var(--bg-panel); border-radius: 16px;">
-        <div class="modal-header border-bottom border-secondary py-3 px-4">
-          <div class="d-flex align-items-center gap-2.5">
-            <div class="brand-icon-shield" style="width: 32px; height: 32px; font-size: 1rem;">
-              <i class="bi bi-whatsapp"></i>
-            </div>
-            <h6 class="modal-title fw-bold mb-0">Vincular Celular a WhatsApp Web</h6>
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+        <div class="modal-header border-bottom py-3 px-4" style="background-color: #F8FAFC;">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-qr-code text-success fs-5"></i>
+            <h6 class="modal-title fw-bold text-dark mb-0">Vincular WhatsApp Oficial</h6>
           </div>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
 
-        <div class="modal-body text-center p-4">
-          <div class="qr-scan-container mx-auto mb-3" style="width: 250px; height: 250px; display: flex; align-items: center; justify-content: center;">
-            <div class="qr-laser-line"></div>
-            <img id="imgCodigoQR" src="" alt="Código QR WhatsApp" style="width: 218px; height: 218px; display: none;">
-            <div id="qrLoadingSpinner" class="text-dark">
-              <div class="spinner-border text-success" role="status" style="width: 2.5rem; height: 2.5rem;"></div>
-              <div class="small fw-bold mt-2 text-muted">Generando QR...</div>
+        <div class="modal-body p-4 text-center">
+          <p class="text-secondary small mb-3">
+            Escanee este código con la cámara de WhatsApp de su teléfono para conectar la sesión en vivo.
+          </p>
+
+          <!-- Tarjeta del QR -->
+          <div class="qr-scanner-card mx-auto mb-3" style="width: 250px; height: 250px; display: flex; align-items: center; justify-content: center;">
+            <div class="qr-laser-line" id="qrLaserLine"></div>
+            <div id="qrLoadingSpinner" class="spinner-border text-success" role="status">
+              <span class="visually-hidden">Generando QR...</span>
             </div>
+            <img id="imgCodigoQR" src="" alt="Código QR WhatsApp" style="width: 218px; height: 218px; object-fit: contain; display: none;">
           </div>
 
-          <div class="small text-muted mb-3" id="qrStatusHelp">
-            Apunta la cámara de WhatsApp desde tu teléfono para escanear el código.
-          </div>
-
-          <ol class="text-start small text-muted px-4 mb-3" style="line-height: 1.6;">
-            <li>Abre <b>WhatsApp</b> en tu celular.</li>
-            <li>Toca <b>Menú (⋮)</b> o <b>Ajustes (⚙)</b> y selecciona <b>Dispositivos vinculados</b>.</li>
-            <li>Toca <b>Vincular un dispositivo</b> y enfoca la pantalla.</li>
-          </ol>
-
-          <div class="d-flex gap-2 justify-content-center">
-            <button type="button" class="btn btn-sm btn-outline-light px-3 py-1.5" onclick="consultarEstadoQR(true)">
-              <i class="bi bi-arrow-clockwise me-1"></i> Refrescar QR
-            </button>
-            <button type="button" class="btn btn-sm btn-success px-3 py-1.5 fw-bold" data-bs-dismiss="modal">
-              Entendido
-            </button>
+          <!-- Pasos para el usuario -->
+          <div class="text-start bg-light p-3 rounded border small text-secondary">
+            <div class="fw-bold text-dark mb-1.5"><i class="bi bi-phone me-1 text-primary"></i>Instrucciones:</div>
+            <div class="mb-1"><strong>1.</strong> Abra WhatsApp en su celular.</div>
+            <div class="mb-1"><strong>2.</strong> Vaya a <strong>Menú ⋮</strong> o <strong>Configuración</strong> > <strong>Dispositivos vinculados</strong>.</div>
+            <div><strong>3.</strong> Toque <strong>Vincular un dispositivo</strong> y apunte hacia la pantalla.</div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- MODAL NUEVO CONTACTO -->
-  <div class="modal fade" id="modalNuevoContacto" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;">
-      <div class="modal-content border-0 text-white" style="background-color: var(--bg-panel); border-radius: 14px;">
-        <div class="modal-header border-bottom border-secondary py-3 px-4">
-          <h6 class="modal-title fw-bold mb-0"><i class="bi bi-person-plus-fill me-2 text-success"></i>Iniciar Chat con Número</h6>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body p-4">
-          <div class="mb-3">
-            <label class="form-label small text-muted">Nombre o Alumno:</label>
-            <input type="text" id="newChatName" class="form-control form-control-sm bg-dark text-white border-secondary" placeholder="Ej: JUAN CARLOS PÉREZ">
-          </div>
-          <div class="mb-3">
-            <label class="form-label small text-muted">Número de WhatsApp (con código de país):</label>
-            <div class="input-group input-group-sm">
-              <span class="input-group-text bg-secondary text-white border-secondary">+</span>
-              <input type="text" id="newChatPhone" class="form-control bg-dark text-white border-secondary" placeholder="51987654321">
-            </div>
-            <small class="text-muted" style="font-size: 0.72rem;">Ejemplo para Perú: 51 seguido de los 9 dígitos.</small>
-          </div>
-          <div class="mb-3">
-            <label class="form-label small text-muted">Carrera Profesional:</label>
-            <select id="newChatEscuela" class="form-select form-select-sm bg-dark text-white border-secondary">
-              <option value="Ingeniería de Sistemas">Ingeniería de Sistemas</option>
-              <option value="Ingeniería Industrial">Ingeniería Industrial</option>
-            </select>
-          </div>
-          <button type="button" class="btn btn-sm btn-success w-100 fw-bold py-2" onclick="crearNuevoContactoChat()">
-            Abrir Conversación
+        <div class="modal-footer border-top py-2.5 px-4 bg-light d-flex justify-content-between">
+          <button type="button" class="btn btn-sm btn-outline-secondary" onclick="consultarEstadoQR(true)">
+            <i class="bi bi-arrow-clockwise me-1"></i>Actualizar QR
+          </button>
+          <button type="button" class="btn btn-sm btn-success fw-bold px-3" data-bs-dismiss="modal">
+            Entendido
           </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Scripts -->
+  <!-- ======================================================================== -->
+  <!-- MODAL: INICIAR NUEVO CHAT POR NÚMERO TELEFÓNICO -->
+  <!-- ======================================================================== -->
+  <div class="modal fade" id="modalNuevoChat" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 440px;">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+        <div class="modal-header border-bottom py-3 px-4" style="background-color: #F8FAFC;">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-chat-plus-fill text-success fs-5"></i>
+            <h6 class="modal-title fw-bold text-dark mb-0">Iniciar Nuevo Chat WhatsApp</h6>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body p-4">
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-secondary">Nombre o Identificador:</label>
+            <input type="text" id="newChatName" class="form-control form-control-sm" placeholder="Ej: ING. JUAN PÉREZ / ALUMNO">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-secondary">Número de WhatsApp (con código de país):</label>
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-light text-secondary fw-bold">+</span>
+              <input type="text" id="newChatPhone" class="form-control font-monospace" placeholder="51987654321">
+            </div>
+            <div class="form-text" style="font-size: 0.74rem;">Para Perú ingrese <strong>51</strong> seguido de los 9 dígitos móviles.</div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-secondary">Mensaje Inicial (opcional):</label>
+            <textarea id="newChatInitialMsg" class="form-control form-control-sm" rows="2" placeholder="Estimado(a), reciba un saludo de la Coordinación FIA..."></textarea>
+          </div>
+
+          <button type="button" class="btn btn-sm w-100 fw-bold py-2 text-white" style="background-color: var(--wa-green);" onclick="crearNuevoContactoChat()">
+            <i class="bi bi-whatsapp me-1.5"></i>Abrir Conversación
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================== -->
+  <!-- MODAL: DIRECTORIO REAL DE DOCENTES FIA (DATA/DOCENTES.JSON) -->
+  <!-- ======================================================================== -->
+  <div class="modal fade" id="modalDirectorioDocentes" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+        <div class="modal-header border-bottom py-3 px-4" style="background-color: #F8FAFC;">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-person-lines-fill text-primary fs-5"></i>
+            <h6 class="modal-title fw-bold text-dark mb-0">Directorio Oficial de Docentes FIA</h6>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body p-3">
+          <div class="mb-3">
+            <input type="text" id="inputSearchDocentesModal" class="form-control form-control-sm" placeholder="Filtrar por apellidos, nombres o escuela..." oninput="filtrarDocentesModal()">
+          </div>
+
+          <div class="table-responsive" style="max-height: 380px;">
+            <table class="table table-sm table-hover align-middle mb-0" style="font-size: 0.82rem;">
+              <thead class="table-light sticky-top">
+                <tr>
+                  <th>Docente</th>
+                  <th>Escuela</th>
+                  <th>Teléfono</th>
+                  <th class="text-center">Acción</th>
+                </tr>
+              </thead>
+              <tbody id="tableDocentesBody">
+                <!-- Se llena dinámicamente con los docentes reales de data/docentes.json -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="modal-footer border-top py-2 px-4 bg-light">
+          <small class="text-muted me-auto"><i class="bi bi-check2-circle text-success me-1"></i>Padrón activo sincronizado con el SGA</small>
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
   <script src="lib/bootstrap/js/bootstrap.bundle.min.js"></script>
 
+  <!-- LÓGICA DE INTEGRACIÓN REAL WHATSAPP -->
   <script>
-    // ========================================================================
-    // ESTADO DE LA APLICACIÓN Y CHATS
-    // ========================================================================
+    // Detección dinámica de endpoints (local o cPanel)
     const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
     const WA_API_URL = isLocal 
       ? `http://${window.location.hostname}:3001/api/whatsapp` 
       : 'api/whatsapp.php?endpoint=';
 
-    let isDemoMode = false;
     let waConnected = false;
     let chatsList = [];
     let currentActiveJid = null;
     let activeFilter = 'all';
     let sseSource = null;
-
-    // Contactos de Demostración para presentación formal
-    const demoChats = [
-      {
-        jid: '51987654321@s.whatsapp.net',
-        phone: '51987654321',
-        name: 'PALOMINO DÁVILA AARON',
-        escuela: 'Ingeniería de Sistemas',
-        ciclo: 'Ciclo VI',
-        seccion: 'A1',
-        codigo: '7234918231',
-        unreadCount: 2,
-        lastTimestamp: Date.now() - 1000 * 60 * 5,
-        lastMessage: 'Profesor, buenas tardes. ¿Cuándo se publicarán los horarios de sustentación?',
-        messages: [
-          { id: 'm1', fromMe: false, body: 'Buenas tardes Coordinación FIA.', timestamp: Date.now() - 1000 * 60 * 20, type: 'text', status: 'read' },
-          { id: 'm2', fromMe: true, body: 'Buenas tardes estimado Aaron. Te saluda la coordinación. ¿En qué te podemos ayudar?', timestamp: Date.now() - 1000 * 60 * 18, type: 'text', status: 'read' },
-          { id: 'm3', fromMe: false, body: 'Profesor, buenas tardes. ¿Cuándo se publicarán los horarios de sustentación?', timestamp: Date.now() - 1000 * 60 * 5, type: 'text', status: 'read' }
-        ]
-      },
-      {
-        jid: '51976543210@s.whatsapp.net',
-        phone: '51976543210',
-        name: 'RODRÍGUEZ QUISPE VALERIA',
-        escuela: 'Ingeniería Industrial',
-        ciclo: 'Ciclo V',
-        seccion: 'B2',
-        codigo: '7100492811',
-        unreadCount: 0,
-        lastTimestamp: Date.now() - 1000 * 60 * 45,
-        lastMessage: 'Excelente, muchas gracias por la aclaración.',
-        messages: [
-          { id: 'm10', fromMe: false, body: 'Hola, tengo una consulta sobre mi solicitud de convalidación.', timestamp: Date.now() - 1000 * 60 * 120, type: 'text', status: 'read' },
-          { id: 'm11', fromMe: true, body: 'Hola Valeria. Ya se encuentra registrada en la plataforma PAU con estado APROBADO.', timestamp: Date.now() - 1000 * 60 * 60, type: 'text', status: 'read' },
-          { id: 'm12', fromMe: false, body: 'Excelente, muchas gracias por la aclaración.', timestamp: Date.now() - 1000 * 60 * 45, type: 'text', status: 'read' }
-        ]
-      },
-      {
-        jid: '51965432109@s.whatsapp.net',
-        phone: '51965432109',
-        name: 'ARCE VILLANUEVA CHRISTIAN',
-        escuela: 'Ingeniería Industrial',
-        ciclo: 'Docente FIA',
-        seccion: 'Docente',
-        codigo: 'DOC-1004',
-        unreadCount: 1,
-        lastTimestamp: Date.now() - 1000 * 60 * 15,
-        lastMessage: 'Buenas tardes estimado, adjunto la evidencia de la sesión virtual.',
-        messages: [
-          { id: 'm20', fromMe: false, body: 'Buenas tardes estimado, adjunto la evidencia de la sesión virtual.', timestamp: Date.now() - 1000 * 60 * 15, type: 'text', status: 'read' }
-        ]
-      }
-    ];
+    let docentesData = [];
 
     // ========================================================================
-    // INICIALIZACIÓN AL CARGAR
+    // INICIALIZACIÓN
     // ========================================================================
     document.addEventListener('DOMContentLoaded', async () => {
-      // 1. Probar conexión con el microservicio Node Baileys
+      // 1. Cargar directorio oficial de docentes de la FIA
+      await cargarDirectorioDocentes();
+
+      // 2. Verificar estado de WhatsApp Baileys
       await verificarConexionMicroservicio();
 
-      // 2. Escuchar eventos Server-Sent Events si está disponible
+      // 3. Conectar a eventos en tiempo real
       conectarSSE();
-
-      // 3. Renderizar vista inicial
-      renderizarListaChats();
     });
 
+    // ========================================================================
+    // GESTIÓN DE LA CONEXIÓN Y ESTADO REAL
+    // ========================================================================
     async function verificarConexionMicroservicio() {
       try {
-        const res = await fetch(`${WA_API_URL}/status`, { signal: AbortSignal.timeout(2500) });
+        const res = await fetch(`${WA_API_URL}/status`, { signal: AbortSignal.timeout(3000) });
         if (res.ok) {
           const data = await res.json();
           actualizarUIConexion(data.status, data.user);
           if (data.status === 'CONNECTED') {
             await cargarChatsReales();
-          } else if (data.status === 'QR_READY') {
-            consultarEstadoQR();
+          } else {
+            renderizarEstadoEspera();
           }
-          isDemoMode = false;
-          actualizarBotonDemo();
           return;
         }
       } catch (e) {
-        console.warn('Microservicio Node no detectado, activando modo demostración interactivo:', e.message);
+        console.warn('Microservicio no conectado aún:', e.message);
       }
-
-      // Si no responde el microservicio local, activar modo demo por defecto para que la pantalla se vea viva
-      document.getElementById('bannerNodeOffline').classList.remove('d-none');
-      alternarModoDemo(true);
+      actualizarUIConexion('OFFLINE', null);
+      renderizarEstadoEspera();
     }
 
-    // Server-Sent Events para actualización instantánea
     function conectarSSE() {
       if (typeof EventSource === 'undefined') return;
       try {
@@ -1013,6 +1040,7 @@
         sseSource.addEventListener('status', (e) => {
           const data = JSON.parse(e.data);
           actualizarUIConexion(data.status, data.user);
+          if (data.status === 'CONNECTED') cargarChatsReales();
         });
 
         sseSource.addEventListener('qr', (e) => {
@@ -1030,15 +1058,16 @@
     function actualizarUIConexion(status, user) {
       const dot = document.getElementById('dotWaStatus');
       const text = document.getElementById('textWaStatus');
+      const badge = document.getElementById('badgeWaStatus');
 
       dot.className = 'status-dot';
+      badge.className = 'badge-status';
 
       if (status === 'CONNECTED') {
         waConnected = true;
         dot.classList.add('online');
+        badge.classList.add('online');
         text.textContent = user ? `En Línea (+${user.phone})` : 'En Línea';
-        text.classList.remove('text-muted');
-        text.classList.add('text-success');
 
         // Cerrar modal QR si estaba abierto
         const modalEl = document.getElementById('modalVincularQR');
@@ -1047,19 +1076,18 @@
       } else if (status === 'QR_READY' || status === 'CONNECTING') {
         waConnected = false;
         dot.classList.add('waiting');
-        text.textContent = 'Esperando QR...';
-        text.classList.remove('text-success');
-        text.classList.add('text-warning');
+        badge.classList.add('waiting');
+        text.textContent = 'Esperando Escaneo QR';
       } else {
         waConnected = false;
         dot.classList.add('offline');
-        text.textContent = isDemoMode ? 'Modo Presentación' : 'Desconectado';
-        text.className = isDemoMode ? 'text-warning font-monospace' : 'text-danger font-monospace';
+        badge.classList.add('offline');
+        text.textContent = 'WhatsApp Desconectado';
       }
     }
 
     // ========================================================================
-    // GESTIÓN DEL CÓDIGO QR
+    // CÓDIGO QR REAL
     // ========================================================================
     async function abrirModalQR() {
       const modal = new bootstrap.Modal(document.getElementById('modalVincularQR'));
@@ -1082,15 +1110,9 @@
         }
       } catch (e) {}
 
-      // Si no hay QR del backend, generar uno de demostración institucional
-      setTimeout(() => {
-        // Mock QR visualmente idéntico
-        img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=UCV_FIA_PAU_WHATSAPP_DEMO_' + Date.now();
-        img.onload = () => {
-          spinner.style.display = 'none';
-          img.style.display = 'block';
-        };
-      }, 600);
+      // Indicador mientras Baileys inicializa
+      spinner.style.display = 'block';
+      img.style.display = 'none';
     }
 
     function mostrarQR(dataUrl) {
@@ -1104,38 +1126,44 @@
     }
 
     // ========================================================================
-    // RENDERIZADO DE CHATS Y MENSAJES
+    // GESTIÓN DE CHATS REALES (SIN DATOS FALSOS)
     // ========================================================================
     async function cargarChatsReales() {
       try {
         const res = await fetch(`${WA_API_URL}/chats`);
         if (res.ok) {
           const data = await res.json();
-          if (Array.isArray(data) && data.length > 0) {
+          if (Array.isArray(data)) {
             chatsList = data;
             renderizarListaChats();
-            if (!currentActiveJid) seleccionarChat(chatsList[0].jid);
+            if (chatsList.length > 0 && !currentActiveJid) {
+              seleccionarChat(chatsList[0].jid);
+            } else if (chatsList.length === 0) {
+              renderizarEstadoVacio();
+            }
             return;
           }
         }
-      } catch (e) {}
+      } catch (e) {
+        console.error('Error cargando chats reales:', e);
+      }
 
-      // Si no hay chats aún, usar los demo
-      chatsList = [...demoChats];
       renderizarListaChats();
-      if (chatsList.length > 0) seleccionarChat(chatsList[0].jid);
+      if (!currentActiveJid) renderizarEstadoVacio();
     }
 
     function renderizarListaChats() {
       const container = document.getElementById('chatsListContainer');
       const q = (document.getElementById('inputSearchChat').value || '').trim().toLowerCase();
 
-      const source = isDemoMode ? demoChats : (chatsList.length > 0 ? chatsList : demoChats);
-
-      const filtrados = source.filter(c => {
+      const filtrados = chatsList.filter(c => {
         if (activeFilter === 'unread' && (!c.unreadCount || c.unreadCount === 0)) return false;
-        if (activeFilter === 'sistemas' && !((c.escuela || '').toLowerCase().includes('sistema'))) return false;
-        if (activeFilter === 'industrial' && !((c.escuela || '').toLowerCase().includes('industrial'))) return false;
+        if (activeFilter === 'docentes') {
+          // Filtrar si el número pertenece al padrón de docentes
+          const phoneOnly = (c.phone || '').replace(/\D/g, '');
+          const esDoc = docentesData.some(d => (d.telefono || '').replace(/\D/g, '') === phoneOnly);
+          if (!esDoc) return false;
+        }
 
         if (q) {
           const matchName = (c.name || '').toLowerCase().includes(q);
@@ -1150,9 +1178,13 @@
 
       if (filtrados.length === 0) {
         container.innerHTML = `
-          <div class="text-center py-5 text-muted small">
-            <i class="bi bi-chat-left-dots fs-3 d-block mb-2 opacity-50"></i>
-            No se encontraron conversaciones
+          <div class="text-center py-5 px-3 text-secondary" style="font-size: 0.83rem;">
+            <i class="bi bi-chat-left-dots fs-3 d-block mb-2 text-muted"></i>
+            <span class="fw-semibold">No hay conversaciones activas</span>
+            <p class="text-muted small mt-1 mb-3">Utilice el botón "Nuevo Chat" o el "Directorio FIA" para iniciar atención.</p>
+            <button class="btn btn-sm btn-outline-success px-3 py-1.5 fw-semibold" onclick="abrirModalNuevoChat()">
+              <i class="bi bi-plus-lg me-1"></i>Iniciar Primer Chat
+            </button>
           </div>
         `;
         return;
@@ -1160,25 +1192,24 @@
 
       filtrados.forEach(c => {
         const isActive = c.jid === currentActiveJid;
-        const isInd = (c.escuela || '').includes('Industrial');
-        const initials = (c.name || 'UC').split(' ').filter(p => p.length > 1).slice(0, 2).map(p => p[0]).join('') || 'AL';
+        const initials = (c.name || 'WA').split(' ').filter(p => p.length > 0).slice(0, 2).map(p => p[0]).join('') || 'WA';
 
         const item = document.createElement('div');
         item.className = `chat-item ${isActive ? 'active' : ''}`;
         item.onclick = () => seleccionarChat(c.jid);
 
         item.innerHTML = `
-          <div class="chat-avatar ${isInd ? 'ind' : ''}">
+          <div class="chat-avatar-circle">
             ${initials}
           </div>
           <div class="chat-info">
             <div class="chat-info-top">
-              <span class="chat-name">${c.name || c.phone}</span>
+              <span class="chat-name">${escapeHtml(c.name || c.phone)}</span>
               <span class="chat-time">${formatearHora(c.lastTimestamp)}</span>
             </div>
             <div class="chat-info-bottom">
-              <span class="chat-last-msg">${c.lastMessage || 'Conversación abierta'}</span>
-              ${c.unreadCount > 0 ? `<span class="unread-badge">${c.unreadCount}</span>` : ''}
+              <span class="chat-last-preview">${escapeHtml(c.lastMessage || 'Conversación abierta')}</span>
+              ${c.unreadCount > 0 ? `<span class="badge-unread">${c.unreadCount}</span>` : ''}
             </div>
           </div>
         `;
@@ -1190,40 +1221,37 @@
       currentActiveJid = jid;
       renderizarListaChats();
 
-      const source = isDemoMode ? demoChats : (chatsList.length > 0 ? chatsList : demoChats);
-      const chat = source.find(c => c.jid === jid);
-      if (!chat) return;
+      const chat = chatsList.find(c => c.jid === jid) || { jid, phone: jid.replace(/\D/g, '') };
+
+      // Buscar si el número coincide con algún docente real
+      const phoneClean = (chat.phone || '').replace(/\D/g, '');
+      const docenteMatch = docentesData.find(d => (d.telefono || '').replace(/\D/g, '').endsWith(phoneClean.slice(-9)));
+
+      const displayName = chat.name || (docenteMatch ? docenteMatch.nombre : chat.phone);
+      const initials = displayName.split(' ').filter(p => p.length > 0).slice(0, 2).map(p => p[0]).join('') || 'WA';
 
       // Actualizar cabecera activa
-      const initials = (chat.name || 'UC').split(' ').filter(p => p.length > 1).slice(0, 2).map(p => p[0]).join('') || 'AL';
       document.getElementById('activeContactAvatar').textContent = initials;
-      document.getElementById('activeContactAvatar').className = `chat-avatar ${chat.escuela?.includes('Industrial') ? 'ind' : ''}`;
-      document.getElementById('activeContactName').textContent = chat.name || chat.phone;
+      document.getElementById('activeContactName').textContent = displayName;
       document.getElementById('activeContactPhone').textContent = `+${chat.phone || ''}`;
-      document.getElementById('activeContactBadge').textContent = chat.escuela || 'Ingeniería FIA';
+      document.getElementById('activeContactBadge').textContent = docenteMatch ? 'Docente FIA' : 'Atención Directa';
+      document.getElementById('activeChatActions').style.removeProperty('display');
 
       // Actualizar Expediente Lateral
       document.getElementById('dossierAvatar').textContent = initials;
-      document.getElementById('dossierAvatar').className = `chat-avatar mx-auto mb-2.5 ${chat.escuela?.includes('Industrial') ? 'ind' : ''}`;
-      document.getElementById('dossierName').textContent = chat.name || 'Estudiante UCV';
+      document.getElementById('dossierName').textContent = displayName;
       document.getElementById('dossierPhone').textContent = `+${chat.phone || ''}`;
-      document.getElementById('dossierEscuela').textContent = chat.escuela || 'Facultad de Ingeniería';
-      document.getElementById('dossierCodigo').textContent = chat.codigo || '7200451890';
-      document.getElementById('dossierCiclo').textContent = chat.ciclo || 'Ciclo V';
-      document.getElementById('dossierSeccion').textContent = chat.seccion || 'A1';
+      document.getElementById('dossierEscuela').textContent = docenteMatch?.escuela || 'Ingeniería FIA';
+      document.getElementById('dossierCondicion').textContent = docenteMatch?.condicion || 'Atención General';
+      document.getElementById('dossierCodigo').textContent = docenteMatch ? `DOC-${docenteMatch.id}` : 'EXT-PAU';
+      document.getElementById('dossierCorreo').textContent = docenteMatch?.email || `${chat.phone}@whatsapp.ucv`;
 
-      // Cargar mensajes
+      // Cargar mensajes reales
       let mensajes = [];
-      if (!isDemoMode && waConnected) {
-        try {
-          const res = await fetch(`${WA_API_URL}/messages/${encodeURIComponent(jid)}`);
-          if (res.ok) mensajes = await res.json();
-        } catch (e) {}
-      }
-
-      if (!mensajes || mensajes.length === 0) {
-        mensajes = chat.messages || [];
-      }
+      try {
+        const res = await fetch(`${WA_API_URL}/messages/${encodeURIComponent(jid)}`);
+        if (res.ok) mensajes = await res.json();
+      } catch (e) {}
 
       renderizarMensajes(mensajes);
     }
@@ -1234,10 +1262,10 @@
 
       if (!mensajes || mensajes.length === 0) {
         container.innerHTML = `
-          <div class="empty-chat-state">
-            <i class="bi bi-chat-text"></i>
-            <h6 class="fw-bold text-white mb-1">Sin mensajes aún</h6>
-            <p class="small text-muted">Escribe una respuesta para iniciar la atención con este alumno.</p>
+          <div class="m-auto text-center p-4 bg-white rounded-3 border shadow-xs" style="max-width: 360px;">
+            <i class="bi bi-chat-text text-success fs-3 d-block mb-1"></i>
+            <h6 class="fw-bold text-dark mb-1">Conversación Iniciada</h6>
+            <p class="small text-secondary mb-0">Escriba una respuesta oficial en la barra inferior para enviar al teléfono.</p>
           </div>
         `;
         return;
@@ -1245,7 +1273,7 @@
 
       mensajes.forEach(m => {
         const bubble = document.createElement('div');
-        bubble.className = `msg-bubble ${m.fromMe ? 'msg-out' : 'msg-in'}`;
+        bubble.className = `msg-bubble ${m.fromMe ? 'outgoing' : 'incoming'}`;
 
         let mediaHtml = '';
         if (m.type === 'image' && m.mediaUrl) {
@@ -1254,9 +1282,9 @@
           mediaHtml = `<video controls class="msg-media-video"><source src="${m.mediaUrl}">Tu navegador no soporta video.</video>`;
         } else if (m.type === 'document' && m.mediaUrl) {
           mediaHtml = `
-            <a href="${m.mediaUrl}" target="_blank" class="p-2 rounded bg-dark border border-secondary text-white d-flex align-items-center gap-2 text-decoration-none mb-1">
+            <a href="${m.mediaUrl}" target="_blank" class="p-2 rounded bg-light border text-dark d-flex align-items-center gap-2 text-decoration-none mb-1">
               <i class="bi bi-file-earmark-pdf-fill text-danger fs-5"></i>
-              <span class="small font-monospace">${m.fileName || 'documento.pdf'}</span>
+              <span class="small font-monospace text-truncate">${escapeHtml(m.fileName || 'documento.pdf')}</span>
               <i class="bi bi-download ms-auto"></i>
             </a>
           `;
@@ -1265,21 +1293,74 @@
         bubble.innerHTML = `
           ${mediaHtml}
           <div>${escapeHtml(m.body || '')}</div>
-          <div class="msg-meta">
+          <div class="msg-meta-info">
             <span>${formatearHora(m.timestamp)}</span>
-            ${m.fromMe ? `<i class="bi bi-check2-all msg-check"></i>` : ''}
+            ${m.fromMe ? `<i class="bi bi-check2-all msg-check-icon"></i>` : ''}
           </div>
         `;
 
         container.appendChild(bubble);
       });
 
-      // Auto-scroll al final
       container.scrollTop = container.scrollHeight;
     }
 
+    function renderizarEstadoVacio() {
+      const container = document.getElementById('messagesContainer');
+      container.innerHTML = `
+        <div class="empty-state-card">
+          <div class="d-inline-flex p-3 rounded-circle mb-3" style="background-color: var(--wa-green-pastel); color: var(--wa-green);">
+            <i class="bi bi-whatsapp fs-2"></i>
+          </div>
+          <h5 class="fw-bold text-dark mb-1.5">Central WhatsApp PAU en Vivo</h5>
+          <p class="text-secondary small mb-4">
+            Gestión institucional de consultas y requerimientos estudiantiles por WhatsApp oficial de la Universidad César Vallejo.
+          </p>
+          <div class="d-flex justify-content-center gap-2">
+            <button class="btn btn-sm btn-success fw-bold px-3 py-2" onclick="abrirModalQR()">
+              <i class="bi bi-qr-code-scan me-1"></i>Vincular Celular
+            </button>
+            <button class="btn btn-sm btn-outline-primary fw-semibold px-3 py-2" onclick="abrirModalDirectorio()">
+              <i class="bi bi-person-lines-fill me-1"></i>Directorio Docentes
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderizarEstadoEspera() {
+      if (!currentActiveJid) renderizarEstadoVacio();
+    }
+
+    function recibirNuevoMensaje(msg, chatInfo) {
+      if (chatInfo) {
+        const idx = chatsList.findIndex(c => c.jid === chatInfo.jid);
+        if (idx >= 0) {
+          chatsList[idx] = { ...chatsList[idx], ...chatInfo };
+        } else {
+          chatsList.unshift(chatInfo);
+        }
+        renderizarListaChats();
+      }
+
+      if (currentActiveJid === msg.jid) {
+        const container = document.getElementById('messagesContainer');
+        const bubble = document.createElement('div');
+        bubble.className = `msg-bubble ${msg.fromMe ? 'outgoing' : 'incoming'}`;
+        bubble.innerHTML = `
+          <div>${escapeHtml(msg.body || '')}</div>
+          <div class="msg-meta-info">
+            <span>${formatearHora(msg.timestamp)}</span>
+            ${msg.fromMe ? `<i class="bi bi-check2-all msg-check-icon"></i>` : ''}
+          </div>
+        `;
+        container.appendChild(bubble);
+        container.scrollTop = container.scrollHeight;
+      }
+    }
+
     // ========================================================================
-    // ENVÍO DE MENSAJES Y MULTIMEDIA
+    // ENVÍO DE MENSAJES Y ARCHIVOS
     // ========================================================================
     async function enviarMensajeActual() {
       const input = document.getElementById('inputChatMessage');
@@ -1288,70 +1369,21 @@
 
       input.value = '';
 
-      const newMsg = {
-        id: 'out_' + Date.now(),
-        jid: currentActiveJid,
-        fromMe: true,
-        body: text,
-        type: 'text',
-        timestamp: Date.now(),
-        status: 'sent'
-      };
-
-      // Si está conectado al microservicio real
-      if (!isDemoMode && waConnected) {
-        try {
-          const res = await fetch(`${WA_API_URL}/send`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ to: currentActiveJid, message: text })
-          });
-          if (res.ok) {
-            // El mensaje se actualizará vía SSE
-            return;
-          }
-        } catch (e) {
-          console.error('Error enviando a WhatsApp real:', e);
+      try {
+        const res = await fetch(`${WA_API_URL}/send`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ to: currentActiveJid, message: text })
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          alert('Aviso: ' + (err.error || 'No se pudo enviar el mensaje'));
         }
-      }
-
-      // En modo demo o fallback
-      agregarMensajeAChat(currentActiveJid, newMsg);
-
-      // Respuesta automática de demostración a los 2 segundos
-      if (isDemoMode) {
-        setTimeout(() => {
-          const reply = {
-            id: 'in_' + Date.now(),
-            jid: currentActiveJid,
-            fromMe: false,
-            body: '¡Entendido! Muchas gracias por la pronta respuesta de la coordinación.',
-            type: 'text',
-            timestamp: Date.now(),
-            status: 'received'
-          };
-          agregarMensajeAChat(currentActiveJid, reply);
-        }, 1800);
+      } catch (e) {
+        console.error('Error enviando mensaje:', e);
       }
     }
 
-    function agregarMensajeAChat(jid, msg) {
-      const source = isDemoMode ? demoChats : (chatsList.length > 0 ? chatsList : demoChats);
-      const chat = source.find(c => c.jid === jid);
-      if (chat) {
-        if (!chat.messages) chat.messages = [];
-        chat.messages.push(msg);
-        chat.lastMessage = msg.body;
-        chat.lastTimestamp = msg.timestamp;
-      }
-      renderizarListaChats();
-      if (currentActiveJid === jid) {
-        const msgs = chat ? chat.messages : [msg];
-        renderizarMensajes(msgs);
-      }
-    }
-
-    // Subida de archivos multimedia (Fotos y Videos)
     async function subirArchivoMultimedia(input) {
       if (!input.files || input.files.length === 0 || !currentActiveJid) return;
       const file = input.files[0];
@@ -1360,37 +1392,15 @@
       formData.append('file', file);
       formData.append('caption', file.name);
 
-      if (!isDemoMode && waConnected) {
-        try {
-          await fetch(`${WA_API_URL}/send-media`, {
-            method: 'POST',
-            body: formData
-          });
-          input.value = '';
-          return;
-        } catch (e) {
-          console.error('Error enviando media:', e);
-        }
+      try {
+        await fetch(`${WA_API_URL}/send-media`, {
+          method: 'POST',
+          body: formData
+        });
+        input.value = '';
+      } catch (e) {
+        console.error('Error enviando archivo:', e);
       }
-
-      // Mock media preview
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const isVid = file.type.startsWith('video');
-        const newMsg = {
-          id: 'out_media_' + Date.now(),
-          jid: currentActiveJid,
-          fromMe: true,
-          body: file.name,
-          mediaUrl: e.target.result,
-          type: isVid ? 'video' : 'image',
-          timestamp: Date.now(),
-          status: 'sent'
-        };
-        agregarMensajeAChat(currentActiveJid, newMsg);
-      };
-      reader.readAsDataURL(file);
-      input.value = '';
     }
 
     function handleInputKeyPress(e) {
@@ -1413,15 +1423,13 @@
     }
 
     // ========================================================================
-    // CONEXIÓN DIRECTA CON PAU (DERIVACIÓN A TICKET FORMAL)
+    // DERIVACIÓN A TICKET PAU (INTEGRACIÓN OFICIAL)
     // ========================================================================
     async function derivarATicketPAU() {
       if (!currentActiveJid) return;
-      const source = isDemoMode ? demoChats : (chatsList.length > 0 ? chatsList : demoChats);
-      const chat = source.find(c => c.jid === currentActiveJid);
-      if (!chat) return;
+      const chat = chatsList.find(c => c.jid === currentActiveJid) || { name: 'Contacto', phone: currentActiveJid.replace(/\D/g, '') };
 
-      const asunto = prompt(`Ingrese el asunto para formalizar la solicitud de ${chat.name}:`, `Consulta vía WhatsApp - ${chat.lastMessage?.substring(0, 45) || 'Atención'}`);
+      const asunto = prompt(`Ingrese el asunto para formalizar la solicitud de ${chat.name}:`, `Consulta WhatsApp - Atención PAU`);
       if (!asunto) return;
 
       const payload = {
@@ -1429,9 +1437,9 @@
         remitente: chat.name,
         correo: `${chat.phone}@whatsapp.ucv`,
         telefono: chat.phone,
-        escuela: chat.escuela || 'Ingeniería de Sistemas',
+        escuela: document.getElementById('dossierEscuela').textContent || 'Ingeniería de Sistemas',
         asunto: `[WHATSAPP] ${asunto}`,
-        observaciones: `Atendido en vivo por WhatsApp. Último mensaje: "${chat.lastMessage}"`
+        observaciones: `Atendido en vivo por WhatsApp. Último mensaje: "${chat.lastMessage || 'Atención en curso'}"`
       };
 
       try {
@@ -1440,63 +1448,24 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-      } catch (e) {}
-
-      alert(`✅ Consulta formalizada con éxito en la Bandeja PAU:\n• Alumno: ${chat.name}\n• Asunto: ${payload.asunto}`);
-    }
-
-    // ========================================================================
-    // UTILIDADES Y MODOS
-    // ========================================================================
-    function alternarModoDemo(activar = null) {
-      isDemoMode = (activar !== null) ? activar : !isDemoMode;
-      actualizarBotonDemo();
-      actualizarUIConexion(isDemoMode ? 'DEMO' : (waConnected ? 'CONNECTED' : 'DISCONNECTED'), null);
-      renderizarListaChats();
-      if (!currentActiveJid && demoChats.length > 0) {
-        seleccionarChat(demoChats[0].jid);
+        alert(`✅ Consulta formalizada con éxito en la Bandeja PAU:\n• Contacto: ${chat.name}\n• Asunto: ${payload.asunto}`);
+      } catch (e) {
+        alert('Error registrando en bandeja PAU: ' + e.message);
       }
     }
 
-    function actualizarBotonDemo() {
-      const label = document.getElementById('labelDemoMode');
-      const btn = document.getElementById('btnToggleDemoMode');
-      if (isDemoMode) {
-        label.textContent = 'Modo Demo (Activo)';
-        btn.className = 'btn btn-sm btn-warning text-dark px-2.5 py-1.5 fw-bold';
-      } else {
-        label.textContent = 'Modo En Vivo';
-        btn.className = 'btn btn-sm btn-dark border-secondary px-2.5 py-1.5';
-      }
-    }
-
-    function filtrarCategoria(cat) {
-      activeFilter = cat;
-      ['chipAll', 'chipUnread', 'chipSis', 'chipInd'].forEach(id => {
-        document.getElementById(id).classList.remove('active');
-      });
-
-      if (cat === 'all') document.getElementById('chipAll').classList.add('active');
-      if (cat === 'unread') document.getElementById('chipUnread').classList.add('active');
-      if (cat === 'sistemas') document.getElementById('chipSis').classList.add('active');
-      if (cat === 'industrial') document.getElementById('chipInd').classList.add('active');
-
-      renderizarListaChats();
-    }
-
-    function filtrarChats() {
-      renderizarListaChats();
-    }
-
-    function abrirModalNuevoContacto() {
-      const m = new bootstrap.Modal(document.getElementById('modalNuevoContacto'));
+    // ========================================================================
+    // NUEVO CHAT DIRECTO Y DIRECTORIO DE DOCENTES
+    // ========================================================================
+    function abrirModalNuevoChat() {
+      const m = new bootstrap.Modal(document.getElementById('modalNuevoChat'));
       m.show();
     }
 
-    function crearNuevoContactoChat() {
+    async function crearNuevoContactoChat() {
       const name = document.getElementById('newChatName').value.trim().toUpperCase() || 'Nuevo Contacto';
       let phone = document.getElementById('newChatPhone').value.trim().replace(/\D/g, '');
-      const escuela = document.getElementById('newChatEscuela').value;
+      const initMsg = document.getElementById('newChatInitialMsg').value.trim();
 
       if (!phone || phone.length < 8) {
         alert('Ingrese un número de teléfono válido con código de país (ej. 51987654321).');
@@ -1508,52 +1477,134 @@
         jid,
         phone,
         name,
-        escuela,
-        ciclo: 'Ciclo Regular',
-        seccion: 'SUBE',
-        codigo: '7' + Math.floor(100000000 + Math.random() * 900000000),
         unreadCount: 0,
         lastTimestamp: Date.now(),
-        lastMessage: 'Conversación iniciada',
-        messages: [
-          { id: 'start_1', fromMe: true, body: `¡Hola ${name}! Te saluda la Coordinación Académica FIA UCV.`, timestamp: Date.now(), type: 'text', status: 'sent' }
-        ]
+        lastMessage: initMsg || 'Conversación iniciada'
       };
 
-      if (isDemoMode) {
-        demoChats.unshift(nuevoChat);
-      } else {
-        chatsList.unshift(nuevoChat);
-      }
+      const existe = chatsList.find(c => c.jid === jid);
+      if (!existe) chatsList.unshift(nuevoChat);
 
-      const modalEl = document.getElementById('modalNuevoContacto');
+      const modalEl = document.getElementById('modalNuevoChat');
       const inst = bootstrap.Modal.getInstance(modalEl);
       if (inst) inst.hide();
 
       seleccionarChat(jid);
+
+      if (initMsg) {
+        document.getElementById('inputChatMessage').value = initMsg;
+        await enviarMensajeActual();
+      }
     }
 
-    async function cerrarSesionWA() {
-      if (!confirm('¿Deseas desvincular la sesión de WhatsApp de este navegador?')) return;
+    async function cargarDirectorioDocentes() {
       try {
-        await fetch(`${WA_API_URL}/logout`, { method: 'POST' });
+        const res = await fetch('api/docentes');
+        if (res.ok) {
+          docentesData = await res.json();
+          renderizarTablaDocentesModal(docentesData);
+        }
       } catch (e) {}
-      waConnected = false;
-      actualizarUIConexion('DISCONNECTED', null);
-      alert('Sesión de WhatsApp cerrada exitosamente.');
+    }
+
+    function abrirModalDirectorio() {
+      renderizarTablaDocentesModal(docentesData);
+      const m = new bootstrap.Modal(document.getElementById('modalDirectorioDocentes'));
+      m.show();
+    }
+
+    function filtrarDocentesModal() {
+      const q = (document.getElementById('inputSearchDocentesModal').value || '').toLowerCase().trim();
+      const filtrados = docentesData.filter(d => 
+        (d.nombre || '').toLowerCase().includes(q) ||
+        (d.escuela || '').toLowerCase().includes(q) ||
+        (d.telefono || '').includes(q)
+      );
+      renderizarTablaDocentesModal(filtrados);
+    }
+
+    function renderizarTablaDocentesModal(lista) {
+      const tbody = document.getElementById('tableDocentesBody');
+      tbody.innerHTML = '';
+
+      if (!lista || lista.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-3">No se encontraron docentes</td></tr>';
+        return;
+      }
+
+      lista.forEach(d => {
+        const tr = document.createElement('tr');
+        const phone = d.telefono ? (d.telefono.startsWith('51') ? d.telefono : '51' + d.telefono) : '';
+        tr.innerHTML = `
+          <td>
+            <div class="fw-bold text-dark">${escapeHtml(d.nombre)}</div>
+            <div class="text-muted" style="font-size: 0.73rem;">${escapeHtml(d.email || '')}</div>
+          </td>
+          <td><span class="badge bg-light text-dark border">${escapeHtml(d.escuela || 'FIA')}</span></td>
+          <td class="font-monospace text-secondary">${d.telefono ? '+' + phone : 'Sin teléfono'}</td>
+          <td class="text-center">
+            ${d.telefono ? `
+              <button class="btn btn-xs btn-success py-1 px-2.5 fw-semibold" onclick="iniciarChatDesdeDocente('${escapeHtml(d.nombre)}', '${phone}')">
+                <i class="bi bi-whatsapp me-1"></i>Escribir
+              </button>
+            ` : '<span class="text-muted small">No disponible</span>'}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function iniciarChatDesdeDocente(nombre, phone) {
+      const modalEl = document.getElementById('modalDirectorioDocentes');
+      const inst = bootstrap.Modal.getInstance(modalEl);
+      if (inst) inst.hide();
+
+      const jid = `${phone}@s.whatsapp.net`;
+      const chatObj = {
+        jid,
+        phone,
+        name: nombre,
+        unreadCount: 0,
+        lastTimestamp: Date.now(),
+        lastMessage: 'Conversación directa'
+      };
+
+      const existe = chatsList.find(c => c.jid === jid);
+      if (!existe) chatsList.unshift(chatObj);
+
+      seleccionarChat(jid);
+    }
+
+    // ========================================================================
+    // UTILIDADES
+    // ========================================================================
+    function filtrarCategoria(cat) {
+      activeFilter = cat;
+      ['chipAll', 'chipUnread', 'chipDocentes'].forEach(id => {
+        document.getElementById(id).classList.remove('active');
+      });
+
+      if (cat === 'all') document.getElementById('chipAll').classList.add('active');
+      if (cat === 'unread') document.getElementById('chipUnread').classList.add('active');
+      if (cat === 'docentes') document.getElementById('chipDocentes').classList.add('active');
+
+      renderizarListaChats();
+    }
+
+    function filtrarChats() {
+      renderizarListaChats();
     }
 
     function exportarHistorialChat() {
       if (!currentActiveJid) return;
-      const source = isDemoMode ? demoChats : (chatsList.length > 0 ? chatsList : demoChats);
-      const chat = source.find(c => c.jid === currentActiveJid);
+      const chat = chatsList.find(c => c.jid === currentActiveJid);
       if (!chat) return;
 
-      const lineas = (chat.messages || []).map(m => `[${new Date(m.timestamp).toLocaleString('es-PE')}] ${m.fromMe ? 'COORDINACIÓN' : chat.name}: ${m.body}`);
-      const blob = new Blob([lineas.join('\r\n')], { type: 'text/plain;charset=utf-8' });
+      const txt = `REPORTE DE ATENCIÓN WHATSAPP PAU\nContacto: ${chat.name || chat.phone}\nNúmero: +${chat.phone}\nFecha de exportación: ${new Date().toLocaleString('es-PE')}\n----------------------------------------\n`;
+      const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `Chat_WA_${chat.phone}_${new Date().toISOString().substring(0, 10)}.txt`;
+      a.download = `PAU_WA_${chat.phone}_${Date.now()}.txt`;
       a.click();
     }
 
