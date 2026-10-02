@@ -22,6 +22,7 @@ GRUPOS_FILE = os.path.join(DATA_DIR, 'grupos.json')
 BASE_FILE = os.path.join(DATA_DIR, 'grupos_base.json')
 
 DOCENTES_FILE = os.path.join(DATA_DIR, 'docentes.json')
+DELEGADOS_FILE = os.path.join(DATA_DIR, 'delegados.json')
 DIRECTORIOS_FILE = os.path.join(DATA_DIR, 'directorios.json')
 CARPETAS_FILE = os.path.join(DATA_DIR, 'carpetas.json')
 SUPERVISIONES_FILE = os.path.join(DATA_DIR, 'supervisiones.json')
@@ -243,6 +244,10 @@ class AcademicDataHandler(http.server.SimpleHTTPRequestHandler):
 
         if parsed_path in ['/formulario_delegados/api_delegados', '/api/delegados']:
             try:
+                if os.path.exists(DELEGADOS_FILE):
+                    with open(DELEGADOS_FILE, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    return self._send_json(200, data)
                 del_file = os.path.join(BASE_DIR, 'formulario_delegados', 'data', 'delegados.json')
                 if os.path.exists(del_file):
                     with open(del_file, 'r', encoding='utf-8') as f:
@@ -421,6 +426,32 @@ class AcademicDataHandler(http.server.SimpleHTTPRequestHandler):
                     "status": "success",
                     "count": len(data),
                     "message": f"Registro de supervisiones actualizado ({len(data)} evaluaciones)"
+                })
+            except Exception as e:
+                return self._send_json(500, {"error": str(e)})
+
+        if parsed_path == '/api/delegados':
+            try:
+                length = int(self.headers.get('Content-Length', 0))
+                body = self.rfile.read(length).decode('utf-8')
+                data = json.loads(body)
+                if not isinstance(data, list):
+                    return self._send_json(400, {"error": "Se esperaba una lista de delegados"})
+
+                os.makedirs(DATA_DIR, exist_ok=True)
+                with open(DELEGADOS_FILE, 'w', encoding='utf-8') as f:
+                    json.dump(data, f, indent=2, ensure_ascii=False)
+
+                # También sincronizar con formulario_delegados si existe la carpeta
+                form_del_dir = os.path.join(BASE_DIR, 'formulario_delegados', 'data')
+                if os.path.exists(form_del_dir):
+                    with open(os.path.join(form_del_dir, 'delegados.json'), 'w', encoding='utf-8') as f:
+                        json.dump(data, f, indent=2, ensure_ascii=False)
+
+                return self._send_json(200, {
+                    "status": "success",
+                    "count": len(data),
+                    "message": f"Registro de delegados actualizado ({len(data)} delegados)"
                 })
             except Exception as e:
                 return self._send_json(500, {"error": str(e)})
@@ -634,6 +665,11 @@ class AcademicDataHandler(http.server.SimpleHTTPRequestHandler):
                 items.insert(0, new_entry)
 
                 with open(del_file, 'w', encoding='utf-8') as f:
+                    json.dump(items, f, indent=2, ensure_ascii=False)
+
+                # Mantener sincronizado en data/delegados.json
+                os.makedirs(DATA_DIR, exist_ok=True)
+                with open(DELEGADOS_FILE, 'w', encoding='utf-8') as f:
                     json.dump(items, f, indent=2, ensure_ascii=False)
 
                 return self._send_json(200, {
