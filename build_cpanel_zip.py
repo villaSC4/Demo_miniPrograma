@@ -9,6 +9,9 @@ def create_cpanel_packages():
     # 2. PAQUETE LIGERO DE ACTUALIZACION: cpanel_update_minisistema.zip
     update_zip_name = "cpanel_update_minisistema.zip"
 
+    # 3. PAQUETE DE DEPENDENCIAS NODE_MODULES PARA CPANEL: whatsapp_dependencies.zip
+    modules_zip_name = "whatsapp_dependencies.zip"
+
     # Extensiones y directorios a omitir en el paquete completo
     EXCLUDE_DIRS = {
         '.git', '.vercel', 'node_modules', '__pycache__', 
@@ -16,10 +19,17 @@ def create_cpanel_packages():
         'whatsapp_session', 'whatsapp_media'
     }
     EXCLUDE_FILES = {
-        full_zip_name, update_zip_name, 'server.py', 'build_cpanel_zip.py',
-        'package-lock.json'
+        full_zip_name, update_zip_name, modules_zip_name, 'server.py', 'build_cpanel_zip.py',
+        'package-lock.json', 'test_modules.zip'
     }
     EXCLUDE_EXTENSIONS = {'.zip', '.log'}
+
+    # Asegurar saltos de línea LF en run_whatsapp.sh (para Linux/cPanel)
+    if os.path.exists("run_whatsapp.sh"):
+        with open("run_whatsapp.sh", "rb") as f:
+            sh_bytes = f.read().replace(b"\r\n", b"\n")
+        with open("run_whatsapp.sh", "wb") as f:
+            f.write(sh_bytes)
 
     print("==========================================================")
     print("[INFO] GENERANDO PAQUETES DE DESPLIEGUE PARA CPANEL")
@@ -28,7 +38,7 @@ def create_cpanel_packages():
     # ---------------------------------------------------------
     # A. Generar minisistema_cpanel_DEPLOY.zip (Instalacion completa)
     # ---------------------------------------------------------
-    print(f"\n[1/2] Empaquetando Instalacion Completa: {full_zip_name}...")
+    print(f"\n[1/4] Empaquetando Instalacion Completa: {full_zip_name}...")
     full_count = 0
     with zipfile.ZipFile(full_zip_name, 'w', zipfile.ZIP_DEFLATED) as zip_full:
         for root, dirs, files in os.walk("."):
@@ -82,8 +92,10 @@ def create_cpanel_packages():
         "api/docentes.php",
         "api/delegados.php",
         "api/whatsapp.php",
+        "api/wa_cpanel_manager.php",
         "api/supervisiones.php",
         "whatsapp_service.js",
+        "run_whatsapp.sh",
         "package.json",
         "data/delegados.json",
         "data/delegados_base.json",
@@ -93,7 +105,7 @@ def create_cpanel_packages():
         "data/whatsapp_chats.json"
     ]
 
-    print(f"\n[2/3] Empaquetando Actualizacion Rapida: {update_zip_name}...")
+    print(f"\n[2/4] Empaquetando Actualizacion Rapida: {update_zip_name}...")
     update_count = 0
     with zipfile.ZipFile(update_zip_name, 'w', zipfile.ZIP_DEFLATED) as zip_update:
         for f in update_files:
@@ -108,12 +120,30 @@ def create_cpanel_packages():
     print(f" -> {update_zip_name} generado con {update_count} archivos ({size_update_kb:.1f} KB)")
 
     # ---------------------------------------------------------
-    # C. Generar formulario_delegados_cpanel_DEPLOY.zip (Subdominio)
+    # C. Generar whatsapp_dependencies.zip (node_modules para cPanel sin consola)
+    # ---------------------------------------------------------
+    if os.path.exists("node_modules"):
+        print(f"\n[3/4] Empaquetando Dependencias Node (node_modules): {modules_zip_name}...")
+        mod_count = 0
+        with zipfile.ZipFile(modules_zip_name, 'w', zipfile.ZIP_DEFLATED) as zip_mod:
+            for root, dirs, files in os.walk("node_modules"):
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    rel_path = os.path.relpath(file_path, ".").replace("\\", "/")
+                    zip_mod.write(file_path, rel_path)
+                    mod_count += 1
+        size_mod_mb = os.path.getsize(modules_zip_name) / (1024 * 1024)
+        print(f" -> {modules_zip_name} generado con {mod_count} archivos ({size_mod_mb:.2f} MB)")
+    else:
+        print(f"\n[3/4] [OMITIDO] Carpeta node_modules no encontrada.")
+
+    # ---------------------------------------------------------
+    # D. Generar formulario_delegados_cpanel_DEPLOY.zip (Subdominio)
     # ---------------------------------------------------------
     delegados_zip_name = "formulario_delegados_cpanel_DEPLOY.zip"
     delegados_dir = "formulario_delegados"
     if os.path.exists(delegados_dir):
-        print(f"\n[3/3] Empaquetando Portal Asistencia Delegados: {delegados_zip_name}...")
+        print(f"\n[4/4] Empaquetando Portal Asistencia Delegados: {delegados_zip_name}...")
         del_count = 0
         with zipfile.ZipFile(delegados_zip_name, 'w', zipfile.ZIP_DEFLATED) as zip_del:
             for root, dirs, files in os.walk(delegados_dir):
@@ -130,14 +160,14 @@ def create_cpanel_packages():
         print(f" -> {delegados_zip_name} generado con {del_count} archivos ({size_del_kb:.1f} KB)")
 
     print("\n==========================================================")
-    print("[OK] PAQUETES LISTOS PARA SUBIR A CPANEL")
+    print("[OK] TODOS LOS PAQUETES LISTOS PARA SUBIR A CPANEL")
     print("==========================================================")
-    print(f"1. MINISISTEMA - INSTALACION COMPLETA:")
-    print(f"   -> Sube: {full_zip_name} (a public_html/ o subdirectorio)")
-    print(f"2. MINISISTEMA - ACTUALIZACION RAPIDA:")
-    print(f"   -> Sube: {update_zip_name}")
+    print(f"1. MINISISTEMA - ACTUALIZACION RAPIDA:")
+    print(f"   -> Sube: {update_zip_name} a public_html/ y dale Extraer")
+    print(f"2. DEPENDENCIAS WHATSAPP (SIN CONSOLA):")
+    print(f"   -> Sube: {modules_zip_name} a public_html/ y dale Extraer")
     print(f"3. PORTAL FORMULARIO DELEGADOS (Subdominio):")
-    print(f"   -> Sube: {delegados_zip_name} (a reg-asistencia-1.class-it.edu.pe)")
+    print(f"   -> Sube: {delegados_zip_name} a reg-asistencia-1.class-it.edu.pe")
     print("==========================================================")
 
 if __name__ == "__main__":
