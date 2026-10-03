@@ -171,9 +171,41 @@
     .status-dot.waiting { background-color: #D97706; animation: pulseDot 1.6s infinite; }
     .status-dot.offline { background-color: #DC2626; }
 
-    @keyframes pulseDot {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.85); }
+    /* BOTONES INSTITUCIONALES CON ESPACIADO Y ALINEACIÓN ÓPTIMA */
+    .btn-hub-nav {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 0.44rem 0.95rem;
+      border-radius: 9px;
+      line-height: 1.35;
+      text-decoration: none;
+      transition: all 0.15s ease-in-out;
+      white-space: nowrap;
+    }
+    .btn-hub-nav i {
+      font-size: 0.92rem;
+    }
+    .btn-hub-nav:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.14);
+    }
+
+    .btn-icon-square {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: all 0.15s ease-in-out;
+    }
+    .btn-icon-square:hover {
+      transform: translateY(-1px);
     }
 
     /* CONTENEDOR PRINCIPAL MODULAR (3 COLUMNAS) */
@@ -660,27 +692,27 @@
     </div>
 
     <!-- ACCIONES DE CABECERA Y ESTADO -->
-    <div class="d-flex align-items-center gap-2.5">
+    <div class="d-flex align-items-center" style="gap: 14px;">
       <!-- Indicador de Estado Real -->
-      <div id="badgeWaStatus" class="badge-status waiting" title="Estado de la conexión WhatsApp Multi-Device">
+      <div id="badgeWaStatus" class="badge-status waiting me-2 shadow-sm" title="Estado de la conexión WhatsApp Multi-Device">
         <span id="dotWaStatus" class="status-dot waiting"></span>
         <span id="textWaStatus">Comprobando conexión...</span>
       </div>
 
       <!-- Botón Vincular QR -->
-      <button type="button" class="btn btn-sm text-white fw-bold d-inline-flex align-items-center gap-1.5 shadow-sm px-3 py-1.5" style="background-color: var(--wa-green); border-radius: 8px;" onclick="abrirModalQR()" title="Escanear Código QR con el teléfono celular">
+      <button type="button" class="btn btn-hub-nav text-white shadow-sm" style="background-color: var(--wa-green); border: 1px solid #10B981;" onclick="abrirModalQR()" title="Escanear Código QR con el teléfono celular">
         <i class="bi bi-qr-code-scan"></i>
         <span>Vincular Celular (QR)</span>
       </button>
 
       <!-- Botón Directorio Docentes Real -->
-      <button type="button" class="btn btn-sm btn-outline-light d-none d-md-inline-flex align-items-center gap-1.5 px-2.5 py-1.5" style="border-radius: 8px;" onclick="abrirModalDirectorio()" title="Ver padrón de docentes con teléfonos reales">
+      <button type="button" class="btn btn-hub-nav btn-outline-light d-none d-md-inline-flex" onclick="abrirModalDirectorio()" title="Ver padrón de docentes con teléfonos reales">
         <i class="bi bi-person-lines-fill"></i>
         <span>Directorio FIA</span>
       </button>
 
       <!-- Volver a la Bandeja PAU General -->
-      <a href="index.html#pau" class="btn btn-sm btn-light fw-semibold d-inline-flex align-items-center gap-1.5 px-3 py-1.5" style="border-radius: 8px; color: var(--ucv-navy);" title="Regresar al Sistema de Gestión Académica">
+      <a href="index.html#pau" class="btn btn-hub-nav btn-light shadow-sm" style="color: var(--ucv-navy);" title="Regresar al Sistema de Gestión Académica">
         <i class="bi bi-inbox-fill text-primary"></i>
         <span>Bandeja PAU</span>
       </a>
@@ -693,15 +725,16 @@
     <!-- COLUMNA 1: BANDEJA DE CHATS -->
     <aside class="chats-sidebar">
       <div class="chats-header">
-        <div class="d-flex align-items-center justify-content-between mb-2">
-          <span class="fw-bold" style="font-size: 0.92rem; color: var(--text-main);">
-            <i class="bi bi-chat-left-text-fill text-success me-1.5"></i>Conversaciones
+        <div class="d-flex align-items-center justify-content-between mb-2.5">
+          <span class="fw-bold d-inline-flex align-items-center gap-2" style="font-size: 0.94rem; color: var(--text-main);">
+            <i class="bi bi-chat-left-text-fill text-success fs-5"></i>Conversaciones
           </span>
-          <div class="d-flex gap-1">
-            <button class="btn btn-xs btn-outline-secondary py-1 px-2 rounded" onclick="abrirModalNuevoChat()" title="Iniciar conversación con cualquier número de WhatsApp" style="font-size: 0.76rem;">
-              <i class="bi bi-plus-lg me-1"></i>Nuevo Chat
+          <div class="d-flex align-items-center" style="gap: 8px;">
+            <button class="btn btn-sm btn-outline-success fw-semibold d-inline-flex align-items-center shadow-sm" onclick="abrirModalNuevoChat()" title="Iniciar conversación con cualquier número de WhatsApp" style="font-size: 0.78rem; border-radius: 8px; padding: 0.35rem 0.7rem; gap: 6px;">
+              <i class="bi bi-plus-lg"></i>
+              <span>Nuevo Chat</span>
             </button>
-            <button class="btn btn-xs btn-outline-secondary py-1 px-2 rounded" onclick="cargarChatsReales()" title="Recargar chats" style="font-size: 0.76rem;">
+            <button class="btn btn-sm btn-outline-secondary btn-icon-square" onclick="cargarChatsReales()" title="Recargar lista de chats">
               <i class="bi bi-arrow-clockwise"></i>
             </button>
           </div>
@@ -732,27 +765,27 @@
       
       <!-- Cabecera del Chat Activo -->
       <div class="active-chat-navbar" id="activeChatNavbar">
-        <div class="d-flex align-items-center gap-2.5">
+        <div class="d-flex align-items-center" style="gap: 14px;">
           <div class="chat-avatar-box" id="activeContactAvatarBox">
-            <div class="chat-avatar-circle" style="width: 42px; height: 42px; font-size: 0.95rem;">--</div>
+            <div class="chat-avatar-circle" style="width: 44px; height: 44px; font-size: 0.95rem;">--</div>
           </div>
           <div>
-            <div class="fw-bold text-dark font-monospace" id="activeContactName" style="font-size: 0.95rem; line-height: 1.2;">Seleccione un contacto</div>
-            <div class="d-flex align-items-center gap-2" style="font-size: 0.76rem;">
-              <span id="activeContactPhone" class="text-secondary">--</span>
-              <span class="badge" id="activeContactBadge" style="background-color: var(--pastel-blue-bg); color: var(--pastel-blue-text); font-size: 0.7rem;">Atención PAU</span>
+            <div class="fw-bold text-dark font-monospace" id="activeContactName" style="font-size: 0.98rem; line-height: 1.25; margin-bottom: 2px;">Seleccione un contacto</div>
+            <div class="d-flex align-items-center" style="gap: 8px; font-size: 0.78rem;">
+              <span id="activeContactPhone" class="text-secondary fw-semibold">--</span>
+              <span class="badge" id="activeContactBadge" style="background-color: var(--pastel-blue-bg); color: var(--pastel-blue-text); border: 1px solid var(--pastel-blue-border); font-size: 0.72rem; padding: 0.22rem 0.55rem; border-radius: 6px;">Atención PAU</span>
             </div>
           </div>
         </div>
 
         <!-- Acciones sobre la conversación activa -->
-        <div class="d-flex align-items-center gap-2" id="activeChatActions" style="display: none !important;">
-          <button type="button" class="btn btn-sm fw-semibold d-inline-flex align-items-center gap-1.5 px-2.5 py-1.5" style="background-color: var(--pastel-blue-bg); color: var(--pastel-blue-text); border: 1px solid var(--pastel-blue-border); border-radius: 8px; font-size: 0.78rem;" onclick="derivarATicketPAU()" title="Registrar esta consulta en la bandeja de correos/tickets PAU">
-            <i class="bi bi-file-earmark-check-fill"></i>
+        <div class="d-flex align-items-center" id="activeChatActions" style="gap: 10px; display: none !important;">
+          <button type="button" class="btn btn-sm fw-semibold d-inline-flex align-items-center shadow-sm" style="background-color: var(--pastel-blue-bg); color: var(--pastel-blue-text); border: 1px solid var(--pastel-blue-border); border-radius: 8px; font-size: 0.8rem; padding: 0.42rem 0.85rem; gap: 7px;" onclick="derivarATicketPAU()" title="Registrar esta consulta en la bandeja de correos/tickets PAU">
+            <i class="bi bi-file-earmark-check-fill text-primary"></i>
             <span>Derivar a Ticket PAU</span>
           </button>
-          <button type="button" class="btn btn-sm btn-outline-secondary px-2.5 py-1.5" style="border-radius: 8px; font-size: 0.78rem;" onclick="exportarHistorialChat()" title="Descargar transcripción del chat">
-            <i class="bi bi-download"></i>
+          <button type="button" class="btn btn-sm btn-outline-secondary btn-icon-square shadow-sm" onclick="exportarHistorialChat()" title="Descargar transcripción del chat">
+            <i class="bi bi-download fs-6"></i>
           </button>
         </div>
       </div>
