@@ -624,22 +624,46 @@ app.post('/api/whatsapp/send-media', upload.single('file'), async (req, res) => 
   }
 });
 
-// 8. Desvincular Sesión (Cerrar sesión)
-app.post('/api/whatsapp/logout', async (req, res) => {
+// 8. Desvincular Sesión (Cerrar sesión y permitir nuevo número)
+app.all('/api/whatsapp/logout', async (req, res) => {
   try {
+    console.log('[WA-ENGINE] Petición de desvinculación recibida. Cerrando sesión actual...');
     if (sock) {
-      await sock.logout();
+      try {
+        await sock.logout();
+      } catch (e) {
+        console.warn('[WA-ENGINE] Advertencia al ejecutar sock.logout():', e.message);
+      }
+      try {
+        sock.end();
+      } catch (e) {}
       sock = null;
     }
+
     connectionStatus = 'DISCONNECTED';
     connectedAccount = null;
     currentQR = null;
-    fs.rmSync(SESSION_DIR, { recursive: true, force: true });
-    fs.mkdirSync(SESSION_DIR, { recursive: true });
+
+    // Eliminar credenciales físicas de sesión para forzar nuevo escaneo limpio
+    try {
+      if (fs.existsSync(SESSION_DIR)) {
+        fs.rmSync(SESSION_DIR, { recursive: true, force: true });
+        fs.mkdirSync(SESSION_DIR, { recursive: true });
+      }
+    } catch (e) {
+      console.warn('[WA-ENGINE] Advertencia limpiando SESSION_DIR:', e.message);
+    }
+
     broadcastSSE('status', { status: connectionStatus, user: null });
-    res.json({ success: true, message: 'Sesión cerrada exitosamente' });
-    setTimeout(startWhatsAppSocket, 1500);
+    res.json({ success: true, message: 'Sesión desvinculada exitosamente. Generando nuevo código QR...' });
+
+    // Reiniciar socket de inmediato para que genere un nuevo código QR
+    setTimeout(() => {
+      console.log('[WA-ENGINE] Reiniciando cliente WhatsApp para nuevo escaneo...');
+      startWhatsAppSocket();
+    }, 1200);
   } catch (err) {
+    console.error('[WA-ENGINE] Error desvinculando sesión:', err);
     res.status(500).json({ error: err.message });
   }
 });

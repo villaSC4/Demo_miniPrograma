@@ -699,10 +699,10 @@
         <span id="textWaStatus">Comprobando conexión...</span>
       </div>
 
-      <!-- Botón Vincular QR -->
-      <button type="button" class="btn btn-hub-nav text-white shadow-sm" style="background-color: var(--wa-green); border: 1px solid #10B981;" onclick="abrirModalQR()" title="Escanear Código QR con el teléfono celular">
-        <i class="bi bi-qr-code-scan"></i>
-        <span>Vincular Celular (QR)</span>
+      <!-- Botón Dinámico: Vincular QR / Desvincular Celular -->
+      <button type="button" id="btnAccionConexion" class="btn btn-hub-nav text-white shadow-sm" style="background-color: var(--wa-green); border: 1px solid #10B981;" onclick="abrirModalQR()" title="Escanear Código QR o Administrar Conexión">
+        <i class="bi bi-qr-code-scan" id="iconoAccionConexion"></i>
+        <span id="textoAccionConexion">Vincular Celular (QR)</span>
       </button>
 
       <!-- Botón Directorio Docentes Real -->
@@ -908,47 +908,82 @@
   </main>
 
   <!-- ======================================================================== -->
-  <!-- MODAL: ESCANEAR CÓDIGO QR REAL (BAILEYS) -->
+  <!-- MODAL: GESTIÓN DE VINCULACIÓN / DESVINCULACIÓN WHATSAPP -->
   <!-- ======================================================================== -->
   <div class="modal fade" id="modalVincularQR" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
       <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
         <div class="modal-header border-bottom py-3 px-4" style="background-color: #F8FAFC;">
           <div class="d-flex align-items-center gap-2">
-            <i class="bi bi-qr-code text-success fs-5"></i>
-            <h6 class="modal-title fw-bold text-dark mb-0">Vincular WhatsApp Oficial</h6>
+            <i class="bi bi-whatsapp text-success fs-5"></i>
+            <h6 class="modal-title fw-bold text-dark mb-0" id="modalQRTitle">Vincular WhatsApp Oficial</h6>
           </div>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
 
         <div class="modal-body p-4 text-center">
-          <p class="text-secondary small mb-3">
-            Escanee este código con la cámara de WhatsApp de su teléfono para conectar la sesión en vivo.
-          </p>
-
-          <div class="qr-scanner-card mx-auto mb-3" style="width: 250px; height: 250px; display: flex; align-items: center; justify-content: center;">
-            <div class="qr-laser-line" id="qrLaserLine"></div>
-            <div id="qrLoadingSpinner" class="spinner-border text-success" role="status">
-              <span class="visually-hidden">Generando QR...</span>
+          <!-- VISTA A: CUANDO YA ESTÁ VINCULADO UN NÚMERO (PERMITE DESVINCULAR Y PONER OTRO) -->
+          <div id="modalViewConectado" style="display: none;">
+            <div class="p-3 mb-3 rounded-4" style="background-color: var(--wa-green-pastel); border: 1px solid var(--wa-green-border);">
+              <div class="d-inline-flex p-3 rounded-circle bg-white shadow-sm mb-2 text-success">
+                <i class="bi bi-check2-circle fs-1"></i>
+              </div>
+              <h5 class="fw-bold text-dark mb-1">WhatsApp Actualmente Vinculado</h5>
+              <p class="text-secondary small mb-2">Este sistema se encuentra conectado y activo en tiempo real con:</p>
+              <div class="badge fs-6 px-3 py-1.5 font-monospace mb-2 text-white" style="background-color: var(--wa-green);" id="modalConectadoTelefono">+51 923 708 965</div>
+              <div class="small fw-semibold text-secondary" id="modalConectadoNombre">Titular: Aaron_PV</div>
             </div>
-            <img id="imgCodigoQR" src="" alt="Código QR WhatsApp" style="width: 218px; height: 218px; object-fit: contain; display: none;">
+
+            <div class="p-3 bg-light rounded-3 border text-start mb-3">
+              <div class="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+                <i class="bi bi-arrow-left-right text-primary"></i>¿Desea cambiar de número celular?
+              </div>
+              <p class="text-secondary small mb-0">
+                Al desvincular, la sesión actual se cerrará en el servidor y aparecerá inmediatamente un nuevo código QR en esta misma pantalla para que vincule su nuevo teléfono móvil.
+              </p>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="button" class="btn btn-danger fw-bold py-2 shadow-sm d-flex align-items-center justify-content-center gap-2" onclick="desvincularSesionWhatsApp()">
+                <i class="bi bi-box-arrow-right fs-5"></i>
+                <span>Desvincular y Conectar Otro Número</span>
+              </button>
+              <button type="button" class="btn btn-outline-secondary py-1.5" data-bs-dismiss="modal">
+                Mantener Número Actual
+              </button>
+            </div>
           </div>
 
-          <div class="text-start bg-light p-3 rounded border small text-secondary">
-            <div class="fw-bold text-dark mb-1.5"><i class="bi bi-phone me-1 text-primary"></i>Instrucciones:</div>
-            <div class="mb-1"><strong>1.</strong> Abra WhatsApp en su celular.</div>
-            <div class="mb-1"><strong>2.</strong> Vaya a <strong>Menú ⋮</strong> o <strong>Configuración</strong> > <strong>Dispositivos vinculados</strong>.</div>
-            <div><strong>3.</strong> Toque <strong>Vincular un dispositivo</strong> y apunte hacia la pantalla.</div>
-          </div>
-        </div>
+          <!-- VISTA B: CUANDO ESTÁ ESPERANDO ESCANEO DE CÓDIGO QR -->
+          <div id="modalViewQR">
+            <p class="text-secondary small mb-3">
+              Escanee este código con la cámara de WhatsApp de su teléfono para conectar la sesión en vivo.
+            </p>
 
-        <div class="modal-footer border-top py-2.5 px-4 bg-light d-flex justify-content-between">
-          <button type="button" class="btn btn-sm btn-outline-secondary" onclick="consultarEstadoQR(true)">
-            <i class="bi bi-arrow-clockwise me-1"></i>Actualizar QR
-          </button>
-          <button type="button" class="btn btn-sm btn-success fw-bold px-3" data-bs-dismiss="modal">
-            Entendido
-          </button>
+            <div class="qr-scanner-card mx-auto mb-3" style="width: 250px; height: 250px; display: flex; align-items: center; justify-content: center;">
+              <div class="qr-laser-line" id="qrLaserLine"></div>
+              <div id="qrLoadingSpinner" class="spinner-border text-success" role="status">
+                <span class="visually-hidden">Generando QR...</span>
+              </div>
+              <img id="imgCodigoQR" src="" alt="Código QR WhatsApp" style="width: 218px; height: 218px; object-fit: contain; display: none;">
+            </div>
+
+            <div class="text-start bg-light p-3 rounded border small text-secondary">
+              <div class="fw-bold text-dark mb-1.5"><i class="bi bi-phone me-1 text-primary"></i>Instrucciones:</div>
+              <div class="mb-1"><strong>1.</strong> Abra WhatsApp en su celular.</div>
+              <div class="mb-1"><strong>2.</strong> Vaya a <strong>Menú ⋮</strong> o <strong>Configuración</strong> > <strong>Dispositivos vinculados</strong>.</div>
+              <div><strong>3.</strong> Toque <strong>Vincular un dispositivo</strong> y apunte hacia la pantalla.</div>
+            </div>
+
+            <div class="border-top pt-3 mt-3 d-flex justify-content-between">
+              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="consultarEstadoQR(true)">
+                <i class="bi bi-arrow-clockwise me-1"></i>Actualizar QR
+              </button>
+              <button type="button" class="btn btn-sm btn-success fw-bold px-3" data-bs-dismiss="modal">
+                Entendido
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1197,43 +1232,155 @@
       } catch (e) {}
     }
 
+    let waConnectedUser = null;
+
     function actualizarUIConexion(status, user) {
       const dot = document.getElementById('dotWaStatus');
       const text = document.getElementById('textWaStatus');
       const badge = document.getElementById('badgeWaStatus');
+      const btnAccion = document.getElementById('btnAccionConexion');
+      const iconoAccion = document.getElementById('iconoAccionConexion');
+      const textoAccion = document.getElementById('textoAccionConexion');
 
       dot.className = 'status-dot';
       badge.className = 'badge-status';
 
       if (status === 'CONNECTED') {
         waConnected = true;
+        waConnectedUser = user;
         dot.classList.add('online');
         badge.classList.add('online');
-        text.textContent = user ? `En Línea (${formatearTelefono(user.phone)})` : 'En Línea';
+        const telFmt = user ? (formatearTelefono(user.phone) || `+${user.phone}`) : '';
+        text.textContent = telFmt ? `En Línea (${telFmt})` : 'En Línea';
 
-        const modalEl = document.getElementById('modalVincularQR');
-        const modalInstance = bootstrap.Modal.getInstance(modalEl);
-        if (modalInstance) modalInstance.hide();
+        // Si ya está conectado, el botón de cabecera permite cambiar/desvincular
+        if (btnAccion && textoAccion && iconoAccion) {
+          btnAccion.style.backgroundColor = 'rgba(239, 68, 68, 0.15)';
+          btnAccion.style.border = '1px solid #EF4444';
+          btnAccion.style.color = '#FFFFFF';
+          btnAccion.title = 'Haga clic para desvincular este número y conectar otro teléfono celular';
+          iconoAccion.className = 'bi bi-box-arrow-right text-warning';
+          textoAccion.textContent = 'Desvincular Celular';
+        }
+
+        actualizarModalConectado(user);
       } else if (status === 'QR_READY' || status === 'CONNECTING') {
         waConnected = false;
+        waConnectedUser = null;
         dot.classList.add('waiting');
         badge.classList.add('waiting');
         text.textContent = 'Esperando Escaneo QR';
+
+        if (btnAccion && textoAccion && iconoAccion) {
+          btnAccion.style.backgroundColor = 'var(--wa-green)';
+          btnAccion.style.border = '1px solid #10B981';
+          btnAccion.style.color = '#FFFFFF';
+          btnAccion.title = 'Escanear Código QR con el teléfono celular';
+          iconoAccion.className = 'bi bi-qr-code-scan';
+          textoAccion.textContent = 'Vincular Celular (QR)';
+        }
+
+        restaurarModalQR();
       } else {
         waConnected = false;
+        waConnectedUser = null;
         dot.classList.add('offline');
         badge.classList.add('offline');
         text.textContent = 'WhatsApp Desconectado';
+
+        if (btnAccion && textoAccion && iconoAccion) {
+          btnAccion.style.backgroundColor = 'var(--wa-green)';
+          btnAccion.style.border = '1px solid #10B981';
+          btnAccion.style.color = '#FFFFFF';
+          btnAccion.title = 'Escanear Código QR con el teléfono celular';
+          iconoAccion.className = 'bi bi-qr-code-scan';
+          textoAccion.textContent = 'Vincular Celular (QR)';
+        }
+
+        restaurarModalQR();
+      }
+    }
+
+    function actualizarModalConectado(user) {
+      const viewConectado = document.getElementById('modalViewConectado');
+      const viewQR = document.getElementById('modalViewQR');
+      const telEl = document.getElementById('modalConectadoTelefono');
+      const nomEl = document.getElementById('modalConectadoNombre');
+      const modalTitle = document.getElementById('modalQRTitle');
+
+      if (viewConectado && viewQR) {
+        viewConectado.style.display = 'block';
+        viewQR.style.display = 'none';
+        if (modalTitle) modalTitle.textContent = 'Estado de WhatsApp Conectado';
+        if (telEl && user) telEl.textContent = formatearTelefono(user.phone) || `+${user.phone}`;
+        if (nomEl && user) nomEl.textContent = `Titular: ${user.name || 'Coordinación'}`;
+      }
+    }
+
+    function restaurarModalQR() {
+      const viewConectado = document.getElementById('modalViewConectado');
+      const viewQR = document.getElementById('modalViewQR');
+      const modalTitle = document.getElementById('modalQRTitle');
+
+      if (viewConectado && viewQR) {
+        viewConectado.style.display = 'none';
+        viewQR.style.display = 'block';
+        if (modalTitle) modalTitle.textContent = 'Vincular WhatsApp Oficial';
       }
     }
 
     // ========================================================================
-    // CÓDIGO QR REAL
+    // CÓDIGO QR REAL Y DESVINCULACIÓN DE SESIÓN
     // ========================================================================
     async function abrirModalQR() {
-      const modal = new bootstrap.Modal(document.getElementById('modalVincularQR'));
+      const modalEl = document.getElementById('modalVincularQR');
+      const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
       modal.show();
-      await consultarEstadoQR(true);
+
+      if (waConnected && waConnectedUser) {
+        actualizarModalConectado(waConnectedUser);
+      } else {
+        restaurarModalQR();
+        await consultarEstadoQR(true);
+      }
+    }
+
+    async function desvincularSesionWhatsApp() {
+      const tel = waConnectedUser ? (formatearTelefono(waConnectedUser.phone) || `+${waConnectedUser.phone}`) : 'el número actual';
+      const seguro = confirm(
+        `¿Desea desvincular ${tel} de la plataforma?\n\n` +
+        `• Se cerrará la sesión actual de WhatsApp.\n` +
+        `• Podrá escanear de inmediato un nuevo código QR con otro número celular.`
+      );
+      if (!seguro) return;
+
+      try {
+        const textStatus = document.getElementById('textWaStatus');
+        if (textStatus) textStatus.textContent = 'Cerrando sesión...';
+
+        // Cambiar la vista del modal al lector QR con spinner
+        restaurarModalQR();
+        const spinner = document.getElementById('qrLoadingSpinner');
+        const img = document.getElementById('imgCodigoQR');
+        if (spinner) spinner.style.display = 'block';
+        if (img) img.style.display = 'none';
+
+        const res = await fetch(`${WA_API_URL}/logout`, { method: 'POST' });
+        const data = await res.json();
+
+        if (res.ok) {
+          console.log('[LOGOUT] Desvinculación completada:', data.message);
+          // Consultar el nuevo QR tras 1.2 segundos
+          setTimeout(() => {
+            consultarEstadoQR(true);
+          }, 1200);
+        } else {
+          alert('Aviso del servidor: ' + (data.error || 'No se pudo desvincular'));
+        }
+      } catch (err) {
+        console.error('Error desvinculando sesión:', err);
+        alert('Error al desvincular sesión: ' + err.message);
+      }
     }
 
     async function consultarEstadoQR(forzar = false) {
