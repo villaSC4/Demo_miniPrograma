@@ -5,6 +5,15 @@
  * ==============================================================================
  */
 
+// Blindaje global contra excepciones y promesas no manejadas (Node.js v24+)
+process.on('unhandledRejection', (reason, promise) => {
+  console.warn('[WA-PROCESS] Promesa no manejada capturada (evitando caída de Node):', reason?.message || reason);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('[WA-PROCESS] Excepción no capturada capturada (evitando caída de Node):', err?.message || err);
+});
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -63,6 +72,30 @@ let chatsData = {
   messages: {}
 };
 
+// Control de concurrencia y temporizadores únicos para el Socket
+let isStartingSocket = false;
+let reconnectTimer = null;
+
+function clearReconnectTimer() {
+  if (reconnectTimer) {
+    clearTimeout(reconnectTimer);
+    reconnectTimer = null;
+  }
+}
+
+function cleanupPreviousSocket() {
+  if (sock) {
+    try {
+      console.log('[WA-CLEANUP] Desmontando listeners y cerrando socket previo...');
+      sock.ev.removeAllListeners();
+      sock.end(undefined);
+    } catch (e) {
+      console.warn('[WA-CLEANUP] Aviso al limpiar socket previo:', e.message);
+    }
+    sock = null;
+  }
+}
+
 // Cargar historial persistido
 function loadChatsFromDisk() {
   try {
@@ -97,8 +130,32 @@ function broadcastSSE(eventType, data) {
 }
 
 // Inicialización del Socket Baileys
-async function startWhatsAppSocket() {
+async function startWhatsAppSocket(forceClean = false) {
+  clearReconnectTimer();
+
+  if (isStartingSocket) {
+    console.log('[WA-ENGINE] Inicio de socket ya en progreso. Omitiendo llamada duplicada.');
+    return;
+  }
+
+  isStartingSocket = true;
+
   try {
+    cleanupPreviousSocket();
+
+    // Si la sesión en disco tiene registered=false, está corrupta/incompleta y WhatsApp la expulsaría con 440/401
+    try {
+      const credsPath = path.join(SESSION_DIR, 'creds.json');
+      if (fs.existsSync(credsPath)) {
+        const rawCreds = JSON.parse(fs.readFileSync(credsPath, 'utf8'));
+        if (rawCreds && rawCreds.registered === false) {
+          console.warn('[WA-SESSION] Se detectó sesión incompleta (registered=false). Purgando credenciales...');
+          fs.rmSync(SESSION_DIR, { recursive: true, force: true });
+          fs.mkdirSync(SESSION_DIR, { recursive: true });
+        }
+      }
+    } catch (e) {}
+
     console.log('[WA-ENGINE] Iniciando cliente WhatsApp...');
     connectionStatus = 'CONNECTING';
     broadcastSSE('status', { status: connectionStatus });
@@ -111,8 +168,25 @@ async function startWhatsAppSocket() {
       version,
       auth: state,
       logger: pino({ level: 'silent' }),
-      browser: ['UCV PAU Virtual', 'Chrome', '120.0.0']
+      browser: ['UCV PAU Virtual', 'Chrome', '120.0.0'],
+      syncFullHistory: false, // CLAVE: No descargar meses de chats antiguos que saturan sockets y causan Bad MAC
+      markOnlineOnConnect: true, // Mantener online para que WhatsApp mantenga el túnel WebSocket vivo
+      keepAliveIntervalMs: 25000, // Ping periódico cada 25 segundos para evitar desconexiones por inactividad
+      connectTimeoutMs: 60000,
+      defaultQueryTimeoutMs: 60000,
+      retryRequestDelayMs: 2000,
+      maxMsgRetryCount: 3,
+      getMessage: async (key) => {
+        const chatMsgs = chatsData.messages[key.remoteJid] || [];
+        const found = chatMsgs.find(m => m.id === key.id);
+        if (found) {
+          return { conversation: found.body || '' };
+        }
+        return undefined;
+      }
     });
+
+    isStartingSocket = false;
 
     // Guardado de credenciales
     sock.ev.on('creds.update', saveCreds);
@@ -184,11 +258,12 @@ async function startWhatsAppSocket() {
 
       if (connection === 'close') {
         currentQR = null;
+        clearReconnectTimer();
         const statusCode = lastDisconnect?.error?.output?.statusCode;
-        const shouldReconnect = statusCode !== DisconnectReason.loggedOut;
-        console.log(`[WA-ENGINE] Conexión cerrada. Código: ${statusCode}. Reintentar: ${shouldReconnect}`);
+        console.log(`[WA-ENGINE] Conexión cerrada. Código HTTP: ${statusCode}. Detalle: ${lastDisconnect?.error?.message || 'Cierre normal'}`);
 
         if (statusCode === DisconnectReason.loggedOut) {
+          console.log('[WA-ENGINE] Sesión cerrada desde el celular o desvinculada (401). Limpiando...');
           connectionStatus = 'DISCONNECTED';
           connectedAccount = null;
           try {
@@ -196,15 +271,39 @@ async function startWhatsAppSocket() {
             fs.mkdirSync(SESSION_DIR, { recursive: true });
           } catch (e) {}
           broadcastSSE('status', { status: connectionStatus, user: null });
-          setTimeout(startWhatsAppSocket, 2000);
+          reconnectTimer = setTimeout(() => startWhatsAppSocket(true), 2500);
+
+        } else if (statusCode === DisconnectReason.connectionReplaced || statusCode === 440) {
+          console.warn('[WA-ENGINE] Conexión reemplazada por otra sesión o navegador (Código 440). Se suspende reconexión automática para evitar bucle.');
+          connectionStatus = 'DISCONNECTED';
+          broadcastSSE('status', { status: connectionStatus, user: connectedAccount });
+
+        } else if (statusCode === DisconnectReason.restartRequired || statusCode === 515) {
+          console.log('[WA-ENGINE] WhatsApp solicita reinicio de socket (Código 515). Reconectando...');
+          reconnectTimer = setTimeout(() => startWhatsAppSocket(), 1500);
+
+        } else if (statusCode === DisconnectReason.badSession || statusCode === 500) {
+          console.warn('[WA-ENGINE] Sesión inválida/dañada (Código 500). Purgando y solicitando nuevo QR...');
+          connectionStatus = 'DISCONNECTED';
+          try {
+            fs.rmSync(SESSION_DIR, { recursive: true, force: true });
+            fs.mkdirSync(SESSION_DIR, { recursive: true });
+          } catch (e) {}
+          broadcastSSE('status', { status: connectionStatus, user: null });
+          reconnectTimer = setTimeout(() => startWhatsAppSocket(true), 2500);
+
         } else {
+          console.log(`[WA-ENGINE] Desconexión de red/socket (Código ${statusCode}). Reintentando en 5 segundos...`);
           connectionStatus = 'DISCONNECTED';
           broadcastSSE('status', { status: connectionStatus });
-          setTimeout(startWhatsAppSocket, 3000);
+          reconnectTimer = setTimeout(() => startWhatsAppSocket(), 5000);
         }
+
       } else if (connection === 'open') {
         currentQR = null;
         connectionStatus = 'CONNECTED';
+        clearReconnectTimer();
+
         const userJid = sock.user.id;
         const phone = userJid.split(':')[0] || userJid.split('@')[0];
         connectedAccount = {
@@ -212,7 +311,7 @@ async function startWhatsAppSocket() {
           phone: phone,
           name: sock.user.name || 'Coordinación FIA UCV'
         };
-        console.log(`[WA-ENGINE] ¡Conexión exitosa a WhatsApp! Número vinculado: +${phone}`);
+        console.log(`[WA-ENGINE] ¡Conexión ESTABLE y PERMANENTE a WhatsApp establecida! Número vinculado: +${phone}`);
         broadcastSSE('status', { status: connectionStatus, user: connectedAccount });
       }
     });
@@ -356,10 +455,12 @@ async function startWhatsAppSocket() {
     });
 
   } catch (error) {
+    isStartingSocket = false;
     console.error('[WA-ENGINE] Error crítico en inicio de socket:', error);
     connectionStatus = 'DISCONNECTED';
     broadcastSSE('status', { status: connectionStatus, error: error.message });
-    setTimeout(startWhatsAppSocket, 5000);
+    clearReconnectTimer();
+    reconnectTimer = setTimeout(() => startWhatsAppSocket(), 5000);
   }
 }
 
@@ -628,17 +729,8 @@ app.post('/api/whatsapp/send-media', upload.single('file'), async (req, res) => 
 app.all('/api/whatsapp/logout', async (req, res) => {
   try {
     console.log('[WA-ENGINE] Petición de desvinculación recibida. Cerrando sesión actual...');
-    if (sock) {
-      try {
-        await sock.logout();
-      } catch (e) {
-        console.warn('[WA-ENGINE] Advertencia al ejecutar sock.logout():', e.message);
-      }
-      try {
-        sock.end();
-      } catch (e) {}
-      sock = null;
-    }
+    clearReconnectTimer();
+    cleanupPreviousSocket();
 
     connectionStatus = 'DISCONNECTED';
     connectedAccount = null;
@@ -658,12 +750,26 @@ app.all('/api/whatsapp/logout', async (req, res) => {
     res.json({ success: true, message: 'Sesión desvinculada exitosamente. Generando nuevo código QR...' });
 
     // Reiniciar socket de inmediato para que genere un nuevo código QR
-    setTimeout(() => {
+    reconnectTimer = setTimeout(() => {
       console.log('[WA-ENGINE] Reiniciando cliente WhatsApp para nuevo escaneo...');
-      startWhatsAppSocket();
+      startWhatsAppSocket(true);
     }, 1200);
   } catch (err) {
     console.error('[WA-ENGINE] Error desvinculando sesión:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 9. Reconexión manual controlada (para forzar reconexión si se pausó tras 440)
+app.post('/api/whatsapp/reconnect', async (req, res) => {
+  try {
+    console.log('[WA-ENGINE] Solicitud de reconexión manual recibida.');
+    clearReconnectTimer();
+    reconnectTimer = setTimeout(() => {
+      startWhatsAppSocket();
+    }, 500);
+    res.json({ success: true, message: 'Iniciando reconexión...' });
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });

@@ -1332,6 +1332,8 @@
     // ========================================================================
     // CÓDIGO QR REAL Y DESVINCULACIÓN DE SESIÓN
     // ========================================================================
+    let qrPollInterval = null;
+
     async function abrirModalQR() {
       const modalEl = document.getElementById('modalVincularQR');
       const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
@@ -1342,8 +1344,36 @@
       } else {
         restaurarModalQR();
         await consultarEstadoQR(true);
+        if (qrPollInterval) clearInterval(qrPollInterval);
+        qrPollInterval = setInterval(async () => {
+          if (!modalEl.classList.contains('show') || waConnected) {
+            clearInterval(qrPollInterval);
+            qrPollInterval = null;
+            return;
+          }
+          await consultarEstadoQR(false);
+        }, 2000);
       }
     }
+
+    // Limpiar intervalo al cerrar modal
+    document.addEventListener('DOMContentLoaded', () => {
+      const modalEl = document.getElementById('modalVincularQR');
+      if (modalEl) {
+        modalEl.addEventListener('hidden.bs.modal', () => {
+          if (qrPollInterval) {
+            clearInterval(qrPollInterval);
+            qrPollInterval = null;
+          }
+        });
+      }
+      // Chequeo periódico de estado cada 12 segundos si está desconectado
+      setInterval(() => {
+        if (!waConnected) {
+          verificarConexionMicroservicio();
+        }
+      }, 12000);
+    });
 
     async function desvincularSesionWhatsApp() {
       const tel = waConnectedUser ? (formatearTelefono(waConnectedUser.phone) || `+${waConnectedUser.phone}`) : 'el número actual';
@@ -1396,20 +1426,27 @@
             return;
           }
         }
+        if (forzar && !waConnected) {
+          fetch(`${WA_API_URL}/reconnect`, { method: 'POST' }).catch(() => {});
+        }
       } catch (e) {}
 
-      spinner.style.display = 'block';
-      img.style.display = 'none';
+      if (img.style.display !== 'block') {
+        spinner.style.display = 'block';
+        img.style.display = 'none';
+      }
     }
 
     function mostrarQR(dataUrl) {
       const img = document.getElementById('imgCodigoQR');
       const spinner = document.getElementById('qrLoadingSpinner');
-      img.src = dataUrl;
-      img.onload = () => {
-        spinner.style.display = 'none';
-        img.style.display = 'block';
-      };
+      if (img && spinner) {
+        img.src = dataUrl;
+        img.onload = () => {
+          spinner.style.display = 'none';
+          img.style.display = 'block';
+        };
+      }
     }
 
     // ========================================================================
