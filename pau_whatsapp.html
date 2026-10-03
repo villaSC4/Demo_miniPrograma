@@ -1660,7 +1660,7 @@
             </div>
 
             <div class="border-top pt-3 mt-3 d-flex justify-content-between">
-              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="consultarEstadoQR(true)">
+              <button type="button" id="btnActualizarQRModal" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1.5" onclick="forzarActualizarQR(this)">
                 <i class="bi bi-arrow-clockwise me-1"></i>Actualizar QR
               </button>
               <button type="button" class="btn btn-sm btn-success fw-bold px-3" data-bs-dismiss="modal">
@@ -2160,6 +2160,13 @@
           const data = JSON.parse(e.data);
           aplicarReaccionMensaje(data.messageId, data.reaction);
         });
+
+        sseSource.addEventListener('chats_cleared', () => {
+          chatsList = [];
+          currentActiveJid = null;
+          renderizarListaChats();
+          renderizarEstadoVacio();
+        });
       } catch (e) {}
     }
 
@@ -2344,6 +2351,50 @@
       }
     }
 
+    async function forzarActualizarQR(btnEl) {
+      const btn = btnEl || document.getElementById('btnActualizarQRModal');
+      const origHtml = btn ? btn.innerHTML : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status"></span> Actualizando...`;
+      }
+
+      const img = document.getElementById('imgCodigoQR');
+      const spinner = document.getElementById('qrLoadingSpinner');
+      if (img && spinner) {
+        img.style.display = 'none';
+        spinner.style.display = 'block';
+      }
+
+      try {
+        const res = await fetch(`${WA_API_URL}/refresh-qr`, { method: 'POST' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.qr) {
+            mostrarQR(data.qr);
+            if (btn) {
+              btn.innerHTML = `<i class="bi bi-check2 text-success me-1"></i>¡Actualizado!`;
+              setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+              }, 1200);
+            }
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('Fallo en refresh-qr forzado, usando fallback:', e);
+      }
+
+      await consultarEstadoQR(true);
+      if (btn) {
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.innerHTML = origHtml;
+        }, 1200);
+      }
+    }
+
     async function consultarEstadoQR(forzar = false) {
       const img = document.getElementById('imgCodigoQR');
       const spinner = document.getElementById('qrLoadingSpinner');
@@ -2358,7 +2409,7 @@
           }
         }
         if (forzar && !waConnected) {
-          fetch(`${WA_API_URL}/reconnect`, { method: 'POST' }).catch(() => {});
+          fetch(`${WA_API_URL}/refresh-qr`, { method: 'POST' }).catch(() => {});
         }
       } catch (e) {}
 

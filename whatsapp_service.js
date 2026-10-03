@@ -76,6 +76,7 @@ let chatsData = {
 // Control de concurrencia y temporizadores únicos para el Socket
 let isStartingSocket = false;
 let reconnectTimer = null;
+let qrWaiters = [];
 
 function clearReconnectTimer() {
   if (reconnectTimer) {
@@ -242,6 +243,15 @@ async function startWhatsAppSocket(forceClean = false) {
         currentQR = await QRCode.toDataURL(qr);
         connectionStatus = 'QR_READY';
         broadcastSSE('qr', { qr: currentQR, status: connectionStatus });
+
+        // Notificar de inmediato a los clientes que solicitaron refresco rápido
+        if (qrWaiters.length > 0) {
+          const waiters = [...qrWaiters];
+          qrWaiters = [];
+          waiters.forEach(fn => {
+            try { fn(currentQR); } catch (e) {}
+          });
+        }
       }
 
       if (connection === 'close') {
@@ -280,6 +290,12 @@ async function startWhatsAppSocket(forceClean = false) {
           broadcastSSE('status', { status: connectionStatus, user: null });
           reconnectTimer = setTimeout(() => startWhatsAppSocket(true), 2500);
 
+        } else if (statusCode === 408 || lastDisconnect?.error?.message?.includes('QR refs attempts ended')) {
+          console.log('[WA-ENGINE] Ciclo de código QR pausado por inactividad (408). Se generará un nuevo QR de inmediato cuando pulse "Actualizar QR".');
+          connectionStatus = 'DISCONNECTED';
+          currentQR = null;
+          broadcastSSE('status', { status: connectionStatus });
+
         } else {
           console.log(`[WA-ENGINE] Desconexión de red/socket (Código ${statusCode}). Reintentando en 5 segundos...`);
           connectionStatus = 'DISCONNECTED';
@@ -312,7 +328,11 @@ async function startWhatsAppSocket(forceClean = false) {
         if (!msg.message) continue;
         const key = msg.key;
         const jid = key.remoteJid;
-        if (!jid || jid === 'status@broadcast') continue;
+        if (!jid) continue;
+        // Filtrar estrictamente canales de noticias, transmisiones de estado y grupos de WhatsApp ajenos a PAU
+        if (jid === 'status@broadcast' || jid.endsWith('@broadcast') || jid.endsWith('@newsletter') || jid.includes('newsletter') || jid.endsWith('@g.us')) {
+          continue;
+        }
 
         const isFromMe = !!key.fromMe;
         const pushName = msg.pushName || '';
@@ -546,9 +566,11 @@ app.get('/api/whatsapp/events', (req, res) => {
   });
 });
 
-// 3. Obtener lista de chats
+// 3. Obtener lista de chats (filtrando estrictamente canales de noticias, difusiones y grupos)
 app.get('/api/whatsapp/chats', (req, res) => {
-  const list = Object.values(chatsData.chats).sort((a, b) => b.lastTimestamp - a.lastTimestamp);
+  const list = Object.values(chatsData.chats)
+    .filter(c => c && c.jid && !c.jid.endsWith('@newsletter') && !c.jid.endsWith('@broadcast') && !c.jid.endsWith('@g.us'))
+    .sort((a, b) => b.lastTimestamp - a.lastTimestamp);
   res.json(list);
 });
 
@@ -756,10 +778,10 @@ app.post('/api/whatsapp/send-media', upload.single('file'), async (req, res) => 
   }
 });
 
-// 8. Desvincular Sesión (Cerrar sesión y permitir nuevo número)
+// 8. Desvincular Sesión (Cerrar sesión, limpiar credenciales y purgar data no relacionada)
 app.all('/api/whatsapp/logout', async (req, res) => {
   try {
-    console.log('[WA-ENGINE] Petición de desvinculación recibida. Cerrando sesión actual...');
+    console.log('[WA-ENGINE] Petición de desvinculación recibida. Cerrando sesión actual y limpiando datos...');
     clearReconnectTimer();
     cleanupPreviousSocket();
 
@@ -777,28 +799,109 @@ app.all('/api/whatsapp/logout', async (req, res) => {
       console.warn('[WA-ENGINE] Advertencia limpiando SESSION_DIR:', e.message);
     }
 
+    // Purgar chats previos del número anterior para no mezclar datos ajenos
+    chatsData = { chats: {}, messages: {} };
+    saveChatsToDisk();
+
+    // Purgar archivos temporales en whatsapp_media
+    try {
+      const files = fs.readdirSync(MEDIA_DIR);
+      for (const file of files) {
+        fs.unlinkSync(path.join(MEDIA_DIR, file));
+      }
+    } catch (e) {}
+
     broadcastSSE('status', { status: connectionStatus, user: null });
-    res.json({ success: true, message: 'Sesión desvinculada exitosamente. Generando nuevo código QR...' });
+    broadcastSSE('chats_cleared', {});
+
+    res.json({ success: true, message: 'Sesión desvinculada exitosamente y datos purgados. Generando nuevo código QR...' });
 
     // Reiniciar socket de inmediato para que genere un nuevo código QR
     reconnectTimer = setTimeout(() => {
       console.log('[WA-ENGINE] Reiniciando cliente WhatsApp para nuevo escaneo...');
       startWhatsAppSocket(true);
-    }, 1200);
+    }, 600);
   } catch (err) {
     console.error('[WA-ENGINE] Error desvinculando sesión:', err);
     res.status(500).json({ error: err.message });
   }
 });
 
-// 9. Reconexión manual controlada (para forzar reconexión si se pausó tras 440)
+// 9. Actualización Rápida e Instantánea de Código QR (Bajo Demanda)
+app.all('/api/whatsapp/refresh-qr', async (req, res) => {
+  console.log('[WA-ENGINE] Petición de refresco forzado e instantáneo de código QR recibida.');
+  try {
+    currentQR = null;
+    clearReconnectTimer();
+    cleanupPreviousSocket();
+
+    // Limpiar archivos temporales de sesión no autenticada para emisión inmediata de nuevo QR
+    if (connectionStatus !== 'CONNECTED') {
+      try {
+        if (fs.existsSync(SESSION_DIR)) {
+          fs.rmSync(SESSION_DIR, { recursive: true, force: true });
+          fs.mkdirSync(SESSION_DIR, { recursive: true });
+        }
+      } catch (e) {}
+    }
+
+    connectionStatus = 'CONNECTING';
+    broadcastSSE('status', { status: connectionStatus });
+
+    // Registrar promesa para resolver la respuesta HTTP exactamente cuando Baileys genere el QR
+    let waiterFn = null;
+    const qrPromise = new Promise((resolve) => {
+      waiterFn = (qrDataUrl) => resolve(qrDataUrl);
+      qrWaiters.push(waiterFn);
+      setTimeout(() => {
+        qrWaiters = qrWaiters.filter(w => w !== waiterFn);
+        resolve(null);
+      }, 7000);
+    });
+
+    // Iniciar socket Baileys sin demoras
+    startWhatsAppSocket(true);
+
+    const generatedQr = await qrPromise;
+    if (generatedQr) {
+      return res.json({ success: true, qr: generatedQr, status: 'QR_READY' });
+    } else if (currentQR) {
+      return res.json({ success: true, qr: currentQR, status: 'QR_READY' });
+    } else {
+      return res.json({ success: false, status: connectionStatus, message: 'Generando nuevo código QR, aguarde un instante...' });
+    }
+  } catch (err) {
+    console.error('[WA-ENGINE] Error al refrescar código QR:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 10. Purgar datos de prueba y chats no relacionados bajo demanda
+app.post('/api/whatsapp/clear-chats', (req, res) => {
+  try {
+    chatsData = { chats: {}, messages: {} };
+    saveChatsToDisk();
+    try {
+      const files = fs.readdirSync(MEDIA_DIR);
+      for (const file of files) {
+        fs.unlinkSync(path.join(MEDIA_DIR, file));
+      }
+    } catch (e) {}
+    broadcastSSE('chats_cleared', {});
+    res.json({ success: true, message: 'Datos y chats purgados correctamente.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 11. Reconexión manual controlada (para forzar reconexión si se pausó tras 440)
 app.post('/api/whatsapp/reconnect', async (req, res) => {
   try {
     console.log('[WA-ENGINE] Solicitud de reconexión manual recibida.');
     clearReconnectTimer();
     reconnectTimer = setTimeout(() => {
       startWhatsAppSocket();
-    }, 500);
+    }, 400);
     res.json({ success: true, message: 'Iniciando reconexión...' });
   } catch (err) {
     res.status(500).json({ error: err.message });
