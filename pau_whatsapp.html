@@ -84,7 +84,7 @@
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI Emoji", "Segoe UI Symbol", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
       background-color: var(--app-bg);
       color: var(--text-main);
       height: 100vh;
@@ -485,6 +485,86 @@
       outline: none;
     }
 
+    .msg-body-text {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI Emoji", "Segoe UI Symbol", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.48;
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+
+    /* Mensajes que contienen únicamente emojis (grandes estilo WhatsApp oficial) */
+    .msg-body-text.emoji-only {
+      font-size: 2.35rem !important;
+      line-height: 1.25 !important;
+      padding: 3px 5px !important;
+      letter-spacing: 2px;
+    }
+    .msg-bubble.is-emoji-only {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0.25rem 0.5rem !important;
+    }
+    .msg-bubble.is-emoji-only .msg-meta-info {
+      background: rgba(0, 0, 0, 0.45);
+      color: #FFFFFF !important;
+      border-radius: 10px;
+      padding: 1px 6px;
+      font-size: 0.65rem;
+      display: inline-flex;
+      margin-top: 2px;
+    }
+
+    /* Reacciones con emoji en la base del mensaje */
+    .msg-reaction-badge {
+      position: absolute;
+      bottom: -11px;
+      right: 12px;
+      background: #FFFFFF;
+      border-radius: 14px;
+      padding: 1px 7px;
+      font-size: 0.95rem;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.16);
+      border: 1px solid var(--border-subtle);
+      line-height: 1.25;
+      z-index: 5;
+      user-select: none;
+      font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+    }
+
+    /* Stickers */
+    .msg-media-sticker {
+      max-width: 145px;
+      max-height: 145px;
+      display: block;
+      margin: 2px 0;
+      object-fit: contain;
+    }
+    .msg-bubble:has(.msg-media-sticker) {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
+
+    /* Selector de Emojis */
+    .emoji-item {
+      font-size: 1.35rem;
+      width: 35px;
+      height: 35px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.15s ease, transform 0.1s ease;
+    }
+    .emoji-item:hover {
+      background-color: #E2E8F0;
+      transform: scale(1.22);
+    }
+
     /* BARRA INFERIOR DE ESCRITURA */
     .chat-input-bar {
       min-height: 64px;
@@ -802,22 +882,236 @@
           <i class="bi bi-paperclip fs-6"></i>
         </button>
 
-        <div class="dropdown">
-          <button type="button" class="btn btn-light border text-secondary px-2.5 py-2 rounded-circle" data-bs-toggle="dropdown" title="Insertar emoji">
+        <div class="dropdown dropup">
+          <button type="button" class="btn btn-light border text-secondary px-2.5 py-2 rounded-circle" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnEmojiPicker" title="Selector de Emojis WhatsApp">
             <i class="bi bi-emoji-smile fs-6"></i>
           </button>
-          <ul class="dropdown-menu shadow border-0 p-2" style="font-size: 1.25rem; min-width: 180px;">
-            <div class="d-flex flex-wrap gap-2 justify-content-center">
-              <span role="button" onclick="insertarEmoji('👋')">👋</span>
-              <span role="button" onclick="insertarEmoji('✅')">✅</span>
-              <span role="button" onclick="insertarEmoji('📌')">📌</span>
-              <span role="button" onclick="insertarEmoji('📝')">📝</span>
-              <span role="button" onclick="insertarEmoji('👍')">👍</span>
-              <span role="button" onclick="insertarEmoji('🎓')">🎓</span>
-              <span role="button" onclick="insertarEmoji('🤝')">🤝</span>
-              <span role="button" onclick="insertarEmoji('⏳')">⏳</span>
+          <div class="dropdown-menu shadow-lg border p-2" style="width: 325px; border-radius: 12px; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;">
+            <div class="d-flex align-items-center justify-content-between pb-1 mb-1 border-bottom">
+              <span class="small fw-bold text-dark d-flex align-items-center gap-1">
+                <i class="bi bi-emoji-smile text-success"></i> Emojis WhatsApp
+              </span>
+              <span class="text-muted" style="font-size: 0.72rem;">Clic para insertar</span>
             </div>
-          </ul>
+
+            <!-- Pestañas de categorías rápidas -->
+            <ul class="nav nav-pills nav-fill mb-2 bg-light rounded p-1" id="emojiPillTabs" style="font-size: 0.85rem;">
+              <li class="nav-item">
+                <a class="nav-link active py-0.5 px-1" data-bs-toggle="pill" href="#tabEmojiCaritas" title="Emociones">😀</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link py-0.5 px-1" data-bs-toggle="pill" href="#tabEmojiManos" title="Gestos">👍</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link py-0.5 px-1" data-bs-toggle="pill" href="#tabEmojiCorazones" title="Corazones">❤️</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link py-0.5 px-1" data-bs-toggle="pill" href="#tabEmojiOficina" title="PAU / FIA">🎓</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link py-0.5 px-1" data-bs-toggle="pill" href="#tabEmojiSimbolos" title="Símbolos">✅</a>
+              </li>
+            </ul>
+
+            <div class="tab-content" style="max-height: 200px; overflow-y: auto; padding-right: 4px;">
+              <!-- 1. Caritas -->
+              <div class="tab-pane fade show active" id="tabEmojiCaritas">
+                <div class="d-flex flex-wrap gap-1 justify-content-start">
+                  <span class="emoji-item" onclick="insertarEmoji('😀')">😀</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😃')">😃</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😄')">😄</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😁')">😁</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😆')">😆</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😅')">😅</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😂')">😂</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤣')">🤣</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😊')">😊</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😇')">😇</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🙂')">🙂</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🙃')">🙃</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😉')">😉</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😌')">😌</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😍')">😍</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🥰')">🥰</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😘')">😘</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😗')">😗</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😋')">😋</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😛')">😛</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😜')">😜</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤪')">🤪</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😎')">😎</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤩')">🤩</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🥳')">🥳</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😏')">😏</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😒')">😒</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😞')">😞</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😔')">😔</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😟')">😟</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😕')">😕</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🙁')">🙁</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🥺')">🥺</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😢')">😢</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😭')">😭</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😤')">😤</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😠')">😠</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😡')">😡</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤬')">🤬</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤯')">🤯</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😳')">😳</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🥵')">🥵</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🥶')">🥶</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😱')">😱</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😨')">😨</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😰')">😰</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😥')">😥</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😓')">😓</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤗')">🤗</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤔')">🤔</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤭')">🤭</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤫')">🤫</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤥')">🤥</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😶')">😶</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😐')">😐</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😑')">😑</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😬')">😬</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🙄')">🙄</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😯')">😯</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😲')">😲</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😴')">😴</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤤')">🤤</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😵')">😵</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤐')">🤐</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🥴')">🥴</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤧')">🤧</span>
+                  <span class="emoji-item" onclick="insertarEmoji('😷')">😷</span>
+                </div>
+              </div>
+
+              <!-- 2. Gestos y Manos -->
+              <div class="tab-pane fade" id="tabEmojiManos">
+                <div class="d-flex flex-wrap gap-1 justify-content-start">
+                  <span class="emoji-item" onclick="insertarEmoji('👋')">👋</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤚')">🤚</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🖐️')">🖐️</span>
+                  <span class="emoji-item" onclick="insertarEmoji('✋')">✋</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🖖')">🖖</span>
+                  <span class="emoji-item" onclick="insertarEmoji('👌')">👌</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤌')">🤌</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤏')">🤏</span>
+                  <span class="emoji-item" onclick="insertarEmoji('✌️')">✌️</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤞')">🤞</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤟')">🤟</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤘')">🤘</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤙')">🤙</span>
+                  <span class="emoji-item" onclick="insertarEmoji('👈')">👈</span>
+                  <span class="emoji-item" onclick="insertarEmoji('👉')">👉</span>
+                  <span class="emoji-item" onclick="insertarEmoji('👆')">👆</span>
+                  <span class="emoji-item" onclick="insertarEmoji('👇')">👇</span>
+                  <span class="emoji-item" onclick="insertarEmoji('☝️')">☝️</span>
+                  <span class="emoji-item" onclick="insertarEmoji('👍')">👍</span>
+                  <span class="emoji-item" onclick="insertarEmoji('👎')">👎</span>
+                  <span class="emoji-item" onclick="insertarEmoji('✊')">✊</span>
+                  <span class="emoji-item" onclick="insertarEmoji('👊')">👊</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤛')">🤛</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤜')">🤜</span>
+                  <span class="emoji-item" onclick="insertarEmoji('👏')">👏</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🙌')">🙌</span>
+                  <span class="emoji-item" onclick="insertarEmoji('👐')">👐</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤲')">🤲</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤝')">🤝</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🙏')">🙏</span>
+                  <span class="emoji-item" onclick="insertarEmoji('✍️')">✍️</span>
+                  <span class="emoji-item" onclick="insertarEmoji('💪')">💪</span>
+                </div>
+              </div>
+
+              <!-- 3. Corazones -->
+              <div class="tab-pane fade" id="tabEmojiCorazones">
+                <div class="d-flex flex-wrap gap-1 justify-content-start">
+                  <span class="emoji-item" onclick="insertarEmoji('❤️')">❤️</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🧡')">🧡</span>
+                  <span class="emoji-item" onclick="insertarEmoji('💛')">💛</span>
+                  <span class="emoji-item" onclick="insertarEmoji('💚')">💚</span>
+                  <span class="emoji-item" onclick="insertarEmoji('💙')">💙</span>
+                  <span class="emoji-item" onclick="insertarEmoji('💜')">💜</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🖤')">🖤</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤍')">🤍</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🤎')">🤎</span>
+                  <span class="emoji-item" onclick="insertarEmoji('💔')">💔</span>
+                  <span class="emoji-item" onclick="insertarEmoji('❣️')">❣️</span>
+                  <span class="emoji-item" onclick="insertarEmoji('💕')">💕</span>
+                  <span class="emoji-item" onclick="insertarEmoji('💞')">💞</span>
+                  <span class="emoji-item" onclick="insertarEmoji('💓')">💓</span>
+                  <span class="emoji-item" onclick="insertarEmoji('💗')">💗</span>
+                  <span class="emoji-item" onclick="insertarEmoji('💖')">💖</span>
+                  <span class="emoji-item" onclick="insertarEmoji('💘')">💘</span>
+                  <span class="emoji-item" onclick="insertarEmoji('💝')">💝</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🔥')">🔥</span>
+                  <span class="emoji-item" onclick="insertarEmoji('✨')">✨</span>
+                  <span class="emoji-item" onclick="insertarEmoji('⭐')">⭐</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🌟')">🌟</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🎉')">🎉</span>
+                </div>
+              </div>
+
+              <!-- 4. Oficina / FIA / UCV -->
+              <div class="tab-pane fade" id="tabEmojiOficina">
+                <div class="d-flex flex-wrap gap-1 justify-content-start">
+                  <span class="emoji-item" onclick="insertarEmoji('🎓')">🎓</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🏫')">🏫</span>
+                  <span class="emoji-item" onclick="insertarEmoji('📚')">📚</span>
+                  <span class="emoji-item" onclick="insertarEmoji('📖')">📖</span>
+                  <span class="emoji-item" onclick="insertarEmoji('📝')">📝</span>
+                  <span class="emoji-item" onclick="insertarEmoji('📁')">📁</span>
+                  <span class="emoji-item" onclick="insertarEmoji('📂')">📂</span>
+                  <span class="emoji-item" onclick="insertarEmoji('📄')">📄</span>
+                  <span class="emoji-item" onclick="insertarEmoji('📊')">📊</span>
+                  <span class="emoji-item" onclick="insertarEmoji('📈')">📈</span>
+                  <span class="emoji-item" onclick="insertarEmoji('💻')">💻</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🖥️')">🖥️</span>
+                  <span class="emoji-item" onclick="insertarEmoji('📱')">📱</span>
+                  <span class="emoji-item" onclick="insertarEmoji('📞')">📞</span>
+                  <span class="emoji-item" onclick="insertarEmoji('✉️')">✉️</span>
+                  <span class="emoji-item" onclick="insertarEmoji('📧')">📧</span>
+                  <span class="emoji-item" onclick="insertarEmoji('📎')">📎</span>
+                  <span class="emoji-item" onclick="insertarEmoji('📌')">📌</span>
+                  <span class="emoji-item" onclick="insertarEmoji('📍')">📍</span>
+                  <span class="emoji-item" onclick="insertarEmoji('💼')">💼</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🗓️')">🗓️</span>
+                  <span class="emoji-item" onclick="insertarEmoji('📅')">📅</span>
+                  <span class="emoji-item" onclick="insertarEmoji('⏰')">⏰</span>
+                  <span class="emoji-item" onclick="insertarEmoji('⏳')">⏳</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🔔')">🔔</span>
+                  <span class="emoji-item" onclick="insertarEmoji('📢')">📢</span>
+                  <span class="emoji-item" onclick="insertarEmoji('💡')">💡</span>
+                </div>
+              </div>
+
+              <!-- 5. Símbolos -->
+              <div class="tab-pane fade" id="tabEmojiSimbolos">
+                <div class="d-flex flex-wrap gap-1 justify-content-start">
+                  <span class="emoji-item" onclick="insertarEmoji('✅')">✅</span>
+                  <span class="emoji-item" onclick="insertarEmoji('❌')">❌</span>
+                  <span class="emoji-item" onclick="insertarEmoji('⚠️')">⚠️</span>
+                  <span class="emoji-item" onclick="insertarEmoji('ℹ️')">ℹ️</span>
+                  <span class="emoji-item" onclick="insertarEmoji('❓')">❓</span>
+                  <span class="emoji-item" onclick="insertarEmoji('❗')">❗</span>
+                  <span class="emoji-item" onclick="insertarEmoji('‼️')">‼️</span>
+                  <span class="emoji-item" onclick="insertarEmoji('💯')">💯</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🎯')">🎯</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🏆')">🏆</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🔒')">🔒</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🔓')">🔓</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🔑')">🔑</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🛡️')">🛡️</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🟢')">🟢</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🔴')">🔴</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🟡')">🟡</span>
+                  <span class="emoji-item" onclick="insertarEmoji('🔵')">🔵</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <input type="text" id="inputChatMessage" class="chat-textarea" placeholder="Escriba un mensaje oficial para enviar..." onkeypress="handleInputKeyPress(event)">
@@ -1131,6 +1425,8 @@
         return `<video controls class="msg-media-video"><source src="${src}">Tu navegador no soporta video.</video>`;
       } else if (m.type === 'audio') {
         return `<audio controls class="w-100 my-1"><source src="${src}">Tu navegador no soporta audio.</audio>`;
+      } else if (m.type === 'sticker') {
+        return `<img src="${src}" class="msg-media-sticker" alt="Sticker WhatsApp">`;
       } else if (m.type === 'document') {
         return `
           <a href="${src}" target="_blank" class="p-2 rounded bg-light border text-dark d-flex align-items-center gap-2 text-decoration-none mb-1">
@@ -1141,6 +1437,39 @@
         `;
       }
       return '';
+    }
+
+    // Detección precisa de mensajes compuestos únicamente por emojis (estilo WhatsApp grande)
+    function esMensajeSoloEmojis(text) {
+      if (!text) return false;
+      const clean = text.trim();
+      if (!clean) return false;
+      try {
+        const emojiRegex = /^(?:\p{Extended_Pictographic}|\p{Emoji_Presentation}|\p{Emoji_Modifier_Base}|\p{Emoji_Modifier}|\uFE0F|\u200D|\s)+$/u;
+        if (!emojiRegex.test(clean)) return false;
+        const pictos = clean.match(/\p{Extended_Pictographic}/gu);
+        return pictos && pictos.length >= 1 && pictos.length <= 4;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    // Actualización dinámica de Reacciones con Emoji (👍, ❤️, 😂, etc.)
+    function aplicarReaccionMensaje(msgId, reaction) {
+      const msgEl = document.getElementById('msg_' + msgId);
+      if (!msgEl) return;
+      let badge = msgEl.querySelector('.msg-reaction-badge');
+      if (reaction) {
+        if (!badge) {
+          badge = document.createElement('span');
+          badge.className = 'msg-reaction-badge';
+          badge.title = 'Reacción de WhatsApp';
+          msgEl.appendChild(badge);
+        }
+        badge.textContent = reaction;
+      } else if (badge) {
+        badge.remove();
+      }
     }
 
     function obtenerDetallesContacto(c) {
@@ -1228,6 +1557,11 @@
         sseSource.addEventListener('chat_update', (e) => {
           const chat = JSON.parse(e.data);
           actualizarChatEnLista(chat);
+        });
+
+        sseSource.addEventListener('reaction', (e) => {
+          const data = JSON.parse(e.data);
+          aplicarReaccionMensaje(data.messageId, data.reaction);
         });
       } catch (e) {}
     }
@@ -1670,15 +2004,20 @@
         if (m.id && seenMsgIds.has(m.id)) return;
         if (m.id) seenMsgIds.add(m.id);
 
+        const isEmojiOnly = esMensajeSoloEmojis(m.body);
+        const emojiClass = isEmojiOnly ? ' emoji-only' : '';
+        const reactionBadge = m.reaction ? `<span class="msg-reaction-badge" title="Reacción de WhatsApp">${escapeHtml(m.reaction)}</span>` : '';
+
         const bubble = document.createElement('div');
         if (m.id) bubble.id = 'msg_' + m.id;
-        bubble.className = `msg-bubble ${m.fromMe ? 'outgoing' : 'incoming'}`;
+        bubble.className = `msg-bubble ${m.fromMe ? 'outgoing' : 'incoming'}${isEmojiOnly ? ' is-emoji-only' : ''}`;
 
         const mediaHtml = construirMediaHtml(m);
 
         bubble.innerHTML = `
           ${mediaHtml}
-          ${m.body ? `<div class="msg-body-text">${escapeHtml(m.body)}</div>` : ''}
+          ${m.body ? `<div class="msg-body-text${emojiClass}">${escapeHtml(m.body)}</div>` : ''}
+          ${reactionBadge}
           <div class="msg-meta-info">
             <span>${formatearHora(m.timestamp)}</span>
             ${m.fromMe ? `<i class="bi bi-check2-all msg-check-icon"></i>` : ''}
@@ -1755,15 +2094,20 @@
           }
         }
 
+        const isEmojiOnly = esMensajeSoloEmojis(msg.body);
+        const emojiClass = isEmojiOnly ? ' emoji-only' : '';
+        const reactionBadge = msg.reaction ? `<span class="msg-reaction-badge" title="Reacción de WhatsApp">${escapeHtml(msg.reaction)}</span>` : '';
+
         const bubble = document.createElement('div');
         if (msg.id) bubble.id = 'msg_' + msg.id;
-        bubble.className = `msg-bubble ${msg.fromMe ? 'outgoing' : 'incoming'}`;
+        bubble.className = `msg-bubble ${msg.fromMe ? 'outgoing' : 'incoming'}${isEmojiOnly ? ' is-emoji-only' : ''}`;
         
         const mediaHtml = construirMediaHtml(msg);
 
         bubble.innerHTML = `
           ${mediaHtml}
-          ${msg.body ? `<div class="msg-body-text">${escapeHtml(msg.body)}</div>` : ''}
+          ${msg.body ? `<div class="msg-body-text${emojiClass}">${escapeHtml(msg.body)}</div>` : ''}
+          ${reactionBadge}
           <div class="msg-meta-info">
             <span>${formatearHora(msg.timestamp)}</span>
             ${msg.fromMe ? `<i class="bi bi-check2-all msg-check-icon"></i>` : ''}
@@ -1909,7 +2253,14 @@
 
     function insertarEmoji(emoji) {
       const input = document.getElementById('inputChatMessage');
-      input.value += emoji + ' ';
+      if (!input) return;
+      const start = input.selectionStart ?? input.value.length;
+      const end = input.selectionEnd ?? input.value.length;
+      const val = input.value;
+      input.value = val.substring(0, start) + emoji + val.substring(end);
+      const nextPos = start + emoji.length;
+      input.selectionStart = nextPos;
+      input.selectionEnd = nextPos;
       input.focus();
     }
 

@@ -342,7 +342,38 @@ async function startWhatsAppSocket(forceClean = false) {
         let mediaUrl = null;
         let fileName = null;
 
-        const m = msg.message;
+        let m = msg.message;
+        // Desenvolver mensajes efímeros, temporales o de vista única que contienen emojis o multimedia
+        if (m.ephemeralMessage?.message) m = m.ephemeralMessage.message;
+        if (m.viewOnceMessage?.message) m = m.viewOnceMessage.message;
+        if (m.viewOnceMessageV2?.message) m = m.viewOnceMessageV2.message;
+        if (m.documentWithCaptionMessage?.message) m = m.documentWithCaptionMessage.message;
+        if (m.editedMessage?.message?.protocolMessage?.editedMessage) {
+          m = m.editedMessage.message.protocolMessage.editedMessage;
+        }
+
+        // Manejo de Reacciones de WhatsApp con Emojis (👍, ❤️, 😂, 🙏, etc.)
+        if (m.reactionMessage) {
+          const targetMsgId = m.reactionMessage.key?.id;
+          const emojiText = m.reactionMessage.text || '';
+          console.log(`[WA-REACTION] Reacción con emoji recibida: "${emojiText}" para mensaje ${targetMsgId}`);
+          
+          if (chatsData.messages[normJid]) {
+            const foundMsg = chatsData.messages[normJid].find(x => x.id === targetMsgId);
+            if (foundMsg) {
+              foundMsg.reaction = emojiText;
+              saveChatsToDisk();
+              broadcastSSE('reaction', {
+                jid: normJid,
+                messageId: targetMsgId,
+                reaction: emojiText,
+                fromMe: isFromMe
+              });
+            }
+          }
+          continue; // Las reacciones actualizan el mensaje existente, no crean un globo nuevo
+        }
+
         if (m.conversation) {
           bodyText = m.conversation;
         } else if (m.extendedTextMessage?.text) {
@@ -377,6 +408,17 @@ async function startWhatsAppSocket(forceClean = false) {
             fs.writeFileSync(path.join(MEDIA_DIR, fName), buffer);
             mediaUrl = `/api/whatsapp/media/${fName}`;
           } catch (e) {}
+        } else if (m.stickerMessage) {
+          messageType = 'sticker';
+          bodyText = '🎭 Sticker';
+          try {
+            const buffer = await downloadMediaMessage(msg, 'buffer', {});
+            const fName = `in_stk_${Date.now()}_${Math.random().toString(36).substring(2, 6)}.webp`;
+            fs.writeFileSync(path.join(MEDIA_DIR, fName), buffer);
+            mediaUrl = `/api/whatsapp/media/${fName}`;
+          } catch (e) {
+            console.warn('[WA-MEDIA] Error descargando sticker:', e.message);
+          }
         } else if (m.documentMessage) {
           messageType = 'document';
           fileName = m.documentMessage.fileName || 'documento.pdf';
@@ -398,6 +440,7 @@ async function startWhatsAppSocket(forceClean = false) {
           body: bodyText,
           mediaUrl,
           fileName,
+          reaction: null,
           timestamp,
           status: isFromMe ? 'sent' : 'received'
         };
@@ -482,7 +525,7 @@ app.get('/api/whatsapp/qr', (req, res) => {
 // 2. Stream en tiempo real vía SSE
 app.get('/api/whatsapp/events', (req, res) => {
   res.writeHead(200, {
-    'Content-Type': 'text/event-stream',
+    'Content-Type': 'text/event-stream; charset=utf-8',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
     'Access-Control-Allow-Origin': '*'
