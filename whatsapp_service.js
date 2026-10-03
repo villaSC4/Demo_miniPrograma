@@ -30,7 +30,8 @@ const {
   downloadMediaMessage,
   jidDecode,
   jidNormalizedUser,
-  isLidUser
+  isLidUser,
+  Browsers
 } = require('@whiskeysockets/baileys');
 
 // Configuración de Directorios
@@ -143,19 +144,6 @@ async function startWhatsAppSocket(forceClean = false) {
   try {
     cleanupPreviousSocket();
 
-    // Si la sesión en disco tiene registered=false, está corrupta/incompleta y WhatsApp la expulsaría con 440/401
-    try {
-      const credsPath = path.join(SESSION_DIR, 'creds.json');
-      if (fs.existsSync(credsPath)) {
-        const rawCreds = JSON.parse(fs.readFileSync(credsPath, 'utf8'));
-        if (rawCreds && rawCreds.registered === false) {
-          console.warn('[WA-SESSION] Se detectó sesión incompleta (registered=false). Purgando credenciales...');
-          fs.rmSync(SESSION_DIR, { recursive: true, force: true });
-          fs.mkdirSync(SESSION_DIR, { recursive: true });
-        }
-      }
-    } catch (e) {}
-
     console.log('[WA-ENGINE] Iniciando cliente WhatsApp...');
     connectionStatus = 'CONNECTING';
     broadcastSSE('status', { status: connectionStatus });
@@ -168,7 +156,7 @@ async function startWhatsAppSocket(forceClean = false) {
       version,
       auth: state,
       logger: pino({ level: 'silent' }),
-      browser: ['UCV PAU Virtual', 'Chrome', '120.0.0'],
+      browser: Browsers.macOS('Desktop'),
       syncFullHistory: false, // CLAVE: No descargar meses de chats antiguos que saturan sockets y causan Bad MAC
       markOnlineOnConnect: true, // Mantener online para que WhatsApp mantenga el túnel WebSocket vivo
       keepAliveIntervalMs: 25000, // Ping periódico cada 25 segundos para evitar desconexiones por inactividad
@@ -279,8 +267,8 @@ async function startWhatsAppSocket(forceClean = false) {
           broadcastSSE('status', { status: connectionStatus, user: connectedAccount });
 
         } else if (statusCode === DisconnectReason.restartRequired || statusCode === 515) {
-          console.log('[WA-ENGINE] WhatsApp solicita reinicio de socket (Código 515). Reconectando...');
-          reconnectTimer = setTimeout(() => startWhatsAppSocket(), 1500);
+          console.log('[WA-ENGINE] WhatsApp solicita reinicio técnico (Código 515). Completando enlace con celular en 500ms...');
+          reconnectTimer = setTimeout(() => startWhatsAppSocket(), 500);
 
         } else if (statusCode === DisconnectReason.badSession || statusCode === 500) {
           console.warn('[WA-ENGINE] Sesión inválida/dañada (Código 500). Purgando y solicitando nuevo QR...');
