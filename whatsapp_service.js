@@ -78,6 +78,21 @@ let isStartingSocket = false;
 let reconnectTimer = null;
 let qrWaiters = [];
 
+// Helper para detectar si un JID o número corresponde al propio número conectado
+function isSelfUser(jidOrPhone) {
+  if (!jidOrPhone) return false;
+  const myPhone = connectedAccount?.phone ? String(connectedAccount.phone).replace(/\D/g, '') : (sock?.user?.id ? (sock.user.id.split(':')[0] || sock.user.id.split('@')[0]).replace(/\D/g, '') : null);
+  const myJidNorm = sock?.user?.id ? jidNormalizedUser(sock.user.id) : null;
+  const raw = String(jidOrPhone).trim();
+  const digits = raw.replace(/\D/g, '');
+
+  if (myJidNorm && jidNormalizedUser(raw) === myJidNorm) return true;
+  if (myPhone && digits) {
+    if (digits === myPhone || digits.endsWith(myPhone) || myPhone.endsWith(digits)) return true;
+  }
+  return false;
+}
+
 function clearReconnectTimer() {
   if (reconnectTimer) {
     clearTimeout(reconnectTimer);
@@ -185,6 +200,7 @@ async function startWhatsAppSocket(forceClean = false) {
       console.log(`[WA-MAP] phoneNumberShare recibido: ${lid} -> ${jid}`);
       if (lid && jid) {
         const cleanPhone = jid.split('@')[0];
+        if (isSelfUser(cleanPhone) || isSelfUser(lid) || isSelfUser(jid)) return;
         lidToPhoneMap[lid] = cleanPhone;
         if (chatsData.chats[lid]) {
           chatsData.chats[lid].phone = cleanPhone;
@@ -196,6 +212,7 @@ async function startWhatsAppSocket(forceClean = false) {
 
     sock.ev.on('contacts.upsert', (contacts) => {
       for (const c of contacts) {
+        if (isSelfUser(c.id) || isSelfUser(c.lid)) continue;
         if (c.lid && c.id) {
           const cleanPhone = c.id.split('@')[0];
           lidToPhoneMap[c.lid] = cleanPhone;
@@ -216,6 +233,7 @@ async function startWhatsAppSocket(forceClean = false) {
 
     sock.ev.on('contacts.update', (updates) => {
       for (const c of updates) {
+        if (isSelfUser(c.id) || isSelfUser(c.lid)) continue;
         if (c.lid && c.id) {
           const cleanPhone = c.id.split('@')[0];
           lidToPhoneMap[c.lid] = cleanPhone;
@@ -342,6 +360,12 @@ async function startWhatsAppSocket(forceClean = false) {
         let cleanPhone = normJid.split('@')[0];
         if (lidToPhoneMap[normJid]) {
           cleanPhone = lidToPhoneMap[normJid];
+        }
+
+        // NUNCA registrar el propio número como chat (chat con uno mismo / message yourself / notas personales)
+        if (isSelfUser(normJid) || isSelfUser(cleanPhone) || isSelfUser(jid)) {
+          console.log(`[WA-FILTER] Omitiendo mensaje propio / chat con uno mismo (${cleanPhone})`);
+          continue;
         }
 
         // Consultar o cachear foto de perfil
@@ -566,10 +590,22 @@ app.get('/api/whatsapp/events', (req, res) => {
   });
 });
 
-// 3. Obtener lista de chats (filtrando estrictamente canales de noticias, difusiones y grupos)
+// 3. Obtener lista de chats (filtrando estrictamente canales de noticias, difusiones, grupos y el propio número)
 app.get('/api/whatsapp/chats', (req, res) => {
+  // Purgar de memoria y de disco cualquier residuo del propio número o de canales/grupos
+  let purged = false;
+  for (const k of Object.keys(chatsData.chats)) {
+    const c = chatsData.chats[k];
+    if (!c || isSelfUser(c.jid) || isSelfUser(c.phone) || isSelfUser(k) || c.jid.endsWith('@newsletter') || c.jid.endsWith('@broadcast') || c.jid.endsWith('@g.us')) {
+      delete chatsData.chats[k];
+      delete chatsData.messages[k];
+      purged = true;
+    }
+  }
+  if (purged) saveChatsToDisk();
+
   const list = Object.values(chatsData.chats)
-    .filter(c => c && c.jid && !c.jid.endsWith('@newsletter') && !c.jid.endsWith('@broadcast') && !c.jid.endsWith('@g.us'))
+    .filter(c => c && c.jid && !c.jid.endsWith('@newsletter') && !c.jid.endsWith('@broadcast') && !c.jid.endsWith('@g.us') && !isSelfUser(c.jid) && !isSelfUser(c.phone))
     .sort((a, b) => b.lastTimestamp - a.lastTimestamp);
   res.json(list);
 });
@@ -635,6 +671,10 @@ app.post('/api/whatsapp/send', async (req, res) => {
         digits = '51' + digits; // Prefijo Perú
       }
       targetJid = `${digits}@s.whatsapp.net`;
+    }
+
+    if (isSelfUser(targetJid)) {
+      return res.status(400).json({ error: 'No está permitido enviarse mensajes a sí mismo en la bandeja de atención PAU.' });
     }
 
     console.log(`[WA-SEND] Enviando mensaje a targetJid: ${targetJid}`);

@@ -2434,17 +2434,29 @@
     // ========================================================================
     // GESTIÓN DE CHATS REALES (CON TELÉFONO CLARO Y FOTO REAL)
     // ========================================================================
+    function esMiPropioNumero(c) {
+      if (!c) return false;
+      const myPhone = waConnectedUser?.phone ? String(waConnectedUser.phone).replace(/\D/g, '') : null;
+      if (!myPhone) return false;
+      const cPhone = c.phone ? String(c.phone).replace(/\D/g, '') : '';
+      const cJid = c.jid ? String(c.jid).split('@')[0].replace(/\D/g, '') : '';
+      if (cPhone && (cPhone === myPhone || cPhone.endsWith(myPhone) || myPhone.endsWith(cPhone))) return true;
+      if (cJid && (cJid === myPhone || cJid.endsWith(myPhone) || myPhone.endsWith(cJid))) return true;
+      return false;
+    }
+
     async function cargarChatsReales() {
       try {
         const res = await fetch(`${WA_API_URL}/chats`);
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data)) {
-            chatsList = data;
+            chatsList = data.filter(c => !esMiPropioNumero(c));
             renderizarListaChats();
             if (chatsList.length > 0 && !currentActiveJid) {
               seleccionarChat(chatsList[0].jid);
             } else if (chatsList.length === 0) {
+              currentActiveJid = null;
               renderizarEstadoVacio();
             }
             return;
@@ -2459,6 +2471,7 @@
     }
 
     function actualizarChatEnLista(updatedChat) {
+      if (!updatedChat || esMiPropioNumero(updatedChat)) return;
       const idx = chatsList.findIndex(c => c.jid === updatedChat.jid);
       if (idx >= 0) {
         chatsList[idx] = { ...chatsList[idx], ...updatedChat };
@@ -2476,6 +2489,7 @@
       const q = (document.getElementById('inputSearchChat').value || '').trim().toLowerCase();
 
       const filtrados = chatsList.filter(c => {
+        if (esMiPropioNumero(c)) return false;
         if (activeFilter === 'unread' && (!c.unreadCount || c.unreadCount === 0)) return false;
         if (activeFilter === 'docentes') {
           const phoneOnly = (c.phone || '').replace(/\D/g, '');
@@ -2499,10 +2513,10 @@
         container.innerHTML = `
           <div class="text-center py-5 px-3 text-secondary" style="font-size: 0.83rem;">
             <i class="bi bi-chat-left-dots fs-3 d-block mb-2 text-muted"></i>
-            <span class="fw-semibold">No hay conversaciones activas</span>
-            <p class="text-muted small mt-1 mb-3">Utilice el botón "Nuevo Chat" o el "Directorio FIA" para iniciar atención.</p>
+            <span class="fw-semibold">Bandeja de Atención Lista</span>
+            <p class="text-muted small mt-1 mb-3">A la espera de que algún alumno o docente le escriba. En cuanto le envíen un mensaje, aparecerá aquí de inmediato.</p>
             <button class="btn btn-sm btn-outline-success px-3 py-1.5 fw-semibold" onclick="abrirModalNuevoChat()">
-              <i class="bi bi-plus-lg me-1"></i>Iniciar Primer Chat
+              <i class="bi bi-plus-lg me-1"></i>Iniciar Nuevo Chat
             </button>
           </div>
         `;
@@ -2685,13 +2699,13 @@
           <div class="d-inline-flex p-3 rounded-circle mb-3" style="background-color: var(--wa-green-pastel); color: var(--wa-green);">
             <i class="bi bi-whatsapp fs-2"></i>
           </div>
-          <h5 class="fw-bold text-dark mb-1.5">Central WhatsApp PAU en Vivo</h5>
+          <h5 class="fw-bold text-dark mb-1.5">Bandeja Lista para Atención</h5>
           <p class="text-secondary small mb-4">
-            Gestión institucional de consultas y requerimientos estudiantiles por WhatsApp oficial de la Universidad César Vallejo.
+            Su número de WhatsApp oficial se encuentra conectado y en línea. Los chats de alumnos y docentes se mostrarán aquí en cuanto le escriban a la coordinación.
           </p>
           <div class="d-flex justify-content-center gap-2">
-            <button class="btn btn-sm btn-success fw-bold px-3 py-2" onclick="abrirModalQR()">
-              <i class="bi bi-qr-code-scan me-1"></i>Vincular Celular
+            <button class="btn btn-sm btn-outline-success fw-bold px-3 py-2" onclick="abrirModalNuevoChat()">
+              <i class="bi bi-plus-lg me-1"></i>Iniciar Chat con Alumno
             </button>
             <button class="btn btn-sm btn-outline-primary fw-semibold px-3 py-2" onclick="abrirModalDirectorio()">
               <i class="bi bi-person-lines-fill me-1"></i>Directorio Docentes
@@ -2706,6 +2720,9 @@
     }
 
     function recibirNuevoMensaje(msg, chatInfo) {
+      if (chatInfo && esMiPropioNumero(chatInfo)) return;
+      if (msg && esMiPropioNumero({ phone: msg.jid, jid: msg.jid })) return;
+
       if (chatInfo) {
         const idx = chatsList.findIndex(c => c.jid === chatInfo.jid);
         if (idx >= 0) {
