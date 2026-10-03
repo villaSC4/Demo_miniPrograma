@@ -12,7 +12,8 @@ def create_cpanel_packages():
     # Extensiones y directorios a omitir en el paquete completo
     EXCLUDE_DIRS = {
         '.git', '.vercel', 'node_modules', '__pycache__', 
-        'formulario_delegados', 'Notas', 'notas', 'pdfs'
+        'formulario_delegados', 'Notas', 'notas', 'pdfs',
+        'whatsapp_session', 'whatsapp_media'
     }
     EXCLUDE_FILES = {
         full_zip_name, update_zip_name, 'server.py', 'build_cpanel_zip.py',
@@ -88,7 +89,8 @@ def create_cpanel_packages():
         "data/delegados_base.json",
         "data/grupos_base.json",
         "data/docentes_base.json",
-        "data/pau_correos.json"
+        "data/pau_correos.json",
+        "data/whatsapp_chats.json"
     ]
 
     print(f"\n[2/3] Empaquetando Actualizacion Rapida: {update_zip_name}...")
