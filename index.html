@@ -1559,6 +1559,56 @@
         <!-- PESTAÑA 9: ATENCIÓN AL ESTUDIANTE (PAU / PAE) & SEGUIMIENTO DE CORREOS -->
         <div class="tab-pane fade" id="tab-pau" role="tabpanel">
           
+          <!-- ========================================================================
+               BARRA DE CANALES PAU (SEGÚN WIREFRAME: WHATSAPP, CORREO, ZOOM)
+               ======================================================================== -->
+          <div class="mb-4 p-2.5 bg-white rounded-3 border shadow-xs">
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+              <!-- 1. WHATSAPP (ACCESO DIRECTO) -->
+              <a href="pau_whatsapp.html#whatsapp" class="pau-channel-card text-decoration-none" style="flex: 1; min-width: 250px;">
+                <div class="pau-channel-icon-box wa">
+                  <i class="bi bi-whatsapp"></i>
+                </div>
+                <div class="pau-channel-info">
+                  <div class="pau-channel-title">WhatsApp</div>
+                  <div class="pau-channel-desc">Atención WhatsApp</div>
+                </div>
+                <span class="pau-channel-badge online">
+                  <span class="status-dot-mini online"></span>
+                  <span>En vivo</span>
+                </span>
+              </a>
+
+              <!-- 2. CORREO (CANAL ACTIVO EN ESTA VISTA) -->
+              <div class="pau-channel-card active" data-channel="correo" style="flex: 1; min-width: 250px;">
+                <div class="pau-channel-icon-box mail">
+                  <i class="bi bi-envelope-at-fill"></i>
+                </div>
+                <div class="pau-channel-info">
+                  <div class="pau-channel-title">Correo</div>
+                  <div class="pau-channel-desc">Atención Correo</div>
+                </div>
+                <span class="pau-channel-badge count">
+                  <i class="bi bi-inbox-fill me-1"></i><span>Bandeja Activa</span>
+                </span>
+              </div>
+
+              <!-- 3. ZOOM (INHABILITADO POR AHORA) -->
+              <div class="pau-channel-card disabled" style="flex: 1; min-width: 250px;" onclick="alert('ℹ️ Canal Zoom en preparación. Próximamente disponible para salas sincrónicas.');">
+                <div class="pau-channel-icon-box zoom">
+                  <i class="bi bi-camera-video-fill"></i>
+                </div>
+                <div class="pau-channel-info">
+                  <div class="pau-channel-title">Zoom</div>
+                  <div class="pau-channel-desc">Atención vía Zoom</div>
+                </div>
+                <span class="pau-channel-badge disabled-tag">
+                  <i class="bi bi-clock-history me-1"></i><span>Próximamente</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
           <!-- Encabezado de la Bandeja PAU con Amplio Espacio -->
           <div class="d-flex justify-content-between align-items-start mb-4 pb-3 border-bottom flex-wrap gap-3">
             <div>

@@ -160,7 +160,12 @@ function renderPauMetrics() {
   const kpiAprobadosEl = document.getElementById('kpiPauAprobados');
   if (kpiAprobadosEl) kpiAprobadosEl.textContent = aprobados;
 
-  // Actualizar badges en tarjetas superiores
+  // Actualizar badges en tarjetas superiores y canales PAU
+  const channelCorreoBadge = document.getElementById('channelCorreoCountBadge');
+  if (channelCorreoBadge) {
+    channelCorreoBadge.innerHTML = `<i class="bi bi-inbox-fill me-1"></i><span>${total} Solicitud${total === 1 ? '' : 'es'}</span>`;
+  }
+
   const badgeAreaPau = document.getElementById('badgeAreaPau');
   if (badgeAreaPau) badgeAreaPau.innerHTML = `<span id="kpiPauTotal">${total}</span> Correos`;
 
@@ -342,7 +347,7 @@ function renderPauTable() {
               <i class="bi bi-reply-fill fs-6"></i>
             </a>
             ${t.telefono ? `
-              <a href="https://wa.me/${t.telefono.replace(/[^0-9]/g, '')}?text=Estimado(a)%20${encodeURIComponent(t.remitente)},%20le%20escribimos%20de%20la%20Coordinaci%C3%B3n%20FIA%20respecto%20a%20su%20solicitud%20PAU." target="_blank" rel="noopener noreferrer" class="btn btn-outline-success btn-sm p-1.5" style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px;" title="Contactar por WhatsApp">
+              <a href="https://wa.me/${t.telefono.replace(/[^0-9]/g, '')}?text=Estimado(a)%20${encodeURIComponent(t.remitente)},%20le%20escribimos%20de%20la%20Coordinaci%C3%B3n%20FIA%20respecto%20a%20su%20solicitud%20PAU." target="_blank" rel="noopener noreferrer" class="btn btn-outline-success btn-sm p-1.5" style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px;" onclick="if(window.iniciarChatDesdePau){ event.preventDefault(); window.iniciarChatDesdePau('${escapeHtml(t.remitente)}', '${t.telefono}'); }" title="Contactar por WhatsApp">
                 <i class="bi bi-whatsapp fs-6"></i>
               </a>
             ` : ''}

@@ -1957,4 +1957,145 @@ ul.nav li { list-style: none !important; }
   }
 }
 
+/* ==============================================================================
+   ESTILOS DE CANALES PAU (WHATSAPP, CORREO, ZOOM)
+   ============================================================================== */
+.pau-channel-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0.65rem 1rem;
+  border-radius: 12px;
+  border: 2px solid #E2E8F0;
+  background-color: #F8FAFC;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  user-select: none;
+}
+
+.pau-channel-card:hover:not(.disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border-color: #CBD5E1;
+  background-color: #FFFFFF;
+}
+
+.pau-channel-card.active[data-channel="whatsapp"],
+.pau-channel-card.active:not([data-channel]) {
+  background: linear-gradient(135deg, #F0FDF4 0%, #FFFFFF 100%);
+  border-color: #10B981;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.18);
+}
+
+.pau-channel-card.active[data-channel="correo"] {
+  background: linear-gradient(135deg, #F0F9FF 0%, #FFFFFF 100%);
+  border-color: #0284C7;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.18);
+}
+
+.pau-channel-card.disabled {
+  opacity: 0.68;
+  cursor: not-allowed;
+  background-color: #F1F5F9;
+  border-style: dashed;
+  border-color: #CBD5E1;
+}
+
+.pau-channel-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.pau-channel-icon-box.wa {
+  background-color: #DCFCE7;
+  color: #15803D;
+}
+.pau-channel-card.active[data-channel="whatsapp"] .pau-channel-icon-box.wa {
+  background-color: #16A34A;
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.3);
+}
+
+.pau-channel-icon-box.mail {
+  background-color: #E0F2FE;
+  color: #0284C7;
+}
+.pau-channel-card.active[data-channel="correo"] .pau-channel-icon-box.mail {
+  background-color: #0284C7;
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+}
+
+.pau-channel-icon-box.zoom {
+  background-color: #E2E8F0;
+  color: #64748B;
+}
+
+.pau-channel-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.pau-channel-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.2;
+}
+
+.pau-channel-desc {
+  font-size: 0.76rem;
+  color: #475569;
+  font-weight: 600;
+}
+
+.pau-channel-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.pau-channel-badge.online {
+  background-color: #E8F5E9;
+  color: #166534;
+  border: 1px solid #C8E6C9;
+}
+
+.pau-channel-badge.count {
+  background-color: #EFF6FF;
+  color: #1E40AF;
+  border: 1px solid #BFDBFE;
+}
+
+.pau-channel-badge.disabled-tag {
+  background-color: #E2E8F0;
+  color: #475569;
+  border: 1px solid #CBD5E1;
+}
+
+.status-dot-mini {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.status-dot-mini.online {
+  background-color: #16A34A;
+  box-shadow: 0 0 5px #16A34A;
+}
+
+
 

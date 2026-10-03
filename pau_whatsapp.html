@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="lib/icons/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="css/custom.css">
   
   <!-- Favicon UCV Virtual -->
   <link rel="icon" type="image/png" href="img/logo-ucv-virtual.png">
@@ -754,6 +755,175 @@
       0% { top: 12%; }
       100% { top: 88%; }
     }
+
+    /* ========================================================================
+       BARRA DE CANALES PAU (SEGÚN WIREFRAME: WHATSAPP, CORREO, ZOOM)
+       ======================================================================== */
+    .pau-channels-bar {
+      background-color: #FFFFFF;
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0.65rem 1.25rem;
+      flex-shrink: 0;
+      z-index: 45;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+    }
+
+    .pau-channels-container {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .pau-channel-card {
+      flex: 1;
+      max-width: 380px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0.65rem 1rem;
+      border-radius: 12px;
+      border: 2px solid var(--border-subtle);
+      background-color: #F8FAFC;
+      cursor: pointer;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      user-select: none;
+    }
+
+    .pau-channel-card:hover:not(.disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      border-color: #CBD5E1;
+      background-color: #FFFFFF;
+    }
+
+    /* WhatsApp Activo */
+    .pau-channel-card.active[data-channel="whatsapp"] {
+      background: linear-gradient(135deg, #F0FDF4 0%, #FFFFFF 100%);
+      border-color: #10B981;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.18);
+    }
+
+    /* Correo Activo */
+    .pau-channel-card.active[data-channel="correo"] {
+      background: linear-gradient(135deg, #F0F9FF 0%, #FFFFFF 100%);
+      border-color: #0284C7;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.18);
+    }
+
+    /* Zoom Deshabilitado */
+    .pau-channel-card.disabled {
+      opacity: 0.68;
+      cursor: not-allowed;
+      background-color: #F1F5F9;
+      border-style: dashed;
+      border-color: #CBD5E1;
+    }
+
+    .pau-channel-icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .pau-channel-icon-box.wa {
+      background-color: #DCFCE7;
+      color: #15803D;
+    }
+    .pau-channel-card.active[data-channel="whatsapp"] .pau-channel-icon-box.wa {
+      background-color: #16A34A;
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(22, 163, 74, 0.3);
+    }
+
+    .pau-channel-icon-box.mail {
+      background-color: #E0F2FE;
+      color: #0284C7;
+    }
+    .pau-channel-card.active[data-channel="correo"] .pau-channel-icon-box.mail {
+      background-color: #0284C7;
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+    }
+
+    .pau-channel-icon-box.zoom {
+      background-color: #E2E8F0;
+      color: #64748B;
+    }
+
+    .pau-channel-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .pau-channel-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+
+    .pau-channel-desc {
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .pau-channel-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.25rem 0.6rem;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .pau-channel-badge.online {
+      background-color: var(--wa-green-pastel);
+      color: #166534;
+      border: 1px solid var(--wa-green-border);
+    }
+
+    .pau-channel-badge.count {
+      background-color: #EFF6FF;
+      color: #1E40AF;
+      border: 1px solid #BFDBFE;
+    }
+
+    .pau-channel-badge.disabled-tag {
+      background-color: #E2E8F0;
+      color: #475569;
+      border: 1px solid #CBD5E1;
+    }
+
+    .status-dot-mini {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .status-dot-mini.online {
+      background-color: #16A34A;
+      box-shadow: 0 0 5px #16A34A;
+    }
+
+    /* CONTENEDOR DESPLAZABLE PARA CORREO */
+    .workspace-correo-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 1.75rem 3.5rem;
+      background-color: var(--app-bg);
+    }
   </style>
 </head>
 <body>
@@ -766,8 +936,8 @@
       </a>
       <div class="d-none d-sm-block" style="width: 1px; height: 26px; background: rgba(255,255,255,0.25);"></div>
       <div>
-        <div class="brand-title">PAU Multicanal • WhatsApp Live Hub</div>
-        <div class="brand-subtitle">Facultad de Ingeniería y Arquitectura • Atención en Tiempo Real</div>
+        <div class="brand-title">Módulo PAU • Plataforma de Atención al Estudiante</div>
+        <div class="brand-subtitle">Facultad de Ingeniería y Arquitectura • Atención Multicanal en Tiempo Real</div>
       </div>
     </div>
 
@@ -791,16 +961,66 @@
         <span>Directorio FIA</span>
       </button>
 
-      <!-- Volver a la Bandeja PAU General -->
-      <a href="index.html#pau" class="btn btn-hub-nav btn-light shadow-sm" style="color: var(--ucv-navy);" title="Regresar al Sistema de Gestión Académica">
-        <i class="bi bi-inbox-fill text-primary"></i>
-        <span>Bandeja PAU</span>
+      <!-- Volver al Sistema General -->
+      <a href="index.html" class="btn btn-hub-nav btn-light shadow-sm" style="color: var(--ucv-navy);" title="Regresar al Sistema de Gestión Académica">
+        <i class="bi bi-grid-fill text-primary"></i>
+        <span>Sistema Principal</span>
       </a>
     </div>
   </header>
 
+  <!-- ========================================================================
+       BARRA DE CANALES PAU (SEGÚN WIREFRAME: WHATSAPP, CORREO, ZOOM)
+       ======================================================================== -->
+  <nav class="pau-channels-bar" aria-label="Canales de Atención PAU">
+    <div class="pau-channels-container">
+      <!-- 1. WHATSAPP (ACTIVO POR DEFECTO) -->
+      <div class="pau-channel-card active" id="tabChannelWhatsApp" data-channel="whatsapp" onclick="cambiarCanalPau('whatsapp')">
+        <div class="pau-channel-icon-box wa">
+          <i class="bi bi-whatsapp"></i>
+        </div>
+        <div class="pau-channel-info">
+          <div class="pau-channel-title">WhatsApp</div>
+          <div class="pau-channel-desc">Atención WhatsApp</div>
+        </div>
+        <span class="pau-channel-badge online" id="channelWaBadge">
+          <span class="status-dot-mini online"></span>
+          <span>En vivo</span>
+        </span>
+      </div>
+
+      <!-- 2. CORREO (BANDEJA Y SEGUIMIENTO INSTITUCIONAL) -->
+      <div class="pau-channel-card" id="tabChannelCorreo" data-channel="correo" onclick="cambiarCanalPau('correo')">
+        <div class="pau-channel-icon-box mail">
+          <i class="bi bi-envelope-at-fill"></i>
+        </div>
+        <div class="pau-channel-info">
+          <div class="pau-channel-title">Correo</div>
+          <div class="pau-channel-desc">Atención Correo</div>
+        </div>
+        <span class="pau-channel-badge count" id="channelCorreoCountBadge">
+          <i class="bi bi-inbox-fill me-1"></i><span>0 Solicitudes</span>
+        </span>
+      </div>
+
+      <!-- 3. ZOOM (INHABILITADO POR AHORA SEGÚN INDICACIÓN) -->
+      <div class="pau-channel-card disabled" id="tabChannelZoom" data-channel="zoom" onclick="avisoZoomNoHabilitado()" title="Módulo de atención vía Zoom próximamente disponible">
+        <div class="pau-channel-icon-box zoom">
+          <i class="bi bi-camera-video-fill"></i>
+        </div>
+        <div class="pau-channel-info">
+          <div class="pau-channel-title">Zoom</div>
+          <div class="pau-channel-desc">Atención vía Zoom</div>
+        </div>
+        <span class="pau-channel-badge disabled-tag">
+          <i class="bi bi-clock-history me-1"></i><span>Próximamente</span>
+        </span>
+      </div>
+    </div>
+  </nav>
+
   <!-- CUERPO PRINCIPAL (3 COLUMNAS) -->
-  <main class="pau-main-layout">
+  <main class="pau-main-layout" id="workspaceWhatsApp">
 
     <!-- COLUMNA 1: BANDEJA DE CHATS -->
     <aside class="chats-sidebar">
@@ -1193,12 +1413,172 @@
 
       <!-- Acceso a Sala Zoom Institucional -->
       <div class="p-3 border-top bg-light text-center">
-        <a href="https://zoom.us/" target="_blank" rel="noopener noreferrer" class="btn btn-sm w-100 fw-bold py-2 d-inline-flex align-items-center justify-content-center gap-2" style="background-color: var(--pastel-blue-bg); color: var(--pastel-blue-text); border: 1px solid var(--pastel-blue-border); border-radius: 8px;">
+        <button type="button" onclick="avisoZoomNoHabilitado()" class="btn btn-sm w-100 fw-bold py-2 d-inline-flex align-items-center justify-content-center gap-2" style="background-color: var(--pastel-blue-bg); color: var(--pastel-blue-text); border: 1px solid var(--pastel-blue-border); border-radius: 8px;">
           <i class="bi bi-camera-video-fill"></i>
-          <span>Atención Directa Vía Zoom</span>
-        </a>
+          <span>Atención Vía Zoom (Próximamente)</span>
+        </button>
       </div>
     </aside>
+  </main>
+
+  <!-- ======================================================================== -->
+  <!-- ESPACIO DE TRABAJO 2: MÓDULO DE ATENCIÓN POR CORREO (BANDEJA Y SOLICITUDES) -->
+  <!-- ======================================================================== -->
+  <main class="workspace-correo-scroll d-none" id="workspaceCorreo">
+    <div class="container-fluid py-2 px-lg-3" style="max-width: 1440px; margin: 0 auto;">
+      
+      <!-- Encabezado de la Bandeja PAU con Amplio Espacio -->
+      <div class="d-flex justify-content-between align-items-start mb-4 pb-3 border-bottom flex-wrap gap-3">
+        <div>
+          <div class="d-flex align-items-center gap-2.5 mb-2">
+            <span class="badge" style="background: #E0F2FE; color: #0284C7; font-size: 0.8rem; padding: 6px 12px; border-radius: 6px;">
+              <i class="bi bi-shield-check me-1"></i> Módulo PAU: Atención por Correo
+            </span>
+            <span class="badge bg-light text-muted border" style="font-size: 0.78rem; padding: 6px 12px; border-radius: 6px;">
+              <i class="bi bi-envelope-at me-1 text-primary"></i> coordinacion.fia@ucvvirtual.edu.pe
+            </span>
+          </div>
+          <h4 class="fw-bold text-dark mb-1" style="font-size: 1.25rem;">
+            Plataforma de Atención al Estudiante (PAU / PAE) — Bandeja de Solicitudes
+          </h4>
+          <p class="text-muted mb-0" style="font-size: 0.85rem; line-height: 1.5;">
+            Control y seguimiento en tiempo real de correos entrantes, estados de atención y vistos buenos de coordinación (FIA - Semestre 2026-II).
+          </p>
+        </div>
+
+        <div class="d-flex align-items-center gap-2.5 flex-wrap">
+          <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank" rel="noopener noreferrer" class="btn btn-outline-danger btn-sm py-2 px-3 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs" style="border-radius: 8px;" title="Abrir bandeja de entrada de Gmail en una nueva pestaña">
+            <i class="bi bi-envelope-arrow-up-fill text-danger fs-6"></i>
+            <span>Gmail</span>
+            <i class="bi bi-box-arrow-up-right" style="font-size: 0.7rem;"></i>
+          </a>
+
+          <button type="button" id="btnExportPauExcel" class="btn btn-outline-secondary btn-sm py-2 px-3 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs" style="border-radius: 8px;" title="Exportar reporte en formato Excel idéntico al Drive">
+            <i class="bi bi-file-earmark-spreadsheet-fill text-success fs-6"></i>
+            <span>Exportar Excel</span>
+          </button>
+
+          <button type="button" id="btnOpenNewPauModal" class="btn btn-sm py-2 px-3.5 fw-semibold shadow-sm d-inline-flex align-items-center gap-2 text-white" style="border-radius: 8px; background-color: var(--ucv-navy); border-color: var(--ucv-navy);" onclick="openPauModal(null)">
+            <i class="bi bi-plus-circle-fill fs-6"></i>
+            <span>+ Nueva Solicitud</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Métricas Resumen KPI Espaciosas -->
+      <div class="row g-3 g-xl-4 mb-4">
+        <div class="col-xl-3 col-sm-6">
+          <div class="pau-metric-card d-flex align-items-center justify-content-between">
+            <div>
+              <small class="text-muted d-block fw-semibold mb-1" style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.04em;">Total Solicitudes</small>
+              <span class="fs-2 fw-bold text-dark kpi-pau-total-val" id="kpiPauTotalMetric">0</span>
+            </div>
+            <div class="area-card-icon" style="width: 46px; height: 46px; border-radius: 11px; background: #F1F5F9; color: #475569; font-size: 1.35rem; display: flex; align-items: center; justify-content: center;">
+              <i class="bi bi-inbox-fill"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-sm-6">
+          <div class="pau-metric-card d-flex align-items-center justify-content-between" style="border-left: 3px solid #16A34A !important;">
+            <div>
+              <small class="text-muted d-block fw-semibold mb-1" style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.04em;">Atendidos</small>
+              <span class="fs-2 fw-bold text-success" id="kpiPauAtendidos">0 (0%)</span>
+            </div>
+            <div class="area-card-icon" style="width: 46px; height: 46px; border-radius: 11px; background: #DCFCE7; color: #16A34A; font-size: 1.35rem; display: flex; align-items: center; justify-content: center;">
+              <i class="bi bi-check-circle-fill"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-sm-6">
+          <div class="pau-metric-card d-flex align-items-center justify-content-between" style="border-left: 3px solid #F59E0B !important;">
+            <div>
+              <small class="text-muted d-block fw-semibold mb-1" style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.04em;">Sin Atención</small>
+              <span class="fs-2 fw-bold text-warning" id="kpiPauSinAtencion">0</span>
+            </div>
+            <div class="area-card-icon" style="width: 46px; height: 46px; border-radius: 11px; background: #FEF3C7; color: #B45309; font-size: 1.35rem; display: flex; align-items: center; justify-content: center;">
+              <i class="bi bi-clock-history"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-sm-6">
+          <div class="pau-metric-card d-flex align-items-center justify-content-between" style="border-left: 3px solid #0284C7 !important;">
+            <div>
+              <small class="text-muted d-block fw-semibold mb-1" style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.04em;">Visto Aprobado</small>
+              <span class="fs-2 fw-bold" style="color: #0284C7;" id="kpiPauAprobados">0</span>
+            </div>
+            <div class="area-card-icon" style="width: 46px; height: 46px; border-radius: 11px; background: #E0F2FE; color: #0284C7; font-size: 1.35rem; display: flex; align-items: center; justify-content: center;">
+              <i class="bi bi-patch-check-fill"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtros de la Bandeja PAU con Amplia Separación -->
+      <div class="p-3.5 p-lg-4 bg-white rounded-3 border mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3 shadow-xs">
+        <div class="d-flex align-items-center gap-3 flex-wrap flex-grow-1">
+          <div class="input-group input-group-sm" style="max-width: 320px;">
+            <span class="input-group-text bg-light px-3 border-end-0"><i class="bi bi-search text-muted"></i></span>
+            <input type="text" id="filterPauSearch" class="form-control form-control-sm py-2 border-start-0" placeholder="Buscar por alumno, correo o asunto...">
+          </div>
+
+          <select id="filterPauEscuela" class="form-select form-select-sm py-2" style="width: auto;">
+            <option value="ALL">Todas las Escuelas</option>
+            <option value="Ingeniería Industrial">Ingeniería Industrial</option>
+            <option value="Ingeniería de Sistemas">Ingeniería de Sistemas</option>
+          </select>
+
+          <select id="filterPauEstado" class="form-select form-select-sm py-2" style="width: auto;">
+            <option value="ALL">Todos los Estados</option>
+            <option value="Atendido">🟢 Solo Atendidos (Verde)</option>
+            <option value="Sin Atención">🟡 Solo Sin Atención (Amarillo)</option>
+          </select>
+
+          <select id="filterPauVisto" class="form-select form-select-sm py-2" style="width: auto;">
+            <option value="ALL">Todos los Vistos Buenos</option>
+            <option value="APROBADO">🔵 APROBADO</option>
+            <option value="SIN APROBACIÓN">⚪ SIN APROBACIÓN</option>
+          </select>
+
+          <button type="button" id="btnResetPauFilters" class="btn btn-outline-secondary btn-sm px-3 py-2" title="Restablecer filtros">
+            <i class="bi bi-arrow-counterclockwise me-1"></i> Limpiar
+          </button>
+        </div>
+
+        <div class="text-muted small fw-semibold" id="pauFilteredCountText" style="font-size: 0.82rem;">
+          Cargando solicitudes...
+        </div>
+      </div>
+
+      <!-- Tabla de Solicitudes PAU con los Campos Solicitados -->
+      <div class="table-responsive bg-white rounded-3 border shadow-xs" style="max-height: 560px;">
+        <table class="table table-hover align-middle mb-0" id="pauMainTable">
+          <thead class="sticky-top bg-light border-bottom">
+            <tr>
+              <th style="width: 45px; white-space: nowrap;" class="text-center">IT</th>
+              <th style="width: 150px; white-space: nowrap;">Fecha de Correo</th>
+              <th style="min-width: 190px; white-space: nowrap;">Remitente</th>
+              <th style="min-width: 180px; white-space: nowrap;">Correo de quien viene</th>
+              <th style="min-width: 270px;">Asunto</th>
+              <th class="text-center" style="width: 145px; white-space: nowrap;" title="Clic sobre el botón para alternar entre Atendido y Sin Atención">
+                Estado de Atención <i class="bi bi-arrow-left-right ms-0.5" style="font-size: 0.7rem;"></i>
+              </th>
+              <th class="text-center" style="width: 165px; white-space: nowrap;" title="Clic sobre el botón para alternar entre APROBADO y SIN APROBACIÓN">
+                Visto Coordinación <i class="bi bi-arrow-left-right ms-0.5" style="font-size: 0.7rem;"></i>
+              </th>
+              <th class="text-center" style="width: 155px; white-space: nowrap;">Fecha de Respuesta</th>
+              <th class="text-center" style="width: 125px; white-space: nowrap;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="pauTableBody">
+            <!-- Rellenado dinámico desde js/pau.js -->
+          </tbody>
+        </table>
+      </div>
+
+    </div>
   </main>
 
   <!-- ======================================================================== -->
@@ -1367,10 +1747,137 @@
         </div>
       </div>
     </div>
+  <!-- ======================================================================== -->
+  <!-- MODAL: REGISTRAR / EDITAR TICKET PAU (CORREO) -->
+  <!-- ======================================================================== -->
+  <div class="modal fade" id="modalPauTicket" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 540px;">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 14px;">
+        <div class="modal-header py-2.5 px-3.5 bg-light">
+          <div>
+            <h6 class="modal-title fw-bold text-dark mb-0" id="modalPauTitle">Registrar Solicitud PAU</h6>
+            <small class="text-muted" style="font-size: 0.75rem;">Módulo de Atención al Estudiante y Seguimiento de Correos</small>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body py-3 px-3.5">
+          <input type="hidden" id="pauFormId">
+
+          <div class="row g-2 mb-2.5">
+            <div class="col-7">
+              <label for="pauFormRemitente" class="form-label small fw-bold text-dark mb-1">Remitente (Apellidos y Nombres)</label>
+              <input type="text" id="pauFormRemitente" class="form-control form-control-sm" placeholder="Ej. PÉREZ GARCÍA JUAN" required>
+            </div>
+            <div class="col-5">
+              <label for="pauFormFecha" class="form-label small fw-bold text-dark mb-1">Fecha de Correo</label>
+              <input type="text" id="pauFormFecha" class="form-control form-control-sm" placeholder="DD/MM/AAAA HH:MM">
+            </div>
+          </div>
+
+          <div class="row g-2 mb-2.5">
+            <div class="col-7">
+              <label for="pauFormCorreo" class="form-label small fw-bold text-dark mb-1">Correo de quien viene</label>
+              <input type="email" id="pauFormCorreo" class="form-control form-control-sm" placeholder="ejemplo@ucvvirtual.edu.pe" required>
+            </div>
+            <div class="col-5">
+              <label for="pauFormEscuela" class="form-label small fw-bold text-dark mb-1">Escuela</label>
+              <select id="pauFormEscuela" class="form-select form-select-sm">
+                <option value="Ingeniería Industrial">Ing. Industrial</option>
+                <option value="Ingeniería de Sistemas">Ing. de Sistemas</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-2.5">
+            <label for="pauFormTelefono" class="form-label small fw-bold text-dark mb-1">WhatsApp / Teléfono de Contacto</label>
+            <input type="text" id="pauFormTelefono" class="form-control form-control-sm" placeholder="+51 987 654 321">
+          </div>
+
+          <div class="mb-2.5">
+            <label for="pauFormAsunto" class="form-label small fw-bold text-dark mb-1">Asunto del Correo / Solicitud</label>
+            <input type="text" id="pauFormAsunto" class="form-control form-control-sm" placeholder="Ej. REPORTE: NO APARECE HABILITADO EL CURSO..." required>
+          </div>
+
+          <div class="row g-2 mb-2.5">
+            <div class="col-6">
+              <label for="pauFormEstado" class="form-label small fw-bold text-dark mb-1">Estado de Atención</label>
+              <select id="pauFormEstado" class="form-select form-select-sm">
+                <option value="Sin Atención">🟡 Sin Atención (Amarillo)</option>
+                <option value="Atendido">🟢 Atendido (Verde)</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label for="pauFormVisto" class="form-label small fw-bold text-dark mb-1">Visto de Coordinación</label>
+              <select id="pauFormVisto" class="form-select form-select-sm">
+                <option value="SIN APROBACIÓN">⚪ SIN APROBACIÓN</option>
+                <option value="APROBADO">🔵 APROBADO</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-2.5">
+            <label for="pauFormFechaRespuesta" class="form-label small fw-bold text-dark mb-1">Fecha de Respuesta</label>
+            <input type="text" id="pauFormFechaRespuesta" class="form-control form-control-sm" placeholder="DD/MM/AAAA HH:MM o guion (-) si está pendiente">
+          </div>
+
+          <div class="mb-0">
+            <label for="pauFormObs" class="form-label small fw-bold text-dark mb-1">Observaciones / Detalle</label>
+            <textarea id="pauFormObs" class="form-control form-control-sm" rows="2" placeholder="Notas internas, número de ticket o respuesta remitida..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer py-2 px-3.5 bg-light d-flex justify-content-between">
+          <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-3" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" id="btnSavePauTicket" class="btn btn-primary btn-sm py-1 px-3.5 text-white" style="background-color: var(--ucv-navy); border-color: var(--ucv-navy);">
+            <i class="bi bi-check2 me-1"></i> Guardar Solicitud
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================== -->
+  <!-- MODAL: AVISO CANAL ZOOM EN PREPARACIÓN -->
+  <!-- ======================================================================== -->
+  <div class="modal fade" id="modalZoomAviso" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 440px;">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+        <div class="modal-header border-bottom py-3 px-4" style="background-color: #F8FAFC;">
+          <div class="d-flex align-items-center gap-2">
+            <div class="p-1.5 rounded-circle bg-secondary-subtle text-secondary" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+              <i class="bi bi-camera-video-fill"></i>
+            </div>
+            <h6 class="modal-title fw-bold text-dark mb-0">Atención Vía Zoom</h6>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4 text-center">
+          <div class="d-inline-flex p-3 rounded-circle bg-light border mb-3 shadow-xs text-secondary">
+            <i class="bi bi-lock-fill fs-1 text-muted"></i>
+          </div>
+          <h5 class="fw-bold text-dark mb-2">Canal en Preparación</h5>
+          <p class="text-secondary small mb-3" style="line-height: 1.6;">
+            El canal de atención sincrónica vía <strong>Zoom</strong> no se encuentra habilitado por ahora según las directrices de coordinación académica.
+          </p>
+          <div class="alert alert-info py-2 px-3 small border-0 d-flex align-items-center gap-2 text-start mb-0" style="background-color: #EFF6FF; color: #1E40AF; border-radius: 10px;">
+            <i class="bi bi-info-circle-fill fs-5 flex-shrink-0"></i>
+            <span>Utilice activamente los canales habilitados: <strong>Atención WhatsApp en Vivo</strong> y <strong>Bandeja de Correo</strong>.</span>
+          </div>
+        </div>
+        <div class="modal-footer border-top py-2.5 px-4 bg-light">
+          <button type="button" class="btn btn-sm btn-primary w-100 fw-semibold" style="background-color: var(--ucv-navy); border-color: var(--ucv-navy);" data-bs-dismiss="modal">
+            Entendido
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Bootstrap JS -->
   <script src="lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Biblioteca Excel y Lógica de Seguimiento de Correos PAU -->
+  <script src="lib/xlsx/xlsx.full.min.js"></script>
+  <script src="js/pau.js"></script>
 
   <!-- LÓGICA DE INTEGRACIÓN REAL WHATSAPP -->
   <script>
@@ -2271,35 +2778,33 @@
     }
 
     // ========================================================================
-    // DERIVACIÓN A TICKET PAU
+    // DERIVACIÓN A TICKET PAU (INTEGRACIÓN WHATSAPP -> BANDEJA CORREOS)
     // ========================================================================
-    async function derivarATicketPAU() {
+    function derivarATicketPAU() {
       if (!currentActiveJid) return;
       const chat = chatsList.find(c => c.jid === currentActiveJid) || { name: 'Contacto', phone: currentActiveJid.split('@')[0] };
       const details = obtenerDetallesContacto(chat);
 
-      const asunto = prompt(`Ingrese el asunto para formalizar la solicitud de ${details.nombreWA || details.telefono}:`, `Consulta WhatsApp - Atención PAU`);
-      if (!asunto) return;
+      if (typeof openPauModal === 'function') {
+        openPauModal(null);
+        const remitenteInput = document.getElementById('pauFormRemitente');
+        const telInput = document.getElementById('pauFormTelefono');
+        const mailInput = document.getElementById('pauFormCorreo');
+        const asuntoInput = document.getElementById('pauFormAsunto');
+        const escuelaInput = document.getElementById('pauFormEscuela');
+        const obsInput = document.getElementById('pauFormObs');
 
-      const payload = {
-        fecha_correo: new Date().toLocaleDateString('es-PE') + ' ' + new Date().toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' }),
-        remitente: details.nombreWA ? `${details.nombreWA} (${details.telefono})` : details.telefono,
-        correo: `${chat.phone}@whatsapp.ucv`,
-        telefono: details.telefono,
-        escuela: document.getElementById('dossierEscuela').textContent || 'Ingeniería de Sistemas',
-        asunto: `[WHATSAPP] ${asunto}`,
-        observaciones: `Atendido en vivo por WhatsApp. Contacto: ${details.nombreWA || 'Sin nombre'}`
-      };
-
-      try {
-        await fetch('api/pau', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        alert(`✅ Consulta formalizada con éxito en la Bandeja PAU:\n• Contacto: ${payload.remitente}\n• Asunto: ${payload.asunto}`);
-      } catch (e) {
-        alert('Error registrando en bandeja PAU: ' + e.message);
+        if (remitenteInput) remitenteInput.value = details.nombreWA || chat.name || details.telefono;
+        if (telInput) telInput.value = details.telefono;
+        if (mailInput) mailInput.value = `${chat.phone}@whatsapp.ucv`;
+        if (asuntoInput) asuntoInput.value = `[WHATSAPP] Atención y orientación al estudiante`;
+        const escuelaActual = document.getElementById('dossierEscuela')?.textContent;
+        if (escuelaInput && escuelaActual && (escuelaActual.includes('Industrial') || escuelaActual.includes('Sistemas'))) {
+          escuelaInput.value = escuelaActual.includes('Industrial') ? 'Ingeniería Industrial' : 'Ingeniería de Sistemas';
+        }
+        if (obsInput) obsInput.value = `Derivado desde conversación en vivo por WhatsApp (+${chat.phone}).`;
+      } else {
+        alert('Cargando módulo de tickets...');
       }
     }
 
@@ -2481,6 +2986,78 @@
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
     }
+
+    // ========================================================================
+    // CONMUTACIÓN DE CANALES DEL MÓDULO PAU (WHATSAPP, CORREO, ZOOM)
+    // ========================================================================
+    let currentCanalPau = 'whatsapp';
+
+    function cambiarCanalPau(canal) {
+      if (canal === 'zoom') {
+        avisoZoomNoHabilitado();
+        return;
+      }
+
+      currentCanalPau = canal;
+
+      const cardWa = document.getElementById('tabChannelWhatsApp');
+      const cardMail = document.getElementById('tabChannelCorreo');
+      const cardZoom = document.getElementById('tabChannelZoom');
+
+      const wsWa = document.getElementById('workspaceWhatsApp');
+      const wsMail = document.getElementById('workspaceCorreo');
+
+      if (canal === 'whatsapp') {
+        if (cardWa) cardWa.classList.add('active');
+        if (cardMail) cardMail.classList.remove('active');
+        if (wsWa) wsWa.classList.remove('d-none');
+        if (wsMail) wsMail.classList.add('d-none');
+        try { history.replaceState(null, '', '#whatsapp'); } catch(e) {}
+      } else if (canal === 'correo') {
+        if (cardWa) cardWa.classList.remove('active');
+        if (cardMail) cardMail.classList.add('active');
+        if (wsWa) wsWa.classList.add('d-none');
+        if (wsMail) wsMail.classList.remove('d-none');
+        try { history.replaceState(null, '', '#correo'); } catch(e) {}
+
+        if (typeof loadPauData === 'function') {
+          loadPauData();
+        }
+      }
+    }
+
+    function avisoZoomNoHabilitado() {
+      const modalEl = document.getElementById('modalZoomAviso');
+      if (modalEl && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+        let m = bootstrap.Modal.getInstance(modalEl);
+        if (!m) m = new bootstrap.Modal(modalEl);
+        m.show();
+      } else {
+        alert("ℹ️ Atención Vía Zoom: Módulo en fase de preparación.\n\nPor el momento este canal se encuentra inhabilitado según las directrices de coordinación.");
+      }
+    }
+
+    window.iniciarChatDesdePau = function(nombre, phone) {
+      if (!phone) {
+        alert('Esta solicitud no tiene un número telefónico registrado.');
+        return;
+      }
+      cambiarCanalPau('whatsapp');
+      if (typeof iniciarChatDesdeDocente === 'function') {
+        iniciarChatDesdeDocente(nombre || 'Estudiante', phone);
+      }
+    };
+
+    // Inicializar canal según hash o parámetro URL
+    window.addEventListener('DOMContentLoaded', () => {
+      const hash = window.location.hash;
+      const urlParams = new URLSearchParams(window.location.search);
+      if (hash === '#correo' || urlParams.get('canal') === 'correo') {
+        cambiarCanalPau('correo');
+      } else {
+        cambiarCanalPau('whatsapp');
+      }
+    });
   </script>
 </body>
 </html>
