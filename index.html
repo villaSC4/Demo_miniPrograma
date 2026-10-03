@@ -1637,18 +1637,28 @@
                 <i class="bi bi-box-arrow-up-right" style="font-size: 0.7rem;"></i>
               </a>
 
+              <button type="button" id="btnSyncPauInbox" class="btn btn-outline-primary btn-sm py-2 px-3 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs" style="border-radius: 8px;" onclick="syncPauInbox()" title="Sincronizar bandeja con los correos entrantes">
+                <i class="bi bi-arrow-repeat text-primary fs-6"></i>
+                <span>Sincronizar</span>
+              </button>
+
+              <button type="button" id="btnOpenPauWebhookModal" class="btn btn-outline-success btn-sm py-2 px-3 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs" style="border-radius: 8px;" onclick="openPauWebhookModal()" title="Configuración y código de vinculación automática con Gmail / Google Apps Script">
+                <i class="bi bi-link-45deg text-success fs-5"></i>
+                <span>Vincular Gmail (Apps Script)</span>
+              </button>
+
               <a href="pau_whatsapp.html" class="btn btn-success btn-sm py-2 px-3 fw-semibold d-inline-flex align-items-center gap-2 shadow-sm text-white" style="border-radius: 8px; background-color: #00A884; border-color: #00A884;" title="Abrir Central WhatsApp Live Hub con Código QR en tiempo real">
                 <i class="bi bi-whatsapp fs-6"></i>
                 <span>WhatsApp Live (QR)</span>
                 <span class="badge bg-white text-dark py-0.5 px-1.5" style="font-size: 0.65rem;">En vivo</span>
               </a>
 
-              <button type="button" id="btnExportPauExcel" class="btn btn-outline-secondary btn-sm py-2 px-3 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs" style="border-radius: 8px;" title="Exportar reporte en formato Excel idéntico al Drive">
+              <button type="button" id="btnExportPauExcel" class="btn btn-outline-secondary btn-sm py-2 px-3 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs" style="border-radius: 8px;" onclick="exportPauExcel()" title="Exportar reporte en formato Excel idéntico al Drive">
                 <i class="bi bi-file-earmark-spreadsheet-fill text-success fs-6"></i>
                 <span>Exportar Excel</span>
               </button>
 
-              <button type="button" id="btnOpenNewPauModal" class="btn btn-primary-app btn-sm py-2 px-3.5 fw-semibold shadow-sm d-inline-flex align-items-center gap-2" style="border-radius: 8px;">
+              <button type="button" id="btnOpenNewPauModal" class="btn btn-primary-app btn-sm py-2 px-3.5 fw-semibold shadow-sm d-inline-flex align-items-center gap-2" style="border-radius: 8px;" onclick="openPauModal(null)">
                 <i class="bi bi-plus-circle-fill fs-6"></i>
                 <span>+ Nueva Solicitud</span>
               </button>
@@ -2961,6 +2971,171 @@
               <i class="bi bi-box-arrow-up-right me-1.5"></i> Abrir en Hoja Aparte (Pestaña Completa)
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+  <!-- ======================================================================== -->
+  <!-- MODAL: REGISTRAR / EDITAR TICKET PAU (CORREO) -->
+  <!-- ======================================================================== -->
+  <div class="modal fade" id="modalPauTicket" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 540px;">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 14px;">
+        <div class="modal-header py-2.5 px-3.5 bg-light">
+          <div>
+            <h6 class="modal-title fw-bold text-dark mb-0" id="modalPauTitle">Registrar Solicitud PAU</h6>
+            <small class="text-muted" style="font-size: 0.75rem;">Módulo de Atención al Estudiante y Seguimiento de Correos</small>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body py-3 px-3.5">
+          <input type="hidden" id="pauFormId">
+
+          <div class="row g-2 mb-2.5">
+            <div class="col-7">
+              <label for="pauFormRemitente" class="form-label small fw-bold text-dark mb-1">Remitente (Apellidos y Nombres)</label>
+              <input type="text" id="pauFormRemitente" class="form-control form-control-sm" placeholder="Ej. PÉREZ GARCÍA JUAN" required>
+            </div>
+            <div class="col-5">
+              <label for="pauFormFecha" class="form-label small fw-bold text-dark mb-1">Fecha de Correo</label>
+              <input type="text" id="pauFormFecha" class="form-control form-control-sm" placeholder="DD/MM/AAAA HH:MM">
+            </div>
+          </div>
+
+          <div class="row g-2 mb-2.5">
+            <div class="col-7">
+              <label for="pauFormCorreo" class="form-label small fw-bold text-dark mb-1">Correo Electrónico (De quien viene)</label>
+              <input type="email" id="pauFormCorreo" class="form-control form-control-sm" placeholder="usuario@ucvvirtual.edu.pe" required>
+            </div>
+            <div class="col-5">
+              <label for="pauFormEscuela" class="form-label small fw-bold text-dark mb-1">Escuela Profesional</label>
+              <select id="pauFormEscuela" class="form-select form-select-sm">
+                <option value="Ingeniería Industrial">Ingeniería Industrial</option>
+                <option value="Ingeniería de Sistemas">Ingeniería de Sistemas</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row g-2 mb-2.5">
+            <div class="col-7">
+              <label for="pauFormTelefono" class="form-label small fw-bold text-dark mb-1">Teléfono / WhatsApp (Opcional)</label>
+              <input type="text" id="pauFormTelefono" class="form-control form-control-sm" placeholder="+51 987654321">
+            </div>
+            <div class="col-5">
+              <label for="pauFormEstado" class="form-label small fw-bold text-dark mb-1">Estado de Atención</label>
+              <select id="pauFormEstado" class="form-select form-select-sm">
+                <option value="Sin Atención">Sin Atención (Amarillo)</option>
+                <option value="Atendido">Atendido (Verde)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-2.5">
+            <label for="pauFormAsunto" class="form-label small fw-bold text-dark mb-1">Asunto de la Solicitud</label>
+            <input type="text" id="pauFormAsunto" class="form-control form-control-sm" placeholder="Ej. Solicitud de Rectificación de Matrícula" required>
+          </div>
+
+          <div class="row g-2 mb-2.5">
+            <div class="col-6">
+              <label for="pauFormVisto" class="form-label small fw-bold text-dark mb-1">Visto de Coordinación</label>
+              <select id="pauFormVisto" class="form-select form-select-sm">
+                <option value="SIN APROBACIÓN">SIN APROBACIÓN</option>
+                <option value="APROBADO">APROBADO</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label for="pauFormFechaRespuesta" class="form-label small fw-bold text-dark mb-1">Fecha de Respuesta</label>
+              <input type="text" id="pauFormFechaRespuesta" class="form-control form-control-sm" placeholder="DD/MM/AAAA HH:MM (o -)">
+            </div>
+          </div>
+
+          <div class="mb-1">
+            <label for="pauFormObs" class="form-label small fw-bold text-dark mb-1">Observaciones / Detalle</label>
+            <textarea id="pauFormObs" class="form-control form-control-sm" rows="2" placeholder="Notas sobre la gestión, resolución o respuesta enviada..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer py-2 px-3.5 bg-light d-flex justify-content-between">
+          <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-3" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" id="btnSavePauTicket" class="btn btn-primary-app btn-sm py-1 px-3.5 text-white">
+            <i class="bi bi-check2 me-1"></i> Guardar Solicitud
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================== -->
+  <!-- MODAL: VINCULACIÓN GMAIL WEBHOOK & GOOGLE APPS SCRIPT -->
+  <!-- ======================================================================== -->
+  <div class="modal fade" id="modalPauWebhook" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 720px;">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+        <div class="modal-header border-bottom py-3 px-4 bg-light">
+          <div class="d-flex align-items-center gap-2.5">
+            <div class="p-2 rounded-circle bg-danger-subtle text-danger" style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;">
+              <i class="bi bi-envelope-arrow-up-fill fs-5"></i>
+            </div>
+            <div>
+              <h6 class="modal-title fw-bold text-dark mb-0">Vinculación de Gmail con Módulo PAU</h6>
+              <small class="text-muted" style="font-size: 0.74rem;">Sincronización de correos entrantes vía Google Apps Script Webhook</small>
+            </div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <!-- Estado de la Vinculación -->
+          <div class="p-3 mb-3 rounded-3 border d-flex align-items-center justify-content-between flex-wrap gap-2" style="background-color: #F0FDF4; border-color: #BBF7D0 !important;">
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge bg-success text-white py-1 px-2 fw-semibold">ACTIVO</span>
+              <span class="small fw-bold text-dark">Servicio de recepción Webhook listo para sincronizar</span>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-success fw-bold d-inline-flex align-items-center gap-1.5" id="btnTestWebhookEmail" onclick="sendTestIncomingEmail()">
+              <i class="bi bi-lightning-charge-fill"></i>
+              <span>Enviar Correo de Prueba</span>
+            </button>
+          </div>
+
+          <!-- URL del Webhook -->
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-dark mb-1">
+              URL del Webhook (Recepción de correos institucionales):
+            </label>
+            <div class="input-group input-group-sm">
+              <input type="text" id="pauWebhookUrlDisplay" class="form-control font-monospace" readonly value="/api/pau">
+              <button class="btn btn-outline-secondary fw-semibold" type="button" onclick="copyWebhookUrl()">
+                <i class="bi bi-clipboard me-1"></i> Copiar URL
+              </button>
+            </div>
+            <small class="text-muted" style="font-size: 0.72rem;">Esta URL recibe las peticiones POST de los correos entrantes y las añade automáticamente a la bandeja.</small>
+          </div>
+
+          <!-- Código Google Apps Script -->
+          <div class="mb-2">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <label class="form-label small fw-bold text-dark mb-0">
+                Código para Google Apps Script (script.google.com):
+              </label>
+              <button type="button" class="btn btn-sm btn-link text-decoration-none p-0 fw-semibold text-primary" onclick="copyGoogleScriptCode()" style="font-size: 0.78rem;">
+                <i class="bi bi-clipboard me-1"></i> Copiar Código Completo
+              </button>
+            </div>
+            <textarea id="pauScriptCodeSnippet" class="form-control font-monospace text-secondary" rows="8" readonly style="font-size: 0.76rem; background-color: #F8FAFC; resize: vertical;"></textarea>
+          </div>
+
+          <div class="bg-light p-3 rounded border small text-secondary mt-3">
+            <div class="fw-bold text-dark mb-1"><i class="bi bi-info-circle-fill me-1 text-primary"></i>¿Cómo funciona la sincronización?</div>
+            <ol class="mb-0 ps-3" style="line-height: 1.5; font-size: 0.78rem;">
+              <li>Crea un proyecto en <a href="https://script.google.com" target="_blank" rel="noopener noreferrer" class="fw-semibold text-primary">script.google.com</a> con el correo de coordinación.</li>
+              <li>Pega el código anterior y programa un temporizador (activador) cada 5 o 10 minutos.</li>
+              <li>Cada correo nuevo de alumnos o docentes se añadirá de inmediato con estado <strong>"Sin Atención" (Amarillo)</strong>.</li>
+            </ol>
+          </div>
+        </div>
+        <div class="modal-footer border-top py-2.5 px-4 bg-light d-flex justify-content-between">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1.5 fw-semibold">
+            <i class="bi bi-envelope-fill"></i>
+            <span>Abrir Gmail Coordinación</span>
+          </a>
         </div>
       </div>
     </div>

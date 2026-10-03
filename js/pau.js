@@ -512,10 +512,33 @@ window.openPauModal = function(id) {
     if (obsInput) obsInput.value = '';
   }
 
+  try {
+    let inst = null;
+    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+      if (typeof bootstrap.Modal.getOrCreateInstance === 'function') {
+        inst = bootstrap.Modal.getOrCreateInstance(modalEl);
+      } else if (typeof bootstrap.Modal.getInstance === 'function') {
+        inst = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+      } else {
+        inst = new bootstrap.Modal(modalEl);
+      }
+    }
+    if (inst) {
+      pauModalInstance = inst;
+      inst.show();
+      return;
+    }
+  } catch(e) {
+    console.warn('Bootstrap modal show warning:', e);
+  }
+
   if (pauModalInstance) {
     pauModalInstance.show();
-  } else {
+  } else if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
     new bootstrap.Modal(modalEl).show();
+  } else {
+    modalEl.classList.add('show');
+    modalEl.style.display = 'block';
   }
 };
 
@@ -589,8 +612,18 @@ function savePauTicket() {
   renderPauTable();
 
   const modalEl = document.getElementById('modalPauTicket');
-  const instance = bootstrap.Modal.getInstance(modalEl);
-  if (instance) instance.hide();
+  if (modalEl) {
+    let instance = (typeof bootstrap !== 'undefined' && bootstrap.Modal) ? bootstrap.Modal.getInstance(modalEl) : null;
+    if (instance) {
+      instance.hide();
+    } else if (pauModalInstance) {
+      pauModalInstance.hide();
+    } else {
+      modalEl.classList.remove('show');
+      modalEl.style.display = 'none';
+      document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+    }
+  }
 }
 
 // Eliminar ticket
