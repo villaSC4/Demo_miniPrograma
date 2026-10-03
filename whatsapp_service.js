@@ -315,21 +315,39 @@ async function startWhatsAppSocket() {
           status: isFromMe ? 'sent' : 'received'
         };
 
-        // Guardar en la estructura de chats
+        // DEDUPLICACIÓN: Evitar guardar o retransmitir mensajes duplicados por ID
         if (!chatsData.messages[normJid]) chatsData.messages[normJid] = [];
+        const msgExists = chatsData.messages[normJid].some(m => m.id === key.id);
+        if (msgExists) {
+          continue;
+        }
+
         chatsData.messages[normJid].push(messageObj);
 
         // Actualizar datos del chat con teléfono claro y nombre de WhatsApp (pushName)
         const currentChat = chatsData.chats[normJid] || {};
+        
+        // CRÍTICO: Si el mensaje proviene de MÍ (isFromMe), NUNCA sobrescribir el nombre del contacto con el pushName del remitente (ej. 'Aaron_PV')
+        let chatPushName = currentChat.pushName || null;
+        let chatName = currentChat.name || null;
+
+        if (!isFromMe && pushName) {
+          // Solo cuando el mensaje es recibido desde el contacto externo, actualizamos su nombre
+          chatPushName = pushName.trim();
+          chatName = pushName.trim();
+        } else if (!chatName) {
+          chatName = chatPushName || cleanPhone;
+        }
+
         chatsData.chats[normJid] = {
           jid: normJid,
           phone: cleanPhone,
-          pushName: pushName || currentChat.pushName || null,
-          name: pushName || currentChat.name || cleanPhone,
+          pushName: chatPushName,
+          name: chatName,
           profilePic: profilePic || currentChat.profilePic || null,
           lastMessage: bodyText || (messageType === 'image' ? '📷 Foto' : messageType === 'video' ? '🎥 Video' : '📎 Archivo'),
           lastTimestamp: timestamp,
-          unreadCount: isFromMe ? 0 : (currentChat.unreadCount || 0) + 1
+          unreadCount: isFromMe ? (currentChat.unreadCount || 0) : (currentChat.unreadCount || 0) + 1
         };
 
         saveChatsToDisk();
@@ -482,7 +500,9 @@ app.post('/api/whatsapp/send', async (req, res) => {
     };
 
     if (!chatsData.messages[targetJid]) chatsData.messages[targetJid] = [];
-    chatsData.messages[targetJid].push(messageObj);
+    if (!chatsData.messages[targetJid].some(m => m.id === messageObj.id)) {
+      chatsData.messages[targetJid].push(messageObj);
+    }
 
     let phone = targetJid.split('@')[0];
     if (lidToPhoneMap[targetJid]) {
@@ -573,7 +593,9 @@ app.post('/api/whatsapp/send-media', upload.single('file'), async (req, res) => 
     };
 
     if (!chatsData.messages[targetJid]) chatsData.messages[targetJid] = [];
-    chatsData.messages[targetJid].push(messageObj);
+    if (!chatsData.messages[targetJid].some(m => m.id === messageObj.id)) {
+      chatsData.messages[targetJid].push(messageObj);
+    }
 
     let phone = targetJid.split('@')[0];
     if (lidToPhoneMap[targetJid]) {

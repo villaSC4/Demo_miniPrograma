@@ -82,6 +82,8 @@ def create_cpanel_packages():
         "api/delegados.php",
         "api/whatsapp.php",
         "api/supervisiones.php",
+        "whatsapp_service.js",
+        "package.json",
         "data/delegados.json",
         "data/delegados_base.json",
         "data/grupos_base.json",
