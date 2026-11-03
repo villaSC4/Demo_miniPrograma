@@ -1,0 +1,15 @@
+[
+  {
+    "id": 1,
+    "apellidos_nombres": "APELLIDOS NOMBRES EJEMPLO",
+    "codigo_alumno": "0000000000",
+    "correo": "ejemplo@ucvvirtual.edu.pe",
+    "escuela_profesional": "Ingeniería Industrial",
+    "asignatura": "Nombre de Asignatura",
+    "seccion": "A1",
+    "ciclo": "VII",
+    "declaracion_aceptada": 1,
+    "ip_registro": "127.0.0.1",
+    "fecha_registro": "2026-01-01 00:00:00"
+  }
+]

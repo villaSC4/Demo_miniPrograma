@@ -501,7 +501,8 @@
       
       const proc = PROCEDIMIENTOS_CATALOGO[rawId] || PROCEDIMIENTOS_CATALOGO['pex'];
 
-      const dac = (sessionStorage.getItem('sga_dac') || 'sistemas').toLowerCase();
+      const dacRestriction = sessionStorage.getItem('sga_dac_restriction');
+      const dac = (dacRestriction === 'industrial') ? 'industrial' : (sessionStorage.getItem('sga_dac') || 'sistemas').toLowerCase();
       const isIndustrial = dac === 'industrial';
 
       const schoolName = isIndustrial ? 'Escuela de Ingeniería Industrial' : 'Escuela de Ingeniería de Sistemas';

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Módulo PAU • WhatsApp Live Hub | UCV Virtual</title>
+  <title>Módulo PAE • WhatsApp Live Hub | UCV Virtual</title>
   
   <!-- Tipografía Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -616,7 +616,7 @@
       transform: scale(1.04);
     }
 
-    /* COLUMNA 3: EXPEDIENTE PAU & ACCIONES RÁPIDAS */
+    /* COLUMNA 3: EXPEDIENTE PAE & ACCIONES RÁPIDAS */
     .dossier-sidebar {
       width: 340px;
       background-color: #FFFFFF;
@@ -757,7 +757,7 @@
     }
 
     /* ========================================================================
-       BARRA DE CANALES PAU (SEGÚN WIREFRAME: WHATSAPP, CORREO, ZOOM)
+       BARRA DE CANALES PAE (SEGÚN WIREFRAME: WHATSAPP, CORREO, ZOOM)
        ======================================================================== */
     .pau-channels-bar {
       background-color: #FFFFFF;
@@ -854,6 +854,16 @@
       box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
     }
 
+    .pau-channel-icon-box.gmail {
+      background-color: #FEE2E2;
+      color: #DC2626;
+    }
+    .pau-channel-card:hover .pau-channel-icon-box.gmail {
+      background-color: #DC2626;
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+    }
+
     .pau-channel-icon-box.zoom {
       background-color: #E2E8F0;
       color: #64748B;
@@ -917,8 +927,9 @@
       box-shadow: 0 0 5px #16A34A;
     }
 
-    /* CONTENEDOR DESPLAZABLE PARA CORREO */
-    .workspace-correo-scroll {
+    /* CONTENEDOR DESPLAZABLE PARA CORREO Y ZOOM DAC */
+    .workspace-correo-scroll,
+    .workspace-zoom-scroll {
       flex: 1;
       overflow-y: auto;
       padding: 1.5rem 1.75rem 3.5rem;
@@ -936,7 +947,7 @@
       </a>
       <div class="d-none d-sm-block" style="width: 1px; height: 26px; background: rgba(255,255,255,0.25);"></div>
       <div>
-        <div class="brand-title">Módulo PAU • Plataforma de Atención al Estudiante</div>
+        <div class="brand-title">Módulo PAE • Plataforma de Atención al Estudiante</div>
         <div class="brand-subtitle">Facultad de Ingeniería y Arquitectura • Atención Multicanal en Tiempo Real</div>
       </div>
     </div>
@@ -970,9 +981,9 @@
   </header>
 
   <!-- ========================================================================
-       BARRA DE CANALES PAU (SEGÚN WIREFRAME: WHATSAPP, CORREO, ZOOM)
+       BARRA DE CANALES PAE (SEGÚN WIREFRAME: WHATSAPP, CORREO, ZOOM)
        ======================================================================== -->
-  <nav class="pau-channels-bar" aria-label="Canales de Atención PAU">
+  <nav class="pau-channels-bar" aria-label="Canales de Atención PAE">
     <div class="pau-channels-container">
       <!-- 1. WHATSAPP (ACTIVO POR DEFECTO) -->
       <div class="pau-channel-card active" id="tabChannelWhatsApp" data-channel="whatsapp" onclick="cambiarCanalPau('whatsapp')">
@@ -989,31 +1000,45 @@
         </span>
       </div>
 
-      <!-- 2. CORREO (BANDEJA Y SEGUIMIENTO INSTITUCIONAL) -->
+      <!-- 2. SOLICITUDES PAE (REGISTRO MANUAL Y SEGUIMIENTO) -->
       <div class="pau-channel-card" id="tabChannelCorreo" data-channel="correo" onclick="cambiarCanalPau('correo')">
         <div class="pau-channel-icon-box mail">
-          <i class="bi bi-envelope-at-fill"></i>
+          <i class="bi bi-card-checklist"></i>
         </div>
         <div class="pau-channel-info">
-          <div class="pau-channel-title">Correo</div>
-          <div class="pau-channel-desc">Atención Correo</div>
+          <div class="pau-channel-title">Solicitudes PAE</div>
+          <div class="pau-channel-desc">Registro Manual</div>
         </div>
         <span class="pau-channel-badge count" id="channelCorreoCountBadge">
           <i class="bi bi-inbox-fill me-1"></i><span>0 Solicitudes</span>
         </span>
       </div>
 
-      <!-- 3. ZOOM (INHABILITADO POR AHORA SEGÚN INDICACIÓN) -->
-      <div class="pau-channel-card disabled" id="tabChannelZoom" data-channel="zoom" onclick="avisoZoomNoHabilitado()" title="Módulo de atención vía Zoom próximamente disponible">
+      <!-- 3. ACCESO DIRECTO A GMAIL (REDIRECCIÓN EXTERNA) -->
+      <a href="https://mail.google.com" target="_blank" rel="noopener noreferrer" class="pau-channel-card text-decoration-none" id="tabChannelGmail" title="Abrir Gmail en una nueva pestaña">
+        <div class="pau-channel-icon-box gmail">
+          <i class="bi bi-envelope-fill"></i>
+        </div>
+        <div class="pau-channel-info">
+          <div class="pau-channel-title">Gmail</div>
+          <div class="pau-channel-desc">Bandeja de Correo</div>
+        </div>
+        <span class="pau-channel-badge" style="background-color: #FEF2F2; color: #DC2626; border: 1px solid #FECACA;">
+          <i class="bi bi-box-arrow-up-right me-1"></i><span>Ir a Gmail</span>
+        </span>
+      </a>
+
+      <!-- 4. ZOOM / ATENCIÓN DAC (LLAMADOS Y SALAS VIRTUALES) -->
+      <div class="pau-channel-card" id="tabChannelZoom" data-channel="zoom" onclick="cambiarCanalPau('zoom')" title="Módulo de atención de llamados y citas virtuales del DAC">
         <div class="pau-channel-icon-box zoom">
           <i class="bi bi-camera-video-fill"></i>
         </div>
         <div class="pau-channel-info">
-          <div class="pau-channel-title">Zoom</div>
-          <div class="pau-channel-desc">Atención vía Zoom</div>
+          <div class="pau-channel-title">Atención DAC • Citas</div>
+          <div class="pau-channel-desc">Llamados y Salas Zoom</div>
         </div>
-        <span class="pau-channel-badge disabled-tag">
-          <i class="bi bi-clock-history me-1"></i><span>Próximamente</span>
+        <span class="pau-channel-badge count" id="channelZoomBadge" style="background-color: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE;">
+          <i class="bi bi-person-video3 me-1"></i><span id="txtZoomBadgeCount">0 Citas</span>
         </span>
       </div>
     </div>
@@ -1073,16 +1098,16 @@
             <div class="fw-bold text-dark font-monospace" id="activeContactName" style="font-size: 0.98rem; line-height: 1.25; margin-bottom: 2px;">Seleccione un contacto</div>
             <div class="d-flex align-items-center" style="gap: 8px; font-size: 0.78rem;">
               <span id="activeContactPhone" class="text-secondary fw-semibold">--</span>
-              <span class="badge" id="activeContactBadge" style="background-color: var(--pastel-blue-bg); color: var(--pastel-blue-text); border: 1px solid var(--pastel-blue-border); font-size: 0.72rem; padding: 0.22rem 0.55rem; border-radius: 6px;">Atención PAU</span>
+              <span class="badge" id="activeContactBadge" style="background-color: var(--pastel-blue-bg); color: var(--pastel-blue-text); border: 1px solid var(--pastel-blue-border); font-size: 0.72rem; padding: 0.22rem 0.55rem; border-radius: 6px;">Atención PAE</span>
             </div>
           </div>
         </div>
 
         <!-- Acciones sobre la conversación activa -->
         <div class="d-flex align-items-center" id="activeChatActions" style="gap: 10px; display: none !important;">
-          <button type="button" class="btn btn-sm fw-semibold d-inline-flex align-items-center shadow-sm" style="background-color: var(--pastel-blue-bg); color: var(--pastel-blue-text); border: 1px solid var(--pastel-blue-border); border-radius: 8px; font-size: 0.8rem; padding: 0.42rem 0.85rem; gap: 7px;" onclick="derivarATicketPAU()" title="Registrar esta consulta en la bandeja de correos/tickets PAU">
+          <button type="button" class="btn btn-sm fw-semibold d-inline-flex align-items-center shadow-sm" style="background-color: var(--pastel-blue-bg); color: var(--pastel-blue-text); border: 1px solid var(--pastel-blue-border); border-radius: 8px; font-size: 0.8rem; padding: 0.42rem 0.85rem; gap: 7px;" onclick="derivarATicketPAU()" title="Registrar esta consulta en la bandeja de correos/tickets PAE">
             <i class="bi bi-file-earmark-check-fill text-primary"></i>
-            <span>Derivar a Ticket PAU</span>
+            <span>Derivar a Ticket PAE</span>
           </button>
           <button type="button" class="btn btn-sm btn-outline-secondary btn-icon-square shadow-sm" onclick="exportarHistorialChat()" title="Descargar transcripción del chat">
             <i class="bi bi-download fs-6"></i>
@@ -1126,7 +1151,7 @@
                 <a class="nav-link py-0.5 px-1" data-bs-toggle="pill" href="#tabEmojiCorazones" title="Corazones">❤️</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link py-0.5 px-1" data-bs-toggle="pill" href="#tabEmojiOficina" title="PAU / FIA">🎓</a>
+                <a class="nav-link py-0.5 px-1" data-bs-toggle="pill" href="#tabEmojiOficina" title="PAE / FIA">🎓</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link py-0.5 px-1" data-bs-toggle="pill" href="#tabEmojiSimbolos" title="Símbolos">✅</a>
@@ -1342,7 +1367,7 @@
       </div>
     </section>
 
-    <!-- COLUMNA 3: EXPEDIENTE PAU & RESPUESTAS RÁPIDAS -->
+    <!-- COLUMNA 3: EXPEDIENTE PAE & RESPUESTAS RÁPIDAS -->
     <aside class="dossier-sidebar" id="dossierSidebar">
       <!-- Tarjeta Superior del Contacto -->
       <div class="dossier-card-top">
@@ -1413,9 +1438,9 @@
 
       <!-- Acceso a Sala Zoom Institucional -->
       <div class="p-3 border-top bg-light text-center">
-        <button type="button" onclick="avisoZoomNoHabilitado()" class="btn btn-sm w-100 fw-bold py-2 d-inline-flex align-items-center justify-content-center gap-2" style="background-color: var(--pastel-blue-bg); color: var(--pastel-blue-text); border: 1px solid var(--pastel-blue-border); border-radius: 8px;">
+        <button type="button" onclick="cambiarCanalPau('zoom')" class="btn btn-sm w-100 fw-bold py-2 d-inline-flex align-items-center justify-content-center gap-2" style="background-color: var(--pastel-blue-bg); color: var(--pastel-blue-text); border: 1px solid var(--pastel-blue-border); border-radius: 8px;">
           <i class="bi bi-camera-video-fill"></i>
-          <span>Atención Vía Zoom (Próximamente)</span>
+          <span>Atención DAC • Citas y Zoom</span>
         </button>
       </div>
     </aside>
@@ -1425,171 +1450,508 @@
   <!-- ESPACIO DE TRABAJO 2: MÓDULO DE ATENCIÓN POR CORREO (BANDEJA Y SOLICITUDES) -->
   <!-- ======================================================================== -->
   <main class="workspace-correo-scroll d-none" id="workspaceCorreo">
-    <div class="container-fluid py-2 px-lg-3" style="max-width: 1440px; margin: 0 auto;">
+    <div class="container-fluid py-3 px-2 px-md-3 px-xl-4" style="max-width: 1440px; margin: 0 auto;">
       
-      <!-- Encabezado de la Bandeja PAU con Amplio Espacio -->
-      <div class="d-flex justify-content-between align-items-start mb-4 pb-3 border-bottom flex-wrap gap-3">
-        <div>
-          <div class="d-flex align-items-center gap-2.5 mb-2">
-            <span class="badge" style="background: #E0F2FE; color: #0284C7; font-size: 0.8rem; padding: 6px 12px; border-radius: 6px;">
-              <i class="bi bi-shield-check me-1"></i> Módulo PAU: Atención por Correo
-            </span>
-            <span class="badge bg-light text-muted border" style="font-size: 0.78rem; padding: 6px 12px; border-radius: 6px;">
-              <i class="bi bi-envelope-at me-1 text-primary"></i> coordinacion.fia@ucvvirtual.edu.pe
-            </span>
+      <!-- Encabezado de la Bandeja PAE Organizado y Espacioso -->
+      <div class="bg-white rounded-4 border p-4 mb-4 shadow-xs">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+              <span class="badge" style="background: #EFF6FF; color: #1D4ED8; font-size: 0.78rem; padding: 6px 12px; border-radius: 8px; font-weight: 600; border: 1px solid #DBEAFE;">
+                <i class="bi bi-folder2-open me-1.5 text-primary"></i> Módulo PAE: Solicitudes y Trámites
+              </span>
+              <span class="badge" style="background: #F8FAFC; color: #475569; font-size: 0.78rem; padding: 6px 12px; border-radius: 8px; font-weight: 600; border: 1px solid #E2E8F0;">
+                <i class="bi bi-pencil-square me-1.5 text-success"></i> Registro Manual de Atención
+              </span>
+            </div>
+            <h4 class="fw-bold text-dark mb-1" style="font-size: 1.3rem; letter-spacing: -0.01em;">
+              PAE, Plataforma de Atención al Estudiante — Bandeja de Solicitudes
+            </h4>
+            <p class="text-muted mb-0" style="font-size: 0.86rem; line-height: 1.5;">
+              Control, registro manual y seguimiento de solicitudes de estudiantes, estados de atención y vistos buenos de coordinación (FIA - Semestre 2026-II).
+            </p>
           </div>
-          <h4 class="fw-bold text-dark mb-1" style="font-size: 1.25rem;">
-            Plataforma de Atención al Estudiante (PAU / PAE) — Bandeja de Solicitudes
-          </h4>
-          <p class="text-muted mb-0" style="font-size: 0.85rem; line-height: 1.5;">
-            Control y seguimiento en tiempo real de correos entrantes, estados de atención y vistos buenos de coordinación (FIA - Semestre 2026-II).
-          </p>
-        </div>
 
-        <div class="d-flex align-items-center gap-2.5 flex-wrap">
-          <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank" rel="noopener noreferrer" class="btn btn-outline-danger btn-sm py-2 px-3 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs" style="border-radius: 8px;" title="Abrir bandeja de entrada de Gmail en una nueva pestaña">
-            <i class="bi bi-envelope-arrow-up-fill text-danger fs-6"></i>
-            <span>Gmail</span>
-            <i class="bi bi-box-arrow-up-right" style="font-size: 0.7rem;"></i>
-          </a>
+          <div class="d-flex align-items-center gap-2.5 flex-wrap">
+            <a href="https://mail.google.com" target="_blank" rel="noopener noreferrer" class="btn btn-outline-danger btn-sm py-2 px-3 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs" style="border-radius: 9px; border-color: #FECACA; background-color: #FFF5F5; color: #DC2626;" title="Abrir Gmail en una nueva pestaña">
+              <i class="bi bi-envelope-fill text-danger fs-6"></i>
+              <span>Ir a Gmail</span>
+            </a>
 
-          <button type="button" id="btnSyncPauInbox" class="btn btn-outline-primary btn-sm py-2 px-3 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs" style="border-radius: 8px;" onclick="syncPauInbox()" title="Sincronizar bandeja con los correos entrantes">
-            <i class="bi bi-arrow-repeat text-primary fs-6"></i>
-            <span>Sincronizar</span>
-          </button>
+            <button type="button" id="btnSyncPauInbox" class="btn btn-outline-secondary btn-sm py-2 px-3 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs" style="border-radius: 9px; border-color: #CBD5E1; color: #334155;" onclick="syncPauInbox()" title="Actualizar lista de solicitudes registradas">
+              <i class="bi bi-arrow-clockwise text-primary fs-6"></i>
+              <span>Actualizar</span>
+            </button>
 
-          <button type="button" id="btnOpenPauWebhookModal" class="btn btn-outline-success btn-sm py-2 px-3 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs" style="border-radius: 8px;" onclick="openPauWebhookModal()" title="Configuración y código de vinculación automática con Gmail / Google Apps Script">
-            <i class="bi bi-link-45deg text-success fs-5"></i>
-            <span>Vincular Gmail (Apps Script)</span>
-          </button>
+            <button type="button" id="btnExportPauExcel" class="btn btn-outline-secondary btn-sm py-2 px-3 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs" style="border-radius: 9px; border-color: #CBD5E1; color: #334155;" onclick="exportPauExcel()" title="Exportar reporte en formato Excel">
+              <i class="bi bi-file-earmark-spreadsheet-fill text-success fs-6"></i>
+              <span>Exportar Excel</span>
+            </button>
 
-          <button type="button" id="btnExportPauExcel" class="btn btn-outline-secondary btn-sm py-2 px-3 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs" style="border-radius: 8px;" onclick="exportPauExcel()" title="Exportar reporte en formato Excel idéntico al Drive">
-            <i class="bi bi-file-earmark-spreadsheet-fill text-success fs-6"></i>
-            <span>Exportar Excel</span>
-          </button>
-
-          <button type="button" id="btnOpenNewPauModal" class="btn btn-sm py-2 px-3.5 fw-semibold shadow-sm d-inline-flex align-items-center gap-2 text-white" style="border-radius: 8px; background-color: var(--ucv-navy); border-color: var(--ucv-navy);" onclick="openPauModal(null)">
-            <i class="bi bi-plus-circle-fill fs-6"></i>
-            <span>+ Nueva Solicitud</span>
-          </button>
+            <button type="button" id="btnOpenNewPauModal" class="btn btn-sm py-2 px-3.5 fw-semibold shadow-sm d-inline-flex align-items-center gap-2 text-white" style="border-radius: 9px; background-color: var(--ucv-navy); border-color: var(--ucv-navy);" onclick="openPauModal(null)">
+              <i class="bi bi-plus-circle-fill fs-6"></i>
+              <span>+ Nueva Solicitud</span>
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- Métricas Resumen KPI Espaciosas -->
       <div class="row g-3 g-xl-4 mb-4">
         <div class="col-xl-3 col-sm-6">
-          <div class="pau-metric-card d-flex align-items-center justify-content-between">
+          <div class="pau-metric-card d-flex align-items-center justify-content-between p-3.5 px-4 bg-white rounded-4 border shadow-xs" style="border-left: 4px solid #3B82F6 !important;">
             <div>
-              <small class="text-muted d-block fw-semibold mb-1" style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.04em;">Total Solicitudes</small>
+              <small class="text-muted d-block fw-semibold mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Total Solicitudes</small>
               <span class="fs-2 fw-bold text-dark kpi-pau-total-val" id="kpiPauTotalMetric">0</span>
             </div>
-            <div class="area-card-icon" style="width: 46px; height: 46px; border-radius: 11px; background: #F1F5F9; color: #475569; font-size: 1.35rem; display: flex; align-items: center; justify-content: center;">
+            <div class="area-card-icon" style="width: 48px; height: 48px; border-radius: 12px; background: #EFF6FF; color: #2563EB; font-size: 1.35rem; display: flex; align-items: center; justify-content: center;">
               <i class="bi bi-inbox-fill"></i>
             </div>
           </div>
         </div>
 
         <div class="col-xl-3 col-sm-6">
-          <div class="pau-metric-card d-flex align-items-center justify-content-between" style="border-left: 3px solid #16A34A !important;">
+          <div class="pau-metric-card d-flex align-items-center justify-content-between p-3.5 px-4 bg-white rounded-4 border shadow-xs" style="border-left: 4px solid #16A34A !important;">
             <div>
-              <small class="text-muted d-block fw-semibold mb-1" style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.04em;">Atendidos</small>
+              <small class="text-muted d-block fw-semibold mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Atendidos</small>
               <span class="fs-2 fw-bold text-success" id="kpiPauAtendidos">0 (0%)</span>
             </div>
-            <div class="area-card-icon" style="width: 46px; height: 46px; border-radius: 11px; background: #DCFCE7; color: #16A34A; font-size: 1.35rem; display: flex; align-items: center; justify-content: center;">
+            <div class="area-card-icon" style="width: 48px; height: 48px; border-radius: 12px; background: #DCFCE7; color: #16A34A; font-size: 1.35rem; display: flex; align-items: center; justify-content: center;">
               <i class="bi bi-check-circle-fill"></i>
             </div>
           </div>
         </div>
 
         <div class="col-xl-3 col-sm-6">
-          <div class="pau-metric-card d-flex align-items-center justify-content-between" style="border-left: 3px solid #F59E0B !important;">
+          <div class="pau-metric-card d-flex align-items-center justify-content-between p-3.5 px-4 bg-white rounded-4 border shadow-xs" style="border-left: 4px solid #F59E0B !important;">
             <div>
-              <small class="text-muted d-block fw-semibold mb-1" style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.04em;">Sin Atención</small>
+              <small class="text-muted d-block fw-semibold mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Sin Atención</small>
               <span class="fs-2 fw-bold text-warning" id="kpiPauSinAtencion">0</span>
             </div>
-            <div class="area-card-icon" style="width: 46px; height: 46px; border-radius: 11px; background: #FEF3C7; color: #B45309; font-size: 1.35rem; display: flex; align-items: center; justify-content: center;">
+            <div class="area-card-icon" style="width: 48px; height: 48px; border-radius: 12px; background: #FEF3C7; color: #B45309; font-size: 1.35rem; display: flex; align-items: center; justify-content: center;">
               <i class="bi bi-clock-history"></i>
             </div>
           </div>
         </div>
 
         <div class="col-xl-3 col-sm-6">
-          <div class="pau-metric-card d-flex align-items-center justify-content-between" style="border-left: 3px solid #0284C7 !important;">
+          <div class="pau-metric-card d-flex align-items-center justify-content-between p-3.5 px-4 bg-white rounded-4 border shadow-xs" style="border-left: 4px solid #0284C7 !important;">
             <div>
-              <small class="text-muted d-block fw-semibold mb-1" style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.04em;">Visto Aprobado</small>
+              <small class="text-muted d-block fw-semibold mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Visto Aprobado</small>
               <span class="fs-2 fw-bold" style="color: #0284C7;" id="kpiPauAprobados">0</span>
             </div>
-            <div class="area-card-icon" style="width: 46px; height: 46px; border-radius: 11px; background: #E0F2FE; color: #0284C7; font-size: 1.35rem; display: flex; align-items: center; justify-content: center;">
+            <div class="area-card-icon" style="width: 48px; height: 48px; border-radius: 12px; background: #E0F2FE; color: #0284C7; font-size: 1.35rem; display: flex; align-items: center; justify-content: center;">
               <i class="bi bi-patch-check-fill"></i>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Filtros de la Bandeja PAU con Amplia Separación -->
-      <div class="p-3.5 p-lg-4 bg-white rounded-3 border mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3 shadow-xs">
-        <div class="d-flex align-items-center gap-3 flex-wrap flex-grow-1">
-          <div class="input-group input-group-sm" style="max-width: 320px;">
-            <span class="input-group-text bg-light px-3 border-end-0"><i class="bi bi-search text-muted"></i></span>
+      <!-- Filtros de la Bandeja PAE con Amplia Separación y Mejor Distribución -->
+      <div class="p-3.5 p-lg-4 bg-white rounded-4 border mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3 shadow-xs">
+        <div class="d-flex align-items-center gap-2.5 flex-wrap flex-grow-1">
+          <div class="input-group input-group-sm" style="min-width: 260px; max-width: 320px;">
+            <span class="input-group-text bg-light px-3 border-end-0 text-muted"><i class="bi bi-search"></i></span>
             <input type="text" id="filterPauSearch" class="form-control form-control-sm py-2 border-start-0" placeholder="Buscar por alumno, correo o asunto...">
           </div>
 
-          <select id="filterPauEscuela" class="form-select form-select-sm py-2" style="width: auto;">
+          <select id="filterPauEscuela" class="form-select form-select-sm py-2" style="width: auto; min-width: 175px;">
             <option value="ALL">Todas las Escuelas</option>
             <option value="Ingeniería Industrial">Ingeniería Industrial</option>
             <option value="Ingeniería de Sistemas">Ingeniería de Sistemas</option>
           </select>
 
-          <select id="filterPauEstado" class="form-select form-select-sm py-2" style="width: auto;">
+          <select id="filterPauEstado" class="form-select form-select-sm py-2" style="width: auto; min-width: 175px;">
             <option value="ALL">Todos los Estados</option>
-            <option value="Atendido">🟢 Solo Atendidos (Verde)</option>
-            <option value="Sin Atención">🟡 Solo Sin Atención (Amarillo)</option>
+            <option value="Atendido">🟢 Solo Atendidos</option>
+            <option value="Sin Atención">🟡 Solo Sin Atención</option>
           </select>
 
-          <select id="filterPauVisto" class="form-select form-select-sm py-2" style="width: auto;">
+          <select id="filterPauVisto" class="form-select form-select-sm py-2" style="width: auto; min-width: 205px;">
             <option value="ALL">Todos los Vistos Buenos</option>
             <option value="APROBADO">🔵 APROBADO</option>
             <option value="SIN APROBACIÓN">⚪ SIN APROBACIÓN</option>
           </select>
 
-          <button type="button" id="btnResetPauFilters" class="btn btn-outline-secondary btn-sm px-3 py-2" title="Restablecer filtros">
-            <i class="bi bi-arrow-counterclockwise me-1"></i> Limpiar
+          <button type="button" id="btnResetPauFilters" class="btn btn-outline-secondary btn-sm px-3 py-2 d-inline-flex align-items-center gap-1.5" style="border-radius: 8px;" title="Restablecer filtros">
+            <i class="bi bi-arrow-counterclockwise"></i>
+            <span>Limpiar</span>
           </button>
         </div>
 
         <div class="text-muted small fw-semibold" id="pauFilteredCountText" style="font-size: 0.82rem;">
-          Cargando solicitudes...
+          <span class="badge bg-light text-secondary border px-3 py-2 rounded-pill fw-semibold">
+            <i class="bi bi-list-check text-primary me-1"></i> 0 solicitudes registradas
+          </span>
         </div>
       </div>
 
-      <!-- Tabla de Solicitudes PAU con los Campos Solicitados -->
-      <div class="table-responsive bg-white rounded-3 border shadow-xs" style="max-height: 560px;">
+      <!-- Tabla de Solicitudes PAE con los Campos Solicitados -->
+      <div class="table-responsive bg-white rounded-4 border shadow-xs" style="min-height: 320px; max-height: 580px;">
         <table class="table table-hover align-middle mb-0" id="pauMainTable">
-          <thead class="sticky-top bg-light border-bottom">
+          <thead class="sticky-top bg-light border-bottom text-uppercase" style="font-size: 0.77rem; letter-spacing: 0.04em; color: #475569;">
             <tr>
-              <th style="width: 45px; white-space: nowrap;" class="text-center">IT</th>
-              <th style="width: 150px; white-space: nowrap;">Fecha de Correo</th>
-              <th style="min-width: 190px; white-space: nowrap;">Remitente</th>
-              <th style="min-width: 180px; white-space: nowrap;">Correo de quien viene</th>
-              <th style="min-width: 270px;">Asunto</th>
-              <th class="text-center" style="width: 145px; white-space: nowrap;" title="Clic sobre el botón para alternar entre Atendido y Sin Atención">
+              <th style="width: 45px; white-space: nowrap;" class="text-center py-3">IT</th>
+              <th style="width: 150px; white-space: nowrap;" class="py-3">Fecha de Registro</th>
+              <th style="min-width: 190px; white-space: nowrap;" class="py-3">Remitente</th>
+              <th style="min-width: 180px; white-space: nowrap;" class="py-3">Correo Solicitante</th>
+              <th style="min-width: 270px;" class="py-3">Asunto</th>
+              <th class="text-center py-3" style="width: 145px; white-space: nowrap;" title="Clic sobre el botón para alternar entre Atendido y Sin Atención">
                 Estado de Atención <i class="bi bi-arrow-left-right ms-0.5" style="font-size: 0.7rem;"></i>
               </th>
-              <th class="text-center" style="width: 165px; white-space: nowrap;" title="Clic sobre el botón para alternar entre APROBADO y SIN APROBACIÓN">
+              <th class="text-center py-3" style="width: 165px; white-space: nowrap;" title="Clic sobre el botón para alternar entre APROBADO y SIN APROBACIÓN">
                 Visto Coordinación <i class="bi bi-arrow-left-right ms-0.5" style="font-size: 0.7rem;"></i>
               </th>
-              <th class="text-center" style="width: 155px; white-space: nowrap;">Fecha de Respuesta</th>
-              <th class="text-center" style="width: 125px; white-space: nowrap;">Acciones</th>
+              <th class="text-center py-3" style="width: 155px; white-space: nowrap;">Fecha de Respuesta</th>
+              <th class="text-center py-3" style="width: 125px; white-space: nowrap;">Acciones</th>
             </tr>
           </thead>
           <tbody id="pauTableBody">
-            <!-- Rellenado dinámico desde js/pau.js -->
+            <tr>
+              <td colspan="9" class="p-0 border-0">
+                <div class="py-5 px-4 text-center my-4">
+                  <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3 shadow-xs" style="width: 80px; height: 80px; background-color: #F8FAFC; border: 1.5px solid #E2E8F0;">
+                    <i class="bi bi-inbox-fill text-primary" style="font-size: 2.4rem; opacity: 0.85;"></i>
+                  </div>
+                  <h5 class="fw-bold text-dark mb-2" style="font-size: 1.2rem;">
+                    No hay registros ni solicitudes pendientes
+                  </h5>
+                  <p class="text-muted mx-auto mb-4" style="max-width: 520px; font-size: 0.92rem; line-height: 1.6;">
+                    Actualmente la bandeja se encuentra vacía. ¿Deseas añadir una nueva solicitud o registro de atención ahora mismo?
+                  </p>
+                  <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
+                    <button type="button" class="btn btn-sm px-4 py-2.5 fw-semibold rounded-pill shadow-sm text-white d-inline-flex align-items-center gap-2" style="background-color: var(--ucv-navy); border-color: var(--ucv-navy); font-size: 0.9rem;" onclick="openPauModal(null)">
+                      <i class="bi bi-plus-circle-fill fs-6"></i>
+                      <span>+ Registrar Nueva Solicitud</span>
+                    </button>
+                  </div>
+                </div>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
 
     </div>
   </main>
+
+  <!-- ======================================================================== -->
+  <!-- ESPACIO DE TRABAJO 3: MÓDULO DE ATENCIÓN DAC (LLAMADOS Y SALAS VIRTUALES) -->
+  <!-- ======================================================================== -->
+  <main class="workspace-zoom-scroll d-none" id="workspaceZoom">
+    <div class="container-fluid py-3 px-2 px-md-3 px-xl-4" style="max-width: 1440px; margin: 0 auto;">
+      
+      <!-- Encabezado de la Bandeja DAC -->
+      <div class="bg-white rounded-4 border p-4 mb-4 shadow-xs">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+              <span class="badge" style="background: #EFF6FF; color: #1D4ED8; font-size: 0.78rem; padding: 6px 12px; border-radius: 8px; font-weight: 600; border: 1px solid #DBEAFE;">
+                <i class="bi bi-camera-video-fill me-1.5 text-primary"></i> Módulo DAC • Atención de Llamados y Citas
+              </span>
+              <span class="badge" style="background: #FEF3C7; color: #92400E; font-size: 0.78rem; padding: 6px 12px; border-radius: 8px; font-weight: 600; border: 1px solid #FDE68A;">
+                <i class="bi bi-clock-history me-1.5 text-warning"></i> Lunes y Viernes • 7:00 PM a 9:00 PM
+              </span>
+              <span class="badge" style="background: #F8FAFC; color: #475569; font-size: 0.78rem; padding: 6px 12px; border-radius: 8px; font-weight: 600; border: 1px solid #E2E8F0;">
+                <i class="bi bi-mortarboard-fill me-1.5 text-secondary"></i> Sistemas (Lunes) & Industrial (Viernes)
+              </span>
+            </div>
+            <h4 class="fw-bold text-dark mb-1" style="font-size: 1.3rem; letter-spacing: -0.01em;">
+              Gestión de Llamados y Citas Virtuales — Dirección de Asuntos Académicos (DAC)
+            </h4>
+            <p class="text-muted mb-0" style="font-size: 0.86rem; line-height: 1.5;">
+              Atienda las solicitudes y reclamos reservados por estudiantes de Sistemas e Industrial. Asigne la sala virtual (Zoom / Meet), convoque al alumno por WhatsApp o Correo Institucional y actualice el estado en tiempo real.
+            </p>
+          </div>
+
+          <div class="d-flex align-items-center gap-2.5 flex-wrap">
+            <a href="formulario_estudiantes/" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm py-2 px-3 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs" style="border-radius: 9px; border-color: #BFDBFE; background-color: #EFF6FF; color: #1D4ED8;" title="Ver el formulario público que llenan los alumnos">
+              <i class="bi bi-box-arrow-up-right fs-6"></i>
+              <span>Formulario Alumnos</span>
+            </a>
+
+            <button type="button" id="btnSyncDac" class="btn btn-outline-secondary btn-sm py-2 px-3 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs" style="border-radius: 9px; border-color: #CBD5E1; color: #334155;" onclick="cargarAtencionesDac(true)" title="Actualizar lista de citas recibidas">
+              <i class="bi bi-arrow-clockwise text-primary fs-6" id="iconSyncDac"></i>
+              <span>Actualizar</span>
+            </button>
+
+            <button type="button" id="btnExportDac" class="btn btn-outline-secondary btn-sm py-2 px-3 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs" style="border-radius: 9px; border-color: #CBD5E1; color: #334155;" onclick="exportarAtencionesDacCsv()" title="Exportar citas a archivo CSV">
+              <i class="bi bi-file-earmark-spreadsheet-fill text-success fs-6"></i>
+              <span>Exportar Reporte</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Métricas KPI DAC -->
+      <div class="row g-3 g-xl-4 mb-4">
+        <div class="col-xl-3 col-sm-6">
+          <div class="pau-metric-card d-flex align-items-center justify-content-between p-3.5 px-4 bg-white rounded-4 border shadow-xs" style="border-left: 4px solid #2563EB !important;">
+            <div>
+              <small class="text-muted d-block fw-semibold mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Total Citas Registradas</small>
+              <span class="fs-2 fw-bold text-dark" id="kpiDacTotal">0</span>
+            </div>
+            <div class="area-card-icon" style="width: 48px; height: 48px; border-radius: 12px; background: #EFF6FF; color: #2563EB; font-size: 1.35rem; display: flex; align-items: center; justify-content: center;">
+              <i class="bi bi-calendar-check-fill"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-sm-6">
+          <div class="pau-metric-card d-flex align-items-center justify-content-between p-3.5 px-4 bg-white rounded-4 border shadow-xs" style="border-left: 4px solid #F59E0B !important;">
+            <div>
+              <small class="text-muted d-block fw-semibold mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Pendientes (Por Convocar)</small>
+              <span class="fs-2 fw-bold text-warning" id="kpiDacPendientes">0</span>
+            </div>
+            <div class="area-card-icon" style="width: 48px; height: 48px; border-radius: 12px; background: #FEF3C7; color: #B45309; font-size: 1.35rem; display: flex; align-items: center; justify-content: center;">
+              <i class="bi bi-hourglass-split"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-sm-6">
+          <div class="pau-metric-card d-flex align-items-center justify-content-between p-3.5 px-4 bg-white rounded-4 border shadow-xs" style="border-left: 4px solid #0284C7 !important;">
+            <div>
+              <small class="text-muted d-block fw-semibold mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">En Atención / Sala Lista</small>
+              <span class="fs-2 fw-bold" style="color: #0284C7;" id="kpiDacEnAtencion">0</span>
+            </div>
+            <div class="area-card-icon" style="width: 48px; height: 48px; border-radius: 12px; background: #E0F2FE; color: #0284C7; font-size: 1.35rem; display: flex; align-items: center; justify-content: center;">
+              <i class="bi bi-camera-video-fill"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-sm-6">
+          <div class="pau-metric-card d-flex align-items-center justify-content-between p-3.5 px-4 bg-white rounded-4 border shadow-xs" style="border-left: 4px solid #16A34A !important;">
+            <div>
+              <small class="text-muted d-block fw-semibold mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Atendidas / Concluidas</small>
+              <span class="fs-2 fw-bold text-success" id="kpiDacAtendidas">0</span>
+            </div>
+            <div class="area-card-icon" style="width: 48px; height: 48px; border-radius: 12px; background: #DCFCE7; color: #16A34A; font-size: 1.35rem; display: flex; align-items: center; justify-content: center;">
+              <i class="bi bi-check-circle-fill"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtros DAC -->
+      <div class="p-3.5 p-lg-4 bg-white rounded-4 border mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3 shadow-xs">
+        <div class="d-flex align-items-center gap-2 flex-grow-1 flex-wrap" style="min-width: 280px;">
+          <div class="input-group" style="max-width: 300px;">
+            <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
+            <input type="text" id="filterDacSearch" class="form-control form-control-sm border-start-0" placeholder="Buscar por ticket, alumno o código..." oninput="filtrarAtencionesDac()">
+          </div>
+
+          <select id="filterDacCarrera" class="form-select form-select-sm" style="max-width: 220px;" onchange="filtrarAtencionesDac()">
+            <option value="">🎓 Todas las carreras</option>
+            <option value="Ingeniería de Sistemas">Ingeniería de Sistemas</option>
+            <option value="Ingeniería Industrial">Ingeniería Industrial</option>
+          </select>
+
+          <select id="filterDacTipo" class="form-select form-select-sm" style="max-width: 170px;" onchange="filtrarAtencionesDac()">
+            <option value="">📌 Tipo: Todos</option>
+            <option value="Reclamo">Reclamo</option>
+            <option value="Solicitud">Solicitud</option>
+          </select>
+
+          <select id="filterDacDia" class="form-select form-select-sm" style="max-width: 160px;" onchange="filtrarAtencionesDac()">
+            <option value="">📅 Día: Todos</option>
+            <option value="Lunes">Lunes</option>
+            <option value="Viernes">Viernes</option>
+          </select>
+
+          <select id="filterDacEstado" class="form-select form-select-sm" style="max-width: 170px;" onchange="filtrarAtencionesDac()">
+            <option value="">⚡ Estado: Todos</option>
+            <option value="Pendiente">Pendiente</option>
+            <option value="En Atención">En Atención</option>
+            <option value="Atendido">Atendido</option>
+            <option value="Cancelado">Cancelado</option>
+          </select>
+
+          <button type="button" class="btn btn-outline-secondary btn-sm" onclick="limpiarFiltrosDac()" title="Restablecer filtros">
+            <i class="bi bi-x-circle me-1"></i>Limpiar
+          </button>
+        </div>
+
+        <div class="text-secondary small fw-semibold">
+          Mostrando: <span id="lblDacMostrados" class="text-dark fw-bold">0</span> de <span id="lblDacTotalFiltrado" class="text-dark fw-bold">0</span> registros
+        </div>
+      </div>
+
+      <!-- Tabla Principal de Atenciones DAC -->
+      <div class="bg-white rounded-4 border shadow-xs overflow-hidden">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0" id="tablaAtencionesDac">
+            <thead class="table-light text-secondary" style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.04em;">
+              <tr>
+                <th scope="col" style="padding: 14px 18px; width: 150px;">Ticket / Registro</th>
+                <th scope="col" style="padding: 14px 18px;">Estudiante & Código</th>
+                <th scope="col" style="padding: 14px 18px; width: 170px;">Carrera</th>
+                <th scope="col" style="padding: 14px 18px; width: 120px;">Tipo</th>
+                <th scope="col" style="padding: 14px 18px; width: 190px;">Horario Cita</th>
+                <th scope="col" style="padding: 14px 18px;">Motivo / Asunto</th>
+                <th scope="col" style="padding: 14px 18px; width: 170px;">Sala Virtual</th>
+                <th scope="col" style="padding: 14px 18px; width: 130px;">Estado</th>
+                <th scope="col" class="text-end" style="padding: 14px 18px; width: 200px;">Acciones Docente</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyAtencionesDac">
+              <!-- Renderizado dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Estado Vacío DAC -->
+        <div id="dacEmptyState" class="p-5 text-center d-none">
+          <div class="d-inline-flex p-3 rounded-circle mb-3" style="background: #EFF6FF; color: #2563EB; font-size: 2rem;">
+            <i class="bi bi-calendar2-x"></i>
+          </div>
+          <h5 class="fw-bold text-dark mb-1">No hay llamados o reservas registradas</h5>
+          <p class="text-muted small mb-3" style="max-width: 480px; margin: 0 auto;">
+            Actualmente no se han recibido reservas de atención con los filtros seleccionados. Cuando los estudiantes completen el formulario en <code>dac-atiende.class-it.edu.pe</code>, aparecerán aquí automáticamente.
+          </p>
+          <a href="formulario_estudiantes/" target="_blank" class="btn btn-sm btn-primary px-3 py-2 rounded-3 shadow-xs">
+            <i class="bi bi-box-arrow-up-right me-1.5"></i>Abrir Formulario de Reserva Estudiantil
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ======================================================================== -->
+  <!-- MODAL: ASIGNAR SALA VIRTUAL Y CONVOCAR AL ESTUDIANTE (DAC) -->
+  <!-- ======================================================================== -->
+  <div class="modal fade" id="modalAsignarZoom" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 580px;">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+        <div class="modal-header border-bottom py-3 px-4" style="background-color: #F8FAFC;">
+          <div class="d-flex align-items-center gap-2">
+            <div class="p-2 rounded-3" style="background: #EFF6FF; color: #1D4ED8;">
+              <i class="bi bi-camera-video-fill fs-5"></i>
+            </div>
+            <div>
+              <h6 class="modal-title fw-bold text-dark mb-0">Asignar Sala Virtual / Zoom</h6>
+              <small class="text-muted" id="modalZoomTicketSubtitle">Ticket: ATN-2026-XXXX</small>
+            </div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body p-4">
+          <!-- Tarjeta de Datos del Alumno -->
+          <div class="p-3 mb-3 rounded-3" style="background: #F8FAFC; border: 1px solid #E2E8F0;">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <div class="fw-bold text-dark fs-6" id="modalZoomAlumnoNombre">Nombre del Alumno</div>
+                <div class="small text-muted font-monospace" id="modalZoomAlumnoCodigo">Cód: 0000000000</div>
+              </div>
+              <span class="badge" id="modalZoomBadgeCarrera" style="background: #DBEAFE; color: #1E40AF;">Ing. de Sistemas</span>
+            </div>
+            <div class="d-flex flex-wrap gap-2 small text-secondary pt-2 border-top">
+              <div><i class="bi bi-calendar3 me-1 text-primary"></i><span id="modalZoomHorario">Lunes • 19:00 - 19:30</span></div>
+              <div class="vr"></div>
+              <div><i class="bi bi-tag-fill me-1 text-warning"></i><span id="modalZoomTipo">Reclamo</span></div>
+              <div class="vr"></div>
+              <div><i class="bi bi-envelope-fill me-1 text-danger"></i><span id="modalZoomCorreo">alumno@ucvvirtual.edu.pe</span></div>
+            </div>
+          </div>
+
+          <!-- Input Enlace Sala Virtual -->
+          <div class="mb-3">
+            <label class="form-label fw-bold small text-dark mb-1">
+              Enlace de Sala Virtual (Zoom / Google Meet) <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-white border-end-0 text-primary">
+                <i class="bi bi-link-45deg fs-5"></i>
+              </span>
+              <input type="url" class="form-control border-start-0" id="txtModalZoomLink" placeholder="https://ucv-edu-pe.zoom.us/j/..." style="font-family: monospace; font-size: 0.88rem;">
+              <button class="btn btn-outline-secondary btn-sm" type="button" onclick="generarSalaZoomDemo()" title="Generar enlace sugerido Zoom UCV">
+                <i class="bi bi-magic me-1"></i>Generar
+              </button>
+            </div>
+            <div class="form-text small">Pegue el link de Zoom de la coordinación o la sala virtual donde atenderá al estudiante.</div>
+          </div>
+
+          <!-- Estado de la Cita -->
+          <div class="mb-3">
+            <label class="form-label fw-bold small text-dark mb-1">Estado de la Cita</label>
+            <select class="form-select form-select-sm" id="cboModalZoomEstado">
+              <option value="En Atención">En Atención (Sala asignada y convocado)</option>
+              <option value="Pendiente">Pendiente (A la espera de confirmación)</option>
+              <option value="Atendido">Atendido (Cita finalizada con éxito)</option>
+              <option value="Cancelado">Cancelado</option>
+            </select>
+          </div>
+
+          <!-- Observaciones / Indicaciones para el Alumno -->
+          <div class="mb-3">
+            <label class="form-label fw-bold small text-dark mb-1">Observaciones / Indicaciones para el Alumno</label>
+            <textarea class="form-control" id="txtModalZoomObs" rows="3" placeholder="Ej: Conectarse con 5 minutos de anticipación y tener a mano su constancia o captura de intranet..."></textarea>
+          </div>
+
+          <!-- Opciones Rápidas de Convocatoria -->
+          <div class="p-3 rounded-3" style="background: #F0FDF4; border: 1px solid #BBF7D0;">
+            <div class="fw-bold text-success small mb-2 d-flex align-items-center gap-1.5">
+              <i class="bi bi-send-check-fill"></i> Convocatoria Directa al Estudiante
+            </div>
+            <p class="small text-secondary mb-2">
+              Al guardar la sala, puede notificar al alumno de inmediato con el mensaje formal estructurado:
+            </p>
+            <div class="d-flex flex-wrap gap-2">
+              <button type="button" class="btn btn-sm btn-success fw-semibold d-inline-flex align-items-center gap-1.5" onclick="convocarPorWhatsAppModal()">
+                <i class="bi bi-whatsapp"></i> Convocar vía WhatsApp
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-danger fw-semibold d-inline-flex align-items-center gap-1.5" onclick="convocarPorCorreoModal()">
+                <i class="bi bi-envelope-fill"></i> Convocar vía Correo
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer border-top py-2.5 px-4 bg-light">
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-sm btn-primary px-4 fw-semibold" id="btnGuardarSalaZoom" onclick="guardarSalaZoomModal()">
+            <i class="bi bi-check2-circle me-1"></i> Guardar y Aplicar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================== -->
+  <!-- MODAL: DETALLE COMPLETO DE CITA DAC -->
+  <!-- ======================================================================== -->
+  <div class="modal fade" id="modalDetalleCitaDac" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 620px;">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+        <div class="modal-header border-bottom py-3 px-4" style="background-color: #F8FAFC;">
+          <div class="d-flex align-items-center gap-2">
+            <div class="p-2 rounded-3" style="background: #EFF6FF; color: #1D4ED8;">
+              <i class="bi bi-file-earmark-person-fill fs-5"></i>
+            </div>
+            <div>
+              <h6 class="modal-title fw-bold text-dark mb-0">Detalle Completo de la Reserva</h6>
+              <small class="text-muted" id="detDacTicketHeader">ATN-2026-XXXX</small>
+            </div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body p-4" id="detDacBody">
+          <!-- Contenido renderizado dinámicamente -->
+        </div>
+
+        <div class="modal-footer border-top py-2.5 px-4 bg-light d-flex justify-content-between">
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <div class="d-flex gap-2" id="detDacFooterActions">
+            <!-- Botones dinámicos -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ======================================================================== -->
   <!-- MODAL: GESTIÓN DE VINCULACIÓN / DESVINCULACIÓN WHATSAPP -->
@@ -1752,7 +2114,7 @@
         </div>
 
         <div class="modal-footer border-top py-2 px-4 bg-light">
-          <small class="text-muted me-auto"><i class="bi bi-check2-circle text-success me-1"></i>Padrón activo sincronizado con el SGA</small>
+          <small class="text-muted me-auto"><i class="bi bi-check2-circle text-success me-1"></i>Padrón oficial del SGA</small>
           <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cerrar</button>
         </div>
       </div>
@@ -1760,15 +2122,15 @@
   </div>
 
   <!-- ======================================================================== -->
-  <!-- MODAL: REGISTRAR / EDITAR TICKET PAU (CORREO) -->
+  <!-- MODAL: REGISTRAR / EDITAR TICKET PAE (CORREO) -->
   <!-- ======================================================================== -->
   <div class="modal fade" id="modalPauTicket" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width: 540px;">
       <div class="modal-content border-0 shadow-lg" style="border-radius: 14px;">
         <div class="modal-header py-2.5 px-3.5 bg-light">
           <div>
-            <h6 class="modal-title fw-bold text-dark mb-0" id="modalPauTitle">Registrar Solicitud PAU</h6>
-            <small class="text-muted" style="font-size: 0.75rem;">Módulo de Atención al Estudiante y Seguimiento de Correos</small>
+            <h6 class="modal-title fw-bold text-dark mb-0" id="modalPauTitle">Registrar Solicitud PAE</h6>
+            <small class="text-muted" style="font-size: 0.75rem;">PAE, Plataforma de Atención al Estudiante y Seguimiento de Solicitudes</small>
           </div>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
@@ -1781,14 +2143,14 @@
               <input type="text" id="pauFormRemitente" class="form-control form-control-sm" placeholder="Ej. PÉREZ GARCÍA JUAN" required>
             </div>
             <div class="col-5">
-              <label for="pauFormFecha" class="form-label small fw-bold text-dark mb-1">Fecha de Correo</label>
+              <label for="pauFormFecha" class="form-label small fw-bold text-dark mb-1">Fecha de Solicitud</label>
               <input type="text" id="pauFormFecha" class="form-control form-control-sm" placeholder="DD/MM/AAAA HH:MM">
             </div>
           </div>
 
           <div class="row g-2 mb-2.5">
             <div class="col-7">
-              <label for="pauFormCorreo" class="form-label small fw-bold text-dark mb-1">Correo de quien viene</label>
+              <label for="pauFormCorreo" class="form-label small fw-bold text-dark mb-1">Correo del Solicitante</label>
               <input type="email" id="pauFormCorreo" class="form-control form-control-sm" placeholder="ejemplo@ucvvirtual.edu.pe" required>
             </div>
             <div class="col-5">
@@ -1806,7 +2168,7 @@
           </div>
 
           <div class="mb-2.5">
-            <label for="pauFormAsunto" class="form-label small fw-bold text-dark mb-1">Asunto del Correo / Solicitud</label>
+            <label for="pauFormAsunto" class="form-label small fw-bold text-dark mb-1">Asunto de la Solicitud</label>
             <input type="text" id="pauFormAsunto" class="form-control form-control-sm" placeholder="Ej. REPORTE: NO APARECE HABILITADO EL CURSO..." required>
           </div>
 
@@ -1847,83 +2209,7 @@
     </div>
   </div>
 
-  <!-- ======================================================================== -->
-  <!-- MODAL: VINCULACIÓN GMAIL WEBHOOK & GOOGLE APPS SCRIPT -->
-  <!-- ======================================================================== -->
-  <div class="modal fade" id="modalPauWebhook" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 720px;">
-      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
-        <div class="modal-header border-bottom py-3 px-4 bg-light">
-          <div class="d-flex align-items-center gap-2.5">
-            <div class="p-2 rounded-circle bg-danger-subtle text-danger" style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;">
-              <i class="bi bi-envelope-arrow-up-fill fs-5"></i>
-            </div>
-            <div>
-              <h6 class="modal-title fw-bold text-dark mb-0">Vinculación de Gmail con Módulo PAU</h6>
-              <small class="text-muted" style="font-size: 0.74rem;">Sincronización de correos entrantes vía Google Apps Script Webhook</small>
-            </div>
-          </div>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body p-4">
-          <!-- Estado de la Vinculación -->
-          <div class="p-3 mb-3 rounded-3 border d-flex align-items-center justify-content-between flex-wrap gap-2" style="background-color: #F0FDF4; border-color: #BBF7D0 !important;">
-            <div class="d-flex align-items-center gap-2">
-              <span class="badge bg-success text-white py-1 px-2 fw-semibold">ACTIVO</span>
-              <span class="small fw-bold text-dark">Servicio de recepción Webhook listo para sincronizar</span>
-            </div>
-            <button type="button" class="btn btn-sm btn-outline-success fw-bold d-inline-flex align-items-center gap-1.5" id="btnTestWebhookEmail" onclick="sendTestIncomingEmail()">
-              <i class="bi bi-lightning-charge-fill"></i>
-              <span>Enviar Correo de Prueba</span>
-            </button>
-          </div>
 
-          <!-- URL del Webhook -->
-          <div class="mb-3">
-            <label class="form-label small fw-bold text-dark mb-1">
-              URL del Webhook (Recepción de correos institucionales):
-            </label>
-            <div class="input-group input-group-sm">
-              <input type="text" id="pauWebhookUrlDisplay" class="form-control font-monospace" readonly value="/api/pau">
-              <button class="btn btn-outline-secondary fw-semibold" type="button" onclick="copyWebhookUrl()">
-                <i class="bi bi-clipboard me-1"></i> Copiar URL
-              </button>
-            </div>
-            <small class="text-muted" style="font-size: 0.72rem;">Esta URL recibe las peticiones POST de los correos entrantes y las añade automáticamente a la bandeja.</small>
-          </div>
-
-          <!-- Código Google Apps Script -->
-          <div class="mb-2">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-              <label class="form-label small fw-bold text-dark mb-0">
-                Código para Google Apps Script (script.google.com):
-              </label>
-              <button type="button" class="btn btn-sm btn-link text-decoration-none p-0 fw-semibold text-primary" onclick="copyGoogleScriptCode()" style="font-size: 0.78rem;">
-                <i class="bi bi-clipboard me-1"></i> Copiar Código Completo
-              </button>
-            </div>
-            <textarea id="pauScriptCodeSnippet" class="form-control font-monospace text-secondary" rows="8" readonly style="font-size: 0.76rem; background-color: #F8FAFC; resize: vertical;"></textarea>
-          </div>
-
-          <div class="bg-light p-3 rounded border small text-secondary mt-3">
-            <div class="fw-bold text-dark mb-1"><i class="bi bi-info-circle-fill me-1 text-primary"></i>¿Cómo funciona la sincronización?</div>
-            <ol class="mb-0 ps-3" style="line-height: 1.5; font-size: 0.78rem;">
-              <li>Crea un proyecto en <a href="https://script.google.com" target="_blank" rel="noopener noreferrer" class="fw-semibold text-primary">script.google.com</a> con el correo de coordinación.</li>
-              <li>Pega el código anterior y programa un temporizador (activador) cada 5 o 10 minutos.</li>
-              <li>Cada correo nuevo de alumnos o docentes se añadirá de inmediato con estado <strong>"Sin Atención" (Amarillo)</strong>.</li>
-            </ol>
-          </div>
-        </div>
-        <div class="modal-footer border-top py-2.5 px-4 bg-light d-flex justify-content-between">
-          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
-          <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1.5 fw-semibold">
-            <i class="bi bi-envelope-fill"></i>
-            <span>Abrir Gmail Coordinación</span>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- ======================================================================== -->
   <!-- MODAL: AVISO CANAL ZOOM EN PREPARACIÓN -->
@@ -1965,7 +2251,7 @@
   <!-- Bootstrap JS -->
   <script src="lib/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-  <!-- Biblioteca Excel y Lógica de Seguimiento de Correos PAU -->
+  <!-- Biblioteca Excel y Lógica de Seguimiento de Correos PAE -->
   <script src="lib/xlsx/xlsx.full.min.js"></script>
   <script src="js/pau.js"></script>
 
@@ -2936,7 +3222,7 @@
     }
 
     // ========================================================================
-    // DERIVACIÓN A TICKET PAU (INTEGRACIÓN WHATSAPP -> BANDEJA CORREOS)
+    // DERIVACIÓN A TICKET PAE (INTEGRACIÓN WHATSAPP -> BANDEJA CORREOS)
     // ========================================================================
     function derivarATicketPAU() {
       if (!currentActiveJid) return;
@@ -3122,11 +3408,11 @@
       if (!chat) return;
 
       const details = obtenerDetallesContacto(chat);
-      const txt = `REPORTE DE ATENCIÓN WHATSAPP PAU\nTeléfono: ${details.telefono}\nNombre en WhatsApp: ${details.nombreWA || 'Sin nombre'}\nFecha de exportación: ${new Date().toLocaleString('es-PE')}\n----------------------------------------\n`;
+      const txt = `REPORTE DE ATENCIÓN WHATSAPP PAE\nTeléfono: ${details.telefono}\nNombre en WhatsApp: ${details.nombreWA || 'Sin nombre'}\nFecha de exportación: ${new Date().toLocaleString('es-PE')}\n----------------------------------------\n`;
       const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `PAU_WA_${chat.phone}_${Date.now()}.txt`;
+      a.download = `PAE_WA_${chat.phone}_${Date.now()}.txt`;
       a.click();
     }
 
@@ -3146,16 +3432,11 @@
     }
 
     // ========================================================================
-    // CONMUTACIÓN DE CANALES DEL MÓDULO PAU (WHATSAPP, CORREO, ZOOM)
+    // CONMUTACIÓN DE CANALES DEL MÓDULO PAE (WHATSAPP, CORREO, ZOOM DAC)
     // ========================================================================
     let currentCanalPau = 'whatsapp';
 
     function cambiarCanalPau(canal) {
-      if (canal === 'zoom') {
-        avisoZoomNoHabilitado();
-        return;
-      }
-
       currentCanalPau = canal;
 
       const cardWa = document.getElementById('tabChannelWhatsApp');
@@ -3164,35 +3445,43 @@
 
       const wsWa = document.getElementById('workspaceWhatsApp');
       const wsMail = document.getElementById('workspaceCorreo');
+      const wsZoom = document.getElementById('workspaceZoom');
 
       if (canal === 'whatsapp') {
         if (cardWa) cardWa.classList.add('active');
         if (cardMail) cardMail.classList.remove('active');
+        if (cardZoom) cardZoom.classList.remove('active');
         if (wsWa) wsWa.classList.remove('d-none');
         if (wsMail) wsMail.classList.add('d-none');
+        if (wsZoom) wsZoom.classList.add('d-none');
         try { history.replaceState(null, '', '#whatsapp'); } catch(e) {}
       } else if (canal === 'correo') {
         if (cardWa) cardWa.classList.remove('active');
         if (cardMail) cardMail.classList.add('active');
+        if (cardZoom) cardZoom.classList.remove('active');
         if (wsWa) wsWa.classList.add('d-none');
         if (wsMail) wsMail.classList.remove('d-none');
+        if (wsZoom) wsZoom.classList.add('d-none');
         try { history.replaceState(null, '', '#correo'); } catch(e) {}
 
         if (typeof loadPauData === 'function') {
           loadPauData();
         }
+      } else if (canal === 'zoom') {
+        if (cardWa) cardWa.classList.remove('active');
+        if (cardMail) cardMail.classList.remove('active');
+        if (cardZoom) cardZoom.classList.add('active');
+        if (wsWa) wsWa.classList.add('d-none');
+        if (wsMail) wsMail.classList.add('d-none');
+        if (wsZoom) wsZoom.classList.remove('d-none');
+        try { history.replaceState(null, '', '#zoom'); } catch(e) {}
+
+        cargarAtencionesDac();
       }
     }
 
     function avisoZoomNoHabilitado() {
-      const modalEl = document.getElementById('modalZoomAviso');
-      if (modalEl && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-        let m = bootstrap.Modal.getInstance(modalEl);
-        if (!m) m = new bootstrap.Modal(modalEl);
-        m.show();
-      } else {
-        alert("ℹ️ Atención Vía Zoom: Módulo en fase de preparación.\n\nPor el momento este canal se encuentra inhabilitado según las directrices de coordinación.");
-      }
+      cambiarCanalPau('zoom');
     }
 
     window.iniciarChatDesdePau = function(nombre, phone) {
@@ -3206,15 +3495,602 @@
       }
     };
 
+    // ========================================================================
+    // MÓDULO DOCENTE: GESTIÓN DE CITAS Y SALAS VIRTUALES DAC (ZOOM / MEET)
+    // ========================================================================
+    let listaAtencionesDac = [];
+    let reservaSeleccionadaDac = null;
+
+    async function cargarAtencionesDac(isManual = false) {
+      const icon = document.getElementById('iconSyncDac');
+      if (icon) {
+        icon.style.transition = 'transform 0.6s ease';
+        icon.style.transform = 'rotate(360deg)';
+      }
+
+      const endpoints = [
+        'api/atenciones_dac.php',
+        'api/atenciones_dac',
+        'https://dac-atiende.class-it.edu.pe/api_atenciones.php',
+        'data/atenciones.json',
+        'formulario_estudiantes/data/atenciones.json'
+      ];
+
+      let dataObtenida = null;
+      for (const ep of endpoints) {
+        try {
+          const resp = await fetch(ep + (ep.includes('?') ? '&' : '?') + '_t=' + Date.now());
+          if (resp.ok) {
+            const resJson = await resp.json();
+            const items = Array.isArray(resJson) ? resJson : (resJson.data || []);
+            if (Array.isArray(items) && items.length > 0) {
+              dataObtenida = items;
+              break;
+            } else if (dataObtenida === null && Array.isArray(items)) {
+              dataObtenida = items;
+            }
+          }
+        } catch(e) {}
+      }
+
+      if (icon) {
+        setTimeout(() => {
+          icon.style.transform = 'none';
+        }, 650);
+      }
+
+      if (dataObtenida !== null) {
+        listaAtencionesDac = dataObtenida;
+        actualizarKpisDac();
+        filtrarAtencionesDac();
+        actualizarContadorBadgeZoom();
+      }
+    }
+
+    function actualizarContadorBadgeZoom() {
+      const badge = document.getElementById('txtZoomBadgeCount');
+      if (badge) {
+        const count = listaAtencionesDac.length;
+        badge.textContent = count === 1 ? '1 Cita' : count + ' Citas';
+      }
+    }
+
+    function actualizarKpisDac() {
+      const total = listaAtencionesDac.length;
+      const pendientes = listaAtencionesDac.filter(r => (r.estado || 'Pendiente') === 'Pendiente').length;
+      const enAtencion = listaAtencionesDac.filter(r => (r.estado || '') === 'En Atención').length;
+      const atendidas  = listaAtencionesDac.filter(r => (r.estado || '') === 'Atendido').length;
+
+      const elTotal = document.getElementById('kpiDacTotal');
+      const elPend  = document.getElementById('kpiDacPendientes');
+      const elEnAtn = document.getElementById('kpiDacEnAtencion');
+      const elAtd   = document.getElementById('kpiDacAtendidas');
+
+      if (elTotal) elTotal.textContent = total;
+      if (elPend)  elPend.textContent  = pendientes;
+      if (elEnAtn) elEnAtn.textContent = enAtencion;
+      if (elAtd)   elAtd.textContent   = atendidas;
+    }
+
+    function filtrarAtencionesDac() {
+      const q = ((document.getElementById('filterDacSearch') || {}).value || '').trim().toLowerCase();
+      const car = (document.getElementById('filterDacCarrera') || {}).value || '';
+      const tip = (document.getElementById('filterDacTipo') || {}).value || '';
+      const dia = (document.getElementById('filterDacDia') || {}).value || '';
+      const est = (document.getElementById('filterDacEstado') || {}).value || '';
+
+      const filtrados = listaAtencionesDac.filter(item => {
+        if (q) {
+          const match = (
+            (item.nombres_completos || '').toLowerCase().includes(q) ||
+            (item.codigo_alumno || '').toLowerCase().includes(q) ||
+            (item.codigo_ticket || '').toLowerCase().includes(q) ||
+            (item.correo_institucional || '').toLowerCase().includes(q) ||
+            (item.detalle_motivo || '').toLowerCase().includes(q)
+          );
+          if (!match) return false;
+        }
+        if (car && (item.carrera_profesional || '') !== car) return false;
+        if (tip && (item.tipo_atencion || '') !== tip) return false;
+        if (dia && (item.dia_atencion || '') !== dia) return false;
+        if (est && (item.estado || 'Pendiente') !== est) return false;
+        return true;
+      });
+
+      const lblMostrados = document.getElementById('lblDacMostrados');
+      const lblTotal = document.getElementById('lblDacTotalFiltrado');
+      if (lblMostrados) lblMostrados.textContent = filtrados.length;
+      if (lblTotal) lblTotal.textContent = listaAtencionesDac.length;
+
+      renderizarTablaAtencionesDac(filtrados);
+    }
+
+    function limpiarFiltrosDac() {
+      const s = document.getElementById('filterDacSearch'); if (s) s.value = '';
+      const c = document.getElementById('filterDacCarrera'); if (c) c.value = '';
+      const t = document.getElementById('filterDacTipo'); if (t) t.value = '';
+      const d = document.getElementById('filterDacDia'); if (d) d.value = '';
+      const e = document.getElementById('filterDacEstado'); if (e) e.value = '';
+      filtrarAtencionesDac();
+    }
+
+    function renderizarTablaAtencionesDac(items) {
+      const tbody = document.getElementById('tbodyAtencionesDac');
+      const empty = document.getElementById('dacEmptyState');
+      if (!tbody) return;
+
+      if (!items || items.length === 0) {
+        tbody.innerHTML = '';
+        if (empty) empty.classList.remove('d-none');
+        return;
+      }
+
+      if (empty) empty.classList.add('d-none');
+
+      let html = '';
+      items.forEach(it => {
+        const idKey = it.codigo_ticket || it.id;
+        const nombre = escapeHtml(it.nombres_completos || 'Estudiante');
+        const codigo = escapeHtml(it.codigo_alumno || 'Sin código');
+        const carrera = it.carrera_profesional || 'Ingeniería';
+        const tipo = it.tipo_atencion || 'Solicitud';
+        const dia = escapeHtml(it.dia_atencion || 'Lunes / Jueves');
+        const horario = escapeHtml(it.horario_atencion || '7:00 PM - 9:00 PM');
+        const motivo = escapeHtml(it.detalle_motivo || 'Sin detalle especificado');
+        const estado = it.estado || 'Pendiente';
+        const linkZoom = (it.link_zoom || '').trim();
+        const fecha = escapeHtml(it.fecha_registro || '-');
+
+        // Badge Carrera
+        let carreraBadge = `<span class="badge" style="background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE;"><i class="bi bi-laptop me-1"></i>Sistemas</span>`;
+        if (carrera.includes('Industrial')) {
+          carreraBadge = `<span class="badge" style="background:#F5F3FF; color:#6D28D9; border:1px solid #DDD6FE;"><i class="bi bi-gear-fill me-1"></i>Industrial</span>`;
+        }
+
+        // Badge Tipo
+        let tipoBadge = `<span class="badge" style="background:#F0FDF4; color:#16A34A; border:1px solid #BBF7D0;"><i class="bi bi-check2-circle me-1"></i>Solicitud</span>`;
+        if (tipo === 'Reclamo') {
+          tipoBadge = `<span class="badge" style="background:#FEF2F2; color:#DC2626; border:1px solid #FECACA;"><i class="bi bi-exclamation-octagon-fill me-1"></i>Reclamo</span>`;
+        }
+
+        // Badge Estado con Selector
+        let estadoBadgeColor = 'background:#FEF3C7; color:#92400E; border:1px solid #FDE68A;';
+        if (estado === 'En Atención') {
+          estadoBadgeColor = 'background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE;';
+        } else if (estado === 'Atendido') {
+          estadoBadgeColor = 'background:#DCFCE7; color:#16A34A; border:1px solid #BBF7D0;';
+        } else if (estado === 'Cancelado') {
+          estadoBadgeColor = 'background:#F1F5F9; color:#64748B; border:1px solid #CBD5E1;';
+        }
+
+        // Sala Virtual
+        let zoomHtml = '';
+        if (linkZoom) {
+          zoomHtml = `
+            <div class="d-flex align-items-center gap-1">
+              <a href="${escapeHtml(linkZoom)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary py-1 px-2 fw-semibold d-inline-flex align-items-center gap-1 shadow-xs" style="font-size: 0.76rem; border-radius: 7px;" title="Unirse a la sala Zoom / Meet">
+                <i class="bi bi-camera-video-fill"></i><span>Entrar Zoom</span>
+              </a>
+              <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-1.5" onclick="copiarAlPortapapelesDac('${escapeHtml(linkZoom)}', 'Enlace Zoom')" title="Copiar enlace">
+                <i class="bi bi-clipboard"></i>
+              </button>
+            </div>
+          `;
+        } else {
+          zoomHtml = `
+            <span class="badge" style="background:#FFFBEB; color:#B45309; border:1px solid #FDE68A; font-size:0.75rem;">
+              <i class="bi bi-hourglass-split me-1"></i>Sin Sala
+            </span>
+          `;
+        }
+
+        html += `
+          <tr>
+            <td style="padding: 12px 18px;">
+              <div><strong class="text-primary font-monospace" style="font-size: 0.88rem;">#${escapeHtml(it.codigo_ticket || 'ATN-2026')}</strong></div>
+              <small class="text-muted" style="font-size: 0.74rem;"><i class="bi bi-calendar3 me-1"></i>${fecha}</small>
+            </td>
+            <td style="padding: 12px 18px;">
+              <div class="fw-bold text-dark" style="font-size: 0.88rem;">${nombre}</div>
+              <div class="d-flex align-items-center gap-1 mt-0.5">
+                <span class="badge bg-light text-secondary border font-monospace" style="font-size: 0.72rem;">${codigo}</span>
+                <button type="button" class="btn btn-link btn-xs p-0 text-muted" onclick="copiarAlPortapapelesDac('${codigo}', 'Código Alumno')" title="Copiar código">
+                  <i class="bi bi-clipboard" style="font-size: 0.75rem;"></i>
+                </button>
+              </div>
+            </td>
+            <td style="padding: 12px 18px;">${carreraBadge}</td>
+            <td style="padding: 12px 18px;">${tipoBadge}</td>
+            <td style="padding: 12px 18px;">
+              <div class="fw-semibold text-dark" style="font-size: 0.82rem;"><i class="bi bi-calendar-event me-1 text-primary"></i>${dia}</div>
+              <span class="badge bg-light text-dark border mt-0.5" style="font-size: 0.74rem;"><i class="bi bi-clock-fill text-warning me-1"></i>${horario}</span>
+            </td>
+            <td style="padding: 12px 18px; max-width: 220px;">
+              <div class="text-truncate text-secondary small" title="${motivo}">${motivo}</div>
+              <button type="button" class="btn btn-link btn-xs p-0 text-primary fw-semibold" style="font-size: 0.74rem;" onclick="verDetalleCitaDac('${idKey}')">
+                Ver detalle
+              </button>
+            </td>
+            <td style="padding: 12px 18px;">${zoomHtml}</td>
+            <td style="padding: 12px 18px;">
+              <div class="dropdown">
+                <button class="btn btn-sm dropdown-toggle py-0.5 px-2 fw-semibold" type="button" data-bs-toggle="dropdown" style="${estadoBadgeColor}; font-size: 0.76rem; border-radius: 6px;">
+                  ${escapeHtml(estado)}
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="font-size: 0.82rem;">
+                  <li><a class="dropdown-item py-1" href="javascript:void(0)" onclick="cambiarEstadoDacRapido('${idKey}', 'Pendiente')"><i class="bi bi-hourglass me-2 text-warning"></i>Pendiente</a></li>
+                  <li><a class="dropdown-item py-1" href="javascript:void(0)" onclick="cambiarEstadoDacRapido('${idKey}', 'En Atención')"><i class="bi bi-camera-video me-2 text-primary"></i>En Atención</a></li>
+                  <li><a class="dropdown-item py-1" href="javascript:void(0)" onclick="cambiarEstadoDacRapido('${idKey}', 'Atendido')"><i class="bi bi-check-circle me-2 text-success"></i>Atendido</a></li>
+                  <li><a class="dropdown-item py-1" href="javascript:void(0)" onclick="cambiarEstadoDacRapido('${idKey}', 'Cancelado')"><i class="bi bi-x-circle me-2 text-danger"></i>Cancelado</a></li>
+                </ul>
+              </div>
+            </td>
+            <td class="text-end" style="padding: 12px 18px;">
+              <div class="d-inline-flex align-items-center gap-1">
+                <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2 shadow-xs" onclick="abrirModalAsignarZoom('${idKey}')" title="Asignar o editar sala Zoom / Convocar" style="border-radius: 7px; font-size: 0.78rem;">
+                  <i class="bi bi-camera-video-fill me-1"></i>Convocar
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-success py-1 px-2 shadow-xs" onclick="contactarEstudianteWhatsAppDac('${idKey}')" title="Contactar por WhatsApp" style="border-radius: 7px;">
+                  <i class="bi bi-whatsapp"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger py-1 px-2 shadow-xs" onclick="contactarEstudianteCorreoDac('${idKey}')" title="Enviar Correo Institucional" style="border-radius: 7px;">
+                  <i class="bi bi-envelope-fill"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-1.5" onclick="eliminarCitaDac('${idKey}')" title="Eliminar cita" style="border-radius: 7px;">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    function abrirModalAsignarZoom(ticketOrId) {
+      const it = listaAtencionesDac.find(r => r.codigo_ticket === ticketOrId || String(r.id) === String(ticketOrId));
+      if (!it) {
+        alert('No se encontró el registro seleccionado');
+        return;
+      }
+      reservaSeleccionadaDac = it;
+
+      document.getElementById('modalZoomTicketSubtitle').textContent = 'Ticket: ' + (it.codigo_ticket || 'ATN-2026');
+      document.getElementById('modalZoomAlumnoNombre').textContent = it.nombres_completos || 'Estudiante';
+      document.getElementById('modalZoomAlumnoCodigo').textContent = 'Cód: ' + (it.codigo_alumno || '-');
+      document.getElementById('modalZoomBadgeCarrera').textContent = it.carrera_profesional || 'Ingeniería';
+      document.getElementById('modalZoomHorario').textContent = (it.dia_atencion || 'Lunes / Jueves') + ' • ' + (it.horario_atencion || '7:00 PM - 9:00 PM');
+      document.getElementById('modalZoomTipo').textContent = it.tipo_atencion || 'Solicitud';
+      document.getElementById('modalZoomCorreo').textContent = it.correo_institucional || 'Sin correo registrado';
+
+      document.getElementById('txtModalZoomLink').value = it.link_zoom || '';
+      document.getElementById('cboModalZoomEstado').value = it.estado || 'En Atención';
+      document.getElementById('txtModalZoomObs').value = it.observaciones_coordinacion || '';
+
+      const modalEl = document.getElementById('modalAsignarZoom');
+      if (modalEl && typeof bootstrap !== 'undefined') {
+        let m = bootstrap.Modal.getInstance(modalEl);
+        if (!m) m = new bootstrap.Modal(modalEl);
+        m.show();
+      }
+    }
+
+    function generarSalaZoomDemo() {
+      const roomNum = Math.floor(1000000000 + Math.random() * 9000000000);
+      const pwd = Math.floor(1000 + Math.random() * 9000);
+      const link = `https://ucv-edu-pe.zoom.us/j/${roomNum}?pwd=dac${pwd}`;
+      document.getElementById('txtModalZoomLink').value = link;
+    }
+
+    async function guardarSalaZoomModal() {
+      if (!reservaSeleccionadaDac) return;
+      const link = (document.getElementById('txtModalZoomLink').value || '').trim();
+      const estado = document.getElementById('cboModalZoomEstado').value;
+      const obs = (document.getElementById('txtModalZoomObs').value || '').trim();
+
+      const payload = {
+        action: 'assign_zoom',
+        id: reservaSeleccionadaDac.id || 0,
+        codigo_ticket: reservaSeleccionadaDac.codigo_ticket || '',
+        link_zoom: link,
+        estado: estado,
+        observaciones_coordinacion: obs
+      };
+
+      const endpoints = ['api/atenciones_dac.php', 'api/atenciones_dac', 'https://dac-atiende.class-it.edu.pe/api_atenciones.php'];
+      let guardado = false;
+      for (const ep of endpoints) {
+        try {
+          const resp = await fetch(ep, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (resp.ok) {
+            guardado = true;
+            break;
+          }
+        } catch(e) {}
+      }
+
+      // Actualizar localmente de inmediato
+      reservaSeleccionadaDac.link_zoom = link;
+      reservaSeleccionadaDac.estado = estado;
+      reservaSeleccionadaDac.observaciones_coordinacion = obs;
+
+      const modalEl = document.getElementById('modalAsignarZoom');
+      if (modalEl && typeof bootstrap !== 'undefined') {
+        const m = bootstrap.Modal.getInstance(modalEl);
+        if (m) m.hide();
+      }
+
+      alert('✅ Sala virtual y estado asignados con éxito al estudiante.');
+      cargarAtencionesDac();
+    }
+
+    function generarMensajeConvocatoria(it, link, obs) {
+      const salaText = link ? link : 'Se le compartirá 10 minutos antes del inicio.';
+      const obsText = obs ? `\n📌 Indicaciones: ${obs}` : '';
+      return `*COORDINACIÓN ACADÉMICA DAC (FIA UCV)*\n\nEstimado(a) estudiante *${it.nombres_completos}* (Cód: ${it.codigo_alumno}):\nNos comunicamos en respuesta a su reserva de atención *${it.codigo_ticket}* (${it.tipo_atencion}) programada para el día *${it.dia_atencion}* en el bloque de *${it.horario_atencion}*.\n\n🎥 *SALA VIRTUAL DE ATENCIÓN (ZOOM / MEET):*\n${salaText}${obsText}\n\nFavor de presentarse puntualmente con su intranet abierta.\nAtentamente,\nDirección de Asuntos Académicos - FIA UCV`;
+    }
+
+    function convocarPorWhatsAppModal() {
+      if (!reservaSeleccionadaDac) return;
+      const it = reservaSeleccionadaDac;
+      const link = (document.getElementById('txtModalZoomLink').value || '').trim();
+      const obs = (document.getElementById('txtModalZoomObs').value || '').trim();
+      const msg = generarMensajeConvocatoria(it, link, obs);
+
+      let phone = (it.telefono || it.whatsapp || '').replace(/\D/g, '');
+      if (phone && phone.length === 9) phone = '51' + phone;
+
+      if (phone) {
+        window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(msg)}`, '_blank');
+      } else {
+        const inputPhone = prompt('El alumno no tiene teléfono registrado. Ingrese el número (9 dígitos) o presione OK para copiar el mensaje:', '9');
+        if (inputPhone) {
+          let clean = inputPhone.replace(/\D/g, '');
+          if (clean.length === 9) clean = '51' + clean;
+          window.open(`https://api.whatsapp.com/send?phone=${clean}&text=${encodeURIComponent(msg)}`, '_blank');
+        } else {
+          copiarAlPortapapelesDac(msg, 'Mensaje de Convocatoria');
+        }
+      }
+    }
+
+    function convocarPorCorreoModal() {
+      if (!reservaSeleccionadaDac) return;
+      const it = reservaSeleccionadaDac;
+      const link = (document.getElementById('txtModalZoomLink').value || '').trim();
+      const obs = (document.getElementById('txtModalZoomObs').value || '').trim();
+      const subject = `[DAC FIA UCV] Convocatoria a Sala Virtual de Atención - Ticket ${it.codigo_ticket}`;
+      const msg = generarMensajeConvocatoria(it, link, obs).replace(/\*/g, '');
+      const to = it.correo_institucional || '';
+      window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(msg)}`;
+    }
+
+    function contactarEstudianteWhatsAppDac(ticketOrId) {
+      const it = listaAtencionesDac.find(r => r.codigo_ticket === ticketOrId || String(r.id) === String(ticketOrId));
+      if (!it) return;
+      const msg = generarMensajeConvocatoria(it, it.link_zoom || '', it.observaciones_coordinacion || '');
+      let phone = (it.telefono || it.whatsapp || '').replace(/\D/g, '');
+      if (phone && phone.length === 9) phone = '51' + phone;
+
+      if (phone) {
+        window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(msg)}`, '_blank');
+      } else {
+        const num = prompt(`Ingrese número de WhatsApp del estudiante ${it.nombres_completos}:`, '9');
+        if (num) {
+          let clean = num.replace(/\D/g, '');
+          if (clean.length === 9) clean = '51' + clean;
+          window.open(`https://api.whatsapp.com/send?phone=${clean}&text=${encodeURIComponent(msg)}`, '_blank');
+        }
+      }
+    }
+
+    function contactarEstudianteCorreoDac(ticketOrId) {
+      const it = listaAtencionesDac.find(r => r.codigo_ticket === ticketOrId || String(r.id) === String(ticketOrId));
+      if (!it) return;
+      const subject = `[DAC FIA UCV] Convocatoria a Sala Virtual - Ticket ${it.codigo_ticket}`;
+      const msg = generarMensajeConvocatoria(it, it.link_zoom || '', it.observaciones_coordinacion || '').replace(/\*/g, '');
+      const to = it.correo_institucional || '';
+      window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(msg)}`;
+    }
+
+    async function cambiarEstadoDacRapido(ticketOrId, nuevoEstado) {
+      const it = listaAtencionesDac.find(r => r.codigo_ticket === ticketOrId || String(r.id) === String(ticketOrId));
+      if (!it) return;
+
+      const payload = {
+        action: 'update_status',
+        id: it.id || 0,
+        codigo_ticket: it.codigo_ticket || '',
+        estado: nuevoEstado
+      };
+
+      for (const ep of ['api/atenciones_dac.php', 'api/atenciones_dac', 'https://dac-atiende.class-it.edu.pe/api_atenciones.php']) {
+        try {
+          const resp = await fetch(ep, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (resp.ok) break;
+        } catch(e) {}
+      }
+
+      it.estado = nuevoEstado;
+      actualizarKpisDac();
+      filtrarAtencionesDac();
+    }
+
+    async function eliminarCitaDac(ticketOrId) {
+      const it = listaAtencionesDac.find(r => r.codigo_ticket === ticketOrId || String(r.id) === String(ticketOrId));
+      if (!it) return;
+
+      if (!confirm(`¿Está seguro de eliminar la cita con ticket ${it.codigo_ticket} del estudiante ${it.nombres_completos}?`)) {
+        return;
+      }
+
+      const payload = {
+        action: 'delete',
+        id: it.id || 0,
+        codigo_ticket: it.codigo_ticket || ''
+      };
+
+      for (const ep of ['api/atenciones_dac.php', 'api/atenciones_dac', 'https://dac-atiende.class-it.edu.pe/api_atenciones.php']) {
+        try {
+          const resp = await fetch(ep, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (resp.ok) break;
+        } catch(e) {}
+      }
+
+      listaAtencionesDac = listaAtencionesDac.filter(r => r !== it);
+      actualizarKpisDac();
+      filtrarAtencionesDac();
+      actualizarContadorBadgeZoom();
+    }
+
+    function verDetalleCitaDac(ticketOrId) {
+      const it = listaAtencionesDac.find(r => r.codigo_ticket === ticketOrId || String(r.id) === String(ticketOrId));
+      if (!it) return;
+
+      const header = document.getElementById('detDacTicketHeader');
+      if (header) header.textContent = 'Ticket: ' + (it.codigo_ticket || 'ATN-2026');
+
+      const body = document.getElementById('detDacBody');
+      if (body) {
+        body.innerHTML = `
+          <div class="p-3 rounded-3 mb-3" style="background:#F8FAFC; border:1px solid #E2E8F0;">
+            <div class="row g-2">
+              <div class="col-sm-6">
+                <small class="text-muted d-block">Estudiante:</small>
+                <strong class="text-dark">${escapeHtml(it.nombres_completos || '-')}</strong>
+              </div>
+              <div class="col-sm-6">
+                <small class="text-muted d-block">Código de Alumno:</small>
+                <code class="fs-6">${escapeHtml(it.codigo_alumno || '-')}</code>
+              </div>
+              <div class="col-sm-6">
+                <small class="text-muted d-block">Carrera:</small>
+                <span class="fw-semibold text-primary">${escapeHtml(it.carrera_profesional || '-')}</span>
+              </div>
+              <div class="col-sm-6">
+                <small class="text-muted d-block">Tipo de Trámite:</small>
+                <span class="badge ${it.tipo_atencion === 'Reclamo' ? 'bg-danger' : 'bg-success'}">${escapeHtml(it.tipo_atencion || '-')}</span>
+              </div>
+              <div class="col-sm-6">
+                <small class="text-muted d-block">Correo Institucional:</small>
+                <a href="mailto:${escapeHtml(it.correo_institucional)}" class="small">${escapeHtml(it.correo_institucional || '-')}</a>
+              </div>
+              <div class="col-sm-6">
+                <small class="text-muted d-block">Horario Reservado:</small>
+                <strong>${escapeHtml(it.dia_atencion || '-')} • ${escapeHtml(it.horario_atencion || '-')}</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <h6 class="fw-bold text-dark small mb-1"><i class="bi bi-chat-text-fill text-primary me-1.5"></i>Detalle o Motivo de la Solicitud:</h6>
+            <div class="p-3 bg-light rounded-3 border text-secondary small" style="white-space: pre-wrap; line-height: 1.6;">
+              ${escapeHtml(it.detalle_motivo || 'Sin detalle')}
+            </div>
+          </div>
+
+          <div class="p-3 rounded-3 mb-2" style="background:#EFF6FF; border:1px solid #BFDBFE;">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="small fw-bold text-primary"><i class="bi bi-camera-video me-1"></i>Sala Virtual Asignada:</span>
+              <span class="badge ${it.link_zoom ? 'bg-primary' : 'bg-warning text-dark'}">${it.link_zoom ? 'Asignada' : 'Sin Asignar'}</span>
+            </div>
+            ${it.link_zoom ? `<a href="${escapeHtml(it.link_zoom)}" target="_blank" class="font-monospace small text-break">${escapeHtml(it.link_zoom)}</a>` : '<div class="small text-muted">Aún no se ha asignado enlace de Zoom a este ticket.</div>'}
+            ${it.observaciones_coordinacion ? `<div class="mt-2 pt-2 border-top small text-dark"><strong>Indicaciones DAC:</strong> ${escapeHtml(it.observaciones_coordinacion)}</div>` : ''}
+          </div>
+        `;
+      }
+
+      const actions = document.getElementById('detDacFooterActions');
+      if (actions) {
+        actions.innerHTML = `
+          <button type="button" class="btn btn-sm btn-primary" onclick="abrirModalAsignarZoom('${it.codigo_ticket || it.id}')">
+            <i class="bi bi-camera-video-fill me-1"></i>Asignar / Editar Sala
+          </button>
+        `;
+      }
+
+      const modalEl = document.getElementById('modalDetalleCitaDac');
+      if (modalEl && typeof bootstrap !== 'undefined') {
+        let m = bootstrap.Modal.getInstance(modalEl);
+        if (!m) m = new bootstrap.Modal(modalEl);
+        m.show();
+      }
+    }
+
+    function copiarAlPortapapelesDac(texto, etiqueta) {
+      if (!texto) return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(texto).then(() => {
+          alert(`📋 ${etiqueta || 'Texto'} copiado al portapapeles.`);
+        }).catch(() => {
+          prompt('Copie con Ctrl+C:', texto);
+        });
+      } else {
+        prompt('Copie con Ctrl+C:', texto);
+      }
+    }
+
+    function exportarAtencionesDacCsv() {
+      if (!listaAtencionesDac || listaAtencionesDac.length === 0) {
+        alert('No hay citas registradas para exportar.');
+        return;
+      }
+
+      let csv = '\uFEFFTicket,Fecha,Estudiante,Codigo,Carrera,Tipo,Dia,Horario,Estado,Sala_Zoom,Motivo\r\n';
+      listaAtencionesDac.forEach(r => {
+        const row = [
+          `"${(r.codigo_ticket || '').replace(/"/g, '""')}"`,
+          `"${(r.fecha_registro || '').replace(/"/g, '""')}"`,
+          `"${(r.nombres_completos || '').replace(/"/g, '""')}"`,
+          `"${(r.codigo_alumno || '').replace(/"/g, '""')}"`,
+          `"${(r.carrera_profesional || '').replace(/"/g, '""')}"`,
+          `"${(r.tipo_atencion || '').replace(/"/g, '""')}"`,
+          `"${(r.dia_atencion || '').replace(/"/g, '""')}"`,
+          `"${(r.horario_atencion || '').replace(/"/g, '""')}"`,
+          `"${(r.estado || 'Pendiente').replace(/"/g, '""')}"`,
+          `"${(r.link_zoom || '').replace(/"/g, '""')}"`,
+          `"${(r.detalle_motivo || '').replace(/"/g, '""')}"`
+        ];
+        csv += row.join(',') + '\r\n';
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `Reporte_DAC_Atenciones_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
     // Inicializar canal según hash o parámetro URL
     window.addEventListener('DOMContentLoaded', () => {
       const hash = window.location.hash;
       const urlParams = new URLSearchParams(window.location.search);
-      if (hash === '#correo' || urlParams.get('canal') === 'correo') {
+      if (hash === '#zoom' || urlParams.get('canal') === 'zoom') {
+        cambiarCanalPau('zoom');
+      } else if (hash === '#correo' || urlParams.get('canal') === 'correo') {
         cambiarCanalPau('correo');
       } else {
         cambiarCanalPau('whatsapp');
       }
+
+      // Cargar citas DAC en segundo plano para actualizar contador badge
+      cargarAtencionesDac();
     });
   </script>
 </body>

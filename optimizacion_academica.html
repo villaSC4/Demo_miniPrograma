@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nueva Optimización de Programación Académica 2026 - II — SGA • UCV Virtual</title>
+  <meta name="description" content="Módulo 1.4: Optimización de la Programación Académica y Evolución Histórica de Matrícula — Facultad de Ingeniería y Arquitectura">
+
+  <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS & Icons -->
+  <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="lib/icons/bootstrap-icons.min.css">
+
+  <!-- Chart.js para los Dashboards Oficiales -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Estilos Institucionales y Suite de Dashboards -->
+  <link rel="stylesheet" href="css/custom.css?v=4.0">
+  <link rel="stylesheet" href="css/dashboard_optimizacion.css">
+
+  <!-- Favicon UCV Virtual -->
+  <link rel="icon" type="image/png" href="img/logo-ucv-virtual.png">
+
+  <!-- Auth Gate -->
+  <script>
+    if (sessionStorage.getItem('sga_logged_in') !== 'true') {
+      window.location.replace('login.html');
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #F8FAFC;
+      color: #0F172A;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-navbar {
+      background: linear-gradient(135deg, #071930 0%, #0E2545 60%, #163B6B 100%);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(0, 26, 58, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 1020;
+    }
+
+    .brand-logo-img {
+      height: 38px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .navbar-divider {
+      width: 1px;
+      height: 32px;
+      background: rgba(255, 255, 255, 0.25);
+      margin: 0 1rem;
+    }
+
+    .empty-state-card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+      padding: 3.5rem 2rem;
+      text-align: center;
+      max-width: 760px;
+      margin: 3rem auto;
+    }
+
+    .empty-state-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 24px;
+      background: #FEF2F2;
+      color: #BE1E2D;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      border: 1.5px solid #FECDD3;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       1. BARRA SUPERIOR INSTITUCIONAL
+       ======================================================================== -->
+  <header class="app-navbar py-2 px-3">
+    <div class="container-fluid px-lg-4 d-flex align-items-center justify-content-between flex-wrap gap-2">
+      <!-- Marca y Logos -->
+      <div class="d-flex align-items-center">
+        <a href="selector.html" class="d-flex align-items-center text-decoration-none">
+          <img src="img/logo-ucv-virtual.png" alt="UCV Virtual" class="brand-logo-img">
+        </a>
+        <div class="navbar-divider d-none d-sm-block"></div>
+        <div>
+          <span class="badge bg-danger text-uppercase fw-bold px-2 py-0.5 me-1" style="font-size: 0.68rem;">Módulo 1.4</span>
+          <span class="fw-bold text-white fs-6 d-block d-sm-inline">Nueva Optimización de Programación Académica 2026 - II</span>
+          <span class="text-white-50 d-none d-md-inline small ms-2">• Pregrado a Distancia SUBE</span>
+        </div>
+      </div>
+
+      <!-- DAC Selector & Controles Rápidos -->
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <span class="badge px-3 py-1.5 rounded-pill fw-bold border" id="badgeActiveDac" style="font-size: 0.76rem; background: rgba(255, 255, 255, 0.15); color: #fff; border-color: rgba(255, 255, 255, 0.25);">
+          <i class="bi bi-cpu text-info me-1" id="iconActiveDac"></i>
+          <span id="textActiveDac">DAC Sistemas</span>
+        </span>
+
+        <a href="selector.html" class="btn btn-sm btn-light fw-bold px-3 py-1.5 rounded-pill shadow-xs" title="Volver al Selector General">
+          <i class="bi bi-arrow-left me-1"></i>
+          <span>Selector de Módulos</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       2. CONTENEDOR PRINCIPAL: SEGÚN LA ESCUELA ACTIVA
+       ======================================================================== -->
+  <main class="container-fluid px-lg-4 py-4 flex-grow-1" id="mainContainer">
+
+    <!-- BANNER INFORMATIVO PARA INDUSTRIAL (CUANDO ESTÁ EN 0 POR AUSENCIA DE REPORTES EXCELS) -->
+    <div id="bannerAvisoIndustrial" class="alert mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2 border-0 shadow-xs" style="display: none; background: #ECFDF5; border-left: 4px solid #059669 !important; border-radius: 12px; padding: 0.9rem 1.25rem;">
+      <div class="d-flex align-items-center gap-2.5">
+        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background: #D1FAE5; color: #059669; font-size: 1.15rem;">
+          <i class="bi bi-info-circle-fill"></i>
+        </div>
+        <div>
+          <div class="fw-bold text-dark" style="font-size: 0.88rem;">DAC Ingeniería Industrial — Sin datos en reportes actuales</div>
+          <div class="text-muted" style="font-size: 0.78rem;">
+            Los reportes TRILCE y DRA procesados contienen únicamente grupos de Ingeniería de Sistemas. Todas las métricas y gráficos de Industrial se muestran en <strong>0</strong>.
+          </div>
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <a href="rendimiento_industrial.html" class="btn btn-sm btn-success rounded-pill px-3 fw-bold shadow-xs" title="Ver los 3 dashboards oficiales de Rendimiento Académico UCV de Industrial">
+          <i class="bi bi-mortarboard-fill me-1"></i> Ver Rendimiento Académico UCV (Industrial)
+        </a>
+        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-semibold" onclick="cambiarAEscuela('sistemas')" style="font-size: 0.78rem;">
+          <i class="bi bi-cpu me-1"></i> Ver data en Sistemas
+        </button>
+      </div>
+    </div>
+
+    <!-- SUITE EJECUTIVA COMPLETA DE OPTIMIZACIÓN Y EVOLUCIÓN (SIEMPRE VISIBLE) -->
+    <section class="dash-suite-wrapper" id="dashboardOptimizacionSuiteContainer">
+
+      <!-- CABECERA PRINCIPAL CON NAVEGACIÓN Y SELECTOR -->
+      <div class="dash-suite-header">
+        <div class="d-flex align-items-center gap-3">
+          <div class="ucv-virtual-pill-badge">
+            <img src="img/logo-ucv-virtual.png" alt="UCV Virtual">
+            <span class="pill-text">UCV Virtual</span>
+          </div>
+          <div class="dash-suite-title-block">
+            <h2 id="suiteMainTitle">Optimización de la Programación Académica 2026-II</h2>
+            <p id="suiteSubTitle">Pregrado a Distancia | Cursos de Especialidad (Teoría) • Escuela de Ingeniería de Sistemas</p>
+          </div>
+        </div>
+
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <!-- Selector de Pestañas del Dashboard -->
+            <div class="dash-exec-nav-pills me-1">
+              <button type="button" class="dash-exec-tab-btn active" data-target-tab="tab-optimizacion">
+                <i class="bi bi-bar-chart-fill"></i> Programación Académica
+              </button>
+              <button type="button" class="dash-exec-tab-btn" data-target-tab="tab-historico">
+                <i class="bi bi-graph-up-arrow"></i> Data Histórica (Evolución)
+              </button>
+            </div>
+
+            <!-- Selector de Programa / Escuela (Sistemas o Consolidado) -->
+            <div class="input-group input-group-sm" style="width: auto;">
+              <span class="input-group-text bg-light fw-bold text-dark border-end-0" style="font-size: 0.78rem;">
+                <i class="bi bi-funnel-fill text-primary me-1"></i> Programa:
+              </span>
+              <select id="selectOptEscuela" class="form-select form-select-sm fw-bold border-start-0" style="min-width: 220px; font-size: 0.8rem; background-color: #F8FAFC;">
+                <option value="sistemas" selected>Ingeniería de Sistemas (Oficial con Data)</option>
+                <option value="industrial">Ingeniería Industrial (Valores en 0)</option>
+                <option value="consolidado">Consolidado General (FIA)</option>
+              </select>
+            </div>
+
+            <!-- Botones de Exportación para la Exposición -->
+            <div class="btn-group btn-group-sm">
+              <button type="button" class="btn btn-export-media btn-export-jpg" id="btnExportDashJpg" title="Descargar captura gráfica en JPG para la exposición">
+                <i class="bi bi-file-earmark-image"></i> JPG
+              </button>
+              <button type="button" class="btn btn-export-media btn-export-pdf" id="btnExportDashPdf" title="Imprimir o exportar en PDF">
+                <i class="bi bi-file-earmark-pdf"></i> PDF
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PESTAÑA 1: PROGRAMACIÓN ACADÉMICA (OPTIMIZACIÓN DE TEORÍA) -->
+        <div class="dash-exec-tab-pane active show" id="tab-optimizacion">
+          
+          <!-- 5 TARJETAS DE KPIS PRINCIPALES -->
+          <div class="dash-kpis-grid">
+            <div class="dash-kpi-card kpi-blue">
+              <div class="kpi-num" id="kpiOptSecciones">14</div>
+              <div class="kpi-lbl">Secciones de teoría</div>
+            </div>
+            <div class="dash-kpi-card kpi-blue">
+              <div class="kpi-num" id="kpiOptMatriculas">689</div>
+              <div class="kpi-lbl">Matrículas en teoría</div>
+            </div>
+            <div class="dash-kpi-card kpi-teal">
+              <div class="kpi-num" id="kpiOptPromedio">49.2</div>
+              <div class="kpi-lbl">Promedio por sección</div>
+            </div>
+            <div class="dash-kpi-card kpi-green-opt">
+              <div class="kpi-num" id="kpiOptPctOptimas">85.7%</div>
+              <div class="kpi-lbl">% Secciones óptimas (41+)</div>
+            </div>
+            <div class="dash-kpi-card kpi-orange-sub">
+              <div class="kpi-num" id="kpiOptPctSub41">14.3%</div>
+              <div class="kpi-lbl">% Secciones &lt; 41</div>
+            </div>
+          </div>
+
+          <!-- FILA DE DISTRIBUCIÓN Y TABLA DE ASIGNACIÓN -->
+          <div class="row g-3">
+            <!-- Columna Izquierda: Histograma de Distribución de Secciones -->
+            <div class="col-xl-6 col-lg-6 col-12">
+              <div class="dash-subcard shadow-xs">
+                <div class="dash-subcard-header">
+                  <h3>Distribución de secciones</h3>
+                  <span class="badge bg-light text-muted border" style="font-size: 0.72rem;">Rangos de alumnos</span>
+                </div>
+                <div class="dash-chart-canvas-wrap">
+                  <canvas id="chartDistribucionSecciones"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- Columna Derecha: Asignación por Ciclo / Nivel -->
+            <div class="col-xl-6 col-lg-6 col-12">
+              <div class="dash-subcard shadow-xs">
+                <div class="dash-subcard-header navy-bg">
+                  <h3>Asignación por ciclo / Nivel</h3>
+                  <span class="badge bg-white text-dark fw-bold" style="font-size: 0.72rem;">Semestre 2026-II</span>
+                </div>
+                <div class="table-responsive flex-grow-1" style="max-height: 330px;">
+                  <table class="table table-hover align-middle table-asignacion-ciclo">
+                    <thead class="sticky-top">
+                      <tr>
+                        <th class="ps-3">Ciclo / Nivel</th>
+                        <th class="text-center">Secciones de teoría</th>
+                        <th class="text-center">Matrículas en teoría</th>
+                        <th class="text-center">Promedio</th>
+                        <th class="text-center">% Óptimas (41+)</th>
+                        <th class="text-center pe-3">Observación</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbodyAsignacionCiclo">
+                      <!-- Dinámico -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- PESTAÑA 2: DATA HISTÓRICA (EVOLUCIÓN DE MATRÍCULA 2024 - 2026) -->
+        <div class="dash-exec-tab-pane" id="tab-historico" style="display: none;">
+          <div class="text-center mb-3">
+            <h3 class="fw-bold mb-1" style="font-family: 'Outfit', sans-serif; color: #002855;">
+              Evolución de Matrícula (2024 - 2026)
+            </h3>
+            <span class="badge-programa-tag" id="badgeProgramaHistorico" style="background-color: #1D4ED8;">
+              INGENIERÍA DE SISTEMAS
+            </span>
+          </div>
+
+          <!-- Gráfico de Tendencia de Crecimiento -->
+          <div class="dash-subcard shadow-xs mb-3">
+            <div class="dash-subcard-header">
+              <h3>Tendencia de Crecimiento</h3>
+              <span class="text-muted small fw-semibold">Crecimiento total: <strong class="text-success" id="histCrecimientoPct">+51.4%</strong></span>
+            </div>
+            <div class="dash-chart-canvas-wrap" style="height: 340px;">
+              <canvas id="chartTendenciaCrecimiento"></canvas>
+            </div>
+          </div>
+
+          <!-- Tarjetas de Información Demográfica e Ingresantes Oficiales -->
+          <div class="row g-3">
+            <div class="col-md-3 col-6">
+              <div class="p-3 bg-light rounded-3 border text-center">
+                <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">Nuevos Ingresantes (2026-II)</small>
+                <span class="fs-4 fw-bold text-dark" id="histIngresantesCount">174</span>
+                <small class="text-muted d-block" style="font-size: 0.68rem;">Reporte TRILCE RptIngMat</small>
+              </div>
+            </div>
+            <div class="col-md-3 col-6">
+              <div class="p-3 bg-light rounded-3 border text-center">
+                <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">Edad Promedio</small>
+                <span class="fs-4 fw-bold text-primary" id="histEdadPromedio">34.8 años</span>
+                <small class="text-muted d-block" style="font-size: 0.68rem;">Público Adulto SUBE</small>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="p-3 bg-light rounded-3 border">
+                <small class="text-muted d-block fw-semibold mb-1" style="font-size: 0.72rem;">Principales Regiones de Alumnos Matriculados</small>
+                <div class="fw-bold text-dark" id="histRegionesText" style="font-size: 0.88rem;">
+                  Lima (59) • Piura (18) • Junín (10) • Lambayeque (8)
+                </div>
+                <small class="text-muted" style="font-size: 0.68rem;">Cobertura a nivel nacional (Modalidad a Distancia)</small>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+  </main>
+
+  <footer class="py-3 text-center text-muted small border-top bg-white mt-auto">
+    <span>© 2026 UCV Virtual — Sistema de Gestión Académica • Facultad de Ingeniería y Arquitectura</span>
+  </footer>
+
+  <!-- Lógica de sincronización inicial según DAC (Sistemas vs Industrial) -->
+  <script>
+    function checkIsIndustrialUser() {
+      const email = (sessionStorage.getItem('sga_user_email') || localStorage.getItem('sga_user_email') || '').toLowerCase();
+      const user = (sessionStorage.getItem('sga_user_name') || localStorage.getItem('sga_user_name') || '').toLowerCase();
+      const role = (sessionStorage.getItem('sga_user_role') || localStorage.getItem('sga_user_role') || '').toLowerCase();
+      const rest = (sessionStorage.getItem('sga_dac_restriction') || localStorage.getItem('sga_dac_restriction') || '').toLowerCase();
+      const esc = (sessionStorage.getItem('sga_escuela') || localStorage.getItem('sga_escuela') || '').toLowerCase();
+
+      return (
+        rest === 'industrial' ||
+        email.includes('industrial') ||
+        user.includes('industrial') ||
+        role.includes('industrial') ||
+        esc.includes('industrial')
+      );
+    }
+
+    const isRestrictedIndustrial = checkIsIndustrialUser();
+
+    if (isRestrictedIndustrial) {
+      sessionStorage.setItem('sga_dac_restriction', 'industrial');
+      sessionStorage.setItem('sga_dac', 'industrial');
+      sessionStorage.setItem('sga_escuela', 'Escuela de Ingeniería Industrial');
+      localStorage.setItem('sga_dac_restriction', 'industrial');
+      localStorage.setItem('sga_dac', 'industrial');
+      localStorage.setItem('sga_escuela', 'Escuela de Ingeniería Industrial');
+
+      const btnVerSistemas = document.querySelector('button[onclick*="cambiarAEscuela(\'sistemas\')"]');
+      if (btnVerSistemas) btnVerSistemas.remove();
+    }
+
+    const dac = isRestrictedIndustrial ? 'industrial' : (sessionStorage.getItem('sga_dac') || 'sistemas').toLowerCase();
+    const isIndustrial = dac === 'industrial';
+
+    const badgeActiveDac = document.getElementById('badgeActiveDac');
+    const textActiveDac = document.getElementById('textActiveDac');
+    const iconActiveDac = document.getElementById('iconActiveDac');
+
+    if (isIndustrial) {
+      if (textActiveDac) textActiveDac.textContent = isRestrictedIndustrial ? 'DAC Industrial (Exclusivo)' : 'DAC Industrial';
+      if (iconActiveDac) iconActiveDac.className = 'bi bi-gear-wide-connected text-success me-1';
+    } else {
+      if (textActiveDac) textActiveDac.textContent = 'DAC Sistemas';
+      if (iconActiveDac) iconActiveDac.className = 'bi bi-cpu text-info me-1';
+    }
+
+    function cambiarAEscuela(escuela) {
+      if (isRestrictedIndustrial && escuela === 'sistemas') {
+        alert('Acceso no autorizado: Su cuenta institucional está asignada exclusivamente a la Escuela de Ingeniería Industrial.');
+        return;
+      }
+      sessionStorage.setItem('sga_dac', escuela);
+      const sel = document.getElementById('selectOptEscuela');
+      if (sel) {
+        sel.value = escuela;
+        sel.dispatchEvent(new Event('change'));
+      }
+    }
+  </script>
+
+  <!-- Script Oficial de Dashboards Ejecutivos de Optimización -->
+  <script src="js/dashboard_optimizacion.js"></script>
+
+</body>
+</html>

@@ -1,66 +1,70 @@
-# Vercel
-.vercel
-node_modules
+# ==============================================================================
+# .gitignore — Sistema de Gestión Académica (SGA) UCV
+# Configurado para clonar y ejecutar limpiamente en cualquier equipo
+# ==============================================================================
 
-# Modulos externos / independientes (no se incluyen en el repositorio del minisistema)
-formulario_delegados/
-Notas/
-notas/
-GUIA_DEPLOY_CPANEL_DELEGADOS.md
+# 1. Dependencias y entornos (se instalan con npm install)
+node_modules/
+**/node_modules/
+.vercel/
+.next/
+**/.next/
 
-# Python
+# 2. Caché de Python
 __pycache__/
+**/__pycache__/
 *.py[cod]
 *$py.class
+.venv/
+venv/
+env/
 
-# OS
-.DS_Store
-Thumbs.db
-
-# Archives
+# 3. Paquetes ZIP de despliegue (se regeneran con: python build_deploy_packages.py)
 *.zip
 
-# ============================================================
-# ARCHIVOS SENSIBLES - NUNCA subir a Git
-# ============================================================
+# 4. Sesiones activas de WhatsApp y multimedia temporal
+data/whatsapp_session/
+data/whatsapp_media/
+data/whatsapp_chats.json
+.wwebjs_auth/
+.wwebjs_cache/
 
-# Credenciales de base de datos y configuración real
-formulario_delegados/config.php
-
-# Bases de datos locales con datos reales
+# 5. Bases de datos SQLite locales (server.py las inicializa automáticamente)
+*.db
+*.sqlite
+*.sqlite3
 data/*.db
-data/*.sqlite
 formulario_delegados/data/*.db
-formulario_delegados/data/*.sqlite
 
-# Archivo de configuración real del formulario (usar config.example.php como base)
-formulario_delegados/config.php
-
-# Datos reales de registros de delegados (se genera automáticamente en producción)
-formulario_delegados/data/delegados.json
-
-# Datos JSON con información real de usuarios/operación
-# (se suben solo los archivos _base como plantillas vacías)
+# 6. Archivos temporales de operación (se autogeneran desde los *_base.json)
 data/pau_correos.json
 data/grupos.json
 data/docentes.json
 data/carpetas.json
 data/directorios.json
 data/supervisiones.json
-data/delegados.json
-data/whatsapp_session/
-data/whatsapp_media/
-data/whatsapp_chats.json
+formulario_docentes/data/firmas/*
+!formulario_docentes/data/firmas/.gitkeep
 
-# Archivos Excel con datos institucionales
+# 7. Archivos Excel de prueba, PDFs pesados y carpetas auxiliares antiguas
 *.xlsx
-
-# PDFs generados dinámicamente
+*.xls
+~$*
+excels/
+excels_summary.json
 pdfs/
+Notas/
+notas/
 
-# Fuentes locales (pesadas, se cargan desde CDN)
-lib/icons/fonts/
-
-# Logs del servidor
+# 8. Logs y archivos de depuración
 *.log
+debug.log
 error_log
+npm-debug.log*
+
+# 9. Sistema Operativo y Editores
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/

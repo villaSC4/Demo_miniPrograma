@@ -89,28 +89,50 @@ function ensureTables($pdo, $driver = 'sqlite') {
 
     $pdo->exec($sql);
 
-    // Verificar si existe la cuenta institucional
+    // 1. Verificar cuenta institucional General FIA
     $stmt = $pdo->prepare("SELECT id FROM usuarios WHERE LOWER(email) = LOWER(:email) LIMIT 1");
     $stmt->execute([':email' => 'coordinacion.fia@ucvvirtual.edu.pe']);
-    $user = $stmt->fetch();
+    $userFia = $stmt->fetch();
 
-    $expectedHash = 'sha256$ucvfia2026$854350727c65d7effa6308f348a8b311e1ed0de91843afa30cb50a5c8323bb66';
+    $expectedHashFia = 'sha256$ucvfia2026$854350727c65d7effa6308f348a8b311e1ed0de91843afa30cb50a5c8323bb66';
 
-    if (!$user) {
+    if (!$userFia) {
         $insertStmt = $pdo->prepare("INSERT INTO usuarios (email, username, password_hash, nombre, rol, escuela, estado) 
             VALUES (:email, :username, :hash, :nombre, :rol, :escuela, 1)");
         $insertStmt->execute([
             ':email' => 'coordinacion.fia@ucvvirtual.edu.pe',
             ':username' => 'coordinacion.fia',
-            ':hash' => $expectedHash,
+            ':hash' => $expectedHashFia,
             ':nombre' => 'Coordinación Académica FIA',
             ':rol' => 'Coordinador',
             ':escuela' => 'Facultad de Ingeniería y Arquitectura'
         ]);
     } else {
-        // Asegurar que el hash esté sincronizado
         $updateStmt = $pdo->prepare("UPDATE usuarios SET password_hash = :hash, estado = 1 WHERE id = :id");
-        $updateStmt->execute([':hash' => $expectedHash, ':id' => $user['id']]);
+        $updateStmt->execute([':hash' => $expectedHashFia, ':id' => $userFia['id']]);
+    }
+
+    // 2. Verificar cuenta institucional Industrial (Exclusiva Industrial, sin Sistemas)
+    $stmtInd = $pdo->prepare("SELECT id FROM usuarios WHERE LOWER(email) = LOWER(:email) LIMIT 1");
+    $stmtInd->execute([':email' => 'coordinacion.fia.industrial@ucvvirtual.edu.pe']);
+    $userInd = $stmtInd->fetch();
+
+    $expectedHashInd = 'sha256$ucvfia2026$c3207c1eab5b0bfedcd7c4a7a2f3550969d05f5aa58b236175b813533941ad02';
+
+    if (!$userInd) {
+        $insertStmt = $pdo->prepare("INSERT INTO usuarios (email, username, password_hash, nombre, rol, escuela, estado) 
+            VALUES (:email, :username, :hash, :nombre, :rol, :escuela, 1)");
+        $insertStmt->execute([
+            ':email' => 'coordinacion.fia.industrial@ucvvirtual.edu.pe',
+            ':username' => 'coordinacion.fia.industrial',
+            ':hash' => $expectedHashInd,
+            ':nombre' => 'Coordinación Académica Industrial',
+            ':rol' => 'Coordinador Industrial',
+            ':escuela' => 'Escuela de Ingeniería Industrial'
+        ]);
+    } else {
+        $updateStmt = $pdo->prepare("UPDATE usuarios SET password_hash = :hash, estado = 1 WHERE id = :id");
+        $updateStmt->execute([':hash' => $expectedHashInd, ':id' => $userInd['id']]);
     }
 }
 
@@ -177,7 +199,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'username' => 'coordinacion.fia',
                         'nombre' => 'Coordinación Académica FIA',
                         'rol' => 'Coordinador',
-                        'escuela' => 'Facultad de Ingeniería y Arquitectura'
+                        'escuela' => 'Facultad de Ingeniería y Arquitectura',
+                        'dac_restriction' => null
+                    ]
+                ]);
+                exit;
+            }
+        }
+
+        if (in_array(strtolower($user), ['coordinacion.fia.industrial@ucvvirtual.edu.pe', 'coordinacion.fia.industrial'])) {
+            if ($password === 'DelegadosFIA2727') {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Autenticación exitosa',
+                    'user' => [
+                        'id' => 2,
+                        'email' => 'coordinacion.fia.industrial@ucvvirtual.edu.pe',
+                        'username' => 'coordinacion.fia.industrial',
+                        'nombre' => 'Coordinación Académica Industrial',
+                        'rol' => 'Coordinador Industrial',
+                        'escuela' => 'Escuela de Ingeniería Industrial',
+                        'dac_restriction' => 'industrial'
                     ]
                 ]);
                 exit;
@@ -205,6 +247,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $upd->execute([':now' => $now, ':id' => $row['id']]);
             } catch (Exception $e) {}
 
+            $isInd = (
+                strtolower($row['email']) === 'coordinacion.fia.industrial@ucvvirtual.edu.pe' ||
+                stripos($row['escuela'] ?? '', 'Industrial') !== false ||
+                stripos($row['rol'] ?? '', 'Industrial') !== false
+            );
+
             echo json_encode([
                 'success' => true,
                 'message' => 'Autenticación exitosa',
@@ -214,7 +262,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'username' => $row['username'],
                     'nombre' => $row['nombre'],
                     'rol' => $row['rol'],
-                    'escuela' => $row['escuela']
+                    'escuela' => $row['escuela'],
+                    'dac_restriction' => $isInd ? 'industrial' : null
                 ]
             ]);
             exit;

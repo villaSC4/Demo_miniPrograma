@@ -1,12 +1,32 @@
 /**
  * ==============================================================================
- * PAU.JS - Módulo de Plataforma de Atención al Estudiante (PAU / PAE)
+ * PAU.JS - Módulo de Plataforma de Atención al Estudiante (PAE)
  * Seguimiento Centralizado de Correos y Tickets Institucionales (FIA - UCV Virtual)
  * ==============================================================================
  */
 
 let allPauTickets = [];
 let pauModalInstance = null;
+
+// Inicialización síncrona inmediata para garantizar que la bandeja nunca quede congelada ni vacía
+function initPauState() {
+  try {
+    const cachedRaw = localStorage.getItem('pau_tickets_data');
+    if (cachedRaw && (cachedRaw.includes('carcev@ucvvirtual.edu.pe') || cachedRaw.includes('rcordovac@ucvvirtual.edu.pe') || cachedRaw.includes('ARCE VILLANUEVA'))) {
+      localStorage.removeItem('pau_tickets_data');
+    }
+    const cached = localStorage.getItem('pau_tickets_data');
+    if (cached !== null) {
+      const parsed = JSON.parse(cached);
+      if (Array.isArray(parsed)) {
+        allPauTickets = parsed.filter(t => t.correo !== 'carcev@ucvvirtual.edu.pe' && t.correo !== 'rcordovac@ucvvirtual.edu.pe');
+      }
+    }
+  } catch (e) {}
+
+  renderPauMetrics();
+  renderPauTable();
+}
 
 // Carga inicial al cargar el DOM
 document.addEventListener('DOMContentLoaded', () => {
@@ -16,7 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   setupPauEventListeners();
-  loadPauData();
+  initPauState(); // Carga y dibuja de inmediato sin depender de la red
+  loadPauData();  // Refresca en segundo plano con timeout protegido
 });
 
 // Configuración de escuchadores de eventos
@@ -40,65 +61,46 @@ function setupPauEventListeners() {
 
   document.getElementById('btnSavePauTicket')?.addEventListener('click', savePauTicket);
   document.getElementById('btnExportPauExcel')?.addEventListener('click', exportPauExcel);
-  document.getElementById('btnSyncPauInbox')?.addEventListener('click', syncPauInbox);
-  document.getElementById('btnOpenPauWebhookModal')?.addEventListener('click', openPauWebhookModal);
+  
+  const btnSync = document.getElementById('btnSyncPauInbox') || document.getElementById('btnRefreshPauList');
+  btnSync?.addEventListener('click', syncPauInbox);
 }
 
-// Carga de datos desde la API o archivo físico
+// Carga de datos desde la API o archivo físico con timeout protegido
 async function loadPauData() {
-  // Limpiar residuos de datos de prueba antiguos si estuvieran en localStorage
-  try {
-    const cachedRaw = localStorage.getItem('pau_tickets_data');
-    if (cachedRaw && (cachedRaw.includes('carcev@ucvvirtual.edu.pe') || cachedRaw.includes('rcordovac@ucvvirtual.edu.pe') || cachedRaw.includes('ARCE VILLANUEVA'))) {
-      localStorage.removeItem('pau_tickets_data');
-    }
-  } catch (e) {}
+  initPauState();
 
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 2500);
+
     let res;
     try {
-      res = await fetch('/api/pau');
+      res = await fetch('/api/pau', { signal: controller.signal });
       if (!res.ok && res.status === 404) {
-        res = await fetch('api/pau.php');
+        res = await fetch('api/pau.php', { signal: controller.signal });
       }
     } catch (e) {
-      res = await fetch('api/pau.php');
+      try {
+        res = await fetch('api/pau.php', { signal: controller.signal });
+      } catch (e2) {}
+    } finally {
+      clearTimeout(timeoutId);
     }
 
     if (res && res.ok) {
       const data = await res.json();
       if (Array.isArray(data)) {
-        // Filtrar cualquier ticket demo residual
         allPauTickets = data.filter(t => t.correo !== 'carcev@ucvvirtual.edu.pe' && t.correo !== 'rcordovac@ucvvirtual.edu.pe');
         localStorage.setItem('pau_tickets_data', JSON.stringify(allPauTickets));
-        renderPauMetrics();
-        renderPauTable();
-        return;
       }
     }
   } catch (err) {
-    console.info('No se pudo conectar a /api/pau, verificando localStorage...', err);
+    console.info('Aviso: Operando con registros locales PAU');
+  } finally {
+    renderPauMetrics();
+    renderPauTable();
   }
-
-  // Fallback a localStorage sólo si contiene datos válidos del usuario
-  const cached = localStorage.getItem('pau_tickets_data');
-  if (cached !== null) {
-    try {
-      const parsed = JSON.parse(cached);
-      if (Array.isArray(parsed)) {
-        allPauTickets = parsed.filter(t => t.correo !== 'carcev@ucvvirtual.edu.pe' && t.correo !== 'rcordovac@ucvvirtual.edu.pe');
-        renderPauMetrics();
-        renderPauTable();
-        return;
-      }
-    } catch (e) {}
-  }
-
-  // Base limpia sin datos de prueba ficticios: lista para registrar datos reales
-  allPauTickets = [];
-  localStorage.setItem('pau_tickets_data', JSON.stringify([]));
-  renderPauMetrics();
-  renderPauTable();
 }
 
 // Guardar los datos en el servidor
@@ -167,7 +169,7 @@ function renderPauMetrics() {
   }
 
   const badgeAreaPau = document.getElementById('badgeAreaPau');
-  if (badgeAreaPau) badgeAreaPau.innerHTML = `<span id="kpiPauTotal">${total}</span> Correos`;
+  if (badgeAreaPau) badgeAreaPau.innerHTML = `<span id="kpiPauTotal">${total}</span> Solicitudes`;
 
   const badgeTabPau = document.getElementById('badgeTabPau');
   if (badgeTabPau) badgeTabPau.textContent = total;
@@ -199,25 +201,28 @@ function renderPauTable() {
 
   const countText = document.getElementById('pauFilteredCountText');
   if (countText) {
-    countText.textContent = `Mostrando ${filtered.length} de ${allPauTickets.length} solicitudes de correo`;
+    countText.innerHTML = `<span class="badge bg-light text-secondary border px-3 py-1.5 rounded-pill fw-semibold"><i class="bi bi-list-check text-primary me-1"></i> ${filtered.length} de ${allPauTickets.length} solicitudes registradas</span>`;
   }
 
   if (filtered.length === 0) {
     if (allPauTickets.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="9" class="text-center py-5">
-            <div class="py-5 px-3 text-center">
-              <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-light border mb-3 shadow-xs" style="width: 76px; height: 76px;">
-                <i class="bi bi-inbox text-primary fs-1"></i>
+          <td colspan="9" class="p-0 border-0">
+            <div class="py-5 px-4 text-center my-4">
+              <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3 shadow-xs" style="width: 80px; height: 80px; background-color: #F8FAFC; border: 1.5px solid #E2E8F0;">
+                <i class="bi bi-inbox-fill text-primary" style="font-size: 2.4rem; opacity: 0.85;"></i>
               </div>
-              <h5 class="fw-bold text-dark mb-2">Bandeja de Atención Lista para Nuevos Registros</h5>
-              <p class="text-muted small mx-auto mb-4" style="max-width: 540px; line-height: 1.6;">
-                Se han eliminado todos los datos de prueba. Aquí se ingresarán las solicitudes y correos reales de los estudiantes y docentes para su atención y seguimiento por coordinación.
+              <h5 class="fw-bold text-dark mb-2" style="font-size: 1.2rem;">
+                No hay registros ni solicitudes pendientes
+              </h5>
+              <p class="text-muted mx-auto mb-4" style="max-width: 520px; font-size: 0.92rem; line-height: 1.6;">
+                Actualmente la bandeja se encuentra vacía. ¿Deseas añadir una nueva solicitud o registro de atención ahora mismo?
               </p>
-              <div class="d-flex justify-content-center gap-2 flex-wrap">
-                <button type="button" class="btn btn-primary px-4 py-2 fw-semibold rounded-pill shadow-sm" onclick="openPauModal(null)">
-                  <i class="bi bi-plus-circle-fill me-1"></i> + Registrar Solicitud / Correo
+              <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
+                <button type="button" class="btn btn-sm px-4 py-2.5 fw-semibold rounded-pill shadow-sm text-white d-inline-flex align-items-center gap-2" style="background-color: var(--ucv-navy); border-color: var(--ucv-navy); font-size: 0.9rem;" onclick="openPauModal(null)">
+                  <i class="bi bi-plus-circle-fill fs-6"></i>
+                  <span>+ Registrar Nueva Solicitud</span>
                 </button>
               </div>
             </div>
@@ -227,9 +232,17 @@ function renderPauTable() {
     } else {
       tbody.innerHTML = `
         <tr>
-          <td colspan="9" class="text-center py-5 text-muted">
-            <i class="bi bi-funnel fs-1 d-block mb-2 text-secondary opacity-50"></i>
-            <span class="fw-semibold">No se encontraron correos ni solicitudes con los filtros aplicados.</span>
+          <td colspan="9" class="p-0 border-0">
+            <div class="py-5 px-4 text-center my-3">
+              <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-light border mb-3" style="width: 64px; height: 64px;">
+                <i class="bi bi-funnel text-secondary fs-2 opacity-75"></i>
+              </div>
+              <h6 class="fw-bold text-dark mb-1">No se encontraron solicitudes con los filtros aplicados</h6>
+              <p class="text-muted small mb-3">Intenta cambiar los términos de búsqueda o restablecer los filtros seleccionados.</p>
+              <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-pill" onclick="document.getElementById('btnResetPauFilters')?.click()">
+                <i class="bi bi-arrow-counterclockwise me-1"></i> Restablecer Filtros
+              </button>
+            </div>
           </td>
         </tr>
       `;
@@ -347,7 +360,7 @@ function renderPauTable() {
               <i class="bi bi-reply-fill fs-6"></i>
             </a>
             ${t.telefono ? `
-              <a href="https://wa.me/${t.telefono.replace(/[^0-9]/g, '')}?text=Estimado(a)%20${encodeURIComponent(t.remitente)},%20le%20escribimos%20de%20la%20Coordinaci%C3%B3n%20FIA%20respecto%20a%20su%20solicitud%20PAU." target="_blank" rel="noopener noreferrer" class="btn btn-outline-success btn-sm p-1.5" style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px;" onclick="if(window.iniciarChatDesdePau){ event.preventDefault(); window.iniciarChatDesdePau('${escapeHtml(t.remitente)}', '${t.telefono}'); }" title="Contactar por WhatsApp">
+              <a href="https://wa.me/${t.telefono.replace(/[^0-9]/g, '')}?text=Estimado(a)%20${encodeURIComponent(t.remitente)},%20le%20escribimos%20de%20la%20Coordinaci%C3%B3n%20FIA%20respecto%20a%20su%20solicitud%20PAE." target="_blank" rel="noopener noreferrer" class="btn btn-outline-success btn-sm p-1.5" style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px;" onclick="if(window.iniciarChatDesdePau){ event.preventDefault(); window.iniciarChatDesdePau('${escapeHtml(t.remitente)}', '${t.telefono}'); }" title="Contactar por WhatsApp">
                 <i class="bi bi-whatsapp fs-6"></i>
               </a>
             ` : ''}
@@ -476,7 +489,7 @@ window.openPauModal = function(id) {
   if (id) {
     const t = allPauTickets.find(item => item.id === id);
     if (!t) return;
-    if (titleEl) titleEl.textContent = 'Editar Solicitud PAU';
+    if (titleEl) titleEl.textContent = 'Editar Solicitud PAE';
     if (idInput) idInput.value = t.id;
     if (fechaInput) fechaInput.value = t.fecha_correo || '';
     if (remitenteInput) remitenteInput.value = t.remitente || '';
@@ -489,7 +502,7 @@ window.openPauModal = function(id) {
     if (fechaRespInput) fechaRespInput.value = (t.fecha_respuesta && t.fecha_respuesta !== '-') ? t.fecha_respuesta : '';
     if (obsInput) obsInput.value = t.observaciones || '';
   } else {
-    if (titleEl) titleEl.textContent = 'Registrar Nuevo Correo / Solicitud PAU';
+    if (titleEl) titleEl.textContent = 'Registrar Nueva Solicitud PAE (Manual)';
     if (idInput) idInput.value = '';
     
     // Fecha y hora actual por defecto
@@ -638,7 +651,7 @@ window.deletePauTicket = function(id) {
   }
 };
 
-// Exportar a Excel con la estructura exacta del Google Sheet del PAU
+// Exportar a Excel con la estructura exacta del Google Sheet del PAE
 function exportPauExcel() {
   if (typeof XLSX === 'undefined') {
     alert('La librería XLSX no está cargada.');
@@ -660,8 +673,8 @@ function exportPauExcel() {
 
   const ws = XLSX.utils.json_to_sheet(rows);
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "PAU_Industrial_Sistemas");
-  XLSX.writeFile(wb, "PAU_Atencion_Estudiantes_Industrial_Sistemas_2026-2.xlsx");
+  XLSX.utils.book_append_sheet(wb, ws, "PAE_Industrial_Sistemas");
+  XLSX.writeFile(wb, "PAE_Atencion_Estudiantes_Industrial_Sistemas_2026-2.xlsx");
 }
 
 // Utilidad para copiar al portapapeles
@@ -673,188 +686,32 @@ window.copyToClipboard = function(text) {
   });
 };
 
-// Sincronizar bandeja en tiempo real
-window.syncPauInbox = async function() {
-  const btn = document.getElementById('btnSyncPauInbox');
+// Actualizar lista en tiempo real de forma segura y sin bloqueos
+window.syncPauInbox = window.refreshPauList = async function() {
+  const btn = document.getElementById('btnSyncPauInbox') || document.getElementById('btnRefreshPauList');
   const originalHtml = btn ? btn.innerHTML : '';
   if (btn) {
     btn.disabled = true;
-    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status"></span> Sincronizando...`;
+    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status"></span> Actualizando...`;
   }
-
-  await loadPauData();
-
-  if (btn) {
-    btn.disabled = false;
-    btn.innerHTML = `<i class="bi bi-check2 text-success fs-6 me-1"></i> Sincronizado`;
-    setTimeout(() => {
-      btn.innerHTML = originalHtml;
-    }, 2000);
-  }
-};
-
-// Abrir modal de vinculación con Gmail Webhook
-window.openPauWebhookModal = function() {
-  const modalEl = document.getElementById('modalPauWebhook');
-  if (!modalEl) return;
-
-  // Calcular URL real del Webhook según el origen actual
-  const currentBase = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '');
-  const isPhp = window.location.protocol.startsWith('http') && !window.location.port.includes('8000');
-  const webhookUrl = isPhp ? `${currentBase}/api/pau.php` : `${window.location.origin}/api/pau`;
-
-  const inputUrl = document.getElementById('pauWebhookUrlDisplay');
-  if (inputUrl) {
-    inputUrl.value = webhookUrl;
-  }
-
-  // Cargar código del Google Apps Script adaptado
-  const scriptArea = document.getElementById('pauScriptCodeSnippet');
-  if (scriptArea) {
-    scriptArea.value = `// GOOGLE APPS SCRIPT: VINCULACIÓN AUTOMÁTICA GMAIL -> PAU UCV
-const WEBHOOK_URL = "${webhookUrl}";
-const SECRET_TOKEN = "UCV_FIA_PAU_2026";
-
-function sincronizarCorreosConMinisistema() {
-  const threads = GmailApp.search('in:inbox is:unread newer_than:3d', 0, 10);
-  for (let i = 0; i < threads.length; i++) {
-    const msg = threads[i].getMessages().pop();
-    if (msg && msg.isUnread()) {
-      const from = msg.getFrom();
-      const subject = msg.getSubject() || "Consulta Académica";
-      const match = from.match(/(.*)<(.*)>/);
-      const name = match ? match[1].trim() : from;
-      const email = match ? match[2].trim() : from;
-      
-      const payload = {
-        action: "incoming_email",
-        token: SECRET_TOKEN,
-        remitente: name.toUpperCase(),
-        correo: email,
-        asunto: subject,
-        fecha_correo: Utilities.formatDate(msg.getDate(), "GMT-5", "dd/MM/yyyy HH:mm"),
-        escuela: subject.toLowerCase().includes("sistemas") ? "Ingeniería de Sistemas" : "Ingeniería Industrial",
-        observaciones: msg.getPlainBody().substring(0, 250)
-      };
-
-      UrlFetchApp.fetch(WEBHOOK_URL, {
-        method: "post",
-        contentType: "application/json",
-        payload: JSON.stringify(payload),
-        muteHttpExceptions: true
-      });
-    }
-  }
-}`;
-  }
-
-  new bootstrap.Modal(modalEl).show();
-};
-
-// Copiar URL del Webhook
-window.copyWebhookUrl = function() {
-  const input = document.getElementById('pauWebhookUrlDisplay');
-  if (!input) return;
-  navigator.clipboard.writeText(input.value).then(() => {
-    alert(`URL copiada al portapapeles:\n${input.value}`);
-  }).catch(() => {
-    prompt('Copie la URL manualmente:', input.value);
-  });
-};
-
-// Copiar Código de Google Apps Script
-window.copyGoogleScriptCode = function() {
-  const area = document.getElementById('pauScriptCodeSnippet');
-  if (!area) return;
-  navigator.clipboard.writeText(area.value).then(() => {
-    alert('Código de Google Apps Script copiado con éxito. Ahora pégalo en script.google.com con la cuenta de coordinación.');
-  }).catch(() => {
-    prompt('Copie el código:', area.value);
-  });
-};
-
-// Enviar Correo de Prueba en Vivo (Simulación del Webhook)
-window.sendTestIncomingEmail = async function() {
-  const btn = document.getElementById('btnTestWebhookEmail');
-  const origHtml = btn ? btn.innerHTML : '';
-  if (btn) {
-    btn.disabled = true;
-    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Enviando correo de prueba...`;
-  }
-
-  const sampleEmails = [
-    {
-      remitente: "CARLOS RAMIREZ NAVARRO",
-      correo: "carlos.ramirezn@ucvvirtual.edu.pe",
-      escuela: "Ingeniería de Sistemas",
-      asunto: "SOLICITUD: HABILITACIÓN DE EVALUACIÓN REZAGADA - CICLO VII",
-      observaciones: "El estudiante solicita rendir la evaluación rezagada por motivos de salud acreditados."
-    },
-    {
-      remitente: "VALERIA FLORES MENDOZA",
-      correo: "valeria.floresm@ucvvirtual.edu.pe",
-      escuela: "Ingeniería Industrial",
-      asunto: "CONSULTA: CRUCE DE HORARIOS EN ASIGNATURA MODULAR INVESTIGACIÓN DE OPERACIONES",
-      observaciones: "Alumna de ciclo VI reporta cruce de sesiones de clase en Trilce."
-    },
-    {
-      remitente: "DIEGO PAREDES ALARCON",
-      correo: "diego.paredesa@ucvvirtual.edu.pe",
-      escuela: "Ingeniería de Sistemas",
-      asunto: "REPORTE: ENLACE DE SESIÓN ZOOM NO APARECE EN BLACKBOARD",
-      observaciones: "Delegado de aula solicita actualización del enlace recurrente de la clase."
-    }
-  ];
-
-  // Elegir uno aleatorio
-  const randomEmail = sampleEmails[Math.floor(Math.random() * sampleEmails.length)];
 
   try {
-    let endpoint = '/api/pau';
-    let res;
-    try {
-      res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(randomEmail)
-      });
-    } catch(e) {
-      endpoint = 'api/pau.php';
-      res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(randomEmail)
-      });
-    }
-
-    if (!res.ok && res.status === 404) {
-      endpoint = 'api/pau.php';
-      res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(randomEmail)
-      });
-    }
-
-    if (res && res.ok) {
-      await loadPauData();
-
-      // Cerrar modal
-      const modalEl = document.getElementById('modalPauWebhook');
-      const inst = bootstrap.Modal.getInstance(modalEl);
-      if (inst) inst.hide();
-
-      alert(`✅ ¡Correo de prueba recibido por el Webhook!\n\nRemitente: ${randomEmail.remitente}\nAsunto: ${randomEmail.asunto}\n\nHa ingresado automáticamente a la bandeja de solicitudes con Estado "Sin Atención" (Amarillo).`);
-    } else {
-      alert('No se pudo procesar la prueba. Verifique que el servidor esté activo.');
+    await loadPauData();
+    if (btn) {
+      btn.innerHTML = `<i class="bi bi-check2 text-success fs-6 me-1"></i> Actualizado`;
     }
   } catch (err) {
-    console.error('Error al probar webhook:', err);
-    alert('Error al conectar con la API de sincronización: ' + err.message);
+    console.warn('Aviso al actualizar:', err);
+    if (btn) {
+      btn.innerHTML = `<i class="bi bi-check2 text-primary fs-6 me-1"></i> Listo`;
+    }
   } finally {
     if (btn) {
-      btn.disabled = false;
-      btn.innerHTML = origHtml;
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml || `<i class="bi bi-arrow-clockwise text-primary fs-6"></i> <span>Actualizar</span>`;
+      }, 1400);
     }
   }
 };
+

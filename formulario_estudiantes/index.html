@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PAE — Plataforma de Atención al Estudiante 2026-2 | UCV Virtual</title>
+  <meta name="description" content="PAE - Plataforma Oficial de Atención al Estudiante — Horario: Lunes y Viernes de 7:00 PM a 9:00 PM (Lunes: Sistemas | Viernes: Industrial). Facultad de Ingeniería y Arquitectura, Universidad César Vallejo">
+
+  <!-- Tipografía Google Fonts: Outfit & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Favicon Institucional UCV -->
+  <link rel="icon" type="image/png" href="img/logo-ucv-virtual.png">
+
+  <!-- Estilos Split-Screen Institucionales UCV -->
+  <link rel="stylesheet" href="css/style.css?v=20261012-contrast">
+</head>
+<body>
+
+  <!-- ====================================================================
+       CONTENEDOR PRINCIPAL SPLIT-SCREEN (ESTILO LOGIN CYBER-GLASS)
+       ==================================================================== -->
+  <div class="pae-split-container">
+
+    <!-- ==================================================================
+         LADO A: HERO SIDE (CAMPUS UCV + CORTE DIAGONAL + CARDS 1, 2, 3)
+         ================================================================== -->
+    <div class="hero-wrapper">
+      <section class="hero-side" aria-label="Plataforma de Atención al Estudiante y Canales de Escuela">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+
+        <!-- Laser diagonal SVG strip -->
+        <svg class="diagonal-laser-svg" viewBox="0 0 90 1000" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="edgeLaser" x1="100%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#BE1E2D" stop-opacity="1" />
+              <stop offset="40%" stop-color="#FF4655" stop-opacity="0.95" />
+              <stop offset="70%" stop-color="#0D6EFD" stop-opacity="0.9" />
+              <stop offset="100%" stop-color="#38BDF8" stop-opacity="0.8" />
+            </linearGradient>
+
+          </defs>
+          <line x1="90" y1="0" x2="0" y2="1000" stroke="url(#edgeLaser)" stroke-width="8" stroke-opacity="0.35" />
+          <line x1="90" y1="0" x2="0" y2="1000" stroke="url(#edgeLaser)" stroke-width="4" stroke-opacity="0.9" />
+          <line x1="90" y1="0" x2="0" y2="1000" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity="0.8" />
+        </svg>
+
+        <!-- Cabecera del Hero -->
+        <div class="hero-header">
+          <div class="hero-logo-box">
+            <img src="img/logo-ucv-virtual.png" alt="Universidad César Vallejo - UCV Virtual">
+          </div>
+          <div class="hero-top-badge">
+            <i class="bi bi-clock-history"></i>
+            <span>PAE • Lunes y Viernes 7:00 a 9:00 PM</span>
+          </div>
+        </div>
+
+        <!-- Centro del Hero: Presentación Dinámica -->
+        <div class="hero-center">
+          <h1>
+            Plataforma de Atención<br>
+            <span class="gradient-highlight">al Estudiante</span>
+          </h1>
+          <p>
+            Bienvenido a la <strong>PAE, Plataforma de Atención al Estudiante</strong> de la Facultad de Ingeniería y Arquitectura. Programe su turno personalizado de <strong>15 minutos</strong> para la atención académica con la Coordinación de Escuela (Lunes: Sistemas | Viernes: Industrial).
+          </p>
+
+          <div class="hero-feature-tags">
+            <div class="hero-tag">
+              <i class="bi bi-calendar-check-fill"></i>
+              <span>Lunes y Viernes • 7:00 a 9:00 PM</span>
+            </div>
+            <div class="hero-tag">
+              <i class="bi bi-shield-check"></i>
+              <span>Turnos Validados en Vivo</span>
+            </div>
+            <div class="hero-tag">
+              <i class="bi bi-mortarboard-fill"></i>
+              <span>Sistemas (Lun) & Industrial (Vie)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================================================================
+             LAS 3 TARJETAS EN EL PIE DEL HERO (SOLICITADAS POR EL USUARIO):
+             1: Correo de Escuela
+             2: Número de Contactos de Escuela (WhatsApp Prioritario)
+             3: Enlace Zoom de Escuela (Prioritario en Vivo)
+             ================================================================ -->
+        <div class="hero-footer">
+          <div class="hero-stats-card" id="heroStatsContainer">
+
+            <!-- 1. Correo de la Escuela -->
+            <div class="stat-item item-email" id="cardEmailEscuela" title="Clic para copiar correo oficial de escuela" role="button" tabindex="0">
+              <div class="stat-icon-wrap">
+                <i class="bi bi-envelope-at-fill"></i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-num-badge">1. Correo de Escuela</span>
+                <span class="stat-val" id="schoolEmailVal">sistemas.fia@ucvvirtual.edu.pe</span>
+                <span class="stat-lbl"><i class="bi bi-copy me-1"></i>Clic para copiar correo</span>
+              </div>
+            </div>
+
+            <!-- 2. Contacto de la Escuela (WhatsApp - Prioritario) -->
+            <div class="stat-item item-contact item-prioritized" id="cardContactEscuela" title="Clic para abrir WhatsApp oficial de escuela" role="button" tabindex="0">
+              <div class="stat-icon-wrap">
+                <i class="bi bi-whatsapp"></i>
+              </div>
+              <div class="stat-info">
+                <div class="stat-badge-row">
+                  <span class="stat-num-badge">2. Contacto Escuela</span>
+                  <span class="stat-prio-pill prio-wa"><i class="bi bi-lightning-charge-fill me-0.5"></i>Prioritario</span>
+                </div>
+                <span class="stat-val" id="schoolPhoneVal">+51 989 316 284</span>
+                <span class="stat-lbl"><i class="bi bi-chat-dots me-1"></i>WhatsApp Oficial FIA</span>
+              </div>
+            </div>
+
+            <!-- 3. Enlace de Zoom de Escuela (Prioritario Sala Oficial) -->
+            <div class="stat-item item-zoom item-prioritized" id="cardZoomEscuela" title="Clic para ver detalles de Sala Oficial de Escuela" role="button" tabindex="0">
+              <div class="stat-icon-wrap">
+                <i class="bi bi-camera-video-fill"></i>
+              </div>
+              <div class="stat-info">
+                <div class="stat-badge-row">
+                  <span class="stat-num-badge">3. Zoom de Escuela</span>
+                  <span class="stat-prio-pill prio-zoom"><i class="bi bi-broadcast me-0.5"></i>En Vivo</span>
+                </div>
+                <span class="stat-val">Sala Oficial Escuela</span>
+                <span class="stat-lbl text-zoom-disclaimer"><i class="bi bi-info-circle-fill me-1"></i>Independiente a DAC</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+    </div>
+
+    <!-- ==================================================================
+         LADO B: FORM SIDE (LADO DERECHO: FORMULARIO CYBER GLASS CENTRADO)
+         ================================================================== -->
+    <main class="form-side" role="main" aria-label="Formulario de Atención al Estudiante">
+      <div class="login-grid-bg"></div>
+
+
+      <div class="form-card-container">
+
+        <!-- ==============================================================
+             PANTALLA DE CONFIRMACIÓN / TICKET POST-ENVÍO
+             ============================================================== -->
+        <div class="success-panel" id="successPanel" role="region" aria-live="polite">
+          <div class="pae-form-card confirmation-card">
+            <div class="confirm-seal-wrap">
+              <i class="bi bi-check2"></i>
+            </div>
+            <div class="confirm-ticket-badge" id="resTicket">ATN-2026-0000</div>
+            <h2 class="confirm-heading">¡Reserva Registrada con Éxito en PAE!</h2>
+            <div class="confirm-faculty-sub">Facultad de Ingeniería y Arquitectura — Plataforma de Atención al Estudiante</div>
+
+            <div class="notice-dac-box">
+              <i class="bi bi-info-circle-fill fs-5" style="color: #60A5FA; float: left; margin-right: 0.65rem; margin-top: 0.15rem;"></i>
+              <div><strong>Aviso Importante sobre su Atención PAE:</strong><br>
+              Estimado(a) estudiante, su solicitud ha sido ingresada a la plataforma <strong>PAE</strong>. La Dirección de Escuela revisará su caso y <strong>se comunicará oportunamente con usted (mediante correo institucional o WhatsApp) enviándole el enlace privado de la sala virtual</strong> para su atención dentro del horario reservado.</div>
+            </div>
+
+            <!-- Ficha Resumen -->
+            <div class="summary-table-box">
+              <div class="summary-row">
+                <span class="summary-lbl"><i class="bi bi-person-badge me-1"></i> Estudiante:</span>
+                <span class="summary-val" id="resNombre">-</span>
+              </div>
+              <div class="summary-row">
+                <span class="summary-lbl"><i class="bi bi-upc-scan me-1"></i> Código de Alumno:</span>
+                <span class="summary-val" id="resCodigo">-</span>
+              </div>
+              <div class="summary-row">
+                <span class="summary-lbl"><i class="bi bi-mortarboard me-1"></i> Carrera Profesional:</span>
+                <span class="summary-val" id="resCarrera">-</span>
+              </div>
+              <div class="summary-row">
+                <span class="summary-lbl"><i class="bi bi-envelope-at me-1"></i> Correo Institucional:</span>
+                <span class="summary-val" id="resCorreo">-</span>
+              </div>
+              <div class="summary-row">
+                <span class="summary-lbl"><i class="bi bi-tag me-1"></i> Tipo de Atención:</span>
+                <span class="summary-val" id="resTipo">-</span>
+              </div>
+              <div class="summary-row">
+                <span class="summary-lbl"><i class="bi bi-calendar-check me-1"></i> Turno Reservado:</span>
+                <span class="summary-val text-highlight" id="resHorario">-</span>
+              </div>
+              <div class="summary-row">
+                <span class="summary-lbl"><i class="bi bi-camera-video me-1"></i> Sala Virtual:</span>
+                <span class="summary-val" style="color: #93C5FD; font-size: 0.78rem;"><i class="bi bi-clock-history me-1"></i>Coordinación le enviará el enlace oportunamente</span>
+              </div>
+              <div class="summary-row">
+                <span class="summary-lbl"><i class="bi bi-clock-history me-1"></i> Fecha de Registro:</span>
+                <span class="summary-val" id="resFecha">-</span>
+              </div>
+              <div class="summary-row">
+                <span class="summary-lbl"><i class="bi bi-shield-check me-1"></i> Estado:</span>
+                <span class="summary-val seal-status"><i class="bi bi-hourglass-split me-1"></i>PENDIENTE DE ATENCIÓN</span>
+              </div>
+            </div>
+
+            <div class="confirm-actions">
+              <button type="button" class="btn-action-light" onclick="window.print()">
+                <i class="bi bi-printer-fill"></i> Imprimir Ticket
+              </button>
+              <button type="button" class="btn-action-primary" id="btnNuevaReserva">
+                <i class="bi bi-calendar-plus-fill"></i> Nueva Reserva
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================================
+             FORMULARIO PRINCIPAL DE RESERVA PAE
+             ============================================================== -->
+        <div id="formSectionWrapper">
+          <div class="pae-form-card">
+            
+            <!-- Selector de Tema (Modo Luz / Modo Oscuro) Solicitado -->
+            <div class="theme-switch-wrapper">
+              <button type="button" class="theme-toggle-btn" id="themeToggleBtn" aria-label="Cambiar a Modo Claro / Oscuro" title="Alternar entre Modo Claro y Modo Oscuro">
+                <span class="theme-toggle-icon">
+                  <i class="bi bi-sun-fill icon-sun"></i>
+                  <i class="bi bi-moon-stars-fill icon-moon"></i>
+                </span>
+                <span class="theme-toggle-label" id="themeToggleText">Modo Claro</span>
+              </button>
+            </div>
+
+            <div class="card-header-top">
+              <img src="img/logo-ucv-virtual.png" alt="UCV Virtual" class="card-logo-img">
+              <div class="card-title-box">
+                <h2>PAE, Plataforma de Atención al Estudiante</h2>
+                <div class="faculty-pill-badge" style="margin-top: 0.35rem; margin-bottom: 0.55rem;">
+                  <i class="bi bi-gear-wide-connected"></i> Facultad de Ingeniería y Arquitectura
+                </div>
+                <p>Reserva tu atención académica (Lunes y Viernes • 7 a 9 PM)</p>
+              </div>
+            </div>
+
+            <!-- Alerta de Errores Global -->
+            <div class="alert-error-box" id="globalAlert" role="alert">
+              <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+              <span id="globalAlertText">Por favor revise los campos señalados en rojo.</span>
+            </div>
+
+            <form id="reservationForm" novalidate autocomplete="off">
+
+              <!-- ========================================================
+                   I. DATOS DEL ESTUDIANTE
+                   ======================================================== -->
+              <div class="form-section-block">
+                <div class="section-label-header">
+                  <span class="section-title-text"><i class="bi bi-person-badge-fill"></i> I. Datos del Estudiante</span>
+                  <span class="optional-tag">Campos obligatorios (<span class="req-star">*</span>)</span>
+                </div>
+
+                <!-- Selector Visual de Carrera Profesional -->
+                <div class="form-group-item" id="wrap_carrera_profesional">
+                  <div class="field-label">
+                    <span>Carrera Profesional <span class="req-star">*</span></span>
+                    <span class="optional-tag">Seleccione su escuela</span>
+                  </div>
+                  <div class="carrera-buttons-grid" id="carreraSegmentedGrid">
+                    <button type="button" class="carrera-btn-option" data-carrera="Ingeniería de Sistemas">
+                      <div class="carrera-icon-circle"><i class="bi bi-laptop"></i></div>
+                      <div>
+                        <span class="carrera-name-main">Ingeniería de Sistemas</span>
+                        <span class="carrera-sub-text">Escuela Profesional</span>
+                      </div>
+                    </button>
+                    <button type="button" class="carrera-btn-option" data-carrera="Ingeniería Industrial">
+                      <div class="carrera-icon-circle"><i class="bi bi-gear-wide-connected"></i></div>
+                      <div>
+                        <span class="carrera-name-main">Ingeniería Industrial</span>
+                        <span class="carrera-sub-text">Escuela Profesional</span>
+                      </div>
+                    </button>
+                  </div>
+                  <select id="carrera_profesional" name="carrera_profesional" class="select-field-custom" style="display: none;" required>
+                    <option value="" selected disabled>Seleccione carrera...</option>
+                    <option value="Ingeniería de Sistemas">Ingeniería de Sistemas</option>
+                    <option value="Ingeniería Industrial">Ingeniería Industrial</option>
+                  </select>
+                  <div class="field-error-feedback"><i class="bi bi-exclamation-circle-fill"></i><span>Seleccione su Carrera Profesional.</span></div>
+                </div>
+
+                <!-- Nombres y Apellidos Completos -->
+                <div class="form-group-item" id="wrap_nombres_completos">
+                  <div class="field-label">
+                    <span>Nombres y Apellidos Completos <span class="req-star">*</span></span>
+                    <span class="optional-tag">Solo letras</span>
+                  </div>
+                  <div class="input-wrapper">
+                    <i class="bi bi-person input-icon-left"></i>
+                    <input type="text" id="nombres_completos" name="nombres_completos" class="input-field-custom" placeholder="Ej. Pérez Rodríguez, Juan Carlos" maxlength="70" autocomplete="name" required>
+                  </div>
+                  <div class="field-error-feedback"><i class="bi bi-exclamation-circle-fill"></i><span>Ingrese sus nombres y apellidos completos (solo letras y espacios, sin números).</span></div>
+                </div>
+
+                <!-- Código Alumno UCV -->
+                <div class="form-group-item" id="wrap_codigo_alumno">
+                  <div class="field-label">
+                    <span>Código de Alumno UCV <span class="req-star">*</span></span>
+                    <span class="optional-tag">10 dígitos numéricos</span>
+                  </div>
+                  <div class="input-wrapper">
+                    <i class="bi bi-upc-scan input-icon-left"></i>
+                    <input type="text" id="codigo_alumno" name="codigo_alumno" class="input-field-custom" placeholder="Ej. 7000184920" inputmode="numeric" maxlength="10" autocomplete="off" required>
+                  </div>
+                  <div class="field-error-feedback"><i class="bi bi-exclamation-circle-fill"></i><span>El código de alumno debe tener exactamente 10 dígitos numéricos (sin letras).</span></div>
+                </div>
+
+                <!-- Correo Institucional -->
+                <div class="form-group-item" id="wrap_correo_institucional">
+                  <div class="field-label">
+                    <span>Correo Institucional UCV <span class="req-star">*</span></span>
+                    <span class="optional-tag">@ucvvirtual.edu.pe</span>
+                  </div>
+                  <div class="input-wrapper">
+                    <i class="bi bi-envelope input-icon-left"></i>
+                    <input type="email" id="correo_institucional" name="correo_institucional" class="input-field-custom" placeholder="ejemplo@ucvvirtual.edu.pe" autocomplete="email" required>
+                  </div>
+                  <div class="field-error-feedback"><i class="bi bi-exclamation-circle-fill"></i><span>Debe ingresar su correo institucional terminado estrictamente en @ucvvirtual.edu.pe.</span></div>
+                </div>
+              </div>
+
+              <!-- ========================================================
+                   II. TIPO DE ATENCIÓN Y MOTIVO
+                   ======================================================== -->
+              <div class="form-section-block">
+                <div class="section-label-header">
+                  <span class="section-title-text"><i class="bi bi-chat-square-text-fill"></i> II. Tipo de Atención y Motivo</span>
+                </div>
+
+                <!-- Tipo de Trámite (Reclamo / Solicitud) -->
+                <div class="form-group-item" id="wrap_tipo_atencion">
+                  <div class="field-label">
+                    <span>Tipo de Atención <span class="req-star">*</span></span>
+                    <span class="optional-tag">Reclamo / Solicitud</span>
+                  </div>
+                  <div class="input-wrapper">
+                    <i class="bi bi-tag input-icon-left"></i>
+                    <select id="tipo_atencion" name="tipo_atencion" class="select-field-custom" required>
+                      <option value="" selected disabled>Seleccione el tipo de atención...</option>
+                      <option value="Reclamo">Reclamo (Evaluaciones, Calificaciones, Plataforma o Docente)</option>
+                      <option value="Solicitud">Solicitud (Justificación, Asesoría, Orientación o Trámite)</option>
+                    </select>
+                  </div>
+                  <div class="field-error-feedback"><i class="bi bi-exclamation-circle-fill"></i><span>Seleccione si es Reclamo o Solicitud.</span></div>
+                </div>
+
+                <!-- Detalle del Motivo -->
+                <div class="form-group-item" id="wrap_detalle_motivo">
+                  <div class="field-label">
+                    <span>Detalle o Breve Descripción del Motivo</span>
+                    <span class="optional-tag">Recomendado</span>
+                  </div>
+                  <textarea id="detalle_motivo" name="detalle_motivo" class="textarea-field-custom" rows="3" placeholder="Indique brevemente el curso o motivo de su reclamo o solicitud para que la Coordinación pueda agilizar su caso."></textarea>
+                </div>
+              </div>
+
+              <!-- ========================================================
+                   III. HORARIO DE ATENCIÓN (8 FRANJAS DE 15 MIN - LUNES Y VIERNES)
+                   ======================================================== -->
+              <div class="form-section-block">
+                <div class="section-label-header">
+                  <span class="section-title-text"><i class="bi bi-calendar-event-fill"></i> III. Horario PAE (Lunes y Viernes • 7 a 9 PM) <span class="req-star">*</span></span>
+                </div>
+
+                <div class="form-group-item" id="wrap_horario">
+                  <p class="schedule-helper-desc">
+                    Seleccione el <strong>Día</strong> y luego la <strong>Franja Horaria de 15 minutos</strong> en la que desea ser atendido:<br>
+                    <small class="text-info-custom"><i class="bi bi-info-circle-fill me-1"></i><strong>Lunes:</strong> Exclusivo Ingeniería de Sistemas &nbsp;|&nbsp; <strong>Viernes:</strong> Exclusivo Ingeniería Industrial</small>
+                  </p>
+
+                  <input type="hidden" id="dia_atencion" name="dia_atencion" required>
+                  <input type="hidden" id="horario_atencion" name="horario_atencion" required>
+
+                  <!-- 1. Días Disponibles (Solo Lunes y Viernes) -->
+                  <div class="field-label mb-2">
+                    <span>1. Elija el día según su carrera:</span>
+                    <span class="optional-tag"><i class="bi bi-shield-check me-1"></i>Cupos en vivo</span>
+                  </div>
+
+                  <div class="days-grid-selector" id="daysGrid">
+                    <button type="button" class="day-btn-option" data-day="Lunes" id="btnDayLunes">
+                      <span class="day-btn-name">Lunes</span>
+                      <span class="day-btn-range">7:00 - 9:00 PM</span>
+                      <span class="day-school-tag"><i class="bi bi-laptop me-1"></i>Ing. de Sistemas</span>
+                      <span class="day-quota-badge" id="badgeDayLunes"><i class="bi bi-clock-history me-1"></i>8 turnos</span>
+                    </button>
+                    <button type="button" class="day-btn-option" data-day="Viernes" id="btnDayViernes">
+                      <span class="day-btn-name">Viernes</span>
+                      <span class="day-btn-range">7:00 - 9:00 PM</span>
+                      <span class="day-school-tag"><i class="bi bi-gear-wide-connected me-1"></i>Ing. Industrial</span>
+                      <span class="day-quota-badge" id="badgeDayViernes"><i class="bi bi-clock-history me-1"></i>8 turnos</span>
+                    </button>
+                  </div>
+
+                  <!-- 2. Los 8 Rectángulos de Franjas Horarias (15 minutos) -->
+                  <div class="field-label mt-3 mb-2">
+                    <span>2. Elija la franja horaria (15 minutos por turno):</span>
+                    <span class="optional-tag" id="slotDayIndicator">Primero elija un día</span>
+                  </div>
+
+                  <div class="hours-grid-selector" id="hoursGrid">
+                    <!-- Turno 1: 7:00 PM a 7:15 PM -->
+                    <button type="button" class="hour-btn-option" data-hour="7:00 PM - 7:15 PM">
+                      <div class="hour-time-line">
+                        <i class="bi bi-clock"></i>
+                        <span>7:00 PM - 7:15 PM</span>
+                      </div>
+                      <span class="slot-status-pill slot-avail"><i class="bi bi-check-circle-fill"></i> Disponible</span>
+                    </button>
+
+                    <!-- Turno 2: 7:15 PM a 7:30 PM -->
+                    <button type="button" class="hour-btn-option" data-hour="7:15 PM - 7:30 PM">
+                      <div class="hour-time-line">
+                        <i class="bi bi-clock"></i>
+                        <span>7:15 PM - 7:30 PM</span>
+                      </div>
+                      <span class="slot-status-pill slot-avail"><i class="bi bi-check-circle-fill"></i> Disponible</span>
+                    </button>
+
+                    <!-- Turno 3: 7:30 PM a 7:45 PM -->
+                    <button type="button" class="hour-btn-option" data-hour="7:30 PM - 7:45 PM">
+                      <div class="hour-time-line">
+                        <i class="bi bi-clock"></i>
+                        <span>7:30 PM - 7:45 PM</span>
+                      </div>
+                      <span class="slot-status-pill slot-avail"><i class="bi bi-check-circle-fill"></i> Disponible</span>
+                    </button>
+
+                    <!-- Turno 4: 7:45 PM a 8:00 PM -->
+                    <button type="button" class="hour-btn-option" data-hour="7:45 PM - 8:00 PM">
+                      <div class="hour-time-line">
+                        <i class="bi bi-clock"></i>
+                        <span>7:45 PM - 8:00 PM</span>
+                      </div>
+                      <span class="slot-status-pill slot-avail"><i class="bi bi-check-circle-fill"></i> Disponible</span>
+                    </button>
+
+                    <!-- Turno 5: 8:00 PM a 8:15 PM -->
+                    <button type="button" class="hour-btn-option" data-hour="8:00 PM - 8:15 PM">
+                      <div class="hour-time-line">
+                        <i class="bi bi-clock"></i>
+                        <span>8:00 PM - 8:15 PM</span>
+                      </div>
+                      <span class="slot-status-pill slot-avail"><i class="bi bi-check-circle-fill"></i> Disponible</span>
+                    </button>
+
+                    <!-- Turno 6: 8:15 PM a 8:30 PM -->
+                    <button type="button" class="hour-btn-option" data-hour="8:15 PM - 8:30 PM">
+                      <div class="hour-time-line">
+                        <i class="bi bi-clock"></i>
+                        <span>8:15 PM - 8:30 PM</span>
+                      </div>
+                      <span class="slot-status-pill slot-avail"><i class="bi bi-check-circle-fill"></i> Disponible</span>
+                    </button>
+
+                    <!-- Turno 7: 8:30 PM a 8:45 PM -->
+                    <button type="button" class="hour-btn-option" data-hour="8:30 PM - 8:45 PM">
+                      <div class="hour-time-line">
+                        <i class="bi bi-clock"></i>
+                        <span>8:30 PM - 8:45 PM</span>
+                      </div>
+                      <span class="slot-status-pill slot-avail"><i class="bi bi-check-circle-fill"></i> Disponible</span>
+                    </button>
+
+                    <!-- Turno 8: 8:45 PM a 9:00 PM -->
+                    <button type="button" class="hour-btn-option" data-hour="8:45 PM - 9:00 PM">
+                      <div class="hour-time-line">
+                        <i class="bi bi-clock"></i>
+                        <span>8:45 PM - 9:00 PM</span>
+                      </div>
+                      <span class="slot-status-pill slot-avail"><i class="bi bi-check-circle-fill"></i> Disponible</span>
+                    </button>
+                  </div>
+
+                  <!-- Previsualización del Turno Seleccionado -->
+                  <div class="selected-schedule-preview" id="previewSchedule" style="display: none;">
+                    <i class="bi bi-check-circle-fill text-success"></i>
+                    <span id="previewScheduleText"></span>
+                  </div>
+
+                  <div class="field-error-feedback" style="margin-top: 0.65rem;">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    <span>Debe seleccionar un día y una franja horaria disponible.</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ========================================================
+                   BOTONES DE ACCIÓN
+                   ======================================================== -->
+              <div class="form-footer-actions">
+                <button type="submit" class="btn-submit-pae" id="btnSubmit">
+                  <i class="bi bi-send-check-fill fs-5"></i>
+                  <span>CONFIRMAR RESERVA EN PAE</span>
+                </button>
+                <button type="button" class="btn-reset-plain" id="btnReset">
+                  Limpiar
+                </button>
+              </div>
+
+              <div class="card-security-footer">
+                <i class="bi bi-shield-lock-fill"></i>
+                <span>Plataforma Oficial UCV • Conexión Segura SSL • Registro Académico</span>
+              </div>
+
+            </form>
+          </div>
+        </div>
+
+        <!-- Enlaces inferiores institucionales -->
+        <div class="form-bottom-links" style="text-align: center; margin-top: 1.25rem; font-size: 0.78rem;">
+          <a href="admin.php" target="_blank" class="bottom-aux-link">
+            <i class="bi bi-lock-fill me-1"></i>Acceso Coordinación
+          </a>
+          <span class="bottom-aux-sep">|</span>
+          <button type="button" id="btnAbrirDescarga" class="bottom-aux-btn">
+            <i class="bi bi-file-earmark-excel-fill text-success me-1"></i>Descargar Registros (Excel)
+          </button>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 1: ZOOM OFICIAL DE LA ESCUELA (INDEPENDIENTE A DAC)
+       ==================================================================== -->
+  <div id="modalZoomEscuela" class="custom-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalZoomTitle">
+    <div class="custom-modal-box">
+      <button type="button" class="custom-modal-close" id="btnCloseZoomModal" aria-label="Cerrar modal">
+        <i class="bi bi-x-lg"></i>
+      </button>
+
+      <div class="modal-header-ucv">
+        <div class="d-flex align-items-center gap-2">
+          <div class="modal-header-icon" style="background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.4); color: #F87171;">
+            <i class="bi bi-camera-video-fill"></i>
+          </div>
+          <div>
+            <h2 class="modal-title" id="modalZoomTitle">Sala Zoom de Escuela</h2>
+            <p class="modal-subtitle">Facultad de Ingeniería y Arquitectura (FIA)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-body-ucv">
+        <div class="notice-dac-box" style="margin-bottom: 1rem; border-color: rgba(248, 113, 113, 0.4); background: rgba(239, 68, 68, 0.12); color: #FECACA;">
+          <i class="bi bi-exclamation-circle-fill me-1" style="color: #F87171;"></i>
+          <strong>Sala Permanente de Escuela — Aclaración Importante:</strong><br>
+          Esta es la sala virtual permanente de la Escuela Profesional (reuniones generales y coordinación académica). Es <strong>completamente independiente a la cita que está programando en la plataforma PAE</strong>.<br><br>
+          Para su turno reservado en PAE, la Coordinación le enviará un enlace privado a su correo institucional o WhatsApp.
+        </div>
+
+        <div class="summary-table-box" style="margin-bottom: 1.2rem;">
+          <div class="summary-row">
+            <span class="summary-lbl"><i class="bi bi-link-45deg me-1"></i> ID de Reunión:</span>
+            <span class="summary-val text-highlight">819 3452 1098</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-lbl"><i class="bi bi-key-fill me-1"></i> Código de Acceso:</span>
+            <span class="summary-val">UCV2026</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-lbl"><i class="bi bi-shield-check me-1"></i> Estado de la Sala:</span>
+            <span class="summary-val seal-status" style="background: rgba(34, 197, 94, 0.2); color: #4ADE80; border-color: rgba(34, 197, 94, 0.4);">
+              <i class="bi bi-check-circle-fill me-1"></i>OFICIAL ACTIVA
+            </span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem;">
+          <a href="https://ucv-edu-pe.zoom.us/j/81934521098" target="_blank" rel="noopener noreferrer" class="modal-submit-btn" style="text-decoration: none; margin-top: 0; background: linear-gradient(135deg, #BE1E2D 0%, #E52336 100%);">
+            <i class="bi bi-box-arrow-up-right"></i>
+            <span>Ingresar a Zoom Escuela</span>
+          </a>
+          <button type="button" class="btn-action-light" id="btnCopiarZoomLink" style="flex: 0 0 auto; padding: 0 1.25rem;">
+            <i class="bi bi-clipboard-check"></i> Copiar Link
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 2: VALIDACIÓN DE CREDENCIALES PARA DESCARGA DE EXCEL
+       ==================================================================== -->
+  <div id="modalDescargaOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalDescargaTitle">
+    <div class="modal-box" id="modalDescargaBox">
+
+      <div class="modal-header-ucv">
+        <div class="d-flex align-items-center gap-2">
+          <div class="modal-header-icon">
+            <i class="bi bi-file-earmark-lock2-fill"></i>
+          </div>
+          <div>
+            <h2 class="modal-title" id="modalDescargaTitle">Validar Credenciales</h2>
+            <p class="modal-subtitle">Descarga de Atenciones Estudiantiles 2026-2</p>
+          </div>
+        </div>
+        <button type="button" class="modal-close-btn" id="btnCerrarModal" aria-label="Cerrar modal de descarga">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="modal-body-ucv">
+        <p class="modal-desc">
+          Ingrese las credenciales institucionales autorizadas de la Coordinación Académica para descargar el reporte consolidado en Excel.
+        </p>
+
+        <div class="modal-alert-error" id="modalAlertError" role="alert">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          <span id="modalAlertText">Credenciales incorrectas.</span>
+        </div>
+
+        <form id="downloadAuthForm" novalidate autocomplete="off">
+          <div class="modal-field">
+            <label for="dlEmail" class="modal-label">
+              <i class="bi bi-envelope-fill me-1"></i> Correo Institucional
+            </label>
+            <input
+              type="email"
+              id="dlEmail"
+              class="modal-input"
+              placeholder="coordinacion.fia@ucvvirtual.edu.pe"
+              autocomplete="username"
+              required
+            >
+          </div>
+
+          <div class="modal-field">
+            <label for="dlPass" class="modal-label">
+              <i class="bi bi-key-fill me-1"></i> Contraseña
+            </label>
+            <div class="modal-input-pw-wrap">
+              <input
+                type="password"
+                id="dlPass"
+                class="modal-input"
+                placeholder="Contraseña de Coordinación"
+                autocomplete="current-password"
+                required
+              >
+              <button type="button" class="toggle-pw-btn" id="btnTogglePw" aria-label="Mostrar contraseña">
+                <i class="bi bi-eye" id="iconTogglePw"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="modal-submit-btn" id="btnDescargarExcel">
+            <i class="bi bi-download"></i>
+            <span>Validar y Descargar Excel</span>
+          </button>
+        </form>
+      </div>
+
+      <div class="modal-footer-ucv">
+        <i class="bi bi-shield-lock-fill me-1" style="color: var(--ucv-navy-light);"></i>
+        Acceso restringido — Solo personal autorizado de la Facultad
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast de Notificación Flotante -->
+  <div id="toastPae" class="toast-pae" role="status" aria-live="polite">
+    <i class="bi bi-check-circle-fill text-success fs-5"></i>
+    <span id="toastPaeText">Información copiada con éxito.</span>
+  </div>
+
+  <!-- Script del Formulario y Lógica Interactiva -->
+  <script src="js/form.js?v=20261012-contrast"></script>
+
+</body>
+</html>

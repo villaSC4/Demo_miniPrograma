@@ -1,0 +1,19 @@
+[
+  {
+    "id": 1,
+    "codigo_ticket": "ATN-2026-1053",
+    "nombres_completos": "Raquel Milagros Villafuerte Santa Cruz",
+    "codigo_alumno": "70023052",
+    "carrera_profesional": "Ingeniería de Sistemas",
+    "correo_institucional": "raquel@gmail.com",
+    "tipo_atencion": "Reclamo",
+    "dia_atencion": "Martes",
+    "horario_atencion": "7:00 PM - 8:00 PM",
+    "detalle_motivo": "Reclamo",
+    "estado": "Pendiente",
+    "link_zoom": "",
+    "observaciones_coordinacion": "",
+    "ip_registro": "181.67.196.226",
+    "fecha_registro": "2026-10-09 21:18:14"
+  }
+]

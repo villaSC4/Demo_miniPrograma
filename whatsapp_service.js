@@ -1,6 +1,6 @@
 /**
  * ==============================================================================
- * WHATSAPP_SERVICE.JS - Microservicio Real de WhatsApp Web para Módulo PAU
+ * WHATSAPP_SERVICE.JS - Microservicio Real de WhatsApp Web para Módulo PAE
  * Basado en @whiskeysockets/baileys (Multi-Device WebSockets)
  * ==============================================================================
  */
@@ -347,7 +347,7 @@ async function startWhatsAppSocket(forceClean = false) {
         const key = msg.key;
         const jid = key.remoteJid;
         if (!jid) continue;
-        // Filtrar estrictamente canales de noticias, transmisiones de estado y grupos de WhatsApp ajenos a PAU
+        // Filtrar estrictamente canales de noticias, transmisiones de estado y grupos de WhatsApp ajenos a PAE
         if (jid === 'status@broadcast' || jid.endsWith('@broadcast') || jid.endsWith('@newsletter') || jid.includes('newsletter') || jid.endsWith('@g.us')) {
           continue;
         }
@@ -674,7 +674,7 @@ app.post('/api/whatsapp/send', async (req, res) => {
     }
 
     if (isSelfUser(targetJid)) {
-      return res.status(400).json({ error: 'No está permitido enviarse mensajes a sí mismo en la bandeja de atención PAU.' });
+      return res.status(400).json({ error: 'No está permitido enviarse mensajes a sí mismo en la bandeja de atención PAE.' });
     }
 
     console.log(`[WA-SEND] Enviando mensaje a targetJid: ${targetJid}`);
@@ -951,7 +951,7 @@ app.post('/api/whatsapp/reconnect', async (req, res) => {
 // Iniciar Servidor Express y Conexión WhatsApp
 app.listen(PORT, () => {
   console.log('==========================================================');
-  console.log(`[OK] Microservicio WhatsApp PAU corriendo en http://localhost:${PORT}`);
+  console.log(`[OK] Microservicio WhatsApp PAE corriendo en http://localhost:${PORT}`);
   console.log('==========================================================');
   startWhatsAppSocket();
 });

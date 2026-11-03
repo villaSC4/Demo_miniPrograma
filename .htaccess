@@ -17,9 +17,12 @@ Options -Indexes
     RewriteRule ^api/pau/?$ api/pau.php [L,QSA]
     RewriteRule ^api/grupos/?$ api/grupos.php [L,QSA]
     RewriteRule ^api/docentes/?$ api/docentes.php [L,QSA]
+    RewriteRule ^api/delegados/?$ api/delegados.php [L,QSA]
     RewriteRule ^api/directorios/?$ api/directorios.php [L,QSA]
     RewriteRule ^api/carpetas/?$ api/carpetas.php [L,QSA]
     RewriteRule ^api/supervisiones/?$ api/supervisiones.php [L,QSA]
+    RewriteRule ^api/dashboard_optimizacion/?$ api/dashboard_optimizacion.php [L,QSA]
+    RewriteRule ^api/rendimiento_industrial/?$ api/rendimiento_industrial.php [L,QSA]
     RewriteRule ^api/reset/?$ api/reset.php [L,QSA]
 </IfModule>
 

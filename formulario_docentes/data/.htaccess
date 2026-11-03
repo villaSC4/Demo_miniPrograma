@@ -1,0 +1,9 @@
+# Bloquear acceso HTTP directo a los archivos de esta carpeta
+# Las firmas sólo se sirven a través de ver_firma.php con sesión admin autenticada
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>

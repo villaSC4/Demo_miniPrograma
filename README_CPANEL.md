@@ -67,7 +67,7 @@ El sistema almacena físicamente todas las modificaciones y evaluaciones en arch
 * `api/grupos.php` — Lectura y guardado de programación modular académica (128 grupos).
 * `api/docentes.php` — Directorio docente oficial (18 docentes UCV por ciclos y carreras).
 * `api/delegados.php` — Padrón persistente de delegados estudiantiles (limpio y dinámico).
-* `api/pau.php` — Módulo de Atención al Estudiante y seguimiento de correos PAU.
+* `api/pau.php` — Módulo de Atención al Estudiante y seguimiento de correos PAE (Plataforma de Atención al Estudiante).
 * `api/directorios.php` — Catálogo y apertura de periodos de gestión académica.
 * `api/carpetas.php` — Supervisión y auditoría de Carpetas Docentes Virtuales (Clementina).
 * `api/supervisiones.php` — Evaluación de Desempeño en Aula con Rúbrica Oficial F03.
@@ -81,5 +81,5 @@ Abre en tu navegador la URL donde lo instalaste:
 * Inicia sesión con **`admin` / `admin123`** o **`coordinacion.fia` / `DelegadosFIA2026`**.
 * En el **Selector de Módulos (`selector.html`)**:
   1. **Módulo 1.1: Docentes y Delegados (`docentes_delegados.html`)** — Dashboard analítico dual (Docentes Tipo 1 y Delegados Tipo 2), gráficos Chart.js, barra de búsqueda en tiempo real, filtros por chips y tabla unificada.
-  2. **Módulo 1.2: Gestión Académica Principal (`index.html`)** — Matriz modular de 128 grupos, monitoreo ejecutivo, filtros de DAC (Sistemas / Industrial), calendario y atención PAU.
+  2. **Módulo 1.2: Gestión Académica Principal (`index.html`)** — Matriz modular de 128 grupos, monitoreo ejecutivo, filtros de DAC (Sistemas / Industrial), calendario y atención PAE.
   3. **Módulo 1.3: Sistema de Evaluación y Rúbricas (`notas-lac.vercel.app`)** — Redirección automática con filtro por carrera.

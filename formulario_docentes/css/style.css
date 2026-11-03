@@ -1,0 +1,1250 @@
+/* ==========================================================================
+   CONTROL DE ASISTENCIA DOCENTE — SEMESTRE 2026-2
+   Facultad de Ingeniería y Arquitectura — Universidad César Vallejo
+   Identidad Visual Institucional UCV (Sobrio, Confiable y Profesional)
+   SISTEMA AISLADO
+   ========================================================================== */
+
+:root {
+  /* Paleta Corporativa UCV */
+  --ucv-navy: #002855;
+  --ucv-navy-dark: #001A38;
+  --ucv-navy-light: #0B3C73;
+  --ucv-red: #C8102E;
+  --ucv-red-hover: #A60D25;
+  --ucv-gold: #D4AF37;
+  
+  /* Tonos Neutros y Superficies */
+  --bg-page: #F4F6F9;
+  --bg-card: #FFFFFF;
+  --border-light: #E2E8F0;
+  --border-input: #CBD5E1;
+  --border-focus: #002855;
+  
+  /* Tipografía y Textos */
+  --text-primary: #1E293B;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+  --text-error: #DC2626;
+  
+  /* Sombras y Radios */
+  --radius-card: 14px;
+  --radius-input: 8px;
+  --shadow-card: 0 4px 18px rgba(0, 40, 85, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-banner: 0 6px 20px rgba(0, 26, 56, 0.12);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================================================
+   1. BARRA SUPERIOR INSTITUCIONAL UCV
+   ========================================================================== */
+.top-institutional-bar {
+  background-color: var(--ucv-navy);
+  color: #FFFFFF;
+  border-bottom: 3px solid var(--ucv-red);
+  padding: 0.65rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.bar-container {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.bar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.bar-logo {
+  height: 34px;
+  width: auto;
+  object-fit: contain;
+}
+
+.bar-divider {
+  width: 1px;
+  height: 26px;
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.bar-text-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.bar-univ-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: #FFFFFF;
+  text-transform: uppercase;
+}
+
+.bar-faculty-sub {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.82);
+  font-weight: 500;
+}
+
+.bar-badge-pill {
+  background-color: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.bar-right-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* ==========================================================================
+   2. CONTENIDO PRINCIPAL
+   ========================================================================== */
+.main-content {
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.75rem 1rem 3rem;
+  flex: 1;
+}
+
+/* ==========================================================================
+   3. PANTALLA DE CONFIRMACIÓN (POST-ENVÍO)
+   ========================================================================== */
+.success-panel {
+  display: none;
+}
+.success-panel.active {
+  display: block;
+  animation: fadeSlideIn 0.5s ease;
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.confirmation-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+
+.confirm-seal-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+  margin-bottom: 1.25rem;
+}
+.confirm-seal-wrap i {
+  font-size: 2.4rem;
+  color: #059669;
+}
+
+.confirm-heading {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--ucv-navy);
+  margin-bottom: 0.3rem;
+}
+
+.confirm-faculty-sub {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+}
+
+.confirm-message {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  max-width: 520px;
+  margin: 0 auto 1.75rem;
+  line-height: 1.65;
+}
+
+/* Ficha Resumen */
+.summary-table-box {
+  background: #F8FAFC;
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  text-align: left;
+  max-width: 520px;
+  margin: 0 auto 1.75rem;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid #EDF2F7;
+  gap: 1rem;
+}
+.summary-row:last-child {
+  border-bottom: none;
+}
+
+.summary-lbl {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.summary-val {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: right;
+  word-break: break-word;
+}
+
+.seal-status {
+  color: #059669 !important;
+  background: #ECFDF5;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-action-light {
+  padding: 0.7rem 1.5rem;
+  background: #F8FAFC;
+  color: var(--text-secondary);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-input);
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s;
+}
+.btn-action-light:hover {
+  background: #EDF2F7;
+  border-color: #CBD5E1;
+}
+
+.btn-action-primary {
+  padding: 0.7rem 1.5rem;
+  background: var(--ucv-navy);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-input);
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s;
+}
+.btn-action-primary:hover {
+  background: var(--ucv-navy-light);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 40, 85, 0.25);
+}
+
+/* ==========================================================================
+   4. TARJETA DEL FORMULARIO
+   ========================================================================== */
+.form-main-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+/* Cabecera del Formulario */
+.form-header-intro {
+  background: linear-gradient(135deg, #002855 0%, #0B3C73 100%);
+  color: #FFFFFF;
+  padding: 2rem 2rem 1.75rem;
+}
+
+.intro-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.85rem;
+}
+
+.intro-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: 0.3rem;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.intro-subtitle {
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.intro-message {
+  font-size: 0.84rem;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.6;
+  margin-bottom: 1.15rem;
+  max-width: 650px;
+}
+
+.notice-box {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0.55rem 0.85rem;
+  border-radius: var(--radius-input);
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.req-indicator {
+  color: #FF6B6B;
+  font-weight: 800;
+}
+
+/* Bloques de secciones del formulario */
+.form-block-section {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #F1F5F9;
+}
+.form-block-section:last-of-type {
+  border-bottom: none;
+}
+
+.block-title {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--ucv-navy);
+  margin-bottom: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.block-title i {
+  font-size: 1.1rem;
+  color: var(--ucv-red);
+}
+
+/* ==========================================================================
+   5. CAMPOS DE ENTRADA
+   ========================================================================== */
+.field-item {
+  margin-bottom: 1.15rem;
+}
+
+.field-label-text {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.4rem;
+}
+
+.req-star {
+  color: var(--ucv-red);
+  font-weight: 800;
+}
+
+.optional-tag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: #F1F5F9;
+  padding: 0.1rem 0.5rem;
+  border-radius: 4px;
+}
+
+.input-control {
+  width: 100%;
+  padding: 0.72rem 0.9rem;
+  background: #FFFFFF;
+  border: 1.5px solid var(--border-input);
+  border-radius: var(--radius-input);
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-control:focus {
+  border-color: var(--ucv-navy);
+  box-shadow: 0 0 0 3px rgba(0, 40, 85, 0.1);
+}
+
+.input-control::placeholder {
+  color: #A0AEC0;
+  font-weight: 400;
+}
+
+textarea.input-control {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.select-control {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23475569' d='M6 8.5L1 3.5h10L6 8.5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  padding-right: 2.5rem;
+}
+
+/* Error en campos */
+.input-error-feedback {
+  display: none;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.35rem;
+  color: var(--text-error);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.input-error-feedback i {
+  font-size: 0.85rem;
+}
+
+.field-item.has-error .input-control,
+.field-item.has-error .select-control {
+  border-color: var(--text-error);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
+}
+
+.field-item.has-error .input-error-feedback {
+  display: flex;
+}
+
+/* ==========================================================================
+   6. SELECTOR INSTITUCIONAL DE CICLOS ACADÉMICOS (Grid de Botones)
+   ========================================================================== */
+.ciclo-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+  margin-top: 0.2rem;
+}
+
+.ciclo-btn-option {
+  background: #FFFFFF;
+  border: 1.5px solid var(--border-input);
+  border-radius: var(--radius-input);
+  padding: 0.6rem 0.2rem;
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.ciclo-btn-option:hover {
+  background: #F1F5F9;
+  border-color: #94A3B8;
+}
+
+.ciclo-btn-option.selected {
+  background-color: var(--ucv-navy);
+  border-color: var(--ucv-navy);
+  color: #FFFFFF;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(0, 40, 85, 0.2);
+}
+
+/* ==========================================================================
+   7. FIRMA DIGITAL (Canvas y Subida de Archivo)
+   ========================================================================== */
+/* Pestañas de modo de firma (Dibujar vs Subir) */
+.signature-tabs-wrap {
+  margin-bottom: 0.75rem;
+}
+
+.signature-tabs-nav {
+  display: flex;
+  gap: 0.5rem;
+  background: #F1F5F9;
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+}
+
+.sig-tab-btn {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+}
+
+.sig-tab-btn:hover {
+  color: var(--ucv-navy);
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.sig-tab-btn.active {
+  background: #FFFFFF;
+  color: var(--ucv-navy);
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Panel de subida de imagen de firma */
+.signature-upload-panel {
+  margin-bottom: 0.75rem;
+}
+
+.sig-dropzone {
+  border: 2px dashed #CBD5E1;
+  border-radius: var(--radius-input);
+  background: #FAFBFC;
+  padding: 1.25rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sig-dropzone:hover,
+.sig-dropzone.dragover {
+  border-color: var(--ucv-navy);
+  background: #F0F7FF;
+}
+
+.sig-dropzone-icon {
+  font-size: 2rem;
+  color: var(--ucv-navy);
+  margin-bottom: 0.25rem;
+}
+
+.sig-dropzone-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+}
+
+.sig-dropzone-subtitle {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.btn-select-file {
+  background: #FFFFFF;
+  border: 1.5px solid var(--ucv-navy);
+  color: var(--ucv-navy);
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.15s ease;
+}
+
+.btn-select-file:hover {
+  background: var(--ucv-navy);
+  color: #FFFFFF;
+}
+
+.sig-file-loaded-info {
+  margin-top: 0.5rem;
+}
+
+.sig-file-loaded-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.85rem;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+}
+
+.sig-file-loaded-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  overflow: hidden;
+}
+
+.sig-file-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 250px;
+}
+
+.sig-file-size {
+  font-size: 0.72rem;
+}
+
+.btn-remove-file {
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  color: var(--text-error);
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all 0.15s ease;
+}
+
+.btn-remove-file:hover {
+  background: #FEE2E2;
+}
+
+.signature-area {
+  margin-bottom: 0.5rem;
+}
+
+.signature-canvas-wrap {
+  position: relative;
+  border: 2px dashed var(--border-input);
+  border-radius: var(--radius-input);
+  background: #FAFBFC;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.signature-canvas-wrap:hover,
+.signature-canvas-wrap.active {
+  border-color: var(--ucv-navy);
+  border-style: solid;
+}
+
+.signature-canvas-wrap canvas {
+  display: block;
+  width: 100%;
+  height: 160px;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.signature-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #A0AEC0;
+  font-size: 0.82rem;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.signature-placeholder i {
+  display: block;
+  font-size: 1.8rem;
+  margin-bottom: 0.3rem;
+}
+
+.signature-canvas-wrap.has-signature .signature-placeholder {
+  opacity: 0;
+}
+
+.signature-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.btn-clear-firma {
+  background: none;
+  border: 1px solid var(--border-input);
+  border-radius: 6px;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: all 0.15s;
+}
+.btn-clear-firma:hover {
+  background: #FEF2F2;
+  color: var(--text-error);
+  border-color: #FECACA;
+}
+
+.field-item.has-error .signature-canvas-wrap {
+  border-color: var(--text-error);
+  border-style: solid;
+}
+
+/* ==========================================================================
+   8. DECLARACIÓN JURADA Y CONSENTIMIENTO
+   ========================================================================== */
+.compliance-box {
+  background: #F8FAFC;
+  border: 1.5px solid var(--border-light);
+  border-radius: 10px;
+  padding: 1.25rem;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.compliance-box.active {
+  border-color: #059669;
+  background: #F0FDF9;
+}
+
+.compliance-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #EDF2F7;
+  color: var(--ucv-navy);
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.2rem 0.65rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.75rem;
+}
+
+.compliance-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  cursor: pointer;
+}
+
+.compliance-checkbox {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  accent-color: var(--ucv-navy);
+  cursor: pointer;
+  margin-top: 2px;
+}
+
+.compliance-text {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.compliance-box.has-error {
+  border-color: var(--text-error);
+}
+
+/* ==========================================================================
+   9. ALERTA GLOBAL DE ERRORES
+   ========================================================================== */
+.alert-error-box {
+  display: none;
+  align-items: center;
+  gap: 0.6rem;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  color: var(--text-error);
+  border-radius: var(--radius-input);
+  padding: 0.75rem 1rem;
+  margin: 0 2rem 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.alert-error-box.show {
+  display: flex;
+}
+
+/* ==========================================================================
+   10. BOTONES DE ACCIÓN DEL FORMULARIO
+   ========================================================================== */
+.form-footer-actions {
+  padding: 1.25rem 2rem 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid #F1F5F9;
+}
+
+.btn-submit-ucv {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 2.25rem;
+  background: linear-gradient(135deg, #C8102E 0%, #A60D25 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-input);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 3px 12px rgba(200, 16, 46, 0.25);
+}
+.btn-submit-ucv:hover {
+  background: linear-gradient(135deg, #A60D25 0%, #8A0B1F 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(200, 16, 46, 0.35);
+}
+.btn-submit-ucv:active {
+  transform: translateY(0);
+}
+.btn-submit-ucv:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-reset-plain {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-input);
+  transition: all 0.15s;
+}
+.btn-reset-plain:hover {
+  color: var(--text-error);
+  background: #FEF2F2;
+}
+
+/* Spinner de carga dentro de botón */
+.spinner-sm {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2.5px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #FFFFFF;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   11. PIE DE PÁGINA INSTITUCIONAL
+   ========================================================================== */
+.footer-institutional {
+  background-color: var(--ucv-navy-dark);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 1.25rem 1.5rem;
+  font-size: 0.76rem;
+  text-align: center;
+  margin-top: auto;
+}
+
+.footer-inner {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.footer-inner a,
+.footer-download-btn {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.15s;
+}
+
+.footer-inner a:hover,
+.footer-download-btn:hover {
+  color: #FFFFFF;
+  text-decoration: underline;
+}
+
+.footer-download-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.76rem;
+  padding: 0;
+}
+
+/* ==========================================================================
+   12. MODALES
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 20, 50, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s, visibility 0.25s;
+}
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-box {
+  background: #FFFFFF;
+  border-radius: 16px;
+  max-width: 460px;
+  width: 100%;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  transform: translateY(20px) scale(0.96);
+  transition: transform 0.3s ease;
+  overflow: hidden;
+}
+.modal-overlay.active .modal-box {
+  transform: translateY(0) scale(1);
+}
+
+.modal-header-ucv {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.modal-header-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  background: rgba(200, 16, 46, 0.08);
+  color: var(--ucv-red);
+  flex-shrink: 0;
+}
+
+.modal-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--ucv-navy);
+  margin: 0;
+}
+
+.modal-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.modal-close-btn {
+  margin-left: auto;
+  background: none;
+  border: none;
+  font-size: 1.15rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.35rem;
+  border-radius: 8px;
+  transition: all 0.15s;
+}
+.modal-close-btn:hover {
+  background: #F1F5F9;
+  color: var(--text-primary);
+}
+
+.modal-body-ucv {
+  padding: 1.5rem;
+}
+
+.modal-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.25rem;
+  line-height: 1.55;
+}
+
+.modal-field {
+  margin-bottom: 0.85rem;
+}
+
+.modal-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.35rem;
+}
+.modal-label i {
+  color: var(--ucv-navy);
+  font-size: 0.9rem;
+}
+
+.modal-input {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  background: #FFFFFF;
+  border: 1.5px solid var(--border-input);
+  border-radius: var(--radius-input);
+  font-family: inherit;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.modal-input:focus {
+  border-color: var(--ucv-navy);
+  box-shadow: 0 0 0 3px rgba(0, 40, 85, 0.1);
+}
+.modal-input.input-error {
+  border-color: var(--text-error);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
+}
+
+.modal-input-pw-wrap {
+  position: relative;
+}
+.modal-input-pw-wrap .modal-input {
+  padding-right: 2.8rem;
+}
+
+.toggle-pw-btn {
+  position: absolute;
+  right: 0.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 0.2rem;
+}
+.toggle-pw-btn:hover {
+  color: var(--ucv-navy);
+}
+
+.modal-submit-btn {
+  width: 100%;
+  margin-top: 0.6rem;
+  padding: 0.75rem;
+  background: var(--ucv-red);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-input);
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 0.88rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  transition: all 0.2s;
+}
+.modal-submit-btn:hover {
+  background: var(--ucv-red-hover);
+}
+.modal-submit-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.modal-alert-error {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  color: var(--text-error);
+  border-radius: var(--radius-input);
+  padding: 0.6rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+.modal-alert-error.show {
+  display: flex;
+}
+
+.modal-footer-ucv {
+  padding: 0.85rem 1.5rem;
+  background: #F9FAFB;
+  border-top: 1px solid #F1F5F9;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  text-align: center;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   13. RESPONSIVE
+   ========================================================================== */
+@media (max-width: 768px) {
+  .bar-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .bar-right-group {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+  .bar-badge-pill {
+    font-size: 0.68rem;
+  }
+  .main-content {
+    padding: 1rem 0.5rem 2rem;
+  }
+  .form-header-intro {
+    padding: 1.5rem 1.25rem;
+  }
+  .intro-title {
+    font-size: 1.25rem;
+  }
+  .form-block-section {
+    padding: 1.25rem 1.25rem;
+  }
+  .ciclo-selector-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.35rem;
+  }
+  .ciclo-btn-option {
+    padding: 0.55rem 0.1rem;
+    font-size: 0.78rem;
+  }
+  .form-footer-actions {
+    padding: 1rem 1.25rem 1.5rem;
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+  }
+  .btn-submit-ucv {
+    width: 100%;
+  }
+  .confirm-actions {
+    flex-direction: column;
+  }
+  .btn-action-light,
+  .btn-action-primary {
+    width: 100%;
+    justify-content: center;
+  }
+  .alert-error-box {
+    margin: 0 1.25rem 0.5rem;
+  }
+}
+
+/* ==========================================================================
+   14. IMPRESIÓN
+   ========================================================================== */
+@media print {
+  body {
+    background: #fff !important;
+  }
+  .top-institutional-bar,
+  .footer-institutional,
+  .form-footer-actions,
+  .btn-action-light,
+  .btn-action-primary,
+  .modal-overlay,
+  .notice-box {
+    display: none !important;
+  }
+  .main-content {
+    max-width: 100%;
+    padding: 0;
+  }
+  .confirmation-card {
+    border: none;
+    box-shadow: none;
+    padding: 1rem;
+  }
+}

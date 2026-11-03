@@ -1,0 +1,2101 @@
+/* ==========================================================================
+   PAE — PLATAFORMA DE ATENCIÓN AL ESTUDIANTE 2026-2
+   Facultad de Ingeniería y Arquitectura — Universidad César Vallejo (UCV)
+   Diseño Split-Screen Premium: Cyber-Glassmorphism Institucional
+   ========================================================================== */
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --ucv-navy-dark: #030A14;
+  --ucv-navy: #071930;
+  --ucv-navy-surface: #0E2545;
+  --ucv-navy-light: #163B6B;
+  --ucv-red: #BE1E2D;
+  --ucv-red-bright: #E52336;
+  --ucv-red-glow: rgba(190, 30, 45, 0.45);
+  --ucv-blue: #0D6EFD;
+  --ucv-blue-glow: rgba(13, 110, 253, 0.35);
+  --ucv-gold: #FFD166;
+  --glass-bg: rgba(10, 28, 54, 0.86);
+  --glass-border: rgba(255, 255, 255, 0.16);
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.72);
+  --text-muted: rgba(255, 255, 255, 0.52);
+  --input-bg: rgba(7, 23, 46, 0.85);
+  --input-border: rgba(255, 255, 255, 0.18);
+  --input-focus: #0D6EFD;
+  --success-color: #22C55E;
+  --danger-color: #EF4444;
+  --transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+html, body {
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--ucv-navy-dark);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  color: var(--text-primary);
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   1. CONTENEDOR PRINCIPAL SPLIT-SCREEN
+   ========================================================================== */
+.pae-split-container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--ucv-navy-dark);
+}
+
+/* ==========================================================================
+   2. HERO SIDE (LADO IZQUIERDO FIJO PERMANENTE - NUNCA SE MUEVE AL SCROLLEAR)
+   ========================================================================== */
+.hero-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100vh;
+  z-index: 10;
+  pointer-events: auto;
+  overflow: hidden;
+  contain: layout paint;
+}
+
+.hero-side {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2.2rem 3.2rem 2.2rem 2.8rem;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 90px) 100%, 0 100%);
+  overflow: hidden;
+}
+
+/* Fondo con Fotografía del Campus UCV */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('../img/UCV.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  z-index: 0;
+  transform: translateZ(0);
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(3, 10, 20, 0.82) 0%,
+    rgba(7, 25, 48, 0.65) 45%,
+    rgba(190, 30, 45, 0.45) 85%,
+    rgba(3, 10, 20, 0.92) 100%
+  );
+  backdrop-filter: blur(2px);
+  z-index: 1;
+}
+
+/* Tira de Láser Diagonal */
+.diagonal-laser-svg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 90px;
+  height: 100%;
+  z-index: 5;
+  pointer-events: none;
+  overflow: visible;
+}
+
+/* Cabecera del Hero */
+.hero-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.hero-logo-box {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(3, 10, 20, 0.72);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  padding: 0.65rem 1.25rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.hero-logo-box img {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4));
+}
+
+.hero-top-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.95rem;
+  background: rgba(190, 30, 45, 0.28);
+  border: 1px solid rgba(190, 30, 45, 0.55);
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #FFB3BA;
+  letter-spacing: 0.2px;
+  box-shadow: 0 4px 15px rgba(190, 30, 45, 0.2);
+}
+
+/* Centro del Hero */
+.hero-center {
+  position: relative;
+  z-index: 2;
+  max-width: 580px;
+  margin: 1.8rem 0;
+}
+
+.hero-center h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(2rem, 2.7vw, 3rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: #FFFFFF;
+  margin-bottom: 0.95rem;
+  letter-spacing: -0.025em;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.65);
+}
+
+.gradient-highlight {
+  background: linear-gradient(135deg, #FFFFFF 15%, #93C5FD 55%, #FCA5A5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-center p {
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 400;
+  margin-bottom: 1.35rem;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.hero-feature-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.42rem 0.85rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  transition: var(--transition);
+}
+
+.hero-tag:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.hero-tag i {
+  color: var(--ucv-gold);
+}
+
+/* ==========================================================================
+   LAS 3 TARJETAS EN EL PIE DEL HERO (CORREO, CONTACTO, ZOOM DE ESCUELA)
+   ========================================================================== */
+.hero-footer {
+  position: relative;
+  z-index: 2;
+  margin-top: 1.2rem;
+}
+
+.hero-stats-card {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 0.75rem;
+  background: rgba(3, 10, 20, 0.78);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 18px;
+  padding: 1rem 1.15rem;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+}
+
+.stat-item {
+  flex: 1 1 170px;
+  min-width: 155px;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 13px;
+  transition: var(--transition);
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.stat-item:hover {
+  transform: translateY(-2px);
+}
+
+/* 1. Correo de la Escuela (Adaptable y centrado) */
+.stat-item.item-email {
+  flex: 1 1 200px;
+  background: rgba(96, 165, 250, 0.08);
+  border-color: rgba(96, 165, 250, 0.22);
+}
+
+.stat-item.item-email:hover {
+  background: rgba(96, 165, 250, 0.16);
+  border-color: rgba(96, 165, 250, 0.45);
+}
+
+/* 2. WhatsApp de Escuela (Prioridad Directa) */
+.stat-item.item-contact {
+  flex: 1 1 180px;
+  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(34, 197, 94, 0.35);
+  box-shadow: 0 0 14px rgba(34, 197, 94, 0.12);
+}
+
+.stat-item.item-contact:hover {
+  background: rgba(34, 197, 94, 0.22);
+  border-color: rgba(34, 197, 94, 0.6);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.25);
+}
+
+/* 3. Zoom de Escuela (Prioridad Sala Oficial) */
+.stat-item.item-zoom {
+  flex: 1 1 180px;
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.35);
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.12);
+}
+
+.stat-item.item-zoom:hover {
+  background: rgba(239, 68, 68, 0.22);
+  border-color: rgba(239, 68, 68, 0.6);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.25);
+}
+
+.stat-icon-wrap {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.15rem;
+}
+
+.stat-item.item-email .stat-icon-wrap {
+  background: rgba(96, 165, 250, 0.22);
+  color: #60A5FA;
+  border: 1px solid rgba(96, 165, 250, 0.4);
+}
+
+.stat-item.item-contact .stat-icon-wrap {
+  background: rgba(34, 197, 94, 0.25);
+  color: #4ADE80;
+  border: 1px solid rgba(34, 197, 94, 0.5);
+}
+
+.stat-item.item-zoom .stat-icon-wrap {
+  background: rgba(248, 113, 113, 0.25);
+  color: #F87171;
+  border: 1px solid rgba(248, 113, 113, 0.5);
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+  flex: 1;
+}
+
+.stat-badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  margin-bottom: 0.12rem;
+}
+
+.stat-num-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.stat-prio-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.58rem;
+  font-weight: 800;
+  padding: 0.15rem 0.42rem;
+  border-radius: 999px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.stat-prio-pill.prio-wa {
+  background: rgba(34, 197, 94, 0.25);
+  color: #4ADE80;
+  border: 1px solid rgba(34, 197, 94, 0.5);
+}
+
+.stat-prio-pill.prio-zoom {
+  background: rgba(248, 113, 113, 0.25);
+  color: #FCA5A5;
+  border: 1px solid rgba(248, 113, 113, 0.5);
+}
+
+.stat-item.item-email .stat-num-badge { color: #93C5FD; }
+.stat-item.item-contact .stat-num-badge { color: #86EFAC; }
+.stat-item.item-zoom .stat-num-badge { color: #FCA5A5; }
+
+.stat-val {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat-lbl {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.65);
+  font-weight: 500;
+  line-height: 1.3;
+  margin-top: 0.15rem;
+}
+
+.text-zoom-disclaimer {
+  color: #FEF08A !important;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   3. FORM SIDE (LADO DERECHO: TARJETA DE RESERVA CENTRADA CON CYBER GRID)
+   ========================================================================== */
+.form-side {
+  position: relative;
+  margin-left: 50%;
+  width: 50%;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2.2rem 2rem 3.5rem;
+  z-index: 1;
+  background:
+    radial-gradient(circle at 85% 15%, rgba(190, 30, 45, 0.15) 0%, transparent 45%),
+    radial-gradient(circle at 15% 85%, rgba(13, 110, 253, 0.12) 0%, transparent 45%),
+    var(--ucv-navy-dark);
+}
+
+/* Cuadrícula Cyber Grid de Fondo */
+.login-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Contenedor y Tarjeta Principal del Formulario */
+.form-card-container {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 590px;
+  margin: 0 auto;
+}
+
+.pae-form-card {
+  background: rgba(8, 22, 44, 0.94);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 24px;
+  padding: 2.2rem 2.2rem 2rem;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.55);
+  position: relative;
+  overflow: hidden;
+  transform: translateZ(0);
+}
+
+/* Barra Superior Láser de Acento */
+.pae-form-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4.5px;
+  background: linear-gradient(90deg, #BE1E2D 0%, #FF4655 40%, #0D6EFD 80%, #38BDF8 100%);
+}
+
+/* ==========================================================================
+   SELECTOR DE TEMA (MODO LUZ / MODO OSCURO) — BOTÓN DE CONTROL
+   ========================================================================== */
+.theme-switch-wrapper {
+  position: absolute;
+  top: 1.15rem;
+  right: 1.35rem;
+  z-index: 25;
+}
+
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.82rem;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  color: #FFFFFF;
+  font-family: inherit;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+  user-select: none;
+}
+
+.theme-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.38);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.38);
+}
+
+.theme-toggle-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.92rem;
+  color: #FBBF24;
+  transition: transform 0.3s ease;
+}
+
+.theme-toggle-icon .icon-sun {
+  display: inline-block;
+}
+
+.theme-toggle-icon .icon-moon {
+  display: none;
+}
+
+.theme-toggle-label {
+  letter-spacing: 0.2px;
+}
+
+/* Cabecera de la Tarjeta */
+.card-header-top {
+  text-align: center;
+  margin-bottom: 1.4rem;
+}
+
+.card-logo-img {
+  max-width: 190px;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 0.85rem;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.4));
+  transition: transform 0.25s ease;
+}
+
+.card-logo-img:hover {
+  transform: scale(1.03);
+}
+
+.card-title-box h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
+}
+
+.card-title-box p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.faculty-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.55rem;
+  padding: 0.30rem 0.85rem;
+  background: rgba(190, 30, 45, 0.24);
+  border: 1px solid rgba(190, 30, 45, 0.5);
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #FFB3BA;
+  letter-spacing: 0.02em;
+}
+
+/* Alerta de Error Global */
+.alert-error-box {
+  display: none;
+  align-items: flex-start;
+  gap: 0.65rem;
+  background: rgba(220, 38, 38, 0.22);
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.25rem;
+  color: #FECACA;
+  font-size: 0.84rem;
+  animation: shake 0.4s ease;
+}
+
+.alert-error-box.show {
+  display: flex;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+/* ==========================================================================
+   4. CAMPOS DEL FORMULARIO
+   ========================================================================== */
+.form-section-block {
+  margin-bottom: 1.45rem;
+  padding-bottom: 1.35rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.form-section-block:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0.8rem;
+  padding-bottom: 0;
+}
+
+.section-label-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+}
+
+.section-title-text {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #93C5FD;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.section-title-text i {
+  color: #60A5FA;
+}
+
+/* Selector de Carrera (Botones Grandes Interactivos) */
+.carrera-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 0.95rem;
+}
+
+.carrera-btn-option {
+  background: rgba(14, 37, 69, 0.65);
+  border: 1.5px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  padding: 0.85rem 0.95rem;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: var(--transition);
+  text-align: left;
+}
+
+.carrera-btn-option:hover {
+  background: rgba(22, 59, 107, 0.85);
+  border-color: #60A5FA;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(13, 110, 253, 0.25);
+}
+
+.carrera-btn-option.selected {
+  background: linear-gradient(135deg, rgba(13, 110, 253, 0.85) 0%, rgba(30, 64, 175, 0.95) 100%);
+  border-color: #93C5FD;
+  box-shadow: 0 8px 24px rgba(13, 110, 253, 0.4);
+}
+
+.carrera-icon-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  color: #93C5FD;
+  flex-shrink: 0;
+}
+
+.carrera-btn-option.selected .carrera-icon-circle {
+  background: #FFFFFF;
+  color: #0D6EFD;
+}
+
+.carrera-name-main {
+  font-size: 0.88rem;
+  font-weight: 700;
+  display: block;
+}
+
+.carrera-sub-text {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  display: block;
+}
+
+.carrera-btn-option.selected .carrera-sub-text {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Grupos de Inputs Estilizados */
+.form-group-item {
+  margin-bottom: 0.95rem;
+}
+
+.field-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.35rem;
+}
+
+.req-star {
+  color: #EF4444;
+  margin-left: 2px;
+}
+
+.optional-tag {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-icon-left {
+  position: absolute;
+  left: 1rem;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+  transition: var(--transition);
+}
+
+.input-field-custom,
+.select-field-custom,
+.textarea-field-custom {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1.5px solid var(--input-border);
+  border-radius: 12px;
+  padding: 0.75rem 1rem 0.75rem 2.65rem;
+  font-size: 0.88rem;
+  font-family: inherit;
+  font-weight: 500;
+  color: #FFFFFF;
+  transition: var(--transition);
+  outline: none;
+}
+
+.input-field-custom:focus,
+.select-field-custom:focus,
+.textarea-field-custom:focus {
+  border-color: #60A5FA;
+  background: rgba(10, 32, 64, 0.95);
+  box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.25);
+}
+
+.input-wrapper:focus-within .input-icon-left {
+  color: #60A5FA;
+}
+
+.input-field-custom::placeholder,
+.textarea-field-custom::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.select-field-custom option {
+  background: #0B2545;
+  color: #FFFFFF;
+  padding: 0.5rem;
+}
+
+.textarea-field-custom {
+  padding-left: 1rem;
+  resize: vertical;
+  min-height: 72px;
+}
+
+/* Feedback de Error */
+.field-error-feedback {
+  display: none;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.74rem;
+  color: #F87171;
+  font-weight: 600;
+  margin-top: 0.35rem;
+}
+
+.has-error .input-field-custom,
+.has-error .select-field-custom,
+.has-error .textarea-field-custom {
+  border-color: #EF4444 !important;
+  background: rgba(239, 68, 68, 0.1) !important;
+}
+
+.has-error .field-error-feedback {
+  display: flex;
+}
+
+/* ==========================================================================
+   5. SECCIÓN III: SELECTOR INTERACTIVO DE HORARIOS (4 FRANJAS DE 30 MIN)
+   ========================================================================== */
+.schedule-helper-desc {
+  font-size: 0.80rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  line-height: 1.45;
+}
+
+.days-grid-selector {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.65rem;
+  margin-bottom: 0.95rem;
+}
+
+.day-btn-option {
+  background: rgba(14, 37, 69, 0.7);
+  border: 1.5px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  padding: 0.75rem 0.5rem;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  transition: var(--transition);
+  text-align: center;
+}
+
+.day-btn-option:hover {
+  background: rgba(22, 59, 107, 0.9);
+  border-color: #60A5FA;
+  transform: translateY(-2px);
+}
+
+.day-btn-option.selected {
+  background: linear-gradient(135deg, #BE1E2D 0%, #E52336 100%);
+  border-color: #FFA4AE;
+  box-shadow: 0 6px 18px rgba(190, 30, 45, 0.45);
+}
+
+.day-btn-name {
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.day-btn-range {
+  font-size: 0.70rem;
+  color: var(--text-muted);
+}
+
+.day-btn-option.selected .day-btn-range {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.day-school-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #38BDF8;
+  background: rgba(56, 189, 248, 0.14);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 999px;
+  padding: 0.14rem 0.6rem;
+  letter-spacing: 0.2px;
+}
+
+.day-btn-option.selected .day-school-tag {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.day-quota-badge,
+.day-quota-pill {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(13, 110, 253, 0.3);
+  color: #93C5FD;
+  border: 1px solid rgba(13, 110, 253, 0.45);
+  margin-top: 0.15rem;
+  letter-spacing: 0.2px;
+}
+
+.day-quota-badge.full,
+.day-quota-badge.day-full,
+.day-quota-pill.day-full {
+  background: rgba(239, 68, 68, 0.3);
+  color: #FCA5A5;
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.day-btn-option.selected .day-quota-badge,
+.day-btn-option.selected .day-quota-pill {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+  border-color: transparent;
+}
+
+.text-info-custom {
+  color: #38BDF8;
+  display: inline-block;
+  margin-top: 0.35rem;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+/* Grilla de Franjas Horarias (8 rectángulos de 15 min) */
+.hours-grid-selector {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.60rem;
+}
+
+@media (min-width: 640px) {
+  .hours-grid-selector {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.hour-btn-option {
+  background: rgba(14, 37, 69, 0.65);
+  border: 1.5px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  padding: 0.75rem 0.65rem;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.30rem;
+  transition: var(--transition);
+  text-align: center;
+}
+
+.hour-btn-option:hover:not(:disabled):not(.is-occupied) {
+  background: rgba(22, 59, 107, 0.9);
+  border-color: #60A5FA;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(13, 110, 253, 0.25);
+}
+
+.hour-btn-option.selected {
+  background: linear-gradient(135deg, #0D6EFD 0%, #1E40AF 100%);
+  border-color: #93C5FD;
+  box-shadow: 0 8px 22px rgba(13, 110, 253, 0.45);
+}
+
+.hour-time-line {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.hour-time-line i {
+  color: #FF6B6B;
+}
+
+.hour-btn-option.selected .hour-time-line i {
+  color: #FFFFFF;
+}
+
+.slot-status-pill {
+  font-size: 0.66rem;
+  font-weight: 700;
+  padding: 0.12rem 0.50rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.slot-status-pill.slot-avail {
+  background: rgba(34, 197, 94, 0.22);
+  color: #4ADE80;
+  border: 1px solid rgba(34, 197, 94, 0.4);
+}
+
+.slot-status-pill.slot-occupied {
+  background: rgba(239, 68, 68, 0.22);
+  color: #F87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.hour-btn-option.selected .slot-status-pill.slot-avail {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+  border-color: transparent;
+}
+
+/* Horario Ocupado / Bloqueado */
+.hour-btn-option.is-occupied,
+.hour-btn-option:disabled {
+  background: rgba(15, 23, 42, 0.6) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: rgba(255, 255, 255, 0.35) !important;
+  cursor: not-allowed !important;
+  opacity: 0.65;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.hour-btn-option.is-occupied .hour-time-line {
+  text-decoration: line-through;
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.hour-btn-option.is-occupied .hour-time-line i {
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Vista previa del horario */
+.selected-schedule-preview {
+  margin-top: 0.85rem;
+  background: rgba(13, 110, 253, 0.16);
+  border: 1px solid rgba(96, 165, 250, 0.35);
+  border-radius: 10px;
+  padding: 0.60rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #93C5FD;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+/* ==========================================================================
+   6. BOTONES DE ACCIÓN DEL FORMULARIO
+   ========================================================================== */
+.form-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: 1.45rem;
+}
+
+.btn-submit-pae {
+  flex: 1;
+  background: linear-gradient(135deg, #BE1E2D 0%, #E52336 60%, #FF4655 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 14px;
+  padding: 0.95rem 1.4rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  font-family: inherit;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  transition: var(--transition);
+  box-shadow: 0 10px 28px rgba(190, 30, 45, 0.42);
+}
+
+.btn-submit-pae:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px rgba(190, 30, 45, 0.55);
+  filter: brightness(1.08);
+}
+
+.btn-submit-pae:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-reset-plain {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  padding: 0.92rem 1.15rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-reset-plain:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.card-security-footer {
+  text-align: center;
+  margin-top: 1.2rem;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+/* ==========================================================================
+   7. PANTALLA DE CONFIRMACIÓN / TICKET POST-ENVÍO
+   ========================================================================== */
+.success-panel {
+  display: none;
+}
+
+.success-panel.active {
+  display: block;
+  animation: card-enter 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.confirmation-card {
+  text-align: center;
+}
+
+.confirm-seal-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.18);
+  border: 2px solid #22C55E;
+  color: #4ADE80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto 0.85rem;
+  box-shadow: 0 0 30px rgba(34, 197, 94, 0.4);
+}
+
+.confirm-ticket-badge {
+  display: inline-block;
+  background: rgba(13, 110, 253, 0.22);
+  border: 1.5px dashed #60A5FA;
+  border-radius: 10px;
+  padding: 0.45rem 1.15rem;
+  font-family: 'Outfit', monospace;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #93C5FD;
+  letter-spacing: 1.5px;
+  margin-bottom: 0.85rem;
+}
+
+.confirm-heading {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin-bottom: 0.25rem;
+}
+
+.confirm-faculty-sub {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.15rem;
+}
+
+.notice-dac-box {
+  background: rgba(13, 110, 253, 0.14);
+  border: 1.5px solid rgba(96, 165, 250, 0.35);
+  border-radius: 12px;
+  padding: 0.95rem 1rem;
+  font-size: 0.82rem;
+  color: #DBEAFE;
+  line-height: 1.55;
+  text-align: left;
+  margin-bottom: 1.25rem;
+}
+
+/* Ficha Resumen */
+.summary-table-box {
+  background: rgba(7, 23, 46, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  padding: 0.85rem 1.15rem;
+  margin-bottom: 1.35rem;
+  text-align: left;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.48rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.82rem;
+}
+
+.summary-row:last-child {
+  border-bottom: none;
+}
+
+.summary-lbl {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.summary-val {
+  color: #FFFFFF;
+  font-weight: 700;
+  text-align: right;
+}
+
+.summary-val.text-highlight {
+  color: #93C5FD;
+}
+
+.seal-status {
+  background: rgba(245, 158, 11, 0.2);
+  color: #FCD34D;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-action-light, .btn-action-primary {
+  flex: 1;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  transition: var(--transition);
+}
+
+.btn-action-light {
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.btn-action-light:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.btn-action-primary {
+  background: linear-gradient(135deg, #0D6EFD 0%, #1E40AF 100%);
+  color: #FFFFFF;
+  border: none;
+  box-shadow: 0 6px 18px rgba(13, 110, 253, 0.35);
+}
+
+.btn-action-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(13, 110, 253, 0.5);
+}
+
+/* Spinner */
+.spinner-sm {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #FFFFFF;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   8. MODAL INTERACTIVO DE ZOOM DE ESCUELA & MODAL DE DESCARGA EXCEL
+   ========================================================================== */
+.custom-modal-overlay,
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.custom-modal-overlay.active,
+.modal-overlay.active {
+  display: flex;
+}
+
+.custom-modal-box,
+.modal-box {
+  background: #0B2545;
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  border-radius: 22px;
+  max-width: 500px;
+  width: 100%;
+  padding: 2rem;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.1) inset;
+  position: relative;
+  animation: card-enter 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.custom-modal-close,
+.modal-close-btn {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #FFFFFF;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.custom-modal-close:hover,
+.modal-close-btn:hover {
+  background: rgba(239, 68, 68, 0.3);
+  color: #FCA5A5;
+}
+
+.modal-header-ucv {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+}
+
+.modal-header-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(13, 110, 253, 0.2);
+  border: 1px solid rgba(13, 110, 253, 0.4);
+  color: #60A5FA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+}
+
+.modal-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.2;
+}
+
+.modal-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-top: 0.15rem;
+}
+
+.modal-body-ucv {
+  margin-top: 0.5rem;
+}
+
+.modal-desc {
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 1.25rem;
+}
+
+.modal-alert-error {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: 10px;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.8rem;
+  color: #FCA5A5;
+  margin-bottom: 1rem;
+}
+
+.modal-alert-error.show {
+  display: flex;
+}
+
+.modal-field {
+  margin-bottom: 1rem;
+}
+
+.modal-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 0.35rem;
+}
+
+.modal-input {
+  width: 100%;
+  background: rgba(7, 23, 46, 0.85);
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  padding: 0.7rem 0.95rem;
+  font-size: 0.86rem;
+  color: #FFFFFF;
+  outline: none;
+  transition: var(--transition);
+}
+
+.modal-input:focus {
+  border-color: #60A5FA;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+}
+
+.modal-input-pw-wrap {
+  position: relative;
+}
+
+.toggle-pw-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  font-size: 1.05rem;
+}
+
+.toggle-pw-btn:hover {
+  color: #FFFFFF;
+}
+
+.modal-submit-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #0D6EFD 0%, #1E40AF 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 12px;
+  padding: 0.85rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: var(--transition);
+  margin-top: 1.2rem;
+  box-shadow: 0 8px 20px rgba(13, 110, 253, 0.35);
+}
+
+.modal-submit-btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.modal-footer-ucv {
+  text-align: center;
+  margin-top: 1.15rem;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* Toast flotante para copiado de correo */
+.toast-pae {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  opacity: 0;
+  background: #0B2545;
+  border: 1.5px solid #60A5FA;
+  color: #FFFFFF;
+  padding: 0.75rem 1.4rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(13, 110, 253, 0.4);
+  z-index: 10000;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.toast-pae.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* ==========================================================================
+   9. RESPONSIVE DESIGN (TABLETS Y MÓVILES)
+   ========================================================================== */
+/* ==========================================================================
+   9. MODO LUZ (LIGHT THEME) — ELEGANTE, INSTITUCIONAL Y DE ALTO CONTRASTE
+   ========================================================================== */
+body.light-mode {
+  background-color: #F4F6F9;
+  color: #0F172A;
+}
+
+body.light-mode .pae-split-container {
+  background-color: #F4F6F9;
+}
+
+body.light-mode .form-side {
+  background:
+    radial-gradient(circle at 85% 15%, rgba(190, 30, 45, 0.06) 0%, transparent 45%),
+    radial-gradient(circle at 15% 85%, rgba(13, 110, 253, 0.06) 0%, transparent 45%),
+    #F4F6F9;
+}
+
+body.light-mode .login-grid-bg {
+  background-image:
+    linear-gradient(rgba(0, 40, 85, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 40, 85, 0.04) 1px, transparent 1px);
+}
+
+body.light-mode .pae-form-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 16px 45px rgba(0, 40, 85, 0.08);
+}
+
+body.light-mode .theme-toggle-btn {
+  background: #FFFFFF;
+  color: #0F172A;
+  border-color: #CBD5E1;
+  box-shadow: 0 4px 12px rgba(0, 40, 85, 0.08);
+}
+
+body.light-mode .theme-toggle-btn:hover {
+  background: #F8FAFC;
+  border-color: #94A3B8;
+  box-shadow: 0 6px 18px rgba(0, 40, 85, 0.14);
+}
+
+body.light-mode .theme-toggle-icon .icon-sun {
+  display: none;
+}
+
+body.light-mode .theme-toggle-icon .icon-moon {
+  display: inline-block;
+  color: #6366F1;
+}
+
+body.light-mode .card-title-box h2 {
+  color: #071930;
+}
+
+body.light-mode .card-title-box p {
+  color: #475569;
+}
+
+body.light-mode .faculty-pill-badge {
+  background: rgba(13, 110, 253, 0.08);
+  border-color: rgba(13, 110, 253, 0.25);
+  color: #0D6EFD;
+}
+
+body.light-mode .form-section-block {
+  background: #F8FAFC;
+  border-color: #E2E8F0;
+}
+
+body.light-mode .section-title-text {
+  color: #0F172A;
+}
+
+body.light-mode .field-label {
+  color: #1E293B;
+}
+
+body.light-mode .optional-tag {
+  color: #64748B;
+}
+
+body.light-mode .input-wrapper {
+  border-color: #CBD5E1;
+  background: #FFFFFF;
+}
+
+body.light-mode .input-field-custom,
+body.light-mode .select-field-custom,
+body.light-mode .textarea-field-custom {
+  background: #FFFFFF;
+  color: #0F172A;
+}
+
+body.light-mode .input-field-custom::placeholder,
+body.light-mode .textarea-field-custom::placeholder {
+  color: #94A3B8;
+}
+
+body.light-mode .input-wrapper:focus-within {
+  border-color: #0D6EFD;
+  box-shadow: 0 0 0 3.5px rgba(13, 110, 253, 0.15);
+  background: #FFFFFF;
+}
+
+body.light-mode .input-icon-left {
+  color: #64748B;
+}
+
+body.light-mode .carrera-btn-option {
+  background: #FFFFFF !important;
+  border: 1.5px solid #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+body.light-mode .carrera-btn-option:hover {
+  background: #F8FAFC !important;
+  border-color: #94A3B8 !important;
+}
+
+body.light-mode .carrera-btn-option .carrera-name-main {
+  color: #0F172A !important;
+}
+
+body.light-mode .carrera-btn-option .carrera-sub-text {
+  color: #475569 !important;
+}
+
+body.light-mode .carrera-btn-option .carrera-icon-circle {
+  background: #EFF6FF !important;
+  color: #2563EB !important;
+  border: 1px solid #BFDBFE !important;
+}
+
+body.light-mode .carrera-btn-option.selected {
+  background: linear-gradient(135deg, #0D6EFD 0%, #1D4ED8 100%) !important;
+  border-color: #0D6EFD !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 8px 24px rgba(13, 110, 253, 0.35) !important;
+}
+
+body.light-mode .carrera-btn-option.selected .carrera-name-main {
+  color: #FFFFFF !important;
+}
+
+body.light-mode .carrera-btn-option.selected .carrera-sub-text {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+body.light-mode .carrera-btn-option.selected .carrera-icon-circle {
+  background: #FFFFFF !important;
+  color: #0D6EFD !important;
+  border-color: transparent !important;
+}
+
+body.light-mode .day-btn-option {
+  background: #FFFFFF !important;
+  border: 1.5px solid #CBD5E1 !important;
+  color: #0F172A !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.light-mode .day-btn-name {
+  color: #0F172A !important;
+  font-weight: 800 !important;
+}
+
+body.light-mode .day-btn-range {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+body.light-mode .day-btn-option:hover {
+  background: #F8FAFC !important;
+  border-color: #94A3B8 !important;
+  transform: translateY(-2px);
+}
+
+body.light-mode .day-btn-option.selected {
+  background: linear-gradient(135deg, #BE1E2D 0%, #D81E31 100%) !important;
+  border-color: #991B1B !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 6px 18px rgba(190, 30, 45, 0.42) !important;
+}
+
+body.light-mode .day-btn-option.selected .day-btn-name {
+  color: #FFFFFF !important;
+  font-weight: 800 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
+}
+
+body.light-mode .day-btn-option.selected .day-btn-range {
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
+}
+
+body.light-mode .day-quota-badge,
+body.light-mode .day-quota-pill {
+  background: #F1F5F9 !important;
+  color: #1E293B !important;
+  border: 1px solid #CBD5E1 !important;
+  font-weight: 700 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
+}
+
+body.light-mode .day-quota-badge.full,
+body.light-mode .day-quota-badge.day-full,
+body.light-mode .day-quota-pill.day-full {
+  background: #FEE2E2 !important;
+  color: #DC2626 !important;
+  border-color: #FCA5A5 !important;
+}
+
+body.light-mode .day-btn-option.selected .day-quota-badge,
+body.light-mode .day-btn-option.selected .day-quota-pill {
+  background: rgba(255, 255, 255, 0.28) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  text-shadow: none !important;
+}
+
+body.light-mode .hour-btn-option {
+  background: #FFFFFF !important;
+  border: 1.5px solid #CBD5E1 !important;
+  color: #0F172A !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.light-mode .hour-time-line {
+  color: #0F172A !important;
+  font-weight: 700 !important;
+}
+
+body.light-mode .hour-time-line i {
+  color: #BE1E2D !important;
+}
+
+body.light-mode .hour-btn-option:hover:not(:disabled):not(.is-occupied) {
+  background: #F8FAFC !important;
+  border-color: #0D6EFD !important;
+  box-shadow: 0 4px 14px rgba(13, 110, 253, 0.15) !important;
+}
+
+body.light-mode .hour-btn-option.selected {
+  background: linear-gradient(135deg, #0D6EFD 0%, #1D4ED8 100%) !important;
+  border-color: #0D6EFD !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 8px 22px rgba(13, 110, 253, 0.35) !important;
+}
+
+body.light-mode .hour-btn-option.selected .hour-time-line {
+  color: #FFFFFF !important;
+}
+
+body.light-mode .hour-btn-option.selected .hour-time-line i {
+  color: #FFFFFF !important;
+}
+
+body.light-mode .hour-btn-option.selected .slot-status-pill.slot-avail {
+  background: rgba(255, 255, 255, 0.28) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+}
+
+body.light-mode .hour-btn-option.is-occupied,
+body.light-mode .hour-btn-option:disabled {
+  background: #F1F5F9 !important;
+  border: 1.5px dashed #CBD5E1 !important;
+  color: #475569 !important;
+  cursor: not-allowed !important;
+  opacity: 1 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+body.light-mode .hour-btn-option.is-occupied .hour-time-line,
+body.light-mode .hour-btn-option:disabled .hour-time-line {
+  color: #475569 !important;
+  font-weight: 700 !important;
+  text-decoration: line-through;
+}
+
+body.light-mode .hour-btn-option.is-occupied .hour-time-line i,
+body.light-mode .hour-btn-option:disabled .hour-time-line i {
+  color: #94A3B8 !important;
+}
+
+body.light-mode .slot-status-pill.slot-avail {
+  background: #DCFCE7 !important;
+  color: #15803D !important;
+  border: 1px solid #86EFAC !important;
+  font-weight: 700 !important;
+}
+
+body.light-mode .slot-status-pill.slot-occupied,
+body.light-mode .hour-btn-option.is-occupied .slot-status-pill.slot-occupied {
+  background: #FEE2E2 !important;
+  color: #B91C1C !important;
+  border: 1px solid #FCA5A5 !important;
+  font-weight: 700 !important;
+}
+
+body.light-mode .field-label span {
+  color: #0F172A !important;
+  font-weight: 700 !important;
+}
+
+body.light-mode .field-label .optional-tag {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+body.light-mode #slotDayIndicator {
+  background: #EFF6FF !important;
+  color: #1D4ED8 !important;
+  border: 1px solid #BFDBFE !important;
+  padding: 0.25rem 0.65rem !important;
+  border-radius: 999px !important;
+  font-weight: 700 !important;
+}
+
+body.light-mode .schedule-helper-desc {
+  color: #334155 !important;
+  font-weight: 500 !important;
+}
+
+body.light-mode .schedule-helper-desc strong {
+  color: #0F172A !important;
+  font-weight: 800 !important;
+}
+
+body.light-mode .selected-schedule-preview {
+  background: #F0FDF4 !important;
+  border: 1.5px solid #86EFAC !important;
+  color: #166534 !important;
+}
+
+body.light-mode .selected-schedule-preview strong {
+  color: #0F172A !important;
+  font-weight: 800 !important;
+}
+
+body.light-mode .selected-schedule-preview i {
+  color: #16A34A !important;
+}
+
+body.light-mode .alert-error-box {
+  background: #FEE2E2 !important;
+  border-color: #FCA5A5 !important;
+  color: #991B1B !important;
+}
+
+body.light-mode .field-error-feedback {
+  color: #DC2626 !important;
+}
+
+body.light-mode .btn-reset-plain {
+  background: #F1F5F9;
+  border-color: #CBD5E1;
+  color: #475569;
+}
+
+body.light-mode .btn-reset-plain:hover {
+  background: #E2E8F0;
+  color: #0F172A;
+}
+
+body.light-mode .card-security-footer {
+  color: #64748B;
+  border-top-color: #E2E8F0;
+}
+
+body.light-mode .card-security-footer i {
+  color: #0D6EFD;
+}
+
+.bottom-aux-link,
+.bottom-aux-btn {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  background: none;
+  border: none;
+  font-size: inherit;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.bottom-aux-link:hover,
+.bottom-aux-btn:hover {
+  color: #FFFFFF;
+  text-decoration: underline;
+}
+
+.bottom-aux-sep {
+  color: rgba(255, 255, 255, 0.3);
+  margin: 0 0.4rem;
+}
+
+body.light-mode .bottom-aux-link,
+body.light-mode .bottom-aux-btn,
+body.light-mode .form-side a,
+body.light-mode .form-side button[type="button"]#btnAbrirDescarga {
+  color: #475569 !important;
+}
+
+body.light-mode .bottom-aux-link:hover,
+body.light-mode .bottom-aux-btn:hover,
+body.light-mode .form-side a:hover,
+body.light-mode .form-side button[type="button"]#btnAbrirDescarga:hover {
+  color: #0F172A !important;
+}
+
+body.light-mode .bottom-aux-sep {
+  color: #CBD5E1 !important;
+}
+
+/* Constancia / Success Panel en Modo Claro */
+body.light-mode .pae-form-card.confirmation-card {
+  background: #FFFFFF;
+  border-color: #E2E8F0;
+}
+
+body.light-mode .confirm-heading {
+  color: #071930;
+}
+
+body.light-mode .confirm-faculty-sub {
+  color: #64748B;
+}
+
+body.light-mode .notice-dac-box {
+  background: rgba(13, 110, 253, 0.06);
+  border-color: rgba(13, 110, 253, 0.2);
+  color: #1E3A8A;
+}
+
+body.light-mode .summary-table-box {
+  background: #F8FAFC;
+  border-color: #E2E8F0;
+}
+
+body.light-mode .summary-row {
+  border-bottom-color: #E2E8F0;
+}
+
+body.light-mode .summary-lbl {
+  color: #64748B;
+}
+
+body.light-mode .summary-val {
+  color: #0F172A;
+}
+
+body.light-mode .btn-action-light {
+  background: #FFFFFF;
+  border-color: #CBD5E1;
+  color: #0F172A;
+}
+
+body.light-mode .btn-action-light:hover {
+  background: #F1F5F9;
+}
+
+/* ==========================================================================
+   10. RESPONSIVE DESIGN (TABLETS Y MÓVILES)
+   ========================================================================== */
+@media (max-width: 1360px) {
+  .hero-stats-card {
+    justify-content: center;
+  }
+  .stat-item.item-email {
+    flex: 1 1 100%;
+    justify-content: center;
+    text-align: center;
+  }
+  .stat-item.item-email .stat-info {
+    align-items: center;
+  }
+  .stat-item.item-contact,
+  .stat-item.item-zoom {
+    flex: 1 1 45%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 1200px) {
+  .hero-side {
+    padding: 2.2rem 2.5rem 2.2rem 2.2rem;
+  }
+  .hero-stats-card {
+    gap: 0.65rem;
+  }
+}
+
+@media (max-width: 960px) {
+  .pae-split-container {
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+  .hero-wrapper {
+    position: relative;
+    top: auto;
+    left: auto;
+    flex: 0 0 auto;
+    width: 100%;
+    height: auto;
+    min-height: auto;
+  }
+  .hero-side {
+    clip-path: none;
+    padding: 2.2rem 1.5rem 3rem;
+  }
+  .diagonal-laser-svg {
+    display: none;
+  }
+  .hero-side::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #BE1E2D, #FF4655, #0D6EFD);
+    z-index: 5;
+  }
+  .hero-stats-card {
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+  .stat-item {
+    flex: 1 1 100% !important;
+  }
+  .form-side {
+    margin-left: 0;
+    width: 100%;
+    min-height: auto;
+    padding: 2rem 1.25rem 4rem;
+  }
+  .pae-form-card {
+    padding: 1.6rem 1.4rem;
+  }
+  .theme-switch-wrapper {
+    top: 1rem;
+    right: 1rem;
+  }
+  .carrera-buttons-grid {
+    grid-template-columns: 1fr;
+  }
+  .days-grid-selector {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .hours-grid-selector {
+    grid-template-columns: 1fr;
+  }
+}

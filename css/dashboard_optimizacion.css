@@ -1,0 +1,333 @@
+/**
+ * ==============================================================================
+ * DASHBOARD_OPTIMIZACION.CSS
+ * Estilos Oficiales para los Dashboards de Optimización de Programación y
+ * Evolución de Matrícula (UCV Virtual - Facultad de Ingeniería y Arquitectura)
+ * ==============================================================================
+ */
+
+:root {
+  --ucv-blue-primary: #1A4B8C;
+  --ucv-blue-navy: #002855;
+  --ucv-red-ucv: #BE1E2D;
+  --ucv-teal: #0D9488;
+  --ucv-green-opt: #059669;
+  --ucv-amber-rev: #D97706;
+}
+
+/* Contenedor Principal del Suite */
+.dash-suite-wrapper {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 40, 85, 0.06);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Cabecera Institucional */
+.dash-suite-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-bottom: 1.25rem;
+  border-bottom: 1.5px solid #F1F5F9;
+  margin-bottom: 1.5rem;
+}
+
+.ucv-virtual-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0.85rem;
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 50px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.ucv-virtual-pill-badge img {
+  height: 28px;
+  width: auto;
+  object-fit: contain;
+}
+
+.ucv-virtual-pill-badge .pill-text {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #BE1E2D;
+  letter-spacing: -0.01em;
+}
+
+.dash-suite-title-block h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #002855;
+  margin-bottom: 0.2rem;
+  letter-spacing: -0.01em;
+}
+
+.dash-suite-title-block p {
+  font-size: 0.84rem;
+  color: #64748B;
+  margin-bottom: 0;
+  font-weight: 500;
+}
+
+/* Pestañas Superiores de Navegación del Dashboard */
+.dash-exec-nav-pills {
+  display: inline-flex;
+  background: #F1F5F9;
+  padding: 4px;
+  border-radius: 10px;
+  gap: 4px;
+}
+
+.dash-exec-tab-btn {
+  border: none;
+  background: transparent;
+  padding: 0.45rem 1.1rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #64748B;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+}
+
+.dash-exec-tab-btn:hover {
+  color: #002855;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.dash-exec-tab-btn.active {
+  background: #1A4B8C;
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(26, 75, 140, 0.25);
+}
+
+/* Fila de 5 Tarjetas KPIs */
+.dash-kpis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.dash-kpi-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 1.15rem 1rem;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dash-kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 40, 85, 0.08);
+}
+
+.dash-kpi-card .kpi-num {
+  font-family: 'Outfit', sans-serif;
+  font-size: 2.1rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 0.35rem;
+  color: #1A4B8C;
+  letter-spacing: -0.02em;
+}
+
+.dash-kpi-card .kpi-lbl {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #64748B;
+  text-transform: capitalize;
+}
+
+/* Variantes de Color de KPIs */
+.dash-kpi-card.kpi-blue {
+  background: #F8FAFC;
+  border-color: #E2E8F0;
+}
+.dash-kpi-card.kpi-blue .kpi-num {
+  color: #1E40AF;
+}
+
+.dash-kpi-card.kpi-teal {
+  background: #F0FDFA;
+  border-color: #CCFBF1;
+}
+.dash-kpi-card.kpi-teal .kpi-num {
+  color: #0F766E;
+}
+
+.dash-kpi-card.kpi-green-opt {
+  background: #ECFDF5;
+  border-color: #A7F3D0;
+}
+.dash-kpi-card.kpi-green-opt .kpi-num {
+  color: #047857;
+}
+
+.dash-kpi-card.kpi-orange-sub {
+  background: #FFF7ED;
+  border-color: #FED7AA;
+}
+.dash-kpi-card.kpi-orange-sub .kpi-num {
+  color: #C2410C;
+}
+
+/* Tarjeta del Gráfico de Distribución */
+.dash-subcard {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.dash-subcard-header {
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid #F1F5F9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dash-subcard-header h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #002855;
+  margin-bottom: 0;
+}
+
+.dash-subcard-header.navy-bg {
+  background: #1A4B8C;
+  border-bottom: none;
+}
+
+.dash-subcard-header.navy-bg h3 {
+  color: #FFFFFF;
+}
+
+.dash-chart-canvas-wrap {
+  position: relative;
+  height: 330px;
+  padding: 1rem 0.75rem 0.5rem;
+  flex-grow: 1;
+}
+
+/* Tabla de Asignación por Ciclo */
+.table-asignacion-ciclo {
+  width: 100%;
+  margin-bottom: 0;
+  font-size: 0.84rem;
+}
+
+.table-asignacion-ciclo thead th {
+  background: #002855;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 0.78rem;
+  padding: 0.65rem 0.5rem;
+  border: none;
+  text-transform: capitalize;
+}
+
+.table-asignacion-ciclo tbody td {
+  padding: 0.55rem 0.5rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.table-asignacion-ciclo tbody tr:hover {
+  background-color: #F8FAFC;
+}
+
+/* Badges de Semáforo */
+.badge-optimo-green {
+  background: #DCFCE7 !important;
+  color: #166534 !important;
+  border: 1px solid #BBF7D0;
+}
+
+.badge-bueno-blue {
+  background: #E0F2FE !important;
+  color: #0369A1 !important;
+  border: 1px solid #BAE6FD;
+}
+
+.badge-revision-amber {
+  background: #FEF3C7 !important;
+  color: #B45309 !important;
+  border: 1px solid #FDE68A;
+}
+
+/* Botones de Exportación */
+.btn-export-media {
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.4rem 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+}
+
+.btn-export-jpg {
+  background: #0284C7;
+  color: #FFFFFF;
+  border: none;
+}
+.btn-export-jpg:hover {
+  background: #0369A1;
+  color: #FFFFFF;
+}
+
+.btn-export-pdf {
+  background: #BE1E2D;
+  color: #FFFFFF;
+  border: none;
+}
+.btn-export-pdf:hover {
+  background: #9E1925;
+  color: #FFFFFF;
+}
+
+/* Badge de Programa en Dashboard 2 */
+.badge-programa-tag {
+  display: inline-block;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 0.92rem;
+  padding: 0.4rem 1.2rem;
+  border-radius: 50px;
+  color: #FFFFFF;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(190, 30, 45, 0.25);
+}
+
+/* Impresión Limpia (PDF) */
+@media print {
+  .app-navbar, .dash-exec-nav-pills, .btn-export-media, .navbar, header, footer {
+    display: none !important;
+  }
+  .dash-suite-wrapper {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+}

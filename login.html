@@ -1014,8 +1014,19 @@
        AUTHENTICATION LOGIC (FRONTEND SESSION STORAGE)
        ==================================================================== -->
   <script>
-    // Si ya tiene sesión activa en sessionStorage, redirigir al selector de DAC
-    if (sessionStorage.getItem('sga_logged_in') === 'true') {
+    // Gestión limpia de sesión al cargar login.html
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('logout') === 'true') {
+      sessionStorage.clear();
+      localStorage.clear();
+    } else if (sessionStorage.getItem('sga_logged_in') === 'true') {
+      const email = (sessionStorage.getItem('sga_user_email') || localStorage.getItem('sga_user_email') || '').toLowerCase();
+      if (email.includes('industrial')) {
+        sessionStorage.setItem('sga_dac_restriction', 'industrial');
+        sessionStorage.setItem('sga_dac', 'industrial');
+        localStorage.setItem('sga_dac_restriction', 'industrial');
+        localStorage.setItem('sga_dac', 'industrial');
+      }
       window.location.replace('selector.html');
     }
 
@@ -1032,6 +1043,10 @@
 
     // Función de login con verificación en Base de Datos
     async function executeLogin(username, password) {
+      sessionStorage.clear();
+      localStorage.removeItem('sga_dac');
+      localStorage.removeItem('sga_dac_restriction');
+
       const btn = document.getElementById('loginBtn');
       const errorEl = document.getElementById('loginError');
       const errorText = document.getElementById('loginErrorText');
@@ -1076,16 +1091,35 @@
         }
 
         // Fallback offline / estático si no hay servidor activo
-        if ((!data || !response.ok) && (username.toLowerCase() === 'coordinacion.fia' || username.toLowerCase() === 'coordinacion.fia@ucvvirtual.edu.pe' || username.toLowerCase() === 'admin')) {
-          if (password === 'DelegadosFIA2026' || password === 'admin123') {
-            data = {
-              success: true,
-              user: {
-                nombre: 'Coordinación Académica FIA',
-                email: 'coordinacion.fia@ucvvirtual.edu.pe',
-                rol: 'Coordinador'
-              }
-            };
+        const uLower = username.toLowerCase();
+        if ((!data || !response.ok)) {
+          if (uLower === 'coordinacion.fia' || uLower === 'coordinacion.fia@ucvvirtual.edu.pe' || uLower === 'admin') {
+            if (password === 'DelegadosFIA2026' || password === 'admin123') {
+              data = {
+                success: true,
+                user: {
+                  nombre: 'Coordinación Académica FIA',
+                  email: 'coordinacion.fia@ucvvirtual.edu.pe',
+                  rol: 'Coordinador',
+                  escuela: 'Facultad de Ingeniería y Arquitectura',
+                  dac_restriction: null
+                }
+              };
+            }
+          } else if (uLower === 'coordinacion.fia.industrial' || uLower === 'coordinacion.fia.industrial@ucvvirtual.edu.pe') {
+            if (password === 'DelegadosFIA2727') {
+              data = {
+                success: true,
+                user: {
+                  nombre: 'Coordinación Académica Industrial',
+                  email: 'coordinacion.fia.industrial@ucvvirtual.edu.pe',
+                  username: 'coordinacion.fia.industrial',
+                  rol: 'Coordinador Industrial',
+                  escuela: 'Escuela de Ingeniería Industrial',
+                  dac_restriction: 'industrial'
+                }
+              };
+            }
           }
         }
 
@@ -1095,6 +1129,32 @@
           sessionStorage.setItem('sga_user_email', data.user.email);
           sessionStorage.setItem('sga_user_role', data.user.rol || 'Coordinador');
           sessionStorage.setItem('sga_login_time', new Date().toLocaleTimeString('es-PE'));
+
+          localStorage.setItem('sga_logged_in', 'true');
+          localStorage.setItem('sga_user_name', data.user.nombre || data.user.email);
+          localStorage.setItem('sga_user_email', data.user.email);
+          localStorage.setItem('sga_user_role', data.user.rol || 'Coordinador');
+
+          // Control de restricción por escuela (Industrial vs Sistemas)
+          const isIndustrial = (
+            data.user.dac_restriction === 'industrial' ||
+            (data.user.email && data.user.email.toLowerCase().includes('industrial')) ||
+            (data.user.username && data.user.username.toLowerCase().includes('industrial')) ||
+            (data.user.escuela && data.user.escuela.toLowerCase().includes('industrial')) ||
+            uLower.includes('industrial')
+          );
+
+          if (isIndustrial) {
+            sessionStorage.setItem('sga_dac_restriction', 'industrial');
+            sessionStorage.setItem('sga_dac', 'industrial');
+            sessionStorage.setItem('sga_escuela', 'Escuela de Ingeniería Industrial');
+            localStorage.setItem('sga_dac_restriction', 'industrial');
+            localStorage.setItem('sga_dac', 'industrial');
+            localStorage.setItem('sga_escuela', 'Escuela de Ingeniería Industrial');
+          } else {
+            sessionStorage.removeItem('sga_dac_restriction');
+            localStorage.removeItem('sga_dac_restriction');
+          }
 
           setTimeout(() => {
             window.location.href = 'selector.html';

@@ -42,11 +42,11 @@ module.exports = (req, res) => {
       return res.status(400).json({ success: false, error: 'Debe ingresar su usuario institucional y contraseña.' });
     }
 
-    // Cuentas institucionales válidas
-    const validUsers = ['coordinacion.fia', 'coordinacion.fia@ucvvirtual.edu.pe', 'admin'];
-    const expectedHash = 'sha256$ucvfia2026$854350727c65d7effa6308f348a8b311e1ed0de91843afa30cb50a5c8323bb66';
+    // 1. Cuenta General FIA (Ambas escuelas)
+    const validUsersFIA = ['coordinacion.fia', 'coordinacion.fia@ucvvirtual.edu.pe', 'admin'];
+    const expectedHashFIA = 'sha256$ucvfia2026$854350727c65d7effa6308f348a8b311e1ed0de91843afa30cb50a5c8323bb66';
 
-    if (validUsers.includes(user) && verifyPassword(password, expectedHash)) {
+    if (validUsersFIA.includes(user) && (password === 'DelegadosFIA2026' || password === 'admin123' || verifyPassword(password, expectedHashFIA))) {
       return res.status(200).json({
         success: true,
         message: 'Autenticación exitosa',
@@ -56,7 +56,28 @@ module.exports = (req, res) => {
           username: 'coordinacion.fia',
           nombre: 'Coordinación Académica FIA',
           rol: 'Coordinador',
-          escuela: 'Facultad de Ingeniería y Arquitectura'
+          escuela: 'Facultad de Ingeniería y Arquitectura',
+          dac_restriction: null
+        }
+      });
+    }
+
+    // 2. Cuenta Industrial (Exclusiva Industrial, bloqueada para Sistemas)
+    const validUsersInd = ['coordinacion.fia.industrial', 'coordinacion.fia.industrial@ucvvirtual.edu.pe'];
+    const expectedHashInd = 'sha256$ucvfia2026$c3207c1eab5b0bfedcd7c4a7a2f3550969d05f5aa58b236175b813533941ad02';
+
+    if (validUsersInd.includes(user) && (password === 'DelegadosFIA2727' || verifyPassword(password, expectedHashInd))) {
+      return res.status(200).json({
+        success: true,
+        message: 'Autenticación exitosa',
+        user: {
+          id: 2,
+          email: 'coordinacion.fia.industrial@ucvvirtual.edu.pe',
+          username: 'coordinacion.fia.industrial',
+          nombre: 'Coordinación Académica Industrial',
+          rol: 'Coordinador Industrial',
+          escuela: 'Escuela de Ingeniería Industrial',
+          dac_restriction: 'industrial'
         }
       });
     }

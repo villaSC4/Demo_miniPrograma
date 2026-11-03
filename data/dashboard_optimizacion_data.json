@@ -1,0 +1,415 @@
+{
+  "optimizacion": {
+    "sistemas": {
+      "secciones": 14,
+      "matriculas": 689,
+      "promedio": 49.2,
+      "pct_optimas": 85.7,
+      "pct_sub41": 14.3,
+      "distribucion": {
+        "0 - 10": 0,
+        "11 - 20": 1,
+        "21 - 30": 1,
+        "31 - 40": 0,
+        "41 - 50": 4,
+        "51 - 60": 7,
+        "Más de 60": 1
+      },
+      "ciclos": [
+        {
+          "ciclo": "Ciclo 1",
+          "sec": 0,
+          "mat": 0,
+          "prom": 0,
+          "pct_opt": 0,
+          "obs": "Sin grupos"
+        },
+        {
+          "ciclo": "Ciclo 2",
+          "sec": 5,
+          "mat": 288,
+          "prom": 57.6,
+          "pct_opt": 100.0,
+          "obs": "Óptimo"
+        },
+        {
+          "ciclo": "Ciclo 3",
+          "sec": 7,
+          "mat": 332,
+          "prom": 47.4,
+          "pct_opt": 85.7,
+          "obs": "Óptimo"
+        },
+        {
+          "ciclo": "Ciclo 4",
+          "sec": 2,
+          "mat": 69,
+          "prom": 34.5,
+          "pct_opt": 50.0,
+          "obs": "Revisión"
+        },
+        {
+          "ciclo": "Ciclo 5",
+          "sec": 0,
+          "mat": 0,
+          "prom": 0,
+          "pct_opt": 0,
+          "obs": "Sin grupos"
+        },
+        {
+          "ciclo": "Ciclo 6",
+          "sec": 0,
+          "mat": 0,
+          "prom": 0,
+          "pct_opt": 0,
+          "obs": "Sin grupos"
+        },
+        {
+          "ciclo": "Ciclo 7",
+          "sec": 0,
+          "mat": 0,
+          "prom": 0,
+          "pct_opt": 0,
+          "obs": "Sin grupos"
+        },
+        {
+          "ciclo": "Ciclo 8",
+          "sec": 0,
+          "mat": 0,
+          "prom": 0,
+          "pct_opt": 0,
+          "obs": "Sin grupos"
+        },
+        {
+          "ciclo": "Ciclo 9",
+          "sec": 0,
+          "mat": 0,
+          "prom": 0,
+          "pct_opt": 0,
+          "obs": "Sin grupos"
+        },
+        {
+          "ciclo": "Ciclo 10",
+          "sec": 0,
+          "mat": 0,
+          "prom": 0,
+          "pct_opt": 0,
+          "obs": "Sin grupos"
+        }
+      ]
+    },
+    "industrial": {
+      "secciones": 0,
+      "matriculas": 0,
+      "promedio": 0.0,
+      "pct_optimas": 0.0,
+      "pct_sub41": 0.0,
+      "distribucion": {
+        "0 - 10": 0,
+        "11 - 20": 0,
+        "21 - 30": 0,
+        "31 - 40": 0,
+        "41 - 50": 0,
+        "51 - 60": 0,
+        "Más de 60": 0
+      },
+      "ciclos": [
+        {
+          "ciclo": "Ciclo 1",
+          "sec": 0,
+          "mat": 0,
+          "prom": 0.0,
+          "pct_opt": 0.0,
+          "obs": "Sin datos"
+        },
+        {
+          "ciclo": "Ciclo 2",
+          "sec": 0,
+          "mat": 0,
+          "prom": 0.0,
+          "pct_opt": 0.0,
+          "obs": "Sin datos"
+        },
+        {
+          "ciclo": "Ciclo 3",
+          "sec": 0,
+          "mat": 0,
+          "prom": 0.0,
+          "pct_opt": 0.0,
+          "obs": "Sin datos"
+        },
+        {
+          "ciclo": "Ciclo 4",
+          "sec": 0,
+          "mat": 0,
+          "prom": 0.0,
+          "pct_opt": 0.0,
+          "obs": "Sin datos"
+        },
+        {
+          "ciclo": "Ciclo 5",
+          "sec": 0,
+          "mat": 0,
+          "prom": 0.0,
+          "pct_opt": 0.0,
+          "obs": "Sin datos"
+        },
+        {
+          "ciclo": "Ciclo 6",
+          "sec": 0,
+          "mat": 0,
+          "prom": 0.0,
+          "pct_opt": 0.0,
+          "obs": "Sin datos"
+        },
+        {
+          "ciclo": "Ciclo 7",
+          "sec": 0,
+          "mat": 0,
+          "prom": 0.0,
+          "pct_opt": 0.0,
+          "obs": "Sin datos"
+        },
+        {
+          "ciclo": "Ciclo 8",
+          "sec": 0,
+          "mat": 0,
+          "prom": 0.0,
+          "pct_opt": 0.0,
+          "obs": "Sin datos"
+        },
+        {
+          "ciclo": "Ciclo 9",
+          "sec": 0,
+          "mat": 0,
+          "prom": 0.0,
+          "pct_opt": 0.0,
+          "obs": "Sin datos"
+        },
+        {
+          "ciclo": "Ciclo 10",
+          "sec": 0,
+          "mat": 0,
+          "prom": 0.0,
+          "pct_opt": 0.0,
+          "obs": "Sin datos"
+        }
+      ]
+    },
+    "consolidado": {
+      "secciones": 73,
+      "matriculas": 3652,
+      "promedio": 50.0,
+      "pct_optimas": 72.6,
+      "pct_sub41": 27.4,
+      "distribucion": {
+        "0 - 10": 1,
+        "11 - 20": 6,
+        "21 - 30": 5,
+        "31 - 40": 8,
+        "41 - 50": 4,
+        "51 - 60": 40,
+        "Más de 60": 9
+      },
+      "ciclos": [
+        {
+          "ciclo": "Ciclo 1",
+          "sec": 0,
+          "mat": 0,
+          "prom": 0,
+          "pct_opt": 0,
+          "obs": "Sin grupos"
+        },
+        {
+          "ciclo": "Ciclo 2",
+          "sec": 21,
+          "mat": 1188,
+          "prom": 56.6,
+          "pct_opt": 90.5,
+          "obs": "Óptimo"
+        },
+        {
+          "ciclo": "Ciclo 3",
+          "sec": 27,
+          "mat": 1443,
+          "prom": 53.4,
+          "pct_opt": 81.5,
+          "obs": "Óptimo"
+        },
+        {
+          "ciclo": "Ciclo 4",
+          "sec": 15,
+          "mat": 654,
+          "prom": 43.6,
+          "pct_opt": 60.0,
+          "obs": "Revisión"
+        },
+        {
+          "ciclo": "Ciclo 5",
+          "sec": 7,
+          "mat": 285,
+          "prom": 40.7,
+          "pct_opt": 42.9,
+          "obs": "Revisión"
+        },
+        {
+          "ciclo": "Ciclo 6",
+          "sec": 3,
+          "mat": 82,
+          "prom": 27.3,
+          "pct_opt": 0.0,
+          "obs": "Revisión"
+        },
+        {
+          "ciclo": "Ciclo 7",
+          "sec": 0,
+          "mat": 0,
+          "prom": 0,
+          "pct_opt": 0,
+          "obs": "Sin grupos"
+        },
+        {
+          "ciclo": "Ciclo 8",
+          "sec": 0,
+          "mat": 0,
+          "prom": 0,
+          "pct_opt": 0,
+          "obs": "Sin grupos"
+        },
+        {
+          "ciclo": "Ciclo 9",
+          "sec": 0,
+          "mat": 0,
+          "prom": 0,
+          "pct_opt": 0,
+          "obs": "Sin grupos"
+        },
+        {
+          "ciclo": "Ciclo 10",
+          "sec": 0,
+          "mat": 0,
+          "prom": 0,
+          "pct_opt": 0,
+          "obs": "Sin grupos"
+        }
+      ]
+    }
+  },
+  "historico": {
+    "sistemas": {
+      "nombre": "INGENIERÍA DE SISTEMAS",
+      "periodos": [
+        "2024-I",
+        "2024-II",
+        "2025-I",
+        "2025-II",
+        "2026-I",
+        "2026-II"
+      ],
+      "matriculas": [
+        890,
+        980,
+        1120,
+        1240,
+        1320,
+        1432
+      ],
+      "ingresantes_2026_2": 174,
+      "edad_promedio": 34.8,
+      "genero": {
+        "M": 142,
+        "F": 32
+      },
+      "top_regiones": [
+        {
+          "region": "Lima",
+          "cant": 59
+        },
+        {
+          "region": "Piura",
+          "cant": 18
+        },
+        {
+          "region": "La Libertad",
+          "cant": 10
+        },
+        {
+          "region": "Puno",
+          "cant": 10
+        }
+      ],
+      "crecimiento_total": "+60.9%"
+    },
+    "industrial": {
+      "nombre": "INGENIERÍA INDUSTRIAL (SIN DATOS CARGADOS)",
+      "periodos": [
+        "2024-I",
+        "2024-II",
+        "2025-I",
+        "2025-II",
+        "2026-I",
+        "2026-II"
+      ],
+      "matriculas": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "ingresantes_2026_2": 0,
+      "edad_promedio": "0.0",
+      "genero": {
+        "M": 0,
+        "F": 0
+      },
+      "top_regiones": [],
+      "crecimiento_total": "0.0%"
+    },
+    "consolidado": {
+      "nombre": "FACULTAD DE INGENIERÍA Y ARQUITECTURA (CONSOLIDADO)",
+      "periodos": [
+        "2024-I",
+        "2024-II",
+        "2025-I",
+        "2025-II",
+        "2026-I",
+        "2026-II"
+      ],
+      "matriculas": [
+        4340,
+        4800,
+        5330,
+        5920,
+        6310,
+        6571
+      ],
+      "ingresantes_2026_2": 659,
+      "edad_promedio": 33.6,
+      "genero": {
+        "M": 452,
+        "F": 207
+      },
+      "top_regiones": [
+        {
+          "region": "Lima",
+          "cant": 254
+        },
+        {
+          "region": "Piura",
+          "cant": 66
+        },
+        {
+          "region": "La Libertad",
+          "cant": 82
+        },
+        {
+          "region": "Arequipa",
+          "cant": 60
+        }
+      ],
+      "crecimiento_total": "+51.4%"
+    }
+  }
+}

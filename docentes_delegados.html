@@ -466,6 +466,9 @@
 
         <!-- Acciones rápidas -->
         <div class="d-flex align-items-center gap-2">
+          <a href="formulario_estudiantes/index.html" target="_blank" class="btn btn-outline-success btn-sm fw-bold px-3 py-2 rounded-pill shadow-xs" title="Abrir Formulario de Reserva de Atención a Estudiantes">
+            <i class="bi bi-clock-history me-1"></i> Atención Estudiantes ↗
+          </a>
           <button type="button" class="btn btn-outline-primary btn-sm fw-bold px-3 py-2 rounded-pill shadow-xs" data-bs-toggle="modal" data-bs-target="#modalNuevoDocente">
             <i class="bi bi-person-plus-fill me-1"></i> + Registrar Docente
           </button>
@@ -498,9 +501,14 @@
                 <h4 class="fw-bold mb-0 mt-0.5 text-primary">Dashboard Docentes</h4>
               </div>
             </div>
-            <a href="https://notas-lac.vercel.app/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary fw-semibold rounded-pill px-2.5" id="linkRubricaDocentes" title="Abrir Sistema de Rúbricas Oficial">
-              <i class="bi bi-clipboard2-check-fill me-1"></i> Rúbricas <i class="bi bi-box-arrow-up-right small"></i>
-            </a>
+            <div class="d-flex align-items-center gap-1.5">
+              <a href="formulario_docentes/index.html" target="_blank" class="btn btn-sm btn-outline-primary fw-semibold rounded-pill px-2.5" title="Abrir Formulario Oficial de Asistencia Docente">
+                <i class="bi bi-file-earmark-check-fill me-1"></i> Formulario <i class="bi bi-box-arrow-up-right small"></i>
+              </a>
+              <a href="https://notas-lac.vercel.app/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary fw-semibold rounded-pill px-2.5" id="linkRubricaDocentes" title="Abrir Sistema de Rúbricas Oficial">
+                <i class="bi bi-clipboard2-check-fill me-1"></i> Rúbricas <i class="bi bi-box-arrow-up-right small"></i>
+              </a>
+            </div>
           </div>
 
           <!-- Métricas en burbujas -->
@@ -918,9 +926,56 @@
 
     // Inicialización al cargar DOM
     document.addEventListener('DOMContentLoaded', async () => {
+      // Restricción de perfil
+      function checkIsIndustrialUser() {
+        const email = (sessionStorage.getItem('sga_user_email') || localStorage.getItem('sga_user_email') || '').toLowerCase();
+        const user = (sessionStorage.getItem('sga_user_name') || localStorage.getItem('sga_user_name') || '').toLowerCase();
+        const role = (sessionStorage.getItem('sga_user_role') || localStorage.getItem('sga_user_role') || '').toLowerCase();
+        const rest = (sessionStorage.getItem('sga_dac_restriction') || localStorage.getItem('sga_dac_restriction') || '').toLowerCase();
+        const esc = (sessionStorage.getItem('sga_escuela') || localStorage.getItem('sga_escuela') || '').toLowerCase();
+
+        return (
+          rest === 'industrial' ||
+          email.includes('industrial') ||
+          user.includes('industrial') ||
+          role.includes('industrial') ||
+          esc.includes('industrial')
+        );
+      }
+
+      const isRestrictedIndustrial = checkIsIndustrialUser();
+
+      if (isRestrictedIndustrial) {
+        sessionStorage.setItem('sga_dac_restriction', 'industrial');
+        sessionStorage.setItem('sga_dac', 'industrial');
+        sessionStorage.setItem('sga_escuela', 'Escuela de Ingeniería Industrial');
+        localStorage.setItem('sga_dac_restriction', 'industrial');
+        localStorage.setItem('sga_dac', 'industrial');
+        localStorage.setItem('sga_escuela', 'Escuela de Ingeniería Industrial');
+      }
+
       // Leer DAC inicial de sesión si existe
-      const dacSesion = sessionStorage.getItem('sga_dac') || 'sistemas';
+      const dacSesion = isRestrictedIndustrial ? 'industrial' : (sessionStorage.getItem('sga_dac') || 'sistemas');
       aplicarDacInicial(dacSesion);
+
+      // Si está restringido a industrial, eliminar completamente opciones de Sistemas del DOM
+      if (isRestrictedIndustrial) {
+        const dacDropdownItems = document.querySelectorAll('.dropdown-menu a[onclick*="cambiarFiltroDac"]');
+        dacDropdownItems.forEach(item => {
+          const onclickAttr = item.getAttribute('onclick') || '';
+          if (onclickAttr.includes('sistemas') || onclickAttr.includes('todas')) {
+            if (item.parentElement) item.parentElement.remove();
+          }
+        });
+        const selectEscuela = document.getElementById('selectFiltroEscuela');
+        if (selectEscuela) {
+          Array.from(selectEscuela.options).forEach(opt => {
+            if (opt.value === 'sistemas' || opt.value === 'todas') {
+              opt.remove();
+            }
+          });
+        }
+      }
 
       // Cargar datos
       await cargarDatosDocentesYDelegados();
@@ -944,27 +999,41 @@
 
     // Configurar contexto DAC
     function aplicarDacInicial(dac) {
+      const dacRestriction = sessionStorage.getItem('sga_dac_restriction');
+      const isRestrictedIndustrial = dacRestriction === 'industrial';
+      if (isRestrictedIndustrial) {
+        dac = 'industrial';
+      }
+
       const label = document.getElementById('labelDacActual');
       const linkRubrica = document.getElementById('linkRubricaDocentes');
 
       if (dac === 'industrial') {
-        if (label) label.textContent = 'DAC Industrial';
+        if (label) label.textContent = isRestrictedIndustrial ? 'DAC Industrial (Exclusivo)' : 'DAC Industrial';
         if (linkRubrica) linkRubrica.href = 'https://notas-lac.vercel.app/?escuela=industrial';
-        document.getElementById('selectFiltroEscuela').value = 'industrial';
+        const sel = document.getElementById('selectFiltroEscuela');
+        if (sel) sel.value = 'industrial';
         filtroEscuelaActual = 'industrial';
       } else if (dac === 'sistemas') {
         if (label) label.textContent = 'DAC Sistemas';
         if (linkRubrica) linkRubrica.href = 'https://notas-lac.vercel.app/?escuela=sistemas';
-        document.getElementById('selectFiltroEscuela').value = 'sistemas';
+        const sel = document.getElementById('selectFiltroEscuela');
+        if (sel) sel.value = 'sistemas';
         filtroEscuelaActual = 'sistemas';
       } else {
         if (label) label.textContent = 'Ambas Carreras';
-        document.getElementById('selectFiltroEscuela').value = 'todas';
+        const sel = document.getElementById('selectFiltroEscuela');
+        if (sel) sel.value = 'todas';
         filtroEscuelaActual = 'todas';
       }
     }
 
     function cambiarFiltroDac(dac) {
+      const dacRestriction = sessionStorage.getItem('sga_dac_restriction');
+      if (dacRestriction === 'industrial' && dac !== 'industrial') {
+        alert('Acceso no autorizado: Su cuenta institucional está asignada exclusivamente a la Escuela de Ingeniería Industrial.');
+        return;
+      }
       sessionStorage.setItem('sga_dac', dac);
       aplicarDacInicial(dac);
       aplicarFiltros();

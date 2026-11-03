@@ -41,3 +41,27 @@ ON DUPLICATE KEY UPDATE
   `nombre` = VALUES(`nombre`),
   `rol` = VALUES(`rol`),
   `estado` = 1;
+
+-- ------------------------------------------------------------------------
+-- Inserción de la cuenta institucional exclusiva para Industrial:
+-- Usuario / Correo: coordinacion.fia.industrial@ucvvirtual.edu.pe
+-- Contraseña plana: DelegadosFIA2727
+-- Restricción: Solo DAC Industrial (sin acceso a Sistemas)
+-- ------------------------------------------------------------------------
+INSERT INTO `usuarios` (`email`, `username`, `password_hash`, `nombre`, `rol`, `escuela`, `estado`, `fecha_creacion`)
+VALUES (
+  'coordinacion.fia.industrial@ucvvirtual.edu.pe',
+  'coordinacion.fia.industrial',
+  'sha256$ucvfia2026$c3207c1eab5b0bfedcd7c4a7a2f3550969d05f5aa58b236175b813533941ad02',
+  'Coordinación Académica Industrial',
+  'Coordinador Industrial',
+  'Escuela de Ingeniería Industrial',
+  1,
+  NOW()
+)
+ON DUPLICATE KEY UPDATE 
+  `password_hash` = VALUES(`password_hash`),
+  `nombre` = VALUES(`nombre`),
+  `rol` = VALUES(`rol`),
+  `escuela` = VALUES(`escuela`),
+  `estado` = 1;

@@ -89,6 +89,12 @@ function applyDacContext() {
       ? 'https://notas-lac.vercel.app/?escuela=industrial' 
       : 'https://notas-lac.vercel.app/?escuela=sistemas';
   }
+
+  // Botón exclusivo de Rendimiento Académico Trilce (visible únicamente en Industrial)
+  const btnRendInd = document.getElementById('btnBannerRendimientoIndustrial');
+  if (btnRendInd) {
+    btnRendInd.style.display = isIndustrial ? 'inline-flex' : 'none';
+  }
 }
 
 /**
@@ -152,26 +158,40 @@ function switchSistemasSection(view) {
   const s1 = document.getElementById('secMonitoreo');
   const s2 = document.getElementById('secProcedimientos');
   const s3 = document.getElementById('secAgenda');
+  const s4 = document.getElementById('secOptimizacion');
 
   if (view === 'all') {
     if (s1) s1.style.display = 'block';
     if (s2) s2.style.display = 'block';
     if (s3) s3.style.display = 'block';
+    if (s4) s4.style.display = 'block';
   } else if (view === 'monitoreo') {
     if (s1) s1.style.display = 'block';
     if (s2) s2.style.display = 'none';
     if (s3) s3.style.display = 'none';
+    if (s4) s4.style.display = 'none';
     s1?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   } else if (view === 'procedimientos') {
     if (s1) s1.style.display = 'none';
     if (s2) s2.style.display = 'block';
     if (s3) s3.style.display = 'none';
+    if (s4) s4.style.display = 'none';
     s2?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   } else if (view === 'agenda') {
     if (s1) s1.style.display = 'none';
     if (s2) s2.style.display = 'none';
     if (s3) s3.style.display = 'block';
+    if (s4) s4.style.display = 'none';
     s3?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  } else if (view === 'optimizacion') {
+    if (s1) s1.style.display = 'none';
+    if (s2) s2.style.display = 'none';
+    if (s3) s3.style.display = 'none';
+    if (s4) s4.style.display = 'block';
+    s4?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (window.DashboardOptimizacionSuite) {
+      window.DashboardOptimizacionSuite.renderDashboardOptimizacion();
+    }
   }
 }
 

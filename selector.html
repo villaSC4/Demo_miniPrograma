@@ -6,6 +6,30 @@
   <title>Selección de Ambiente — SGA • UCV Virtual</title>
   <meta name="description" content="Seleccione su Dirección Académica de Carrera (DAC) para acceder al Sistema de Gestión Académica — UCV Virtual">
 
+  <!-- Detección temprana y bloqueo absoluto de Sistemas para perfil Industrial -->
+  <script>
+    (function() {
+      function getStored(k) {
+        return (sessionStorage.getItem(k) || localStorage.getItem(k) || '').toLowerCase();
+      }
+      var email = getStored('sga_user_email');
+      var name = getStored('sga_user_name');
+      var role = getStored('sga_user_role');
+      var rest = getStored('sga_dac_restriction');
+      var esc = getStored('sga_escuela');
+
+      if (rest === 'industrial' || email.indexOf('industrial') !== -1 || name.indexOf('industrial') !== -1 || role.indexOf('industrial') !== -1 || esc.indexOf('industrial') !== -1) {
+        sessionStorage.setItem('sga_dac_restriction', 'industrial');
+        sessionStorage.setItem('sga_dac', 'industrial');
+        sessionStorage.setItem('sga_escuela', 'Escuela de Ingeniería Industrial');
+        localStorage.setItem('sga_dac_restriction', 'industrial');
+        localStorage.setItem('sga_dac', 'industrial');
+        localStorage.setItem('sga_escuela', 'Escuela de Ingeniería Industrial');
+        document.documentElement.className += ' user-industrial-only';
+      }
+    })();
+  </script>
+
   <!-- Tipografía Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,6 +42,39 @@
   <link rel="icon" type="image/png" href="img/logo-ucv-virtual.png">
 
   <style>
+    /* ================================================================
+       REGLAS ESTRICTAS DE AISLAMIENTO: NADA DE SISTEMAS PARA INDUSTRIAL
+       ================================================================ */
+    html.user-industrial-only #stepDacSelector {
+      display: none !important;
+    }
+    html.user-industrial-only #dacCardSistemas {
+      display: none !important;
+    }
+    html.user-industrial-only .btn-back {
+      display: none !important;
+    }
+    html.user-industrial-only #stepModuleSelector {
+      display: block !important;
+      opacity: 1 !important;
+      transform: none !important;
+      pointer-events: auto !important;
+    }
+    html.user-industrial-only #modRendimiento {
+      display: block !important;
+    }
+    html.user-industrial-only .modules-grid {
+      display: flex !important;
+      flex-wrap: wrap !important;
+      justify-content: center !important;
+      gap: 1.25rem !important;
+    }
+    html.user-industrial-only .modules-grid .module-card {
+      flex: 0 1 calc(33.333% - 1.25rem) !important;
+      min-width: 280px !important;
+      max-width: 360px !important;
+    }
+
     /* ================================================================
        RESET & VARIABLES — PALETA PASTEL UCV
        ================================================================ */
@@ -206,7 +263,7 @@
     .sel-main {
       position: relative;
       z-index: 1;
-      max-width: 960px;
+      max-width: 1060px;
       margin: 0 auto;
       padding: 2.5rem 1.5rem 3rem;
     }
@@ -548,6 +605,59 @@
       gap: 1.5rem;
     }
 
+    /* El 4to módulo se coloca abajo y al medio (columna 2 de 3) en Sistemas */
+    .module-card.mod-opt {
+      grid-column: 2;
+    }
+
+    /* Ajuste elegante y centrado para los 5 módulos de Industrial */
+    .modules-grid.has-industrial {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+
+    .modules-grid.has-industrial .module-card {
+      flex: 0 0 calc(33.333% - 1rem);
+      max-width: calc(33.333% - 1rem);
+      width: 100%;
+    }
+
+    .modules-grid.has-industrial .module-card.mod-opt {
+      grid-column: auto;
+    }
+
+    @media (max-width: 992px) {
+      .modules-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .modules-grid.has-industrial .module-card {
+        flex: 0 0 calc(50% - 0.75rem);
+        max-width: calc(50% - 0.75rem);
+      }
+      .module-card.mod-opt {
+        grid-column: 1 / -1;
+        max-width: 400px;
+        margin: 0 auto;
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .modules-grid {
+        grid-template-columns: 1fr;
+      }
+      .modules-grid.has-industrial .module-card {
+        flex: 0 0 100%;
+        max-width: 100%;
+      }
+      .module-card.mod-opt {
+        grid-column: auto;
+        max-width: 100%;
+      }
+    }
+
     .module-card {
       position: relative;
       background: var(--ucv-warm-white);
@@ -659,6 +769,58 @@
     .module-card.mod-pau .module-enter {
       background: linear-gradient(135deg, var(--mod-pau), #38BDF8);
       box-shadow: 0 4px 16px rgba(2, 132, 199, 0.2);
+    }
+
+    /* 1.4 Optimización */
+    .module-card.mod-opt::before {
+      background: linear-gradient(90deg, #BE1E2D, #F43F5E);
+    }
+
+    .module-card.mod-opt:hover {
+      border-color: #FECDD3;
+      background: linear-gradient(180deg, #FFF1F2 0%, var(--ucv-warm-white) 100%);
+    }
+
+    .module-card.mod-opt .module-icon {
+      background: #FFE4E6;
+      color: #BE1E2D;
+      border-color: #FECDD3;
+    }
+
+    .module-card.mod-opt .module-number {
+      background: #FFE4E6;
+      color: #BE1E2D;
+    }
+
+    .module-card.mod-opt .module-enter {
+      background: linear-gradient(135deg, #BE1E2D, #F43F5E);
+      box-shadow: 0 4px 16px rgba(190, 30, 45, 0.25);
+    }
+
+    /* 1.5 Rendimiento Industrial */
+    .module-card.mod-rendimiento::before {
+      background: linear-gradient(90deg, #059669, #34D399);
+    }
+
+    .module-card.mod-rendimiento:hover {
+      border-color: #A7F3D0;
+      background: linear-gradient(180deg, #F0FDF4 0%, var(--ucv-warm-white) 100%);
+    }
+
+    .module-card.mod-rendimiento .module-icon {
+      background: #D1FAE5;
+      color: #059669;
+      border-color: #A7F3D0;
+    }
+
+    .module-card.mod-rendimiento .module-number {
+      background: #D1FAE5;
+      color: #059669;
+    }
+
+    .module-card.mod-rendimiento .module-enter {
+      background: linear-gradient(135deg, #059669, #10B981);
+      box-shadow: 0 4px 16px rgba(5, 150, 105, 0.25);
     }
 
     /* Module card inner elements */
@@ -828,6 +990,7 @@
     .stagger-1 { animation-delay: 0.08s; }
     .stagger-2 { animation-delay: 0.16s; }
     .stagger-3 { animation-delay: 0.24s; }
+    .stagger-4 { animation-delay: 0.32s; }
 
     /* Floating particles */
     .particle {
@@ -1030,14 +1193,14 @@
           </div>
         </div>
 
-        <!-- 1.3 PAU -->
+        <!-- 1.3 PAE -->
         <div class="module-card mod-pau stagger-3" onclick="navigateToModule('pau')" id="modPau">
           <span class="module-number">1.3</span>
           <div class="module-icon">
             <i class="bi bi-inbox-fill"></i>
           </div>
-          <div class="module-title">PAU Multicanal</div>
-          <div class="module-desc">Atención al Estudiante — Bandeja de Correos, Central WhatsApp Web en Vivo y Sala Zoom</div>
+          <div class="module-title">PAE Multicanal</div>
+          <div class="module-desc">PAE Plataforma de Atención al Estudiante — Bandeja de Correos, Central WhatsApp Web en Vivo y Sala Zoom</div>
           <div class="module-enter">
             <span>Acceder</span>
             <i class="bi bi-arrow-right"></i>
@@ -1045,6 +1208,42 @@
           <div class="module-external-badge" style="background: rgba(16, 185, 129, 0.12); color: #059669; border-color: rgba(16, 185, 129, 0.25); cursor: pointer;" onclick="event.stopPropagation(); window.location.href='pau_whatsapp.html';" title="Abrir Central WhatsApp Live con código QR">
             <i class="bi bi-whatsapp"></i>
             WhatsApp Live Hub
+          </div>
+        </div>
+
+        <!-- 1.4 Nueva Optimización de Programación Académica 2026 - II -->
+        <div class="module-card mod-opt stagger-4" onclick="navigateToModule('optimizacion')" id="modOptimizacion">
+          <span class="module-number">1.4</span>
+          <div class="module-icon">
+            <i class="bi bi-bar-chart-line-fill"></i>
+          </div>
+          <div class="module-title">Nueva Optimización de Programación Académica 2026 - II</div>
+          <div class="module-desc">Indicadores ejecutivos de teoría, distribución de secciones, asignación por ciclos y evolución de matrícula</div>
+          <div class="module-enter">
+            <span>Acceder</span>
+            <i class="bi bi-arrow-right"></i>
+          </div>
+          <div class="module-external-badge" style="background: rgba(190, 30, 45, 0.1); color: #BE1E2D; border-color: rgba(190, 30, 45, 0.25);">
+            <i class="bi bi-graph-up-arrow"></i>
+            Reportes TRILCE & DRA
+          </div>
+        </div>
+
+        <!-- 1.5 Rendimiento Académico UCV (Exclusivo Industrial) -->
+        <div class="module-card mod-rendimiento stagger-5" onclick="navigateToModule('rendimiento')" id="modRendimiento" style="display: none;">
+          <span class="module-number">1.5</span>
+          <div class="module-icon">
+            <i class="bi bi-mortarboard-fill"></i>
+          </div>
+          <div class="module-title">Rendimiento Académico UCV</div>
+          <div class="module-desc">Dashboard de cursos finalizados, base de datos de 57 secciones y analítica de inhabilitados y aprobación</div>
+          <div class="module-enter">
+            <span>Acceder</span>
+            <i class="bi bi-arrow-right"></i>
+          </div>
+          <div class="module-external-badge" style="background: rgba(5, 150, 105, 0.12); color: #059669; border-color: rgba(5, 150, 105, 0.25);">
+            <i class="bi bi-check-circle-fill"></i>
+            UCV Filial Lima Norte
           </div>
         </div>
       </div>
@@ -1063,21 +1262,81 @@
     // State
     let currentDAC = null;
 
-    // User name from session
-    const userName = sessionStorage.getItem('sga_user_name') || sessionStorage.getItem('sga_user_email') || 'Coordinador';
-    const navUserEl = document.getElementById('navUserName');
-    if (navUserEl) navUserEl.textContent = userName;
-
     // Logout
     document.getElementById('btnLogout').addEventListener('click', () => {
       sessionStorage.clear();
-      window.location.replace('login.html');
+      localStorage.clear();
+      window.location.replace('login.html?logout=true');
     });
+
+    // Profile restriction check (DAC Industrial vs General)
+    function checkIsIndustrialUser() {
+      const email = (sessionStorage.getItem('sga_user_email') || localStorage.getItem('sga_user_email') || '').toLowerCase();
+      const user = (sessionStorage.getItem('sga_user_name') || localStorage.getItem('sga_user_name') || '').toLowerCase();
+      const role = (sessionStorage.getItem('sga_user_role') || localStorage.getItem('sga_user_role') || '').toLowerCase();
+      const rest = (sessionStorage.getItem('sga_dac_restriction') || localStorage.getItem('sga_dac_restriction') || '').toLowerCase();
+      const esc = (sessionStorage.getItem('sga_escuela') || localStorage.getItem('sga_escuela') || '').toLowerCase();
+
+      return (
+        rest === 'industrial' ||
+        email.includes('industrial') ||
+        user.includes('industrial') ||
+        role.includes('industrial') ||
+        esc.includes('industrial')
+      );
+    }
+
+    const isRestrictedToIndustrial = checkIsIndustrialUser();
+
+    // User name from session
+    const userName = sessionStorage.getItem('sga_user_name') || localStorage.getItem('sga_user_name') || (isRestrictedToIndustrial ? 'Coordinación Industrial' : 'Coordinador FIA');
+    const navUserEl = document.getElementById('navUserName');
+    if (navUserEl) navUserEl.textContent = userName;
+
+    if (isRestrictedToIndustrial) {
+      document.documentElement.classList.add('user-industrial-only');
+      sessionStorage.setItem('sga_dac_restriction', 'industrial');
+      sessionStorage.setItem('sga_dac', 'industrial');
+      sessionStorage.setItem('sga_escuela', 'Escuela de Ingeniería Industrial');
+      localStorage.setItem('sga_dac_restriction', 'industrial');
+      localStorage.setItem('sga_dac', 'industrial');
+      localStorage.setItem('sga_escuela', 'Escuela de Ingeniería Industrial');
+
+      // 1. Eliminar completamente la tarjeta de Sistemas del DOM para que NO EXISTA
+      const cardSistemas = document.getElementById('dacCardSistemas');
+      if (cardSistemas) cardSistemas.remove();
+
+      // 2. Eliminar el botón "Cambiar DAC"
+      const btnBack = document.querySelector('.btn-back');
+      if (btnBack) btnBack.remove();
+
+      // 3. Ocultar paso 1 y activar paso 2
+      const step1 = document.getElementById('stepDacSelector');
+      if (step1) {
+        step1.classList.remove('active');
+        step1.style.display = 'none';
+      }
+      const step2 = document.getElementById('stepModuleSelector');
+      if (step2) {
+        step2.classList.add('active');
+        step2.style.display = 'block';
+      }
+
+      currentDAC = 'industrial';
+    }
 
     // ============================
     // STEP 1 → STEP 2: Select DAC
     // ============================
     function selectDAC(dac) {
+      if (isRestrictedToIndustrial || dac === 'sistemas') {
+        if (isRestrictedToIndustrial) {
+          alert('Acceso no autorizado: Su perfil institucional está restringido exclusivamente a la Escuela de Ingeniería Industrial.');
+          showModuleSelector('industrial');
+          return;
+        }
+      }
+
       currentDAC = dac;
       sessionStorage.setItem('sga_dac', dac);
 
@@ -1110,34 +1369,74 @@
     // Show Module Selector (Step 2)
     // ============================
     function showModuleSelector(dac) {
+      if (isRestrictedToIndustrial) {
+        dac = 'industrial';
+        currentDAC = 'industrial';
+        sessionStorage.setItem('sga_dac', 'industrial');
+        localStorage.setItem('sga_dac', 'industrial');
+      }
+
       const step1 = document.getElementById('stepDacSelector');
       const step2 = document.getElementById('stepModuleSelector');
       const dot = document.getElementById('dacActiveDot');
       const label = document.getElementById('dacActiveLabel');
       const icon = document.getElementById('moduleStepIcon');
+      const btnBack = document.querySelector('.btn-back');
 
       // Update DAC label
       if (dac === 'sistemas') {
+        if (isRestrictedToIndustrial) {
+          showModuleSelector('industrial');
+          return;
+        }
         dot.className = 'dac-active-dot sistemas';
         label.textContent = 'DAC Sistemas — Ing. de Sistemas';
         icon.style.background = 'var(--sistemas-pastel)';
         icon.style.color = 'var(--sistemas-primary)';
         icon.style.borderColor = 'var(--sistemas-soft)';
+        if (btnBack) btnBack.style.display = 'inline-flex';
       } else {
         dot.className = 'dac-active-dot industrial';
-        label.textContent = 'DAC Industrial — Ing. Industrial';
+        label.textContent = isRestrictedToIndustrial
+          ? 'DAC Industrial — Ing. Industrial (Acceso Exclusivo)'
+          : 'DAC Industrial — Ing. Industrial';
         icon.style.background = 'var(--industrial-pastel)';
         icon.style.color = 'var(--industrial-primary)';
         icon.style.borderColor = 'var(--industrial-soft)';
+        if (btnBack) {
+          if (isRestrictedToIndustrial) {
+            btnBack.remove();
+          } else {
+            btnBack.style.display = 'inline-flex';
+          }
+        }
+      }
+
+      // Mostrar módulo exclusivo de Rendimiento Académico solo para Industrial
+      const modRendimiento = document.getElementById('modRendimiento');
+      const modulesGrid = document.querySelector('.modules-grid');
+      if (modRendimiento) {
+        modRendimiento.style.display = (dac === 'industrial') ? 'block' : 'none';
+      }
+      if (modulesGrid) {
+        modulesGrid.classList.toggle('has-industrial', dac === 'industrial');
       }
 
       // Transition steps
-      step1.classList.remove('active');
-      step2.classList.remove('active');
+      if (step1) {
+        step1.classList.remove('active');
+        if (isRestrictedToIndustrial) step1.style.display = 'none';
+      }
+      if (step2) {
+        step2.classList.remove('active');
+      }
 
       // Small delay for re-animation
       requestAnimationFrame(() => {
-        step2.classList.add('active');
+        if (step2) {
+          step2.classList.add('active');
+          if (isRestrictedToIndustrial) step2.style.display = 'block';
+        }
       });
     }
 
@@ -1145,6 +1444,11 @@
     // Go Back to DAC Selection
     // ============================
     function goBackToDAC() {
+      if (isRestrictedToIndustrial) {
+        // Perfil restringido no puede volver a elegir Sistemas
+        return;
+      }
+
       const step1 = document.getElementById('stepDacSelector');
       const step2 = document.getElementById('stepModuleSelector');
 
@@ -1160,7 +1464,10 @@
     // Navigate to Module
     // ============================
     function navigateToModule(module) {
-      const dac = currentDAC || sessionStorage.getItem('sga_dac') || 'sistemas';
+      let dac = currentDAC || sessionStorage.getItem('sga_dac') || 'sistemas';
+      if (isRestrictedToIndustrial) {
+        dac = 'industrial';
+      }
 
       // Store in session for context
       sessionStorage.setItem('sga_active_module', module);
@@ -1178,8 +1485,18 @@
           break;
 
         case 'pau':
-          // Redirigir al Módulo PAU Unificado (WhatsApp, Correo, Zoom)
+          // Redirigir al Módulo PAE Unificado (WhatsApp, Correo, Zoom)
           window.location.href = 'pau_whatsapp.html';
+          break;
+
+        case 'optimizacion':
+          // Redirigir al nuevo Módulo 1.4: Nueva Optimización de Programación Académica
+          window.location.href = 'optimizacion_academica.html';
+          break;
+
+        case 'rendimiento':
+          // Redirigir al Módulo 1.5: Rendimiento Académico UCV (Exclusivo Industrial)
+          window.location.href = 'rendimiento_industrial.html';
           break;
       }
     }
@@ -1188,12 +1505,31 @@
     // Restore state if coming back
     // ============================
     (function restoreState() {
+      if (isRestrictedToIndustrial) {
+        currentDAC = 'industrial';
+        sessionStorage.setItem('sga_dac', 'industrial');
+        localStorage.setItem('sga_dac', 'industrial');
+        const cardSistemas = document.getElementById('dacCardSistemas');
+        if (cardSistemas) cardSistemas.remove();
+        const btnBack = document.querySelector('.btn-back');
+        if (btnBack) btnBack.remove();
+        const step1 = document.getElementById('stepDacSelector');
+        if (step1) {
+          step1.classList.remove('active');
+          step1.style.display = 'none';
+        }
+        const step2 = document.getElementById('stepModuleSelector');
+        if (step2) {
+          step2.classList.add('active');
+          step2.style.display = 'block';
+        }
+        showModuleSelector('industrial');
+        return;
+      }
+
       const savedDAC = sessionStorage.getItem('sga_dac');
       if (savedDAC) {
         currentDAC = savedDAC;
-        // Optionally go straight to modules if DAC was previously selected
-        // Uncomment line below if you want auto-skip to modules:
-        // showModuleSelector(savedDAC);
       }
     })();
   </script>

@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CONTROL DE ASISTENCIA DOCENTE 2026-2 — Facultad de Ingeniería y Arquitectura | UCV</title>
+  <meta name="description" content="Registro Oficial de Asistencia Docente — Semestre 2026-2 de la Facultad de Ingeniería y Arquitectura, Universidad César Vallejo">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Favicon Institucional UCV -->
+  <link rel="icon" type="image/png" href="img/logo-ucv.png">
+
+  <!-- Estilos de Identidad Visual Institucional UCV -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ====================================================================
+       1. BARRA SUPERIOR INSTITUCIONAL UCV
+       ==================================================================== -->
+  <header class="top-institutional-bar">
+    <div class="bar-container">
+      <div class="bar-brand">
+        <img src="img/logo-ucv.png" alt="Universidad César Vallejo" class="bar-logo">
+        <div class="bar-divider"></div>
+        <div class="bar-text-group">
+          <span class="bar-univ-title">Universidad César Vallejo</span>
+          <span class="bar-faculty-sub">Facultad de Ingeniería y Arquitectura</span>
+        </div>
+      </div>
+      <div class="bar-right-group">
+        <div class="bar-badge-pill">
+          <i class="bi bi-person-workspace"></i>
+          <span>Asistencia Docente • Semestre 2026-II</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ====================================================================
+       2. CONTENIDO PRINCIPAL
+       ==================================================================== -->
+  <main class="main-content" role="main">
+
+    <!-- ==================================================================
+         PANTALLA DE CONFIRMACIÓN (POST-ENVÍO)
+         ================================================================== -->
+    <div class="success-panel" id="successPanel" role="region" aria-live="polite">
+      <div class="confirmation-card">
+        <div class="confirm-seal-wrap">
+          <i class="bi bi-check-circle-fill"></i>
+        </div>
+
+        <h2 class="confirm-heading">¡Asistencia Registrada con Éxito!</h2>
+        <div class="confirm-faculty-sub">Facultad de Ingeniería y Arquitectura — UCV Virtual</div>
+
+        <p class="confirm-message">
+          Estimado(a) docente, sus datos han sido incorporados formalmente al registro de asistencia del <strong>CONTROL DE ASISTENCIA DOCENTE 2026-2</strong>. Su firma digital ha sido almacenada como constancia oficial de participación.
+        </p>
+
+        <!-- Ficha Resumen de Constancia -->
+        <div class="summary-table-box">
+          <div class="summary-row">
+            <span class="summary-lbl"><i class="bi bi-person-badge me-1"></i> Docente:</span>
+            <span class="summary-val" id="resNombre">-</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-lbl"><i class="bi bi-upc-scan me-1"></i> Cód. Docente:</span>
+            <span class="summary-val" id="resCodigo">-</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-lbl"><i class="bi bi-card-text me-1"></i> DNI:</span>
+            <span class="summary-val" id="resDni">-</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-lbl"><i class="bi bi-buildings me-1"></i> Escuela Profesional:</span>
+            <span class="summary-val" id="resEscuela">-</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-lbl"><i class="bi bi-book me-1"></i> Asignatura:</span>
+            <span class="summary-val" id="resAsignatura">-</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-lbl"><i class="bi bi-grid-3x3 me-1"></i> Sección / Aula:</span>
+            <span class="summary-val" id="resSeccion">-</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-lbl"><i class="bi bi-mortarboard me-1"></i> Ciclo:</span>
+            <span class="summary-val" id="resCiclo">-</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-lbl"><i class="bi bi-clock-history me-1"></i> Fecha y Hora:</span>
+            <span class="summary-val" id="resFecha">-</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-lbl"><i class="bi bi-patch-check me-1"></i> Estado:</span>
+            <span class="summary-val seal-status"><i class="bi bi-check2-all me-1"></i>REGISTRADO & CONFORME</span>
+          </div>
+        </div>
+
+        <div class="confirm-actions">
+          <button type="button" class="btn-action-light" onclick="window.print()">
+            <i class="bi bi-printer-fill"></i> Imprimir Constancia
+          </button>
+          <button type="button" class="btn-action-primary" id="btnNuevoRegistro">
+            <i class="bi bi-person-plus-fill"></i> Registrar a Otro Docente
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================================================================
+         FORMULARIO DE ASISTENCIA DOCENTE
+         ================================================================== -->
+    <div id="formSectionWrapper">
+      <div class="form-main-card">
+
+        <!-- Encabezado Institucional -->
+        <div class="form-header-intro">
+          <div class="intro-badge">
+            <i class="bi bi-shield-check"></i> Ficha Oficial de Asistencia Docente
+          </div>
+          <h1 class="intro-title">CONTROL DE ASISTENCIA DOCENTE 2026-2</h1>
+          <div class="intro-subtitle">Facultad de Ingeniería y Arquitectura • Programa SUBE</div>
+
+          <p class="intro-message">
+            Estimado(a) docente: Por encargo de la Dirección de Escuela y la Coordinación Académica, le solicitamos registrar sus datos de filiación, asignatura y firma digital como evidencia formal de asistencia y participación docente en el presente semestre académico.
+          </p>
+
+          <div class="notice-box">
+            <span>Los campos señalados con asterisco (<span class="req-indicator">*</span>) son de llenado obligatorio.</span>
+            <span class="text-muted" style="font-size: 0.76rem;"><i class="bi bi-shield-lock-fill me-1"></i>Registro Seguro</span>
+          </div>
+        </div>
+
+        <!-- Alerta de Errores de Validación -->
+        <div class="alert-error-box" id="globalAlert" role="alert">
+          <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+          <span id="globalAlertText">Por favor revise y complete los campos obligatorios indicados en rojo.</span>
+        </div>
+
+        <form id="attendanceForm" novalidate autocomplete="off">
+
+          <!-- ============================================================
+               I. DATOS DE FILIACIÓN DEL DOCENTE
+               ============================================================ -->
+          <div class="form-block-section">
+            <div class="block-title">
+              <i class="bi bi-person-vcard"></i>
+              <span>I. Datos del Docente</span>
+            </div>
+
+            <!-- Apellidos y Nombres * -->
+            <div class="field-item" id="wrap_apellidos_nombres">
+              <label for="apellidos_nombres" class="field-label-text">
+                <span>Apellidos y Nombres Completos <span class="req-star">*</span></span>
+              </label>
+              <input 
+                type="text" 
+                id="apellidos_nombres" 
+                name="apellidos_nombres" 
+                class="input-control" 
+                placeholder="Ej. García López, María del Carmen" 
+                required
+              >
+              <div class="input-error-feedback">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                <span>Ingrese sus apellidos y nombres completos.</span>
+              </div>
+            </div>
+
+            <!-- Código de Docente * -->
+            <div class="field-item" id="wrap_codigo_docente">
+              <label for="codigo_docente" class="field-label-text">
+                <span>Código de Docente UCV <span class="req-star">*</span></span>
+                <span class="badge" style="background: #E2E8F0; color: #002855; font-size: 0.72rem; font-weight: 700; padding: 2px 7px; border-radius: 4px;">Código Institucional</span>
+              </label>
+              <input 
+                type="text" 
+                id="codigo_docente" 
+                name="codigo_docente" 
+                class="input-control" 
+                placeholder="Ej. 70018492 o código asignado" 
+                maxlength="20"
+                autocomplete="off"
+                required
+              >
+              <div class="input-error-feedback">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                <span>Ingrese su código institucional de docente.</span>
+              </div>
+            </div>
+
+            <!-- DNI * (8 dígitos numéricos) -->
+            <div class="field-item" id="wrap_dni">
+              <label for="dni" class="field-label-text">
+                <span>DNI (Documento Nacional de Identidad) <span class="req-star">*</span></span>
+                <span class="badge" style="background: #E2E8F0; color: #002855; font-size: 0.72rem; font-weight: 700; padding: 2px 7px; border-radius: 4px;">8 dígitos numéricos</span>
+              </label>
+              <input 
+                type="text" 
+                id="dni" 
+                name="dni" 
+                class="input-control" 
+                placeholder="Ej. 45678901 (exactamente 8 dígitos)" 
+                maxlength="8"
+                minlength="8"
+                inputmode="numeric"
+                pattern="[0-9]{8}"
+                autocomplete="off"
+                required
+              >
+              <div class="input-error-feedback">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                <span>El DNI debe contener exactamente 8 dígitos numéricos.</span>
+              </div>
+            </div>
+
+            <!-- Correo Electrónico -->
+            <div class="field-item" id="wrap_correo">
+              <label for="correo" class="field-label-text">
+                <span>Correo Electrónico (Institucional o Personal)</span>
+                <span class="optional-tag">Recomendado</span>
+              </label>
+              <input 
+                type="email" 
+                id="correo" 
+                name="correo" 
+                class="input-control" 
+                placeholder="ejemplo@ucvvirtual.edu.pe"
+                autocomplete="email"
+              >
+            </div>
+          </div>
+
+          <!-- ============================================================
+               II. ASIGNATURA Y AULA
+               ============================================================ -->
+          <div class="form-block-section">
+            <div class="block-title">
+              <i class="bi bi-journal-check"></i>
+              <span>II. Asignatura y Escuela Profesional</span>
+            </div>
+
+            <!-- Escuela Profesional * -->
+            <div class="field-item" id="wrap_escuela_profesional">
+              <label for="escuela_profesional" class="field-label-text">
+                <span>Escuela Profesional <span class="req-star">*</span></span>
+              </label>
+              <select id="escuela_profesional" name="escuela_profesional" class="input-control select-control" required>
+                <option value="" selected disabled>Elegir</option>
+                <option value="Ingeniería Industrial">Ingeniería Industrial</option>
+                <option value="Ingeniería de Sistemas">Ingeniería de Sistemas</option>
+              </select>
+              <div class="input-error-feedback">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                <span>Seleccione la Escuela Profesional a la que pertenece.</span>
+              </div>
+            </div>
+
+            <!-- Asignatura * -->
+            <div class="field-item" id="wrap_asignatura">
+              <label for="asignatura" class="field-label-text">
+                <span>Asignatura(s) que Dicta <span class="req-star">*</span></span>
+              </label>
+              <input 
+                type="text" 
+                id="asignatura" 
+                name="asignatura" 
+                class="input-control" 
+                placeholder="Ej. Matemática para la Ingeniería / Gestión de Operaciones" 
+                required
+              >
+              <div class="input-error-feedback">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                <span>Ingrese el nombre de la asignatura que dicta.</span>
+              </div>
+            </div>
+
+            <!-- Sección / Grupo de Aula * (OBLIGATORIA) -->
+            <div class="field-item" id="wrap_seccion">
+              <label for="seccion" class="field-label-text">
+                <span>Sección / Grupo de Aula <span class="req-star">*</span></span>
+              </label>
+              <input 
+                type="text" 
+                id="seccion" 
+                name="seccion" 
+                class="input-control" 
+                placeholder="Ej. A1, B2 o Grupo 01"
+                required
+              >
+              <div class="input-error-feedback">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                <span>Ingrese la sección o grupo de aula correspondiente (obligatorio).</span>
+              </div>
+            </div>
+
+            <!-- Ciclo Académico * -->
+            <div class="field-item" id="wrap_ciclo">
+              <label class="field-label-text">
+                <span>Ciclo Académico <span class="req-star">*</span></span>
+                <span class="optional-tag" id="cicloBadgeText">Seleccione una opción</span>
+              </label>
+              
+              <input type="hidden" id="ciclo" name="ciclo" required>
+
+              <div class="ciclo-selector-grid" id="cicloGrid">
+                <button type="button" class="ciclo-btn-option" data-ciclo="Ciclo I">Ciclo I</button>
+                <button type="button" class="ciclo-btn-option" data-ciclo="Ciclo II">Ciclo II</button>
+                <button type="button" class="ciclo-btn-option" data-ciclo="Ciclo III">Ciclo III</button>
+                <button type="button" class="ciclo-btn-option" data-ciclo="Ciclo IV">Ciclo IV</button>
+                <button type="button" class="ciclo-btn-option" data-ciclo="Ciclo V">Ciclo V</button>
+                <button type="button" class="ciclo-btn-option" data-ciclo="Ciclo VI">Ciclo VI</button>
+                <button type="button" class="ciclo-btn-option" data-ciclo="Ciclo VII">Ciclo VII</button>
+                <button type="button" class="ciclo-btn-option" data-ciclo="Ciclo VIII">Ciclo VIII</button>
+                <button type="button" class="ciclo-btn-option" data-ciclo="Ciclo IX">Ciclo IX</button>
+                <button type="button" class="ciclo-btn-option" data-ciclo="Ciclo X">Ciclo X</button>
+              </div>
+              <div class="input-error-feedback">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                <span>Debe seleccionar el ciclo correspondiente a la asignatura.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============================================================
+               III. OBSERVACIONES
+               ============================================================ -->
+          <div class="form-block-section">
+            <div class="block-title">
+              <i class="bi bi-chat-left-text"></i>
+              <span>III. Observaciones</span>
+            </div>
+
+            <div class="field-item" id="wrap_observaciones">
+              <label for="observaciones" class="field-label-text">
+                <span>Observaciones o Comentarios Adicionales</span>
+                <span class="optional-tag">Opcional</span>
+              </label>
+              <textarea 
+                id="observaciones" 
+                name="observaciones" 
+                class="input-control" 
+                placeholder="Ingrese aquí cualquier observación relevante sobre su asistencia, licencia, permisos, etc."
+                rows="3"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- ============================================================
+               IV. FIRMA DIGITAL
+               ============================================================ -->
+          <div class="form-block-section">
+            <div class="block-title">
+              <i class="bi bi-pen-fill"></i>
+              <span>IV. Firma Digital del Docente <span class="req-star">*</span></span>
+            </div>
+
+            <div class="field-item" id="wrap_firma">
+              <label class="field-label-text">
+                <span>Registre su firma digital <span class="req-star">*</span></span>
+                <span class="optional-tag" id="sigModeBadge">Dibujar o subir imagen</span>
+              </label>
+
+              <!-- Selector de Modo de Firma (Pestañas) -->
+              <div class="signature-tabs-wrap">
+                <div class="signature-tabs-nav" role="tablist">
+                  <button type="button" class="sig-tab-btn active" id="tabDrawFirma" role="tab" aria-selected="true">
+                    <i class="bi bi-pen-fill"></i> Dibujar Firma
+                  </button>
+                  <button type="button" class="sig-tab-btn" id="tabUploadFirma" role="tab" aria-selected="false">
+                    <i class="bi bi-cloud-arrow-up-fill"></i> Subir Imagen de Firma
+                  </button>
+                </div>
+              </div>
+
+              <!-- Panel de Subida de Archivo (Modo Subir) -->
+              <div class="signature-upload-panel" id="sigUploadPanel" style="display: none;">
+                <input 
+                  type="file" 
+                  id="sigFileInput" 
+                  accept="image/png, image/jpeg, image/jpg, image/webp" 
+                  style="display: none;"
+                >
+                <div class="sig-dropzone" id="sigDropzone">
+                  <div class="sig-dropzone-icon">
+                    <i class="bi bi-cloud-arrow-up"></i>
+                  </div>
+                  <div class="sig-dropzone-title">Haga clic o arrastre aquí su imagen de firma</div>
+                  <div class="sig-dropzone-subtitle">Formatos admitidos: PNG, JPG, JPEG o WEBP (Máx. 2MB)</div>
+                  <button type="button" class="btn-select-file" id="btnTriggerFile">
+                    <i class="bi bi-folder2-open me-1"></i> Seleccionar Imagen
+                  </button>
+                </div>
+
+                <div class="sig-file-loaded-info" id="sigFileLoadedInfo" style="display: none;">
+                  <div class="sig-file-loaded-card">
+                    <div class="sig-file-loaded-meta">
+                      <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                      <div>
+                        <div class="sig-file-name" id="sigFileName">firma.png</div>
+                        <div class="sig-file-size text-muted" id="sigFileSize">0 KB</div>
+                      </div>
+                    </div>
+                    <button type="button" class="btn-remove-file" id="btnRemoveSigFile" title="Quitar archivo">
+                      <i class="bi bi-arrow-repeat"></i> Cambiar imagen
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recuadro Canvas de Firma / Vista Previa -->
+              <div class="signature-area">
+                <label class="field-label-text" style="margin-bottom: 0.35rem; font-size: 0.78rem; color: var(--text-muted);">
+                  <span id="sigCanvasHint"><i class="bi bi-pen me-1"></i>Recuadro de firma (dibuje con el ratón o con el dedo):</span>
+                </label>
+
+                <div class="signature-canvas-wrap" id="signatureWrap">
+                  <canvas id="signatureCanvas" height="160"></canvas>
+                  <div class="signature-placeholder" id="sigPlaceholder">
+                    <i class="bi bi-pen"></i>
+                    Dibuje su firma aquí con el ratón o con el dedo
+                  </div>
+                </div>
+
+                <div class="signature-actions">
+                  <button type="button" class="btn-clear-firma" id="btnClearFirma">
+                    <i class="bi bi-eraser-fill"></i> Borrar firma
+                  </button>
+                </div>
+              </div>
+
+              <div class="input-error-feedback">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                <span>Debe registrar su firma digital (dibujada en pantalla o subida como imagen).</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============================================================
+               V. DECLARACIÓN JURADA Y CONSENTIMIENTO
+               ============================================================ -->
+          <div class="form-block-section">
+            <div class="block-title">
+              <i class="bi bi-shield-check"></i>
+              <span>V. Conformidad y Protección de Datos</span>
+            </div>
+
+            <div class="compliance-box" id="wrap_declaracion">
+              <div class="compliance-badge">
+                <i class="bi bi-file-earmark-lock-fill"></i> Declaración Institucional
+              </div>
+
+              <label class="compliance-label">
+                <input 
+                  type="checkbox" 
+                  id="declaracion_aceptada" 
+                  name="declaracion_aceptada" 
+                  class="compliance-checkbox" 
+                  value="1" 
+                  required
+                >
+                <span class="compliance-text">
+                  Declaro que la información proporcionada en el presente formulario es verdadera, completa y actualizada. Asimismo, autorizo el uso de mis datos personales y firma digital para fines exclusivamente académicos y administrativos relacionados con el control de asistencia docente, de conformidad con las disposiciones institucionales vigentes.
+                </span>
+              </label>
+              <div class="input-error-feedback" style="margin-top: 0.65rem;">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                <span>Es obligatorio marcar la declaración de conformidad para registrar la asistencia.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============================================================
+               BOTONES DE ACCIÓN
+               ============================================================ -->
+          <div class="form-footer-actions">
+            <button type="submit" class="btn-submit-ucv" id="btnSubmit">
+              <i class="bi bi-check2-circle fs-5"></i>
+              <span>Registrar Asistencia</span>
+            </button>
+            <button type="button" class="btn-reset-plain" id="btnReset">
+              Limpiar campos
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ====================================================================
+       3. PIE DE PÁGINA INSTITUCIONAL
+       ==================================================================== -->
+  <footer class="footer-institutional">
+    <div class="footer-inner">
+      <div>
+        <strong>Universidad César Vallejo S.A.C.</strong> • Licenciamiento Institucional por SUNEDU
+      </div>
+      <div>
+        Facultad de Ingeniería y Arquitectura • Semestre Académico 2026-II • Sistema de Control Docente
+      </div>
+      <div style="margin-top: 0.35rem;">
+        <a href="admin.php" target="_blank"><i class="bi bi-lock-fill me-1"></i>Acceso para Autoridades y Coordinación Académica</a>
+        <span style="margin: 0 0.6rem; opacity: 0.4;">|</span>
+        <button type="button" id="btnAbrirDescarga" class="footer-download-btn">
+          <i class="bi bi-file-earmark-excel-fill"></i> Descargar Registros (Excel)
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ====================================================================
+       MODAL DE VALIDACIÓN DE CREDENCIALES PARA DESCARGA
+       ==================================================================== -->
+  <div id="modalDescargaOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalDescargaTitle">
+    <div class="modal-box" id="modalDescargaBox">
+
+      <!-- Cabecera del modal -->
+      <div class="modal-header-ucv">
+        <div class="modal-header-icon">
+          <i class="bi bi-file-earmark-lock2-fill"></i>
+        </div>
+        <div>
+          <h2 class="modal-title" id="modalDescargaTitle">Validar Credenciales</h2>
+          <p class="modal-subtitle">Descarga Protegida — Asistencia Docente 2026-2</p>
+        </div>
+        <button type="button" class="modal-close-btn" id="btnCerrarModal" aria-label="Cerrar">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <!-- Cuerpo del modal -->
+      <div class="modal-body-ucv">
+        <p class="modal-desc">
+          Ingrese las credenciales institucionales autorizadas para descargar el listado completo de docentes registrados.
+        </p>
+
+        <!-- Alerta de error dentro del modal -->
+        <div class="modal-alert-error" id="modalAlertError" role="alert">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          <span id="modalAlertText">Credenciales incorrectas.</span>
+        </div>
+
+        <form id="downloadAuthForm" novalidate autocomplete="off">
+          <div class="modal-field">
+            <label for="dlEmail" class="modal-label">
+              <i class="bi bi-envelope-fill"></i> Correo Institucional
+            </label>
+            <input
+              type="email"
+              id="dlEmail"
+              class="modal-input"
+              placeholder="correo@ucvvirtual.edu.pe"
+              autocomplete="username"
+              required
+            >
+          </div>
+
+          <div class="modal-field">
+            <label for="dlPass" class="modal-label">
+              <i class="bi bi-key-fill"></i> Contraseña
+            </label>
+            <div class="modal-input-pw-wrap">
+              <input
+                type="password"
+                id="dlPass"
+                class="modal-input"
+                placeholder="Contraseña institucional"
+                autocomplete="current-password"
+                required
+              >
+              <button type="button" class="toggle-pw-btn" id="btnTogglePw" aria-label="Mostrar contraseña">
+                <i class="bi bi-eye" id="iconTogglePw"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="modal-submit-btn" id="btnDescargarExcel">
+            <i class="bi bi-download"></i>
+            <span>Validar y Descargar Excel</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Pie del modal -->
+      <div class="modal-footer-ucv">
+        <i class="bi bi-shield-lock-fill me-1" style="color: var(--ucv-navy);"></i>
+        Acceso restringido — Solo personal autorizado de la Facultad
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Script de Control del Formulario -->
+  <script src="js/form.js?v=1.0"></script>
+
+</body>
+</html>
