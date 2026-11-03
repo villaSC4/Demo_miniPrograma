@@ -161,3 +161,4 @@ python build_deploy_packages.py
 Este script genera automáticamente:
 1. `deploy_1_minisistema_actualizacion.zip` (y su espejo `cpanel_update_minisistema.zip`): Contiene todas las páginas, scripts `js/`, `api/` y `data/` para el dominio principal (`uvsube.class-it.edu.pe`).
 2. `deploy_2_subdominio_dac_atiende.zip` (y su espejo `formulario_estudiantes_cpanel.zip`): Contiene el módulo PAE actualizado para el subdominio de atención estudiantil (`dac-atiende.class-it.edu.pe`).
+
